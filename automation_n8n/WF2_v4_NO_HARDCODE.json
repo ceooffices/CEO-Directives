@@ -1,0 +1,418 @@
+{
+  "name": "CEO Directive - WF2 - Xử lý Form Làm rõ (v4 NO HARDCODE)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf2-form-clarification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-001",
+      "name": "Webhook: Nhận Form Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "wf2-form-clarification"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF2 v4 processing', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "📤 Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 450]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF2 v4 - VALIDATE & EXTRACT FORM DATA\n// NO HARDCODE - FLEXIBLE PARSING\n// ========================================\n\nconst input = $input.first().json;\n\nconsole.log('[WF2 v4] ==========================================');\nconsole.log('[WF2 v4] RAW INPUT STRUCTURE:');\nconsole.log('[WF2 v4] Keys:', Object.keys(input));\n\n// Debug: Log first level\nif (input.body) {\n  console.log('[WF2 v4] input.body keys:', Object.keys(input.body));\n  if (input.body.body) {\n    console.log('[WF2 v4] input.body.body keys:', Object.keys(input.body.body));\n  }\n}\n\n// ==========================================\n// FLEXIBLE PARSING - Tìm data ở nhiều cấp\n// ==========================================\n\nlet formData = null;\nlet parseSource = 'unknown';\n\n// Thứ tự ưu tiên parse:\n// 1. FLAT structure (v4 Apps Script): input.body.clarificationId\n// 2. Nested 1 level: input.body.data.clarificationId\n// 3. Nested 2 levels: input.body.body.data.clarificationId\n// 4. Direct: input.clarificationId\n\nif (input.body?.clarificationId) {\n  // FLAT structure từ Apps Script v4\n  formData = input.body;\n  parseSource = 'input.body (FLAT)';\n  console.log('[WF2 v4] ✅ Found FLAT structure in input.body');\n  \n} else if (input.body?.data?.clarificationId) {\n  // Nested 1 level\n  formData = input.body.data;\n  parseSource = 'input.body.data';\n  console.log('[WF2 v4] ✅ Found nested structure in input.body.data');\n  \n} else if (input.body?.body?.data?.clarificationId) {\n  // Nested 2 levels (double wrapped)\n  formData = input.body.body.data;\n  parseSource = 'input.body.body.data';\n  console.log('[WF2 v4] ✅ Found double-nested structure');\n  \n} else if (input.body?.body?.clarificationId) {\n  // Nested body without data wrapper\n  formData = input.body.body;\n  parseSource = 'input.body.body';\n  console.log('[WF2 v4] ✅ Found nested body structure');\n  \n} else if (input.clarificationId) {\n  // Direct at root\n  formData = input;\n  parseSource = 'input (root)';\n  console.log('[WF2 v4] ✅ Found direct structure at root');\n  \n} else if (input.data?.clarificationId) {\n  // data at root level\n  formData = input.data;\n  parseSource = 'input.data';\n  console.log('[WF2 v4] ✅ Found data at root level');\n  \n} else {\n  // Fallback: try to find clarificationId anywhere\n  console.log('[WF2 v4] ⚠️ Standard structures not found, searching...');\n  \n  // Deep search for clarificationId\n  const searchForField = (obj, field, path = '') => {\n    if (!obj || typeof obj !== 'object') return null;\n    if (obj[field]) return { data: obj, path: path };\n    for (const key of Object.keys(obj)) {\n      const result = searchForField(obj[key], field, path + '.' + key);\n      if (result) return result;\n    }\n    return null;\n  };\n  \n  const found = searchForField(input, 'clarificationId');\n  if (found) {\n    formData = found.data;\n    parseSource = 'deep search: ' + found.path;\n    console.log('[WF2 v4] ✅ Found via deep search at:', found.path);\n  }\n}\n\n// ==========================================\n// EXTRACT META INFO\n// ==========================================\n\nconst getMeta = (key) => {\n  return input[key] || input.body?.[key] || input.body?.body?.[key] || '';\n};\n\nconst meta = {\n  formResponseId: getMeta('formResponseId'),\n  timestamp: getMeta('timestamp') || new Date().toISOString(),\n  respondentEmail: getMeta('respondentEmail') || 'anonymous',\n  editResponseUrl: getMeta('editResponseUrl')\n};\n\n// ==========================================\n// EXTRACT FORM FIELDS\n// ==========================================\n\nif (!formData) {\n  console.log('[WF2 v4] ❌ CRITICAL: Could not find form data!');\n  console.log('[WF2 v4] Full input:', JSON.stringify(input, null, 2).substring(0, 2000));\n  \n  return {\n    json: {\n      ...meta,\n      isValid: false,\n      isTest: false,\n      parseError: true,\n      parseSource: 'FAILED',\n      errors: ['Không thể parse form data - cấu trúc payload không hợp lệ']\n    }\n  };\n}\n\nconsole.log('[WF2 v4] Parse source:', parseSource);\nconsole.log('[WF2 v4] formData keys:', Object.keys(formData));\n\n// Extract với fallback\nconst clarificationId = formData.clarificationId || '';\nconst nguonChiDao = formData.nguonChiDao || '';\nconst ngayNhanChiDao = formData.ngayNhanChiDao || '';\nconst noiDungGoc = formData.noiDungGoc || '';\nconst dauMoiT1 = formData.dauMoiT1 || '';\nconst t2NhiemVu = formData.t2NhiemVu || '';\nconst t3ChiTieu = formData.t3ChiTieu || '';\nconst t4ThoiHan = formData.t4ThoiHan || '';\nconst ghiChu = formData.ghiChu || '';\nconst xacNhan = formData.xacNhan === true || formData.xacNhan === 'true' || formData.xacNhan === 1;\n\nconsole.log('[WF2 v4] Extracted fields:');\nconsole.log('  clarificationId:', clarificationId);\nconsole.log('  nguonChiDao:', nguonChiDao);\nconsole.log('  dauMoiT1:', dauMoiT1);\nconsole.log('  t2NhiemVu:', t2NhiemVu ? t2NhiemVu.substring(0, 50) + '...' : '(empty)');\nconsole.log('  t3ChiTieu:', t3ChiTieu ? t3ChiTieu.substring(0, 50) + '...' : '(empty)');\nconsole.log('  t4ThoiHan:', t4ThoiHan);\nconsole.log('  xacNhan:', xacNhan);\n\n// ==========================================\n// SKIP TEST PAYLOADS\n// ==========================================\n\nconst isTest = formData._isTest === true || \n               clarificationId.startsWith('TEST-') || \n               clarificationId.includes('test');\n               \nif (isTest) {\n  console.log('[WF2 v4] 🧪 TEST payload detected - skipping');\n  return {\n    json: {\n      isTest: true,\n      isValid: false,\n      skipReason: 'Test payload',\n      parseSource\n    }\n  };\n}\n\n// ==========================================\n// VALIDATION\n// ==========================================\n\nconst errors = [];\nif (!clarificationId) errors.push('Thiếu Mã Clarification');\nif (!t2NhiemVu) errors.push('Thiếu T2 - Nhiệm vụ');\nif (!t3ChiTieu) errors.push('Thiếu T3 - Chỉ tiêu');\nif (!t4ThoiHan) errors.push('Thiếu T4 - Thời hạn');\nif (!xacNhan) errors.push('Chưa xác nhận nhận chỉ đạo');\n\nconst isValid = errors.length === 0;\nconst has4T = Boolean(dauMoiT1 && t2NhiemVu && t3ChiTieu && t4ThoiHan);\n\nconsole.log('[WF2 v4] Validation: isValid=' + isValid + ', has4T=' + has4T);\nif (!isValid) console.log('[WF2 v4] Errors:', errors.join(', '));\n\n// ==========================================\n// OUTPUT\n// ==========================================\n\nreturn {\n  json: {\n    // Meta\n    ...meta,\n    parseSource,\n    \n    // Form data\n    clarificationId,\n    nguonChiDao,\n    ngayNhanChiDao,\n    noiDungGoc,\n    dauMoiT1,\n    t2NhiemVu,\n    t3ChiTieu,\n    t4ThoiHan,\n    ghiChu,\n    xacNhan,\n    \n    // Validation\n    isValid,\n    isTest: false,\n    has4T,\n    errors,\n    \n    // For Task creation\n    taskTitle: (dauMoiT1 ? dauMoiT1 + ': ' : '') + (noiDungGoc || 'Untitled').substring(0, 80),\n    today: new Date().toISOString().split('T')[0]\n  }\n};"
+      },
+      "id": "validate-001",
+      "name": "Validate & Extract Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-valid",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-valid-001",
+      "name": "IF: Valid Data?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [710, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"f2c9e34f-5506-483f-a124-44ae37d38a30\"\n  },\n  \"properties\": {\n    \"Tiêu đề\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.taskTitle.substring(0, 200) }}\"\n          }\n        }\n      ]\n    },\n    \"T2 - NHIỆM VỤ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t2NhiemVu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - CHỈ TIÊU\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t3ChiTieu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T4 - THỜI HẠN\": {\n      \"date\": {\n        \"start\": \"{{ $json.t4ThoiHan }}\"\n      }\n    },\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"📋 Chưa bắt đầu\"\n      }\n    },\n    \"Nguồn\": {\n      \"select\": {\n        \"name\": \"{{ $json.nguonChiDao || 'Khác' }}\"\n      }\n    },\n    \"Ghi chú\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.ghiChu ? $json.ghiChu.substring(0, 2000) : '' }}\"\n          }\n        }\n      ]\n    },\n    \"Chỉ đạo Gốc\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $json.clarificationId }}\"\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "create-task-001",
+      "name": "Create Task in Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $('Validate & Extract Data').item.json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"✅ Đã xác nhận\"\n      }\n    },\n    \"T2 - NHIỆM VỤ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $('Validate & Extract Data').item.json.t2NhiemVu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - CHỈ TIÊU\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $('Validate & Extract Data').item.json.t3ChiTieu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T4 - THỜI HẠN\": {\n      \"date\": {\n        \"start\": \"{{ $('Validate & Extract Data').item.json.t4ThoiHan }}\"\n      }\n    },\n    \"📅 Ngày xác nhận\": {\n      \"date\": {\n        \"start\": \"{{ $('Validate & Extract Data').item.json.today }}\"\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "update-clarification-001",
+      "name": "Update Clarification Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1170, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\"\n  },\n  \"properties\": {\n    \"Log\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"WF2 Success: {{ $('Validate & Extract Data').item.json.taskTitle.substring(0, 60) }}\"\n          }\n        }\n      ]\n    },\n    \"Workflow\": {\n      \"select\": {\n        \"name\": \"WF2 - Xử lý Form\"\n      }\n    },\n    \"Status\": {\n      \"select\": {\n        \"name\": \"✅ Success\"\n      }\n    },\n    \"Clarification\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $('Validate & Extract Data').item.json.clarificationId }}\"\n        }\n      ]\n    },\n    \"Details\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"Parse: {{ $('Validate & Extract Data').item.json.parseSource }}, T1: {{ $('Validate & Extract Data').item.json.dauMoiT1 }}, T4: {{ $('Validate & Extract Data').item.json.t4ThoiHan }}\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-success",
+      "name": "📊 Log Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validate & Extract Data').item.json.respondentEmail !== 'anonymous' ? $('Validate & Extract Data').item.json.respondentEmail : 'hoangkha@esuhai.com' }}",
+        "subject": "=✅ [WF2] Task đã tạo: {{ $('Validate & Extract Data').item.json.taskTitle.substring(0, 50) }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #11998e; padding: 20px; text-align: center;\">\n    <h2 style=\"color: #fff; margin: 0;\">✅ Task Đã Được Tạo</h2>\n  </div>\n  <div style=\"padding: 20px; background: #f5f5f5;\">\n    <p>Chào bạn,</p>\n    <p>Hệ thống đã tự động tạo Task từ Form xác nhận:</p>\n    <div style=\"background: #fff; padding: 15px; border-left: 4px solid #11998e; margin: 15px 0;\">\n      <h3 style=\"color: #11998e; margin-top: 0;\">{{ $('Validate & Extract Data').item.json.taskTitle }}</h3>\n      <p><strong>Đầu mối (T1):</strong> {{ $('Validate & Extract Data').item.json.dauMoiT1 || 'Chưa xác định' }}</p>\n      <p><strong>Nhiệm vụ (T2):</strong> {{ $('Validate & Extract Data').item.json.t2NhiemVu.substring(0, 100) }}...</p>\n      <p><strong>Chỉ tiêu (T3):</strong> {{ $('Validate & Extract Data').item.json.t3ChiTieu.substring(0, 100) }}...</p>\n      <p><strong>Thời hạn (T4):</strong> <span style=\"color: red;\">{{ $('Validate & Extract Data').item.json.t4ThoiHan }}</span></p>\n    </div>\n    <p style=\"color: #28a745;\">✅ Task đã tạo trong Notion<br>✅ Clarification đã cập nhật</p>\n  </div>\n</div>",
+        "options": {
+          "ccList": "hoangkha@esuhai.com"
+        }
+      },
+      "id": "send-success-001",
+      "name": "Send Success Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1630, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail-credentials-id",
+          "name": "Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-test",
+              "leftValue": "={{ $json.isTest }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-not-test",
+      "name": "IF: Not Test?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [940, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\"\n  },\n  \"properties\": {\n    \"Log\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"WF2 Error: {{ $json.errors ? $json.errors[0] : 'Unknown' }}\"\n          }\n        }\n      ]\n    },\n    \"Workflow\": {\n      \"select\": {\n        \"name\": \"WF2 - Xử lý Form\"\n      }\n    },\n    \"Status\": {\n      \"select\": {\n        \"name\": \"❌ Error\"\n      }\n    },\n    \"Details\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"Parse: {{ $json.parseSource || 'N/A' }}, ClarificationId: {{ $json.clarificationId || 'N/A' }}, Errors: {{ $json.errors ? $json.errors.join(', ') : 'Unknown' }}\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-error",
+      "name": "📊 Log Error",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1170, 400],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "=hoangkha@esuhai.com",
+        "subject": "=⚠️ [WF2] Form validation failed",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #dc3545; padding: 20px; text-align: center;\">\n    <h2 style=\"color: #fff; margin: 0;\">⚠️ Form Không Hợp Lệ</h2>\n  </div>\n  <div style=\"padding: 20px; background: #f5f5f5;\">\n    <p>Form response không hợp lệ:</p>\n    <div style=\"background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0;\">\n      <p><strong>Parse Source:</strong> {{ $json.parseSource || 'N/A' }}</p>\n      <p><strong>Errors:</strong></p>\n      <ul>{{ $json.errors ? $json.errors.map(e => '<li>' + e + '</li>').join('') : '<li>Unknown</li>' }}</ul>\n    </div>\n    <div style=\"background: #fff; padding: 15px; margin: 15px 0;\">\n      <p><strong>Data received:</strong></p>\n      <p>Clarification ID: {{ $json.clarificationId || 'N/A' }}</p>\n      <p>Đầu mối: {{ $json.dauMoiT1 || 'N/A' }}</p>\n      <p>T2: {{ $json.t2NhiemVu ? '✓' : '✗' }}</p>\n      <p>T3: {{ $json.t3ChiTieu ? '✓' : '✗' }}</p>\n      <p>T4: {{ $json.t4ThoiHan ? '✓' : '✗' }}</p>\n      <p>Xác nhận: {{ $json.xacNhan ? '✓' : '✗' }}</p>\n    </div>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "send-error-001",
+      "name": "Send Error Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1400, 400],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail-credentials-id",
+          "name": "Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Skip - Test payload\nconsole.log('[WF2 v4] Skipped test payload');\nreturn { json: { skipped: true, reason: 'Test payload' } };"
+      },
+      "id": "skip-test",
+      "name": "Skip Test",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1170, 550]
+    }
+  ],
+  "connections": {
+    "Webhook: Nhận Form Response": {
+      "main": [
+        [
+          {
+            "node": "📤 Webhook Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Validate & Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Extract Data": {
+      "main": [
+        [
+          {
+            "node": "IF: Valid Data?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Valid Data?": {
+      "main": [
+        [
+          {
+            "node": "Create Task in Notion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF: Not Test?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Not Test?": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task in Notion": {
+      "main": [
+        [
+          {
+            "node": "Update Clarification Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Clarification Status": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Success": {
+      "main": [
+        [
+          {
+            "node": "Send Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Error": {
+      "main": [
+        [
+          {
+            "node": "Send Error Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "esuhai-n8n-cloud"
+  },
+  "tags": []
+}

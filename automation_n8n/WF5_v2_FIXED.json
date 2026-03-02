@@ -1,0 +1,136 @@
+{
+  "name": "CEO Directive - WF5 v2 - Duolingo Smart Reminders (FIXED)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "e0bfb221-9ef0-41a4-ae5a-c5f1fc29d03c",
+      "name": "Daily 8:30 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/f2c9e34f-5506-483f-a124-44ae37d38a30/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Notion-Version", "value": "2022-06-28" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"does_not_equal\": \"Hoàn thành\"\n        }\n      }\n    ]\n  },\n  \"sorts\": [\n    {\n      \"property\": \"T4 - Thời hạn\",\n      \"direction\": \"ascending\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "6f0a9570-2d2a-4f0c-8eba-0f0efacf18a9",
+      "name": "Query Active Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [224, 0],
+      "credentials": {
+        "notionApi": { "id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// WF5 v2 FIXED - Duolingo Smart Reminders\n// FIX: Group tasks by recipient email + output recipientEmail\n// ============================================================\n\nconst tasks = $input.first().json.results || [];\nconst today = new Date();\nconst dayOfWeek = today.getDay();\nconst dayOfMonth = today.getDate();\n\n// ========== THƯ VIỆN TIN NHẮN ==========\nconst MSG = {\n  deadline_tomorrow: [\n    'Anh/chị ơi, có task đến hạn ngày mai nè. Xem qua nhé ạ',\n    'Nhắc nhẹ: ngày mai có deadline rồi đó ạ',\n    'Hú! Mai là hạn chót nè, check qua nhé',\n    '24h nữa là deadline. Cần hỗ trợ gì không ạ?'\n  ],\n  deadline_today: [\n    'Hôm nay là D-day rồi! Tình hình thế nào ạ?',\n    'Deadline là HÔM NAY. Cập nhật giúp em nhé',\n    '🚨 Task đến hạn hôm nay ạ. Tình hình thế nào rồi?',\n    'D-day đây rồi! Có cần support gì không ạ?'\n  ],\n  deadline_overdue: [\n    'Có task đã quá hạn rồi ạ. Có khó khăn gì không?',\n    'Task này quá deadline rồi. Cần thêm thời gian không ạ?',\n    'Task đã overdue, nhưng không sao, em ở đây hỗ trợ',\n    'Quá hạn rồi. Mình cập nhật lại timeline nhé?'\n  ],\n  monday_start: [\n    'Thứ Hai rồi! Tuần mới, năng lượng mới. Fighting! 💪',\n    'Đầu tuần rồi! Mình bắt đầu tuần mới thật hiệu quả nhé?',\n    'Happy Monday! Tuần này mình chiến thắng nhé'\n  ],\n  friday_wrapup: [\n    'Thứ 6 rồi! Tuần này vất vả quá, nghỉ ngơi nhé ạ',\n    'TGIF! Cuối tuần vui vẻ nhé',\n    'Hết tuần rồi! Weekend thư giãn nhé'\n  ],\n  new_month: [\n    'Tháng mới rồi! Fresh start, fresh goals. Let\\'s go! 🚀',\n    'Chào tháng mới! Tháng này mình chinh phục mục tiêu mới nào'\n  ],\n  normal_day: [\n    'Chào! Hôm nay có task nào cần xử lý không ạ?',\n    'Ngày mới tốt lành! Em ở đây sẵn sàng hỗ trợ',\n    'Hôm nay mình productive nhé!',\n    'Chúc một ngày làm việc hiệu quả ạ!'\n  ]\n};\n\nfunction pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }\n\n// ========== GROUP TASKS BY RECIPIENT ==========\nvar tasksByRecipient = {};\n\nfor (var i = 0; i < tasks.length; i++) {\n  var task = tasks[i];\n  var props = task.properties || {};\n  \n  // Extract title\n  var title = '';\n  for (var k1 in props) {\n    if (props[k1].type === 'title' && props[k1].title && props[k1].title[0]) {\n      title = props[k1].title[0].plain_text || '';\n      break;\n    }\n  }\n  \n  // Extract deadline\n  var deadline = null;\n  var deadlineStr = '';\n  for (var k2 in props) {\n    var k2L = k2.toLowerCase();\n    if (k2L.indexOf('thời hạn') !== -1 || k2L.indexOf('t4') !== -1) {\n      if (props[k2].date && props[k2].date.start) {\n        deadline = new Date(props[k2].date.start);\n        deadlineStr = props[k2].date.start;\n      }\n      break;\n    }\n  }\n  \n  // Extract recipient email\n  var recipientEmail = '';\n  var recipientName = '';\n  for (var k3 in props) {\n    var k3L = k3.toLowerCase();\n    if (k3L.indexOf('người nhận') !== -1 || k3L.indexOf('đầu mối') !== -1 || k3L.indexOf('assignee') !== -1 || k3L.indexOf('email') !== -1) {\n      var prop = props[k3];\n      if (prop.type === 'people' && prop.people && prop.people[0]) {\n        if (prop.people[0].person && prop.people[0].person.email) {\n          recipientEmail = prop.people[0].person.email;\n        }\n        recipientName = prop.people[0].name || '';\n      }\n      if (prop.type === 'email' && prop.email) {\n        recipientEmail = prop.email;\n      }\n      if (prop.type === 'rich_text' && prop.rich_text && prop.rich_text[0]) {\n        var txt = prop.rich_text[0].plain_text || '';\n        if (txt.indexOf('@') !== -1) recipientEmail = txt.trim();\n      }\n      if (prop.type === 'rollup' && prop.rollup && prop.rollup.array && prop.rollup.array[0]) {\n        var first = prop.rollup.array[0];\n        if (first.type === 'email' && first.email) recipientEmail = first.email;\n      }\n      if (recipientEmail) break;\n    }\n  }\n  \n  if (!recipientEmail) continue;\n  \n  // Calculate days left\n  var daysLeft = null;\n  var status = 'normal';\n  if (deadline) {\n    daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));\n    if (daysLeft < 0) status = 'overdue';\n    else if (daysLeft === 0) status = 'today';\n    else if (daysLeft === 1) status = 'tomorrow';\n    else if (daysLeft <= 3) status = 'soon';\n  }\n  \n  if (!tasksByRecipient[recipientEmail]) {\n    tasksByRecipient[recipientEmail] = {\n      email: recipientEmail,\n      name: recipientName,\n      tasks: [],\n      hasOverdue: false,\n      hasDueToday: false,\n      hasDueTomorrow: false\n    };\n  }\n  \n  tasksByRecipient[recipientEmail].tasks.push({\n    title: title,\n    deadline: deadlineStr,\n    daysLeft: daysLeft,\n    status: status,\n    url: task.url || 'https://www.notion.so/' + task.id.replace(/-/g, '')\n  });\n  \n  if (status === 'overdue') tasksByRecipient[recipientEmail].hasOverdue = true;\n  if (status === 'today') tasksByRecipient[recipientEmail].hasDueToday = true;\n  if (status === 'tomorrow') tasksByRecipient[recipientEmail].hasDueTomorrow = true;\n}\n\n// ========== BUILD OUTPUT PER RECIPIENT ==========\nvar results = [];\n\nfor (var email in tasksByRecipient) {\n  var r = tasksByRecipient[email];\n  \n  // Select category & message\n  var category = 'normal_day';\n  var priority = 0;\n  \n  if (r.hasOverdue) { category = 'deadline_overdue'; priority = 100; }\n  else if (r.hasDueToday) { category = 'deadline_today'; priority = 90; }\n  else if (r.hasDueTomorrow) { category = 'deadline_tomorrow'; priority = 80; }\n  else if (dayOfMonth === 1) { category = 'new_month'; priority = 50; }\n  else if (dayOfWeek === 1) { category = 'monday_start'; priority = 40; }\n  else if (dayOfWeek === 5) { category = 'friday_wrapup'; priority = 40; }\n  \n  var message = pick(MSG[category] || MSG['normal_day']);\n  \n  // Build task summary\n  var taskSummary = '';\n  var urgentTasks = r.tasks.filter(function(t) { return t.status === 'overdue' || t.status === 'today' || t.status === 'tomorrow'; });\n  if (urgentTasks.length > 0) {\n    taskSummary = '\\n\\n📋 Tasks cần chú ý:\\n';\n    for (var j = 0; j < Math.min(urgentTasks.length, 5); j++) {\n      var t = urgentTasks[j];\n      if (t.status === 'overdue') taskSummary += '• 🔴 ' + t.title + ' (quá hạn ' + Math.abs(t.daysLeft) + ' ngày)\\n';\n      else if (t.status === 'today') taskSummary += '• 🟠 ' + t.title + ' (hôm nay)\\n';\n      else taskSummary += '• 🟡 ' + t.title + ' (ngày mai)\\n';\n    }\n  }\n  \n  // Weekend filter\n  var shouldSend = true;\n  if ((dayOfWeek === 0 || dayOfWeek === 6) && priority < 80) shouldSend = false;\n  if (r.tasks.length === 0) shouldSend = false;\n  \n  if (!shouldSend) continue;\n  \n  results.push({\n    json: {\n      recipientEmail: email,\n      recipientName: r.name || email.split('@')[0],\n      ccEmails: 'hoangkha@esuhai.com',\n      shouldSend: true,\n      category: category,\n      message: message,\n      taskSummary: taskSummary,\n      stats: {\n        totalActive: r.tasks.length,\n        overdue: r.tasks.filter(function(t) { return t.status === 'overdue'; }).length,\n        dueToday: r.tasks.filter(function(t) { return t.status === 'today'; }).length,\n        dueTomorrow: r.tasks.filter(function(t) { return t.status === 'tomorrow'; }).length\n      },\n      priority: priority,\n      dayOfWeek: dayOfWeek,\n      dayOfMonth: dayOfMonth\n    }\n  });\n}\n\nif (results.length === 0) {\n  return [{ json: { shouldSend: false, message: 'Không có recipient nào cần gửi' } }];\n}\n\nreturn results;"
+      },
+      "id": "fb4787dd-9f31-4563-97f3-124effbead3f",
+      "name": "Analyze & Group by Recipient",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [448, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.shouldSend }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "82d4d523-5f76-4069-b1ba-d1f95689d3e4",
+      "name": "Filter: Should Send",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [672, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.recipientEmail }}",
+        "subject": "=🦉 {{ $json.category === 'deadline_overdue' ? '🚨 Urgent: ' : ($json.category === 'deadline_today' ? '⚠️ Today: ' : '') }}ClaudeK nhắc {{ $json.recipientName }} nè!",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;\">\n  \n  <div style=\"background: {{ $json.priority >= 90 ? 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)' : ($json.priority >= 80 ? 'linear-gradient(135deg, #f39c12 0%, #d68910 100%)' : 'linear-gradient(135deg, #58D68D 0%, #28B463 100%)') }}; padding: 25px; text-align: center; border-radius: 12px 12px 0 0;\">\n    <div style=\"font-size: 50px; margin-bottom: 10px;\">🦉</div>\n    <h1 style=\"color: #ffffff; margin: 0; font-size: 20px;\">ClaudeK gửi lời chào!</h1>\n  </div>\n  \n  <div style=\"padding: 30px; background: #f8f9fa; border: 1px solid #e9ecef;\">\n    \n    <div style=\"background: #ffffff; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);\">\n      <p style=\"font-size: 17px; color: #2c3e50; line-height: 1.7; margin: 0;\">{{ $json.message }}</p>\n    </div>\n    \n    {{ $json.taskSummary ? '<div style=\"background: #fff5f5; border-left: 4px solid ' + ($json.priority >= 90 ? '#e74c3c' : '#f39c12') + '; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;\"><pre style=\"margin: 0; font-family: inherit; white-space: pre-wrap; color: #5d6d7e; font-size: 14px;\">' + $json.taskSummary + '</pre></div>' : '' }}\n    \n    <div style=\"display: flex; justify-content: space-around; text-align: center; margin: 20px 0;\">\n      <div style=\"flex: 1;\">\n        <div style=\"font-size: 28px; font-weight: bold; color: {{ $json.stats.overdue > 0 ? '#e74c3c' : '#27ae60' }};\">{{ $json.stats.totalActive }}</div>\n        <div style=\"font-size: 12px; color: #7f8c8d;\">Tasks đang làm</div>\n      </div>\n      {{ $json.stats.overdue > 0 ? '<div style=\"flex: 1;\"><div style=\"font-size: 28px; font-weight: bold; color: #e74c3c;\">' + $json.stats.overdue + '</div><div style=\"font-size: 12px; color: #7f8c8d;\">Quá hạn</div></div>' : '' }}\n      {{ $json.stats.dueToday > 0 ? '<div style=\"flex: 1;\"><div style=\"font-size: 28px; font-weight: bold; color: #f39c12;\">' + $json.stats.dueToday + '</div><div style=\"font-size: 12px; color: #7f8c8d;\">Hôm nay</div></div>' : '' }}\n    </div>\n    \n    <div style=\"text-align: center; margin: 25px 0 10px 0;\">\n      <a href=\"https://www.notion.so/f2c9e34f5506483fa12444ae37d38a30\" style=\"display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);\">\n        📋 Xem Tasks trong Notion\n      </a>\n    </div>\n    \n  </div>\n  \n  <div style=\"background: #2c3e50; padding: 20px; text-align: center; border-radius: 0 0 12px 12px;\">\n    <p style=\"color: #bdc3c7; margin: 0; font-size: 12px;\">🦉 ClaudeK - Trợ lý thông minh của anh Kha</p>\n    <p style=\"color: #7f8c8d; margin: 8px 0 0 0; font-size: 11px;\">Tin nhắn: {{ $json.category }} | {{ $now.format('DD/MM/YYYY HH:mm') }}</p>\n  </div>\n  \n</div>",
+        "options": {
+          "ccList": "={{ $json.ccEmails }}"
+        }
+      },
+      "id": "f87adf59-3b2c-4a1e-a75c-3ea3a91e5eaa",
+      "name": "Send Duolingo Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [880, 0],
+      "webhookId": "e7f5c3f0-5055-45f9-ba7d-5f4bf52e30c3",
+      "credentials": {
+        "gmailOAuth2": { "id": "QMCQ41m8F8hiBKal", "name": "Gmail account" }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily 8:30 AM": {
+      "main": [[{ "node": "Query Active Tasks", "type": "main", "index": 0 }]]
+    },
+    "Query Active Tasks": {
+      "main": [[{ "node": "Analyze & Group by Recipient", "type": "main", "index": 0 }]]
+    },
+    "Analyze & Group by Recipient": {
+      "main": [[{ "node": "Filter: Should Send", "type": "main", "index": 0 }]]
+    },
+    "Filter: Should Send": {
+      "main": [[{ "node": "Send Duolingo Email", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "wf5-v2-fixed-20260302",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "5Y4J2xaEk4PYmgQt",
+  "tags": []
+}

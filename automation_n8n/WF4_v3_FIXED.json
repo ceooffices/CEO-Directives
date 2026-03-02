@@ -1,0 +1,252 @@
+{
+  "name": "CEO Directive - WF4 v3 - NORMALIZE ID (FIXED)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "form-progress-update",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "cefc21b2-1668-4b96-a359-f213c1dc7499",
+      "name": "📥 Nhận Webhook",
+      "webhookId": "87e5514d-a1ac-4969-9fef-db496cf39112"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF4 v3 - EXTRACT WEBHOOK DATA\n// Fixed: Better payload parsing\n// Updated: 28/12/2025\n// ========================================\n\nconst payload = $input.first().json;\nconst row = payload.body?.data || payload.data || payload.body || payload;\n\nlet taskId = '', notes = '', status = '';\n\nfor (const [k, v] of Object.entries(row)) {\n  const key = k.toLowerCase();\n  if (key.includes('task') && key.includes('id')) taskId = v;\n  else if (key.includes('ghi chú')) notes = v;\n  else if (key.includes('trạng thái')) status = v;\n}\n\nlet notionStatus = 'Đúng kế hoạch';\nif (status.toLowerCase().includes('hoàn thành')) notionStatus = 'Hoàn thành';\nelse if (status.toLowerCase().includes('trễ')) notionStatus = 'Trễ tiến độ';\nelse if (status.toLowerCase().includes('chờ')) notionStatus = 'Chờ phản hồi';\n\nconst cleanTaskId = (taskId || '').toString().trim().replace(/-/g, '');\n\nconsole.log('=== WF4 EXTRACT v3 ===');\nconsole.log('Task ID:', cleanTaskId);\nconsole.log('Notes:', notes);\nconsole.log('Status:', notionStatus);\n\nreturn {\n  taskId: cleanTaskId,\n  email: payload.respondentEmail || payload.body?.respondentEmail || 'hoangkha@esuhai.com',\n  formResponseId: payload.formResponseId || payload.body?.formResponseId,\n  timestamp: payload.timestamp || payload.body?.timestamp || new Date().toISOString(),\n  notes: (notes || '').trim(),\n  notionStatus,\n  hasTaskId: cleanTaskId && cleanTaskId.length > 10,\n  shouldProcess: cleanTaskId && cleanTaskId.length > 10\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        424,
+        0
+      ],
+      "id": "extract-webhook-001",
+      "name": "📋 Extract Webhook Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "has_task_id",
+              "leftValue": "={{ $json.shouldProcess }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        648,
+        0
+      ],
+      "id": "filter-has-task-001",
+      "name": "✅ Filter: Has Task ID"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.taskId }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        872,
+        0
+      ],
+      "id": "get-task-001",
+      "name": "📖 Get Task from Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF4 v3 - BUILD UPDATE PAYLOAD\n// Fixed: Property name \"Tiêu đề\" (not \"Tên Task\")\n// Updated: 28/12/2025\n// ========================================\n\nconst formData = $('📋 Extract Webhook Data').first().json;\nconst task = $input.first().json;\n\nif (!task.properties) {\n  throw new Error('Task not found or invalid');\n}\n\n// Get existing notes\nconst existing = task.properties['Ghi chú & Trở ngại']?.rich_text?.[0]?.plain_text || '';\n\n// Build new note with timestamp\nconst ts = new Date(formData.timestamp).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });\nconst newNote = `[${ts}] ${formData.notes}`;\nconst finalNotes = existing ? existing + '\\n\\n' + newNote : newNote;\n\n// Get task title - FIXED: Use \"Tiêu đề\" not \"Tên Task\"\nlet taskTitle = 'Task';\nfor (const [key, value] of Object.entries(task.properties)) {\n  if (value.type === 'title' && value.title?.[0]) {\n    taskTitle = value.title[0].plain_text;\n    break;\n  }\n}\n\nconsole.log('=== WF4 BUILD v3 ===');\nconsole.log('Task Title:', taskTitle);\nconsole.log('New Status:', formData.notionStatus);\nconsole.log('Final Notes length:', finalNotes.length);\n\nreturn {\n  taskId: formData.taskId,\n  email: formData.email,\n  formResponseId: formData.formResponseId,\n  taskTitle: taskTitle,\n  taskUrl: task.url,\n  notionStatus: formData.notionStatus,\n  notes: formData.notes,\n  updateBody: JSON.stringify({\n    properties: {\n      'Tình trạng': { select: { name: formData.notionStatus } },\n      'Ghi chú & Trở ngại': { rich_text: [{ text: { content: finalNotes.substring(0, 2000) } }] }\n    }\n  })\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1096,
+        0
+      ],
+      "id": "build-update-001",
+      "name": "🔧 Build Update Payload"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.taskId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.updateBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "update-task-001",
+      "name": "💾 Update Task in Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('🔧 Build Update Payload').first().json.email }}",
+        "subject": "=✅ Đã cập nhật: {{ $('🔧 Build Update Payload').first().json.taskTitle }}",
+        "message": "=<div style=\"font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5;\">\n  <div style=\"background: #11998e; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"margin: 0;\">✅ Đã cập nhật!</h1>\n  </div>\n  <div style=\"background: white; padding: 30px;\">\n    <h2>{{ $('🔧 Build Update Payload').first().json.taskTitle }}</h2>\n    <p><strong>Trạng thái:</strong> {{ $('🔧 Build Update Payload').first().json.notionStatus }}</p>\n    <p><strong>Ghi chú:</strong> {{ $('🔧 Build Update Payload').first().json.notes }}</p>\n    <a href=\"{{ $('🔧 Build Update Payload').first().json.taskUrl }}\" style=\"display: inline-block; background: #11998e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 20px;\">Xem Task</a>\n  </div>\n  <div style=\"background: #343a40; color: #adb5bd; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; font-size: 12px;\">\n    Hệ thống theo dõi Chỉ đạo CEO - EsuhaiGroup\n  </div>\n</div>",
+        "options": {
+          "bccList": "hoangkha@esuhai.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1544,
+        0
+      ],
+      "id": "send-email-001",
+      "name": "📧 Send Confirmation Email",
+      "webhookId": "0c7862a0-95f1-4f39-841b-30aeaa621ade",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "📥 Nhận Webhook": {
+      "main": [
+        [
+          {
+            "node": "📋 Extract Webhook Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Extract Webhook Data": {
+      "main": [
+        [
+          {
+            "node": "✅ Filter: Has Task ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Filter: Has Task ID": {
+      "main": [
+        [
+          {
+            "node": "📖 Get Task from Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📖 Get Task from Notion": {
+      "main": [
+        [
+          {
+            "node": "🔧 Build Update Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Build Update Payload": {
+      "main": [
+        [
+          {
+            "node": "💾 Update Task in Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 Update Task in Notion": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "",
+  "tags": []
+}

@@ -1,0 +1,264 @@
+{
+  "name": "CEO Directive - WF2 - Xử lý Form Làm rõ (v2 PRODUCTION)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf2-form-clarification",
+        "options": {}
+      },
+      "id": "webhook-001",
+      "name": "Webhook: Nhận Form Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "wf2-form-clarification"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF2 v2 - VALIDATE & EXTRACT FORM DATA\n// ========================================\n\nconst input = $input.first().json;\nconsole.log('[WF2] Received webhook:', JSON.stringify(input, null, 2));\n\n// Extract data from webhook payload\nconst formData = input.body?.data || input.data || {};\nconst meta = {\n  formResponseId: input.body?.formResponseId || input.formResponseId || '',\n  timestamp: input.body?.timestamp || input.timestamp || new Date().toISOString(),\n  respondentEmail: input.body?.respondentEmail || input.respondentEmail || 'unknown',\n  editResponseUrl: input.body?.editResponseUrl || input.editResponseUrl || ''\n};\n\n// Extract fields\nconst clarificationId = formData.clarificationId || '';\nconst nguonChiDao = formData.nguonChiDao || 'CEO';\nconst ngayNhanChiDao = formData.ngayNhanChiDao || '';\nconst noiDungGoc = formData.noiDungGoc || '';\nconst dauMoiT1 = formData.dauMoiT1 || '';\nconst t2NhiemVu = formData.t2NhiemVu || '';\nconst t3ChiTieu = formData.t3ChiTieu || '';\nconst t4ThoiHan = formData.t4ThoiHan || '';\nconst ghiChu = formData.ghiChu || '';\nconst xacNhan = formData.xacNhan || false;\n\n// Validate required fields\nconst errors = [];\nif (!clarificationId) errors.push('Thiếu Mã Clarification');\nif (!t2NhiemVu) errors.push('Thiếu T2 - Nhiệm vụ');\nif (!t3ChiTieu) errors.push('Thiếu T3 - Chỉ tiêu');\nif (!t4ThoiHan) errors.push('Thiếu T4 - Thời hạn');\nif (!xacNhan) errors.push('Chưa xác nhận nhận chỉ đạo');\n\nconst isValid = errors.length === 0;\nconst has4T = Boolean(dauMoiT1 && t2NhiemVu && t3ChiTieu && t4ThoiHan);\n\nconsole.log(`[WF2] Clarification: ${clarificationId}`);\nconsole.log(`[WF2] Valid: ${isValid} | Has 4T: ${has4T}`);\nif (!isValid) console.log(`[WF2] Errors: ${errors.join(', ')}`);\n\nreturn {\n  // Meta\n  ...meta,\n  \n  // Form data\n  clarificationId,\n  nguonChiDao,\n  ngayNhanChiDao,\n  noiDungGoc,\n  dauMoiT1,\n  t2NhiemVu,\n  t3ChiTieu,\n  t4ThoiHan,\n  ghiChu,\n  xacNhan,\n  \n  // Validation\n  isValid,\n  has4T,\n  errors,\n  \n  // For Task creation\n  taskTitle: `${dauMoiT1 ? dauMoiT1 + ': ' : ''}${noiDungGoc.substring(0, 80)}${noiDungGoc.length > 80 ? '...' : ''}`,\n  today: new Date().toISOString().split('T')[0]\n};"
+      },
+      "id": "validate-001",
+      "name": "Validate & Extract Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-valid-001",
+      "name": "IF: Valid Data?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        710,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"f2c9e34f-5506-483f-a124-44ae37d38a30\"\n  },\n  \"properties\": {\n    \"Tiêu đề\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.taskTitle }}\"\n          }\n        }\n      ]\n    },\n    \"T2 - NHIỆM VỤ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t2NhiemVu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - CHỈ TIÊU\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t3ChiTieu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T4 - THỜI HẠN\": {\n      \"date\": {\n        \"start\": \"{{ $json.t4ThoiHan }}\"\n      }\n    },\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"📋 Chưa bắt đầu\"\n      }\n    },\n    \"Nguồn\": {\n      \"select\": {\n        \"name\": \"{{ $json.nguonChiDao }}\"\n      }\n    },\n    \"Ghi chú\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.ghiChu ? $json.ghiChu.substring(0, 2000) : '' }}\"\n          }\n        }\n      ]\n    },\n    \"Chỉ đạo Gốc\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $json.clarificationId }}\"\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "create-task-001",
+      "name": "Create Task in Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        200
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $('Validate & Extract Data').item.json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"✅ Đã bổ sung\"\n      }\n    },\n    \"T2 - NHIỆM VỤ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $('Validate & Extract Data').item.json.t2NhiemVu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - CHỈ TIÊU\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $('Validate & Extract Data').item.json.t3ChiTieu.substring(0, 2000) }}\"\n          }\n        }\n      ]\n    },\n    \"T4 - THỜI HẠN\": {\n      \"date\": {\n        \"start\": \"{{ $('Validate & Extract Data').item.json.t4ThoiHan }}\"\n      }\n    },\n    \"📅 Ngày xác nhận\": {\n      \"date\": {\n        \"start\": \"{{ $('Validate & Extract Data').item.json.today }}\"\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "update-clarification-001",
+      "name": "Update Clarification Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1170,
+        200
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=hoangkha@esuhai.com",
+        "subject": "=✅ [WF2] Task đã tạo: {{ $('Validate & Extract Data').item.json.taskTitle.substring(0, 50) }}",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"color: #fff; margin: 0; font-size: 22px;\">✅ Task Đã Được Tạo</h1>\n    <p style=\"color: rgba(255,255,255,0.85); margin: 10px 0 0 0;\">Workflow WF2 - Xử lý Form Làm rõ</p>\n  </div>\n  <div style=\"padding: 30px; background: #f8f9fa; border: 1px solid #e9ecef;\">\n    <p style=\"font-size: 16px; color: #333;\">Chào anh Kha,</p>\n    <p style=\"color: #555;\">Hệ thống đã tự động tạo Task từ Form xác nhận:</p>\n    <div style=\"background: #fff; border-left: 4px solid #11998e; padding: 20px; margin: 20px 0;\">\n      <h3 style=\"color: #11998e; margin-top: 0;\">📌 {{ $('Validate & Extract Data').item.json.taskTitle }}</h3>\n      <table style=\"width: 100%;\">\n        <tr><td style=\"color: #888; padding: 8px 0; width: 120px;\">Nguồn:</td><td>{{ $('Validate & Extract Data').item.json.nguonChiDao }}</td></tr>\n        <tr><td style=\"color: #888; padding: 8px 0;\">Đầu mối (T1):</td><td>{{ $('Validate & Extract Data').item.json.dauMoiT1 }}</td></tr>\n        <tr><td style=\"color: #888; padding: 8px 0;\">Nhiệm vụ (T2):</td><td>{{ $('Validate & Extract Data').item.json.t2NhiemVu.substring(0, 100) }}...</td></tr>\n        <tr><td style=\"color: #888; padding: 8px 0;\">Chỉ tiêu (T3):</td><td>{{ $('Validate & Extract Data').item.json.t3ChiTieu.substring(0, 100) }}...</td></tr>\n        <tr><td style=\"color: #888; padding: 8px 0;\">Thời hạn (T4):</td><td style=\"color: #e74c3c; font-weight: bold;\">{{ $('Validate & Extract Data').item.json.t4ThoiHan }}</td></tr>\n      </table>\n    </div>\n    <div style=\"background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;\">\n      <p style=\"margin: 0; color: #155724;\"><strong>✅ Đã hoàn tất:</strong></p>\n      <ul style=\"margin: 10px 0 0 0; padding-left: 20px; color: #155724;\">\n        <li>Task mới đã tạo trong \"Bảng Quản trị Hành động\"</li>\n        <li>Clarification đã cập nhật status \"✅ Đã bổ sung\"</li>\n        <li>Link Task → Clarification đã thiết lập</li>\n      </ul>\n    </div>\n    <p style=\"font-size: 14px; color: #888;\">Form Response ID: {{ $('Validate & Extract Data').item.json.formResponseId }}</p>\n    <p style=\"font-size: 14px; color: #888;\">Submitted by: {{ $('Validate & Extract Data').item.json.respondentEmail }}</p>\n  </div>\n  <div style=\"background: #343a40; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;\">\n    <p style=\"color: #adb5bd; margin: 0; font-size: 13px;\">Hệ thống theo dõi Chỉ đạo CEO - WF2</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "send-success-001",
+      "name": "Send Success Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1400,
+        200
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=hoangkha@esuhai.com",
+        "subject": "=⚠️ [WF2] Form không hợp lệ: {{ $json.clarificationId || 'Unknown' }}",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"color: #fff; margin: 0; font-size: 22px;\">⚠️ Form Không Hợp Lệ</h1>\n    <p style=\"color: rgba(255,255,255,0.85); margin: 10px 0 0 0;\">Workflow WF2 - Validation Failed</p>\n  </div>\n  <div style=\"padding: 30px; background: #f8f9fa; border: 1px solid #e9ecef;\">\n    <p style=\"font-size: 16px; color: #333;\">Chào anh Kha,</p>\n    <p style=\"color: #555;\">Form response không hợp lệ, không thể tạo Task:</p>\n    <div style=\"background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;\">\n      <p style=\"margin: 0 0 10px 0; color: #721c24; font-weight: bold;\">❌ Lỗi:</p>\n      <ul style=\"margin: 0; padding-left: 20px; color: #721c24;\">\n        {{ $json.errors.map(e => '<li>' + e + '</li>').join('') }}\n      </ul>\n    </div>\n    <div style=\"background: #fff; border: 1px solid #ddd; padding: 20px; margin: 20px 0;\">\n      <h4 style=\"margin-top: 0;\">📋 Dữ liệu nhận được:</h4>\n      <table style=\"width: 100%; font-size: 14px;\">\n        <tr><td style=\"color: #888; padding: 5px 0;\">Clarification ID:</td><td>{{ $json.clarificationId || 'N/A' }}</td></tr>\n        <tr><td style=\"color: #888; padding: 5px 0;\">Đầu mối:</td><td>{{ $json.dauMoiT1 || 'N/A' }}</td></tr>\n        <tr><td style=\"color: #888; padding: 5px 0;\">Nhiệm vụ:</td><td>{{ $json.t2NhiemVu ? '✓' : '✗ Thiếu' }}</td></tr>\n        <tr><td style=\"color: #888; padding: 5px 0;\">Chỉ tiêu:</td><td>{{ $json.t3ChiTieu ? '✓' : '✗ Thiếu' }}</td></tr>\n        <tr><td style=\"color: #888; padding: 5px 0;\">Thời hạn:</td><td>{{ $json.t4ThoiHan ? '✓' : '✗ Thiếu' }}</td></tr>\n        <tr><td style=\"color: #888; padding: 5px 0;\">Xác nhận:</td><td>{{ $json.xacNhan ? '✓' : '✗ Chưa xác nhận' }}</td></tr>\n      </table>\n    </div>\n    <p style=\"font-size: 14px; color: #888;\">Form Response ID: {{ $json.formResponseId }}</p>\n    <p style=\"font-size: 14px; color: #888;\">Submitted by: {{ $json.respondentEmail }}</p>\n  </div>\n  <div style=\"background: #343a40; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;\">\n    <p style=\"color: #adb5bd; margin: 0; font-size: 13px;\">Hệ thống theo dõi Chỉ đạo CEO - WF2</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "send-error-001",
+      "name": "Send Error Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        940,
+        400
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook: Nhận Form Response": {
+      "main": [
+        [
+          {
+            "node": "Validate & Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Extract Data": {
+      "main": [
+        [
+          {
+            "node": "IF: Valid Data?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Valid Data?": {
+      "main": [
+        [
+          {
+            "node": "Create Task in Notion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task in Notion": {
+      "main": [
+        [
+          {
+            "node": "Update Clarification Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Clarification Status": {
+      "main": [
+        [
+          {
+            "node": "Send Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "",
+  "tags": []
+}

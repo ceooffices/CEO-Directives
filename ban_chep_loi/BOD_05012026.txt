@@ -1,0 +1,974 @@
+Tóm tắt
+
+### Mô Hình Tổ Chức MSA 2026
+
+- MSA sẽ vận hành với **9 đội theo khu vực** địa lý để tối ưu hóa phát triển nguồn
+- Mô hình bao gồm:
+    - **Ban nghiệp vụ và ban phát triển chương trình**: Phát triển các chương trình NLB 1, NLB 3, NLB 3-2
+    - **Ban truyền thông và sự kiện**: Tạo nguồn qua các kênh truyền thông
+    - **9 đội khu vực**: Mỗi đội phụ trách 2-3 trung tâm liên kết
+    - **MS cơ động**: Lực lượng hỗ trợ linh hoạt cho các team khi có thay đổi nhân sự
+
+**Khu vực Miền Nam (4 đội):**
+
+- **Đội 1**: TP.HCM, Đại học Công Thương, Get A Work - Đội trưởng: Kiều My
+- **Đội 2**: TP.HCM và Vĩnh Long - Đội trưởng: Đăng Huy
+- **Đội 3**: Bình Dương và Long An - Đội trưởng: Hồng Ân
+- **Đội 4**: Đồng Nai, Tiền Giang, Vũng Tàu - Đội trưởng: Dương Thị Thúy
+- **Đội 5**: Trà Vinh, Bến Tre, An Giang - Đội trưởng: Văn Úc
+- **Đội 6**: Sóc Trăng, Cần Thơ - Đội trưởng: anh Cảnh, với đội truyền thông do Quốc Cường dẫn dắt
+
+**Khu vực Miền Trung (2 đội):**
+
+- **Đội 7**: Đà Nẵng - Đội trưởng: anh Mân
+- **Đội 8**: Huế và Bắc Trung Bộ - Đội trưởng: Văn Tuấn
+
+**Khu vực Miền Bắc (1 đội):**
+
+- **Đội 9**: Hà Nội và Bắc Bộ - Đội trưởng: Anh Thư
+
+### Vai Trò và Trách Nhiệm Trong Mô Hình Mới
+
+- **Đội trưởng**: Không chỉ quản lý con người mà dẫn dắt một đơn vị để tạo nguồn độc lập
+- **Trợ lý khu vực**: 2-3 trợ lý cho mỗi đội, mỗi người phụ trách một trung tâm liên kết
+- **Cố vấn đối ngoại**: Hỗ trợ kết nối và phát triển các trường, đối tác
+- **Sinh viên thực tập (có lương/không lương)**: Nguồn nhân sự hỗ trợ cho các trung tâm
+
+**8 câu hỏi đội trưởng cần trả lời:** 
+
+1. Team của tôi đang tạo giá trị gì cho MSA?
+2. Team chịu trách nhiệm gì và đến mức nào?
+3. Team vận hành như thế nào hằng ngày?
+4. Vai trò đội trưởng khác gì so với MS?
+5. Sử dụng dữ liệu nào để điều chỉnh?
+6. Team chủ động gì và xin hỗ trợ gì từ ban huấn luyện?
+7. Kế hoạch phối hợp với đối ngoại như thế nào?
+8. Cách tận dụng nguồn lực hiện có?
+
+### Kết Quả Tháng 12/2025
+
+- **116 BY nhập học**, đạt **75% mục tiêu**
+    - 81 BY: Thực tập sinh 3 năm
+    - 13 BY: Kỹ sư
+    - 6 BY: Kỹ năng đặc định
+    - 3 BY: Cái Go
+    - 7 BY: NP
+    - 5 BY: Thực tập sinh 1 năm
+    - 1 BY: Du học
+- **39 BY theo chương trình BTN**
+
+**Top đội xuất sắc:**   
+
+- Đội 6 (Sóc Trăng, Cần Thơ): 24 BY + 1 BTN
+- Đội 2 (Trà Vinh, Sóc Trăng): 14 BY + 11 BTN
+- Đội 3 (TP.HCM): 13 BY + 1 BTN
+
+**Top cá nhân:**  
+
+- Thảo Nguyên: 8 BY
+- Dương Anh Thư: 12 BY (tổng)
+- Nguyễn Thị Hường: 6 BY
+
+### Mục Tiêu và Giải Pháp Tháng 1/2026
+
+- **Mục tiêu cao nhất: 100 ứng viên nữ** để đáp ứng nhu cầu tuyển dụng công ty
+- **70 BY dự kiến** có thể khai giảng trong tháng 1 (21 nữ, 49 nam) - chỉ đạt 50% mục tiêu
+
+**Giải pháp cho mục tiêu 100 nữ:**    
+
+1. Rà soát lại nguồn BTN, học viên VTN, list nữ tiềm năng
+2. Khai thác nguồn list mới từ các kênh có tỷ lệ chuyển đổi cao (Facebook, Apply, Call, Group, Shipping, người thân, cộng tác viên) - **960 số chia cho 48 MS1**
+3. Chạy quảng cáo bổ sung cho các team
+4. Phân bổ data nữ từ các trường cho các team
+5. Chính sách mới cho cộng tác viên giới thiệu MS2, MS3
+6. Tổ chức webinar cho trung tâm liên kết
+7. Hỗ trợ ứng viên phỏng vấn trước, nhập học sau 
+8. Linh hoạt về đóng phí (5-10 triệu trước) 
+
+### Chương Trình BTN - Quy Trình Chăm Sóc
+
+**3 bước chăm sóc học viên:**   
+
+1. **Xác định nguyện vọng**: Dựa vào lịch kết thúc khóa (tháng thứ 4), giáo viên chủ nhiệm lấy thông tin từ học viên
+2. **Tổ chức định hướng**:
+    - Học viên năm 1-3: Tập trung giúp hiểu giá trị ngoại ngữ, động lực học tập
+    - Học viên năm cuối: Tư vấn chuyên sâu về cơ hội việc làm, lộ trình phát triển
+3. **Ghi nhận kết quả trên hệ thống**: Theo dõi hiệu quả can thiệp
+
+- **6/14 lớp** đã kết thúc khóa tháng 12 nhưng vẫn đang học
+- Trong tháng 1, sẽ triển khai quy trình cho các lớp tại Tiền Giang, Huế, Đồng Nai, Bình Triều, Vĩnh Long, Sóc Trăng
+
+### Phản Hồi từ Lãnh Đạo
+
+**Thầy Phước (Cố vấn):**   
+
+- Đánh giá cao tính hệ thống và khoa học của mô hình
+- Nhấn mạnh vai trò quan trọng của ban huấn luyện và truyền thông
+- Phát huy đúng mức vai trò cố vấn
+- Cần có bộ phận nghiên cứu thị trường
+
+**Anh Tiến (Giám đốc MSA):**   
+
+- Yên tâm với đội ngũ lãnh đạo mới
+- Mô hình 2026 chuyển từ chỉ đạo từ trên xuống sang **cá thể hóa quyết định từ dưới lên**
+- Nâng cấp ban huấn luyện, đội trưởng, sắp xếp lại đội hình
+- **Cần tuyển dụng và đào tạo nhanh** để lấp đầy vị trí
+
+### Hướng Dẫn Sử Dụng ChatGPT
+
+**Nguyên tắc sử dụng ChatGPT:**   
+
+- ChatGPT giúp suy nghĩ đủ, **không suy nghĩ thay bạn**
+- ChatGPT không chịu trách nhiệm - **người trình ký chịu trách nhiệm**
+- Cần tự đánh giá, tự quyết định về nội dung trước khi trình
+- Không giới hạn số lần tương tác với ChatGPT
+
+**3 lỗi cần tránh:**   
+
+1. Đẩy trách nhiệm ngược lại cho lãnh đạo - không có quan điểm cá nhân
+2. Họp họ đồng - mất trách nhiệm (nên đưa ra đa chiều ý kiến khi trình)
+3. Không ghi rõ quan điểm của từng người
+
+**6 cấp độ phản hồi với lãnh đạo:**   
+
+- **Cấp độ 6 (xuất sắc)**: Gặp trực tiếp, trình bày ngay
+- **Cấp độ 5**: 4-8 giờ phản hồi
+- **Cấp độ thấp hơn**: Linh hoạt theo mức độ quan trọng và thời gian xử lý
+
+### Hành Động Tiếp Theo
+
+- [ ]  **Đội trưởng và trợ lý**: Lập kế hoạch chi tiết và văn bản, gửi về MSA **trong tuần này**
+- [ ]  **MSA**: Ngồi với từng đội để điều chỉnh kế hoạch theo đặc thù
+- [ ]  **Đội trưởng**: Xác định rõ con số mục tiêu cho từng địa bàn, từng chương trình
+- [ ]  **Đội trưởng**: Xác định kênh, đối tượng ưu tiên tại địa bàn
+- [ ]  **Đội trưởng**: Rà soát các trường đã làm và chưa làm trên địa bàn
+- [ ]  **Thanh Hiếu**: Thông báo deadline và form cho đội trưởng
+- [ ]  **Hoàn thiện mục tiêu và giải pháp 2026**: Làm việc với các team về con số cụ thể và kênh thực hiện
+- [ ]  **Tuyển dụng nhanh**: Các đội trưởng chủ động tuyển dụng và đào tạo
+- [ ]  **Nhập liệu mục tiêu lên hệ thống**: Bao gồm cả mục tiêu của HR
+- [ ]  **Cải thiện báo cáo**: Thêm overview, dashboard để theo dõi hiệu quả
+
+Ghi chú
+
+Bản chép lời
+
+[DŨNG]
+Dạ, em hết nghe âm thanh của phòng 702 rồi ạ. À, anh mời HIẾU tiếp theo.
+
+[THANH HIẾU]
+
+Vâng, em xin chia sẻ tiết về mô hình vận hành của MSA trong năm 2026 này. Ngoài các ban nghiệp vụ cũng như ban phát triển nguồn qua các kênh truyền thông và sự kiện, trong mô hình MSA của năm nay cũng sẽ có một đội rất quan trọng, đó là đội phát triển về các chương trình.
+
+Hiện tại đối với các chương trình của ESO II cũng sẽ có nhiều chương trình khác nhau.
+
+Phạm Đăng Huy sẽ phát triển vào chương trình NLB 1, chương trình NLB và dự bậy NLB 1 Chị Đơn Thị Thúy sẽ phát triển vào chương trình NLB 3 và Anh Huy cũng sẽ là người phát triển vào chương trình NLB 3-2 Đối với các thành viên này, khi mà mọi người chịu trách nhiệm phát triển về các chương trình thì sẽ chịu trách nhiệm về phần mục tiêu cũng như là phối hợp với các trung tâm liên kết, các đội của mình làm sao phát triển về các chương trình này và bám sát về phần mục tiêu cũng như là các kẻ pháp để có thể là đẩy mạnh
+
+hoạt động của các chuyên trình nhiều hơn. Trong mô hình của Ban nghiệp vũ và Ban phát triển về các chuyên trình cũng như là trình phong và sự kiện thì sẽ có thêm một team này. Ngoài ra trong hệ thống của MSA thì cũng sẽ có những đội khác. Và chắc là đi cụ thể hơn về các hoạt động của các đội thì hiện tại so với mô hình của năm 2025 thì bên MSA cũng sẽ có 9 đội hình phát triển về các khu vực.
+
+Đối với các team này thì mỗi đội sẽ có một cái khu vực lễ hơn. để mà mình có thể khai thác và dường như là khi mà phân chia về các đội như thế này thì nó cũng là một cái sự hỗ trợ của các đội với nhau để có thể tiếp thêm cái nguồn lực vào các đội thì không chỉ là một cơ quan liên kết mà các đội cũng sẽ kết hợp từ 2 đến 3 đội hình để mà mình có thể phát triển được cái khu vực ngoài hiện tại mình đang phụ trách và trong các đội thì ngoài đội trưởng thì các anh chị cũng sẽ thấy là có thêm các thành viên gọi là trợ lý các khu vực
+
+có từ 2 đến 3 team trở lên thì cũng sẽ có 2 đến 3 trợ lấy các khu vực và trong cái mô hình này thì cũng mong muốn là từng cái trung tâm liên kết như thế này thì các team cũng sẽ vận hành làm sao để sau này khi mà mình mạnh rồi và các team có thể hỗ trợ và phát triển nhau tốt rồi thì lúc này là các trung tâm liên kết cũng có thể tách ra thành một đội thì đó là cái cách mà hiện tại bên ban huấn luyện cũng mong muốn là khi mà ghép đội với nhau thì các hành viên cũng sẽ hỗ trợ được cho nhau trong các vận hành tổ chức
+
+Trong mô hình này, ngoài đội trưởng, trợ lý, các anh chị cũng sẽ thấy 2 nhóm ở trong này. Nhóm thứ nhất là các thầy, các cô, các anh chị phụ trách về cố vấn đối ngoại hoạt động của các nơi. So với năm 2025, các thành viên thay vì mình đơn côi trong việc phát triển thông tâm liên kết của mình,
+
+hay là các anh chị có thể phát triển thêm các khu vực, hỗ trợ thêm cho các đội phát triển thêm các khu vực và các anh chị cũng sẽ gắn thêm cái trách nhiệm, gọi là cái trách nhiệm của mình trong cái việc là tạo thêm cái nguồn lích cho các thành viên và các đội và ngoài ra thì ở mỗi trung tâm liên kết cũng sẽ có thêm một cái đội gọi là một cái đội dự bị thêm cho các nơi đó là cái nhóm các bạn sinh viên thực tập có lương mà không lương nhóm này cũng sẽ là một cái nguồn nhân sự
+
+hiện thử tại các nơi để mà hỗ trợ thêm cho các trung tâm của mình. Và em xin để cụ thể hơn về các đội. Đầu tiên là đội ở khu vực miền Nam. Ở khu vực miền Nam thì hiện tại mình đang có 4 đội. Đầu tiên sẽ là đội của Hồ Chí Minh, Đạo Công Thương và team Get A Work.
+
+Đối với đội này thì sẽ có 4 thành viên đối ngoại. Thứ nhất là bên chỗ của anh Lâm sẽ hỗ trợ cho khu vực ở TP.HCM của mình. Anh Huy Hùng và anh Huy cũng sẽ hỗ trợ cho khu vực TP.HCM. Ngoài ra thì anh Trung Hiếu cũng đang phổ trợ trực tiếp cho trường Đại học Công Thương Và team số 1 thì đích đờ sẽ là bên chỗ của Kiều My và 2 trợ lý Đó là chị Hường và bên chỗ của chị Thanh của team Đại học Công Thương
+
+Team số 2 ở khu vực miền Nam, đó là team bao gồm 2 thành viên ở Hồ Chí Minh và Vĩnh Lâm, là team của anh Đăng Huy và thành viên đối ngoại hỗ trợ trực tiếp, đó là bên trộc của anh Xuân Lanh. Và trợ lý của anh Huy sẽ là chị Hồng Ngọc cùng với 4 thành viên và bổ sung thành các thành viên mới.
+
+Team số 3 của khu vực miền Nam sẽ là team Bình Dương và Lâm An với 3 thành viên đối ngoại, đó là anh Băng Lâm, anh Sơn Lanh ở khu vực Lâm An, anh Huy Hùng ở khu vực Bình Dương. Và team số 3 sẽ giao anh Hồng Ân là đội trưởng cùng với 2 trợ lý, 1 trợ lý bổ sông mới ở khu vực Bình Dương và 1 trợ lý là bên chỗ của team Lâm An.
+
+Đội số 4 sẽ có 3 khu vực, đó là ở khu vực Đồng Nai, Tiền Giang và Vũng Tàu. Đối với 3 khu vực này, các hành viên đối ngoại bao gồm là anh Lanh, anh Giang ở khu vực Tiền Giang, anh Thành Công, cô Phấn Nới ở khu vực Vũng Tàu và anh Trung Hiếu là hỗ trợ cho khu vực Đồng Nai.
+
+Đối với team số 4, leader sẽ là chị Đương Thị Thúy với 3 trợ lý khu vực, đó là chị Yến Nhi, Chị Huê Thanh và Chị Kim sẽ là ba trợ lý tại khu vực Đồng Nai, Tiền Giang và khu vực Vũng Tàu. Tại khu vực miền Nam cũng sẽ có thêm một đội nữa, đó là bên Trà Vinh, Bến Tre và An Giang với hai thành viên bên đội đối ngoại, đó là bên bác Thanh Quang và anh Quang Ngọc.
+
+Và leader sẽ là anh Văn Úc với ba trợ lý, đó là chị Thảo Nguyên, chị Bạch Trúc và bên chỗ chị Như Ý của Bến Tre. Và trong năm nay thì khu vực ở Continue là Sóc Trăm Củ thì cũng tách ra thành một đơn vị phụ trách chính tại khu vực phần thơ của mình. Và trong team này thì sẽ có đối ngoại đó là bác Số Quang, anh Quang Ngọc và anh Cảnh. Anh Cảnh là một nhân sự mới, cũng là đội trưởng của bên team số 6.
+
+Và trợ lý đó là chị Thúy Kiều cùng với 5 thành viên của khu vực. Và trong khu vực team số 6 thì cũng đã hoàn thiện một mô hình hoàn chỉnh và có thêm cái bang đó là bang truyền thông và sự kiện do bạn Quốc Cường là leader cùng với 2 nhân sự đó là bên chỗ của bạn Minh Thơ và bên bạn Minh Nhật thì cũng sẽ phụ trách về mạng truyền thông và sự kiện và tạo về nguồn list cho bên team Hunter của mình.
+
+Ở khu vực miền Trung thì hiện tại đang có 2 team, là khu vực Đà Nẵng và Nam Trung Bộ. Thì thành viên đối ngoại đó là thầy Huỳnh Phước, anh Mân và bên chỗ của cô Hạnh cũng sẽ là 3 thành viên phụ trách đối ngoại của bên chỗ của Đà Nẵng. Và leader là anh Mân và cùng với 2 trợ lý là bên anh Nhân Thiếu và bên anh Ngọc Hoàng.
+
+Team số 8 là khu vực Huế và Bắc Trung Bộ. Trong năm nay thì team Huế cũng hoa mạnh vàng tắt thành một team mới. Với đối ngoại đó là bên thầy Nam cũng như là thầy Phước. Và leader sẽ là chỗ của anh Tuấn sẽ lead team Huế và khu vực Bắc Trung Bộ của mình.
+
+Và một team cuối cùng đó là team Exotus, team Hà Nội tại khu vực Bắc Bộ. Bên chỗ của bác Cao Thọ, anh Tiến ở khu vực Bình Bắc, anh Trung Hiếu và bên bác Thài Hoạt cũng sẽ là hỗ trợ về mặt đối ngoại của khu vực Bắc Bộ. Và leader của team sẽ là chị Anh Thư cùng với hai trợ lý là bên chỗ của bạn Mỹ Duyên cũng như là chị Như Ngọc sẽ là khu vực ở Hà Nội của mình.
+
+Thì hiện tại hoàn thành về cái solo tổ chức cũng như là các loạt hành thì sẽ có 9 team và trong 9 team này ngoài đối ngoại, ngoài các thành viên lính. trợ lý MS1 thì sẽ có thêm thực tập và một đội hình nữa ở trong này thì các anh chị cũng sẽ thấy, đó là trong mô hình khi mà các thành viên ra sân cũng như là thực chiến thì cũng sẽ có thêm một thành phần nữa, đó là các nhân sự cơ động tuyển bổ sung MS cơ động cho các khu vực của mình.
+
+Đối với MS cơ động này cũng sẽ là một lực lượng để hỗ trợ cho hiện cạnh của các team về các sự thay đổi về nhân sự cũng như là thai sản trong mô hình Khi mà vận hành thì cũng sẽ có một cái lực lượng gọi là dự trù thay thế cho các thành viên khi mà quỹ quyết trong cái đội hình đã ra xong của mình. Dạ, thì đây là cái mô hình của các team của mình bao gồm chính đội và các thành viên của chính đội để mà vận hành.
+
+chiến đấu trong năm 2026 này. Em xin thép lại phần mô hình của các đội.
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Hẹn gặp lại các bạn trong những video tiếp theo nhé!
+
+A lô?
+
+Dạ, em chưa nghe âm thanh hả?
+
+Dạ, em nghe rồi ạ chị Rồi, cám ơn em Các thành viên và các điện cầu có nghe được hết không nhỉ?
+
+Thúy, Thúy nghe được không? Nghe được anh, anh ơi. Nghe rõ anh ạ. Rồi bây giờ mời, mời một, một đội trưởng Hãy, hãy, hãy Nói về hiểu của mình về sơ đồ tổ chức này Và nhìn trực tiếp vào trong nhánh của mình Em sẽ vận hành tổ chức này như thế nào? để cho đội của mình đạt được cái hiệu quả, cụ thể là cái kết quả tốt nhất theo cách làm của mình.
+
+Cái này là mọi người bàn với trưởng.
+
+[Út]
+
+Đối ngoại thì năm nay là có sự đồng hành sát sao của các thành viên dân bang đối ngoại thì sẽ giúp đội em có thể là khai thác mạnh về cái mảng list mới hoặc là về đối tác và sự kiện là một phần để giúp cho tụi em có thể là có nhiều cái list để chuyển đổi hướng tới đạt mục tiêu.
+
+Còn vai trò về đội trưởng của em thì trong năm nay thì em cũng sẽ phát huy tối đa cái vai trò của mình để có thể vừa phát triển cho bên chỗ Trà Vinh cũng như là đẩy mạnh chỗ bên của Bến Tre và An Giang có thể phát triển và thay đổi cái tình hình của hiện tại.
+
+Và dưới em thì cũng có các thành viên trợ lý thì cũng sẽ cùng đồng hành với em. thì mỗi một trợ lý ở một khu vực thì cũng giống như là một MSL để nắm tình hình ở dưới đó và cùng đồng hành với em để có thể phát triển của khu vực đó. Và dưới đội em nữa thì sẽ có những thành viên MS1 cũng như là những sinh viên thực tập có lương và không lương thì sẽ góp một phần sức không nhỏ vào những hoạt động.
+
+của đội, thì em thấy nó cũng khá là cần thiết thì em cũng muốn là cái nhân sự này có thể tuyển sớm để có thể sớm đưa vào cái hoạt động để mà tụi em có thể hướng dẫn hoặc là sẽ sớm sớm giúp tụi em để có được KPI Dạ, em xin chia sẻ cái phần như vậy ạ.
+
+Yeah
+[ANH LANH]
+
+Anh mời thêm một đội nữa, xong rồi anh sẽ giải thích cho mọi người.
+
+[VĂN TUẤN - TTLK HUẾ]
+
+Dạ em chào anh Lanh, chào anh chị đang tham gia họp Vào năm nay, Huế được có bác Nam và thầy Phước dẫn dắt Huế năm nay để được tách ra thành một đội là khu vực Bắc Nền Trung. Từ lúc bác cũng nam vào làm ở Huế hơn 2 tháng rồi thì bác có những mối quan hệ, đối tác cũng rất là chất lượng
+
+sang năm 2026, Huế được tách ra một đội mới và bạn đang kết nối ở những khu vực Quảng Trị và Quảng Bình Cú nữa Hy vọng với sự hỗ trợ trực tiếp từ bác Nam văn phòng này Vì chúng em hy vọng là sẽ có nhiều các đối tác và có thêm những cơ hội để tiếp cận với các bạn sinh viên để mục tiêu cuối cùng là các thành viên sẽ có những KPI và có những kết quả tốt trong năm 2025.
+
+thì kết quả của Huế đạt được không như mong muốn và cũng chưa đạt được đến mức tối thiểu và hy vọng 2026 này có sự hỗ trợ trực tiếp từ bác Nam này thì sẽ có thêm được nhiều cơ hội tiếp cận và tạo ra được những KPI trực tiếp dành cho team huế
+
+Thì em nghĩ là Bác Nam sẽ kết nối được thêm những đối tác mới và những trường phù hợp với đối tượng và những đơn tuyển mà mình đánh trực tiếp vào. 
+
+[XUÂN LANH]
+
+Cảm ơn Tuan Dạ
+
+sẽ chịu trách nhiệm và tốt trức vào như thế nào?
+
+Cảm ơn. Chúc anh sẽ hỏi tiếp và chịu trách nhiệm về một chương trình, ví dụ như Thúy, chịu trách nhiệm về kỹ năng lực lĩnh. Như Trang chịu trách nhiệm về cây gô
+
+vai trò của các bạn, trách nhiệm của các bạn là lúc này học và làm rõ cho các bạn.
+
+Nghe hai thành viên đồng chưởng nói về sơ đồ tổ chức này thì chỗ chỗ dũng với cả thanh hiếu thấy là các bạn hiểu đến đầy đủ chưa đầy đủ thì chưa nhưng mà ở cái mức nào
+[DŨNG]
+
+Tiếp theo ý của anh Lanh thì cũng như là cảm ơn hai đội trưởng đã chia sẻ góc nhìn của mình Đầu tiên là xét về khí cảnh các bạn mới tiếp nhận về sơ đồ này Các bạn đã dựa trên góc nhìn và vai của mình trong công việc của 2025 Vừa cũ vừa mới thì các bạn cũng đã bình hình ở một góc độ gọi là nó sẽ có những cái mới Nhưng mà các bạn chưa đưa ra được cái nào
+
+mà các bạn có thể đưa ra được chính là tư duy hệ thống nó cần phải có một tư duy hệ thống để điểm đầu, điểm cuối thì theo em thì là ở phần này thì sau khi mà chúng ta ban hành về sở đồ thì các đội trưởng khi đã nhìn vào trong sở đồ và mình thấy được rằng là
+
+Cấu trúc vận hành của mình từ bên trên, bên dưới, các bên liên quan ra sao và từ chính mình ra sao và từ cái nguồn lực của hiện tại của mình tại cái đội của mình như thế nào rồi đó Bao gồm các cái nguồn nhân lực nào rồi thì mình cần phải có một cái Sau cái buổi ngày hôm nay các đội trưởng cần phải xây dựng một cái phương án hành động với vai trò đội trưởng của mình để gửi về cho ban huấn luyện Để ban huấn luyện sẽ nhìn cụ thể xem thử rằng là Thông qua cái văn bản đó
+
+Tại vì khi mình truyền bày và nói thì chắc chắn là đôi khi nó không hết được ý của các bạn Vậy thì sau buổi ngày hôm nay khi chúng ta đã nhận được cái sơ đồ rồi Thì các đội trưởng, những người đang có vai trò trong cái sơ đồ này Rất là chủ chốt chúng ta sẽ phải xây dựng thành một kế hoạch hành động Kế hoạch hành động vận hành cái đội của mình Giống như là cái câu hỏi của anh Lan Bằng cái buổi sáng hôm nay chính là câu hỏi COST để hỏi xem tụi mình đang làm như thế nào Và cũng gợi ý cho các đội trưởng Sau buổi ngày hôm nay là mình sẽ
+
+Định hình nó theo một tư dự hệ thống như sau Thứ nhất là Nhìn được cái sơ đồ này thì MSI Cắt đội giống như là một cái mini MSI Để mà tự chủ vận hành, chịu trách nhiệm về kết quả và kết nối chặt chẽ với hệ thống không tác rời nhưng cũng không phải là độc lập, cũng không phải là tác rời Với vai trò quốc lộ của đội trưởng thì không chỉ là quản lý con người
+
+mà chúng ta dẫn dắt một cái đơn vị để tạo cái nguồn một cách độc lực vì bên trên chúng ta là có những cái sự hỗ trợ của các thầy, ban đối ngoại, v.v. thì chúng ta phải đặt câu hỏi rằng là gì? chúng ta kết nối thế nào đối với các cái nguồn lực này? cái nguồn lực này có thể gọi là ngoại lực cũng được
+
+Ngoại lực nghĩ là ngoài những hoạt động của đội của mình rồi đó thì yếu tố nào nó dính đến nguồn của mình tăng lên thì mình phải đặt câu hỏi là kế hoạch làm việc phối hợp thế nào tại địa bàn của mình, địa lợi của mình, mình phân tích xem địa lợi của mình có bao nhiêu trường.
+
+và các trường đó đã có những cái đấu nối ra sao rồi, đánh giá về cái làm được và chưa làm được Vậy thì tiếp theo là mình cần phải chịu trách nhiệm toàn diện về yếu tố là cái kế hoạch làm việc của mình Trong 1 năm, mình tổng thể là dài hạn rồi. Vậy thì trong 1 tháng như vậy chia ra làm 4 tuần thì từng tuần như vậy kế hoạch của mình nó có cái tính liên quan với nhau như thế nào? Tập trung vào cái hạng mục gì? Về mặt nhân sự, nhân sự nào của mình đang làm việc tốt?
+
+và nhân sự nào của mình đang có những kỹ năng cần phải nâng cấp hoặc là các yếu tố liên quan đến chuyển đổi về data rồi địa bàn của mình và kết quả đây là 4 yếu tố phối hợp với nhau kế hoạch nhân sự địa bàn mình nhau hạt động và kết quả hướng tới rồi sau đó mình sẽ đấu nối giữa cái đội của mình với ban huấn luyện và các ban hỗ trợ liên quan để mình làm cho cái đội mình mạnh lên đó là khía cảnh của một cái đội trưởng
+
+Và về thứ hai là cách vận hành theo sơ đồ mới thì chắc chắn rồi đội trưởng không ngồi để chờ giao việc mà đội trưởng phải chủ động thiết kế các hoạt động để giúp cho các hoạt động tạo nguồn của mình chuyển đổi phù hợp trên từng địa bàn. Phân công rõ với địa bàn của mình thì ai phụ trách khu vực nào để đấu nối liên quan đối với các ban đối ngoài, để chúng ta có sự liên kết và kết nối. Chúng ta bám vào trường nào, chúng ta...
+
+Gọi là bám vào ban đối ngoại là ai và ai sẽ xử lý và chuyển đổi clip đó Rồi quản lý dữ liệu bằng cách nào để không có bị thất thoát Về dữ liệu chúng ta đưa về chúng ta chuyển thành clip và chúng ta chăm sóc ra sao và chúng ta đánh giá sự chuyển đổi nó như thế nào để hướng tới kết quả. Và đặc biệt nữa rằng là mình phải chủ động phối hợp với ban huyên luyện để đưa ra những định hướng và những giải pháp từ đối ngoại đến truyền thông cho đến các kênh. Đó chính là cách vận hành từ nguồn cho đến lúc chuyển đổi, có bên trong và có bên ngoài.
+
+Và trong cái nguyên tắc về vận hành của đội trưởng cũng phải có một cái nguyên tắc rõ ràng Ví dụ như đây là gợi ý nha Là chúng ta phải rõ cái người đó làm cái gì Cái công việc của người đó là gì Chỉ tiêu của chúng ta trong từng đợt đó là gì? Chúng ta muốn có con số này thì chúng ta phải đề xuất lên ban đối ngoại Con số bao nhiêu? Rồi chúng ta đưa ra một tỷ lệ phần trăm chuyển đổi thì cái số đó nó đạt được cái Nằm trong khoảng volume của chúng ta hay là chưa?
+
+Thì đấy chính là những cái gợi ý và cuối cùng thì tư duy của một người đội trưởng ở đây là chúng ta không phải là dẫn dắt một cái con người, một nhóm người mà chúng ta đang vận hành một hệ thống có từng điểm, từng điểm, từng điểm kết nối với nhau để tạo thành kết quả thì trong cái tổng thể MSA thì cái đấy là chỉ là gợi ý cho
+
+Các anh em đội trưởng sẽ đình hình cách vận hành tổng thể để gửi lại cho banh huấn luyện tổng thể phân tích và bổ trợ thêm. Mục tiêu là ngồi cùng với các anh em để chúng ta đưa ra một cái bản thảo bệnh hành mới và phù hợp trong cái 2026 cho nó hài hòa hơn. Thì đấy chính là cái chia sẻ của em.
+
+[LANH]
+
+Chỉ đạo có cái việc rất là quan trọng, đó là lập kế hoạch và văn bản. Độ trưởng và ngồi với các trợ lý lập kế hoạch và văn bản. và gửi về cho anh hết ấy cái việc này rất quan trọng
+
+và gửi về cho MSA và ban nguyên nguyện MSA sẽ ngồi với từng đội một để điều chỉnh hoạch định đặc thù và điều chỉ cho từng đội mỗi đội sẽ có một cái đặc điểm khác nhau nó có cái lợi thế khác nhau nên là cần phải có
+
+và đội trưởng cần phải lắm được cái bảng đó một cách tương minh nhất, rõ ràng nhất để chính đội trưởng và các trợ lý sẽ có cái hành động tạc thù cho cái độc của mình và cho các địa điểm mà mình sẽ trách nhiệm cái ý mà làm cái kế hoạch thành văn bản đó, cái này rất là quan trọng các bạn cần phải có deadline, deadline ngày nào trong tuần này để các đội trưởng ngồi lại với MSA để ra được cái kế hoạch riêng cho từng đội
+
+là giống cho cái thủ trưởng, cái thời gian trong tuần thứ mấy là phải hoàn thành cái điều đó Đó là cái thứ nhất mà anh ghi nhận cho chỗ...
+
+Mà đối với các đội trưởng thì làm ơn hiểu rõ cái này Cái sơ đội tổ chức này nó hình thành lên là để giúp cho các đội đạt được cái mục tiêu mà mỗi một em ad đã đăng ký và được BOD giao cho từng cái như thế này. Giao cho mỗi 1 ms và mỗi độ Nó có con số, nhá Mỗi độ có con số
+
+thì đề nghị các đội trưởng hãy bắt đầu từ những con số hay con số ghi ở trên về thực tập sinh, thực tập có lương, thực tập không lương Các chương trình ở trong đó, thì nhất định đội trưởng phải lắm rất là rõ con số mà mình nhận Ở... Ở Trà Vinh là con số là bao nhiêu, cho chương trình gì? Bến Tre con số là bao nhiêu, cho chương trình gì? An Giang con số là bao nhiêu, cho chương trình gì? Thì nó phải bắt đầu từ đây
+
+Cái gốc của nó phải bắt đầu từ đấy Và từ cái con số đó thì bản thân đội trưởng và các trợ lý nhận định hiện trạng ở địa bàn của mình sẽ triển khai được các chương trình gì? nó có cái tính lợi thể, có tính mạnh nhất, lợi thể đặc thù ở trên nơi đó thì ngồi với đội trưởng và các trợ lý để
+
+Thấy được, chỉ có Trà Vinh, Bến Tre và An Giang, ba nơi này là ba nơi có khác nhau về cặp thù địa lý đối tượng. Cũng như là trường biên kết, các kênh sẽ khác nhau nên là đồng trường phải thấy được điều này Hẹn gặp lại các bạn trong những video tiếp theo nhé!
+
+Trong cái kế hoạch là cần làm rõ cái đó Khi thấy được cái điểm này rồi á Khi thấy được cái này rồi Thì mới tính định hình ra là Để đạt được cái con số đó thì cái số list, cái kênh nào mình sẽ tập trung vào ở địa bàn nào cái kênh nó rất là quan trọng cái địa bàn nào, ví dụ Bến Tre đối với Út, Bến Tre thì Út
+
+Tập trung vào cái kênh nào Đối tượng nào sẽ thiếp cận và cái kênh nào sẽ là Và chính từ cái đối tượng đó và cái kênh đó thì nên mời các cô chú đứa ngoại tham gia vào, anh chị đứa ngoại tham gia vào tức là anh chị đứa ngoại tham gia vào nó có cái... nó có cái chủ đích rất là rõ ràng
+
+Đối ngoại sẽ tham gia vào để giúp cho mình có được cái giải pháp tiếp cận với cái đối tượng mà mình hướng tới Và tất nhiên là đối ngoại các anh cũng sẽ phải hiểu về cái này để giúp cho cái đội của mình thực hiện được cái mục tiêu Đó là cái ý thứ 2 mà anh muốn nói
+
+Cái thứ 3 là còn phải nhập định cho em là ở trên địa bàn đó, hiện tại những cái trường nào, những cái kênh nào mình đang làm. Và còn những trường nằm trên kênh nào ở trên địa bàn mà mình chưa tiếp cận được thì đội trưởng với các trợ lý phải thấy được kênh này.
+
+Ngày mai họp với bên chỗ đối ngoại thì anh sẽ nói về việc đối ngoại Nhưng mà hôm nay nói với các đội trưởng thì các đội trưởng phải là chủ động như vậy đó Thấy được là trên địa bàn này thì có cái kênh nào, cái trường nào Mình đã làm rồi nhưng mình chưa làm được Hoặc mình muốn mà chưa làm được Thì cái vùng màu xanh đá trên đối ngoại đó
+
+sẽ giúp cho mình thực hiện những vấn đề đó
+
+Thời gian thực hiện nó ra sau, để mình có một bản như là một cái nước.
+
+[TRÚC LY]
+Mình nên là có cái sự chi tiết và văn bản mà mình hướng dẫn sau khi đến kiếm mọi người Vì nếu sẽ tổng thể mình cũng không thấy được
+
+[DŨNG]
+
+Cảm ơn chị Ly ạ Phần này tiếp nối với chị Ly và Anh Lan thì những cái chia sẻ của Anh Lan là hoàn toàn rất là quan trọng Tại vì đây là cái buổi đầu tiên là các bạn tiếp cận với sơ đồ Và tất nhiên là cũng không đi chi tiết được vì không có nhiều thời gian Nên là em sẽ đầu tiên là tiếp thu và tiếp nhận những cái chỉ đạo vừa rồi với 3 cái key thôi Đó là cái sản phẩm của chúng ta, tiếp cận bằng kênh nào và chúng ta cần phải phù hợp với những con người nào Và sau đó thì trong hôm nay thì Thành Hiếu...
+
+Em cũng sẽ thông báo cho các đội trưởng deadline và form Để các anh chị em đội trưởng chúng ta sẽ xây dựng trên form đó về phương án hành động và vận hành của mình với số đồ mới này với vai trò là đội trưởng Trong quá trình đó chúng ta sẽ kaizen và chắc là tuần sau LD tuần sau thôi là phiên bản hành động đó cũng sẽ phải hoàn thiện rồi Từ đây đến tuần sau sẽ hoàn thiện và điều chỉnh điên tục Với gốc ý của chị Ly cũng rất là quan trọng là có phần ứng dụng với chất lông
+
+Phần tiếp theo thì xin mời chị Vy 
+[LANH]
+Mời thêm một bạn MSL đại diện cho chương trình Để xem các bạn hiểu thế nào Hoàng đại diện
+
+[THANH HIẾU]
+ dạ Dạ anh Lanh chắc là em xin bổ sung thêm một chút xíu nữa Tại vì cái phần đội trưởng này cũng rất là quan trọng Nên là em xin bổ sung thêm với ý của anh Lanh với lại bên chỗ của anh Dũng để cho mọi người bắt đầu có thể vận hành luôn chứ cũng không cần phải chờ đợi một cái văn bản chính thức. Về văn bản chính thức thì bên MSA sẽ gửi những cái thông tin đi nhưng mà em nghĩ là cũng sẽ có thêm một vài cái.
+
+Lưu ý nữa mà em cũng muốn nhắc mọi người một chút xíu Cho phép em chia sẻ cho đội trưởng một chút nha anh Trong cái đội hình này thì em nghĩ là Tại vì nội dung này nó cũng rất là quan trọng Nên là em có 8 cái câu hỏi Và 8 cái câu hỏi này thì em nhờ các anh chị đội trưởng mình là
+
+ghi chú lại để mà mình trong quá trình mà mình list team của mình thì mình phải trả lời được 8 cái câu hỏi này thì em nghĩ là mình trả lời được 8 câu hỏi thì mình sẽ hiểu được cái mô hình vận hành của MSA của mình như thế nào Câu hỏi thứ nhất đó là hiện tại team của tôi đang muốn tạo giá trị gì cho MSA? Hiện tại team của mình chính là một đơn vị hoàn toàn độc lập.
+
+và cũng bận hành trong cái mô hình của MSA luôn Và nhiệm vụ của team thì nó không nằm ở việc là mình tạo clip hay là tạo nguồn MS mà đúng nghĩa thì mình đang là hướng đến những cái chương trình, những cái combo phó học và mình cũng có những thị trường để mà mình tuyển sinh Vậy thì team của mình đang tồn tại và đang tạo cái giá trị gì trong cái mô hình của MSA của mình? Thì đây là câu hỏi thứ nhất mà các đội trưởng của mình còn phải trả lời được
+
+Cái thứ 2 thì team của mình đang chịu trách nhiệm gì và đến mức như thế nào trong đội hình của MSA thì em nghĩ là cái điều mà mình cần phải trả lời đó là mình đang chịu trách nhiệm cuối cùng Và cho việc tạo kết quả trên địa bàn của mình, từ kế hoạch cho đến con người, cho đến việc tạo list và chuyển đổi những nguồn list này như thế nào thì nó sẽ không...
+
+đổ lỗi cho bất kỳ một MS nào hết, hay là cũng không chờ đợi bất kỳ một chỉ đạo nào ở trên xuống. Mà khi mà mình chịu trách nhiệm đến cùng rồi thì trách nhiệm của mình là làm sao phát triển được hệ thống địa bàn của mình. thì mình phải trả lời được câu hỏi số 2 này, đó là hiện tại team của mình đang chịu trách nhiệm cái gì và chịu trách nhiệm đến mức nào thì mình sẽ biết và mình sẽ focus vào những cái điểm nào là điểm chính.
+
+Cái thứ 3 đó là team của mình đang vận hành như thế nào hằng ngày và team của mình phải có kế hoạch như lúc trước là mình có làm kế hoạch về tạo nguồn list theo tuần, theo tháng thì MSA của mình, các thành viên MS của mình sẽ phải bám sát được và phải có
+
+Người trợ lý theo sát những dữ liệu và tiến độ này để dùng những dữ liệu, chuyển đổi và chất lượng nguồn để điều chỉnh cách làm của mình hằng ngày luôn Chứ cũng không phải là mình sẽ đợi đến tuần đến tháng để điều chỉnh Thì như vậy nó sẽ chậm trễ kế hoạch của mình Do đó thì team của mình còn phải làm rõ team của mình sẽ bận hành như thế nào hằng ngày
+
+Và câu hỏi số 4 đó là Cái vai trò của người đội trưởng khác gì so với vai trò của một người MS? Đây là câu hỏi số 4 mà em muốn các thành viên đội trưởng đặt câu hỏi này cho chính bản thân của mình Đó là mình hằng ngày mình đang làm cái nghiệp vụ như thế nào hay là mình đang tập trung vào cái gì để mà mình phát triển cho các thành viên ở trong team như là việc định hướng, tổ chức hay là điều phối.
+
+ra những quyết định để làm sao team của mình có thể đạt được mục tiêu. Mình không phải là công việc của một người MS, đó là hằng ngày mình đi sale mà mình còn đang chịu trách nhiệm cho kết quả chung của một team. Mình phải biết team này như thế nào? Đây là câu hỏi số 4.
+
+mà em muốn người đội trưởng phải đặt câu hỏi với chính bản thân mình cái sự khác biệt của mình ở trong team và trợ lấy cũng như vậy câu hỏi số 5 là tất cả những hoạt động của mình nó phải dựa trên dữ liệu để mà mình điều chỉnh về kết quả thì team của mình sẽ dùng những dữ liệu gì để mà mình điều chỉnh cách làm của mình Ví dụ như là về dữ liệu liên quan đến kênh, dữ liệu liên quan đến các trường hay là những dữ liệu báo cáo những thông số như thế nào để mà mình điều chỉnh cách làm của mình hằng ngày
+
+Đây là câu hỏi thứ 5. Câu hỏi thứ 6 là team của mình còn chủ động gì và xin hỗ trợ gì từ bên ban hướng liện thì ban hướng liện lúc nào cũng sẽ đồng hành cùng với mọi người. Nhưng mà ngoài sự chủ động của bản thân của mình,
+
+Anh Hùng mà đi với đội của Kiều My, Kiều My có thể yêu cầu anh Hùng là trong tất cả những trường trọng điểm hiện nay anh Hùng đang có, tụi em đang cần lực lượng này với số lượng data như thế này cần đến để tư vấn tuyển sinh như thế này, ABC các loại. Hồi lúc này là gì? sự gắn chặt không phải là mình chạy nữa.
+
+Bởi vì sao? Của MSA Của các thành viên trong đội Trong team đối ngoại gần như anh Lâm Cũng đã có cái chia sẻ rồi Chị Như Trang cũng vậy, trước nay chị Như Trang vẫn làm nhưng mà Có ai quan tâm đến chị Như Trang để đặt hàng cho chị Như Trang không? Đúng không ạ? Lúc này là gì, chị Như Trang được
+
+gắn với những đội nào thì các anh chị trong phim đó Mình không đi một mình nữa Đó là vai trò của các thành viên đối ngoài Bản chất cuối cùng thì là hợp hợp bóng
+
+Các anh chị đề nghị ngược trở lại đối với ban huấn luyện Và anh Dũng mới trao đổi chia sẻ thôi thì cô Hòa đã bắt đầu kết nối rồi Nhưng cô Hòa kết nối mà không có cái đội nào đi cùng với cô Hòa đảm bảo kết nối xong ba kỳ là... Lần sau không kết nối nữa, tại kết nối xong không có cái người để follow trăm sóc Đó, rồi Vậy thì cái lực lượng mà sinh viên thực tập không lương bản chất đó là MS3 của mình
+
+Các bạn có một cơ hội được đến để làm việc, để đến các trường, đi các sự kiện và có một lực lượng là có lương thì đó là nguồn của MS của mình trong tương lai. Nhờ Thanh Hiếu đưa lên trên tại sao trong bang huấn luyện là trung tâm nhưng có bang trợ lý Các anh chị sẽ thấy rằng là có
+
+2 trợ lý chuyên trách 1. Chỗ của chị Phương Trâm về công tác tuyển dụng, công tác đào tạo, gần như là gắn kết quan tâm Những cái gì mà các anh chị cần chia sẻ chưa lên được ban huấn luyện Thì thông qua đầu mối chỗ của chị Trương Trâm Và sẽ tuyển đổi sung một trợ lý kinh doanh Cho bên phía của ban huấn luyện Cái vai rò này lúc trước gần như là Thanh Hiếu gần như là lao vào luôn
+
+Còn bây giờ Thanh Hiếu cùng với trong ban huấn luyện thì sẽ đứng lên trên một cái nhịp để cùng đồng hành với các anh chị Nhưng sẽ có cái người trực tiếp ở bên dưới hằng ngày Cần thôi Có nghĩa là, dạ đúng, anh Lanh nói đúng là Củng cố lại trong bang huấn luyện của của trung tâm Để hỗ trợ kịp thời cho các anh chị
+
+Và đưa luôn vai trò của thầy Ân nữa đúng không ạ? Thầy Ân mặc dù là đội trưởng nhưng mà thời gian qua chưa gắn cái vai trợ lý thì thầy Ân cũng đã xong vai hết rồi Đội nào có vấn đề gì cần chia sẻ kinh nghiệm là thầy Ân Cũng đã cùng Sông Vang hoặc là chỗ của chị Thúy Và vai trò của anh Huy về cái chương trình gọi là P2 và NP1 ở Vĩnh Long Sẽ phát triển nhân rộng cái mô hình này Thì anh Huy cũng phải bắt đầu suy nghĩ rằng là
+
+Để có thể chuyển khai được như chương trình Vĩnh Long Cái quy trình của mình như thế nào để có thể chia sẻ cho các đội Rồi qua bên mé tay phải là đến ban nghiệp vụ Các anh chị sẽ thấy là gì? Một cái đội phát triển chương trình Bởi vì chúng ta rất là nhiều chương trình Chút nữa anh Hiếu sẽ có ý kiến liên quan đến hashtag Chương trình liên quan đến Kaygo là chỗ của chị Nhu Trang Đúng hông ạ?
+
+Đội tạo nguồn qua kênh truyền thông sự kiện Đây là vai trò điều phối trực tiếp tại TP.HCM cùng với tất cả các trung tâm liên kết Ví dụ như Học được ở chỗ thầy ân một cái điểm mặc dù là nhân sự không có trong MFA Thầy ân nói rằng là vì chị Vi, đội của em tuần này chiến dịch bên em là gì? Phải phát triển 10 công tác viên
+
+Có nghĩa là khi anh chiến khai một chiến dịch là mọi người bắt đầu chạy theo Thì tương tự như vậy, trên ban huấn luyện cũng sẽ có những chiến dịch để các anh chị cùng chạy Hoặc là bản thân các anh chị đề xuất chiến dịch đó lên để tất cả các thành viên của mình cùng chạy
+
+Rồi, và một cái nữa ở đây là gì ạ, thì đối với cái vị trí này cũng là tuyển mới một cái thành viên gọi là chuyên trách cái vai trò của anh Cường với vai trò của chị Hiếu á Thì bây giờ hiện nay em Cường sẽ là trưởng bang sự kiện truyền thông và công tác chăm sóc sinh viên ở dưới DBC theo phân công từ phía của anh Lâm Vậy thì trên đây còn những chương trình sự kiện khác nữa
+
+Thì đây là những cái thay đổi rất là lớn Trong cái mô hình này nó không phải chỉ đơn phần là vẽ ra Để cho nó đẹp Nguyên văn luôn sếp nói là Hiếu vẽ rất đẹp Nhưng mà thật sự là tâm tư tất cả những cái gì mà cho năm 2026 từ chỗ của anh Tiến, từ chỗ của anh Dũng, từ chỗ của Thanh Hiếu
+
+và các thành viên trong ban huấn luyện và BOD và trình bày với sếp mà cái văn bản này được ký là theo em biết là trong cái buổi tối 8h ngày thứ 6 Khi thuyết phục trực tiếp chỗ của anh Dũng và Thanh Hiếu Thì đây là một cái mô hình mà thực sự ra chưa Đảm bảo là nó sẽ thành công 100% Nhưng đâu đó anh chị sẽ thấy rằng là vì MFA của mình
+
+Với cái mô hình này thì chúng ta sẽ đi cùng nhau Nhưng mà trên tinh thần là các anh chị sẽ là người lên tiếng Các anh chị sẽ là người chủ độc Các anh chị là người đặt hè Các anh chị được quyền yêu cầu để làm sao có những cái giải pháp cho cái hợp đồng của mình. Và các anh chị mà...
+
+Dương á, thì trong cái buổi vừa qua thì bên phía MSA cũng đã gặp Còn một số các thành viên mà chưa đạt cái mục tiêu thì trong đó có những thành viên mà gọi là lội ngược dòng luôn Bởi vì sao có thể chị chốt không được nhiều nhưng mà chị lại phát triển cái lực lượng cộng tác viên rất là tốt Thì đó là những cái chia sẻ thêm Và em xin phép anh Lanh, chị Ly
+
+Và chỗ của anh Tuấn, em xin mời ý kiến thầy Phước Bởi vì thầy Phước là một trong những thành viên mà gọi là đóng với vai trò kết nối trung tâm của hệ thống bang phủ vấn Và sắp tới là anh Tiến, sáng anh Tiến có nhắn là từ 7h47 phút là anh đã bắt đầu tron rồi Anh chuyển vai nhưng mà anh không rời Mà anh còn tron sớm hơn so với bình thường nữa
+
+Thì chắc em xin mời chỗ thầy Phước, cũng là một trong những thành viên mà khi xây dựng cái mô hình này có gửi cho chỗ của thầy Phước thì gần như là thầy Phước thấy rằng là, ồ, ở Vũng Tàu đang thiếu người là Thầy Phước giới thiệu ngay Thầy Tiến sĩ Trương Thành Công Nguyên là Giám đốc Sở Khoa học Công nghệ của Bà Rịa Vũng Tàu Và khi Vũng Tàu xác nhập thành phố Hồ Chí Minh
+
+Thì thầy Vệ Hưu đóng vai trò là Phó Chủ tịch Hội Liên Hiệp các viện khoa học Và gần như là kết nối với tất cả các trường trên địa bàn Thì đây là một cái lời thay đến rất là lớn. Em xin mời thầy Phước ạ. 
+
+[THẦY CỐ VẤN - HUỲNH PHƯỚC]
+Vâng ạ. Xin nha. Thầy XUÂN LANH và , ANH LANH. Cô Trúc Ly, anh Tín, các quý vị điều hành. Tôi sẽ đánh giá cao
+
+Cái tính hệ thống, cái tính khoa học và cái tính bao quát của cái mô hình này Có thể nói là tôi thấy là một cái... một cái thành quả hay là một cái tình cảm rất là rất là sâu nạn mà trước khi nghĩ là anh Trần Tiến với bà Nguồn Điệm để lại cho công ty Tất nhiên là có cái sự gia khố của anh Dũng rồi cái sự cân đi nhắc lại, bổ sung
+
+bỏ đóng góp của nhân sự và quyết định cuối cùng của sếp. Tôi thấy mô hành tổ chức này, thứ nhất là phát huy tốt với vai trò quấn luyện bởi vì quy luật của mọi cái nhận thích, tôi nhắc lại đó là mọi cái hành động, quy luật của mọi hành động nó từ nhận thích
+
+Thì khi mà chúng ta nhận thức nó tường minh, nó rành mạch thì chức khắc chúng ta hành động, chắc chắn là hiệu quả nó sẽ cao hơn Cho nên đề cao và nhấn mạnh cái đề cao của quấn luyện rất là tốt Tôi thấy xác định chức năng và nhiệm vụ huấn luyện với nội dung này cũng rất là khác với yêu cầu phát triển của công ty chúng ta.
+
+Thứ 2 nữa là quan trọng cái vai trò tiền thông Cái tiền thông của chúng ta vừa rồi cũng có làm tốt nhưng mà chưa thật là đạt yêu cầu Chỗ là tôi đi đâu cũng thấy là cái sự hiểu biết của công ty mình đó Công ty mình là một danh hiệu sáu sao Công ty mình có những cái ưu thế nhưng mà xã hội người ta biết
+
+về công ty mình, kể cả cái hệ thống trường hạc cũng không nhiều, chưa nhiều cho nên bây giờ chúng ta chốn trạm cái truyền thông mà truyền thông bây giờ là phải chốn trạm cái... Cái cách thích truyền thông, cái mô hình truyền thông và cái phương thức truyền thông thì tôi thấy cái ý tưởng trong cái này tôi có nói chuyện với anh Dũng anh Dũng nghĩ ra, anh đề xuất ra cái cách đó tôi rất là ok
+
+2. Phát huy đúng mức vai trò của cô vắng Tôi nghĩ bộ vận cô vắng và thời gian vừa qua tôi thấy cô thầy rất là tâm quyết Cũng rất thích mô hình, ý tưởng của sếp Cũng muốn đóng góp gì đó nhưng mà chúng ta chưa phát huy hết vai trò cũng như thế mạnh của các bạn phó vấn Tôi thấy đó là việc thứ 2
+
+Chứ ba nếu là cái mô hình này có cái bộ phận nghiên cứu thị trường Cái bộ phận nghiên cứu thị trường là cái mà anh Tiến tôi đã đề nghị nhiều lần nhiều lần Tôi thấy tổng giám đốc ghi nhận Và bây giờ là tổng thức đưa vào chính thức Và cho cho những anh nó nghiên cứu tôi thấy rất là cần thiết Rất là có thể nó cấp thiết Bởi vì chúng ta hoạt động trên cơ sở chúng ta có hiểu biết
+
+Đối thủ, đối tác chúng ta nghiên cứu kỹ để chúng ta có quậch định chính xác nó phù hợp Thì đó là cái rất là hay Thì về đội, thì đội cái ưu điểm của lần này á Nó rất là đồng bộ, trong đó là những người trực tiếp MS-1, rồi có MS-2, MS-3, những bạn gắn vào địa bàn Cùng với việc gắn địa bàn là có cái trách nhiệm
+
+của ban cố vắng phát quy và đóng góp vào này thì nếu như chúng ta để ban cố vắng như hiện nay về trước thì tôi nghĩ là các thầy phải chỉ nghĩ thôi bởi vì các thầy làm mà thấy không làm gì đóng góp thiết thực cho công ty thì cũng không nên Cũng không nên hữu danh là vô thực Thực đó là thực làm, thực việc chứ không phải thực nghĩa là thực khác Vậy giờ tôi thấy cái cơ cấu của...
+
+Các đội rất là tốt, đặc biệt Tôi rất là mừng là nhờ sự chỉ đạo quyết liệt của anh Lanh Rồi nhờ sự ủng hộ của pháp chế, của nhân lực chúng ta xây dựng lên được để cho Huế đủ mạnh để mà tắt ra. Tôi rất mừng là khi mà tắt ra là đặc biệt là có sự ủng hộ của...
+
+Anh Lanh phật chế nhân lực tuyển được anh Nam vào đó là tôi thấy cái hiệu quả nó rất là thiết thật Và có anh Nam là tôi tin tưởng tổng lợi Huế cũng sẽ đồng bộ cũng không có bị tụt hậu như là Thời gian trước là cô Trung Ly cũng rất là trăng trở đặt vấn đề Tôi thì tôi nghĩ là ở Huế là một cái trung tâm học thuật
+
+Một trung tâm kinh thức mà mình để cho Huế nó bị lụi tàn thì cũng rất là không mất khí khế của công ty mình Bây giờ duyên thì cũng có ổn định lại để mà phát triển công ty Huế là tôi rất là vui mừng và tôi tin là nó sẽ phát triển được thì đó là cái thế mật ảnh và vừa đầu tôi thấy là đã nói em Bùi Hiếu khó nhận việc mà đặt 8 cái câu hỏi đó tôi rất đồng tình với cái ý kiến của anh Lanh
+
+Câu hỏi đó rất là sắc sườn, rất là thiết thực, rất là cần thiết Đội trưởng phải đặt ra những vấn đề như vậy để tự giải Đặt cho mình và tự định ra công việc để giải quyết công việc cho mình Bởi vì khi mà thành thành rồi thì có cái bộ phận khác là nói như anh Dũng đó là ngoại lực thôi Còn cái nội lực cái quyết định nó thành hay bại chính là anh đồi trưởng mà đổi trưởng cần cô Duy sơ sách
+
+Cảm thấy nguy mạnh từ một thành viên Và đánh giá đúng Thế mạnh, nhược điểm, khó khăn của mình để đề ra những giải pháp Cộng với sự phát huy hoặc là tích cực tham vấn ý kiến của các vị bố vắng, thì tôi tin rằng mô hình này Nó sẽ tạo ra một diễn mẫu mới, một hiệu quả mới. Nói như cô Lan Huy, nó vận hành lúc đầu có thể chưa tốt, nó chưa hoàn chỉnh, nhưng với mô hình này tôi tin là...
+
+công việc sắp tới nó sẽ tốt hơn tôi chỉ có một số ý kiến nhé các bạn
+
+Dạ cảm ơn thầy rất là nhiều. Thật sự năm 2026 thì cái buổi đầu tiên LD sẽ là cái buổi để triển khai cái mô hình này. Bởi vì MSA vẫn là cái lực lượng mà gọi là chủ lực nồng cốt của hệ thống SN2 Do vậy cũng sẽ dành nhiều thời gian Xin các anh chị Pew đi dành nhiều thời gian giống như anh Lâm sáng nay nói đó
+
+để các thành viên của MSA, từng thành viên mình thấu hiểu được các ý khi mà chúng ta xây dựng mô hình. Chắc em xin được mời thêm anh Tiến nữa đi ạ. Trong quá trình xây dựng mô hình này, anh Tiến cũng rất nhiều những ý Anh Tiến có thời gian khoảng 5 phút để chia sẻ thêm về mô hình này
+
+trước khi chuyển lại bên phía căn trị Beauty
+
+và miền Bắc, cho nên là nếu mà mình nó phăng như vậy là Thầy Thọ ngay sau này ổng chỉ phục vụ ổng hỗ trợ cho miền Bắc không là ổng uống vì cái miền Trung á, Thầy Thọ là cái ảnh hưởng của ổng là cả Cái hệ thống trưởng đại học sư phạm kỹ thuật cả nước ổng rất là thân Và đặc biệt thì bằng nền đảng ổng hứa là 2 năm sau khi ổng lấy cái nhiệm vụ cũ là ổng sẽ trực tiếp
+
+Hổng giúp cho công ty mình, hổng có thể đi đến các trường Bây giờ thì hổng làm việc của hiệu trưởng với chú Dũng Khoa thôi Nhưng mà sau này hổng có thể đi đến các trường của đại học Đà Nẵng hổng giúp mình Nếu mà để ổng cố gắng phụ trách miền Bắc thì nó uổng Tôi chỉ có ý kiến như vậy Phụ trách miền Trông và miền Bắc
+
+Hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Dạ, em cảm ơn thầy. Thanh Hiếu sẽ ghi nhận để bổ sung thêm cái ý của thầy ạ. Em xin mời anh Tiến.
+
+Xin chào anh Lanh, Tuấn, chị Ly và tất cả mọi người. Tuyệt với các bạn. Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn có họp cái toàn bộ cái hôm đấy thì bà nói lời hả nói thực sự mà nói là hôm ấy tôi có phát biểu tại
+
+Cái bữa đấy thì sau khi bắt đầu là trước đến mấy ngày cậu mới đến ôn đây Thì báo cáo với các thủ trưởng như thế này này Thì tôi có nói là Cái thứ nhất là tôi yên tâm Yên tâm rời vị trí Hằng đúng buổi hôm đấy luôn Là tôi thực sự có nói là Mình Mình lùi lại để có lường gió mới Nhưng mà cũng rất là khá là lo lắng cho các em, đặc biệt là em S
+
+Và bạn luyện, tức là anh Hiếu với Phương Trâm với Thúy Yến, Huy Thì câu chuyện đây tức là tôi không biết phải bảo vào gì Mà chính xác đơn giản là tôi yên tâm rồi Không phải lo lắng nữa Thế là kỳ nói thật là như thế Cái điều thứ 2, đúng cái ngày hôm đấy Một cái điều mừng Là...
+
+Cái sơ đồ này, cái môi tổ chức này là tổng đồng ký. Đúng là nói luôn. Cái thứ 3 là tôi nói là... Tổng đốc và các anh chỉ viên của tất cả hệ thống của mình đã chốt được phương án quyết toán lương. cho em em 2025 thì 3 cái điều hôm ấy là tôi thật sự muốn nói là là mình thấy là hôm ấy là rất là vui và rất là mừng và mừng này nó mừng mang tính rất là đúng nghĩa tổng thể và
+
+Và tôi sẵn sàng rút ra rồi Rút ra rồi Tôi sẽ báo cáo với các anh như thế Còn về mô hình Thì Thực sự là cái mô hình này Tôi Chính là cách đây khoảng 20 ngày, khoảng 11 tháng Tôi có một tư duy để xác định là phải kiên toàn lại mô hình tổ chức. thì báo cáo với Tây Nhiếu và Lan Vy Sau đó là tôi làm việc độc lập với từng người một và sau đó là tôi định hình ra được một mô hình
+
+Và tiếp bước nữa là Thanh Hiếu là người sắp bút một cách hoàn hảo Thì báo cáo với các anh chị này này Khoát điểm của tôi với chú Lan Vy và Thành Hiếu chia sẻ đây Quan điểm là năm 2025 là ban đội luyện là với cơ bản là trên cơ sở ban đội luyện là chỉ đạo xuống dựa theo những chỉ đạo của Tổng đốc cũng như của BUD
+
+Sau đó bạn đoàn luyện chúng tôi chỉ đạo xuống và tính sáng tạo nó cũng không có Và nhiều lúc tôi nói là cũng làm cho các bạn ở dưới cũng rất rắc rào Nó không mang tính đồng bộ, nó không mang tính là cá thể hóa Có khi một cái chỉ đạo của anh Lanh, hay là của anh Tuấn, hay là của anh Tiến, hay là của chị Ly, hay là của Tổng đốc
+
+là tôi, là tôi đưa xuống luôn thôi đứng luôn và tôi ngồi bắt đầu bàn với các bạn xong bắt đầu là đẩy xuống tất cả các cộng, tất cả các EMS nó gần như nó giống nhau và hóa ra cuối cùng thì là, cuối cùng đấy là học Không phải hỏng, chứ là mất lực Thì chúng tôi xác định là phải là bài toán, nó phải ngược lại Là mình phải cá thể hóa các quyết định
+
+Các chị đại Và từ đấy mới định hình ra cái việc Thứ là, là muốn thế thì Là phải lấy từ hơi thở cuộc sống dưới lên Thì tôi với thanh yếu của bạn nhau là  Thì từ MS lên đến đội trưởng, đến trung tâm kết Và sau đấy thì là ban đầu luyện, ban đầu tính toán, cân nhắc Thì báo cáo với tất cả
+
+[ANH TIẾN]
+là cái mục tiêu của mô hình này là để nó thông suất và đặc biệt là nâng cao cái trách nhiệm của đội trưởng. Trách nhiệm của đội trưởng, lúc này là trách nhiệm nhất Và tiếp nữa là của em em Và báo cáo với mọi người này tức là Trong mùi nó rất là hay
+
+khi mà xây dựng ra thì là tổng đốc ký, mọi người đóng góp tới tổng đốc ký thì tôi thấy rằng là nâng cấp tất cả toàn thủ lượng nâng cấp đấy Bây giờ tôi rút anh Dũng thay thế và và và và nâng cấp Bùi Thanh Hiếu lên phó phòng. Rất rồi là bổ sung... Những cái nhân sự Ví dụ bổ sung nhân sự như là thêm Hồng Ân hay là Đăng Huy Chúng trách về chương trình Cái rồi là tinh thúy
+
+Thế rồi là các ban sẽ tuyển thêm nữa và định rõ trách nhiệm của từng người một, từng vị trí một. Thì như vậy là đã nâng cấp và trước khi tôi nói là Bọn tôi nói anh yêu tôi rất may mắn là anh cũng đã Anh đã đề xuất được cũng động viên được bạn Huy với bạn Ân với bạn Huy
+
+để tham gia phán đối luyện. Nói thật, báo cáo với các em này cũng phải động viên ấy cực sự và động viên ấy. Nếu không thì là Phương Trâm với Thanh Hiếu sẽ quá đại. Câu chuyện là nâng cấp về bản đồ luyện, thứ 2 là nâng cấp về đội trưởng Chắc chắn là đội trưởng đi đẩy từ dưới lên thôi
+
+Cái nữa là sắp xếp lại đội hình, sắp xếp lại các đội, tôi cũng rất chăn chở Thật sự là trong quá trình vận ảnh điều ảnh, tôi chăn chở Và cái mô hình này như Dũng nói cũng đúng với Lan Vy nói đúng Nó cũng không có cái gì là cái mô hình nó không phải mô hình nào là tốt mà Vấn đề nó phù hợp trong giai đoạn lịch sử kết định thôi Nhưng mà phải nói là khi mà sắp xếp lại này là Chúng tôi với bạn Tôi với bạn Ân với bạn Thúy với bạn Hiếu
+
+ Cũng trao đổi với Lan Vy là có cái nhân sự thực tập, tôi rất cần cái đấy bởi vì mình cần men đây Vì nó thật sự báo cáo với các thủ trưởng này, một cái đội ít người quá Nói chuyện với người ốm, nó gọi là đâu đó cũng chả có người mà làm Nó gọi công an đây, có người làm Thế thì là cần có những cái lực lượng đấy
+
+Rất quan trọng là lực lượng đấy Vì cái lực lượng đấy là mình khai thác Thực sự mà nói là khai thác cái đội trẻ Thậm chí cũng có về mặt trình độ đấy Và nó đúng luôn, nó cũng đỡ về mặt chi phí bởi vì nếu mình trở thành chính sức, nó đòi hỏi về năng suất đòi đồng
+
+Dạ anh Tiến ơi, anh Tiến ơi, mình có 5 phút thôi anh, tại vì còn có các thành viên khác nữa Dạ, cho nên là, dạ dạ em cảm ơn Một cái ý nữa, một cái ý nữa thì báo cáo đến chỗ này nè là là là là là là rất muốn rất muốn, đây là một điều rất muốn, mong muốn là chúng ta hãy
+
+Tuyển rất nhanh Đấy, rất nhanh những cái Lấp, lấp tất cả những cái vị trí Cho các, cho các đội Chắc định có vị trí, có định biên rồi Định biên, mô hình, ok, cứ mình coi như là hay đi Nhưng gọi là nó có cái cần thiết, rất cần thiết là phải có hoạt động Là... là... là...
+
+Ngoài là tuyển dụng bổi khung đấy, vào những vị trí đấy Và sau đó là hoạt động đào tạng Bởi vì sao? Bởi vì nếu không ý, báo cáo với các anh chị này là chỉ nhuận cái này hết cuối mùa mà chúng ta lại chưa được lại tiếp với LPR Thế là coi như là lại chuẩn bị cho những hoạt động mô hình nó lại trong quá trình triển khai
+
+phải điều chỉnh theo thực tiến nữa thì tôi có một cái gọi là đề xuất, tức là góc độ là mình hãy điều chỉnh, à tức là bổ sung Rất nhanh. Đề nghị là chỗ, tự nhiên riêng hết rồi, không thể làm được hết thế này đâu. Thì đề nghị là tất cả chúng ta vào cuộc với chuyện tiến dụng.
+
+đặc biệt là các trung tâm, các đối trưởng ở các trường thì có những sự nào mà tốt thì mình tuyển lũng vào và tuyển lũng luôn cả và tìm hiểu các lực lượng về thực tấp ấy. Thì khi đó thì chúng ta cũng có gọi là hội hoạt động đào trại sau đó không có người mà làm Thì đấy là một trong những cái nó liên quan tới Tới tới tới tới tới tới tới tới tới
+
+Cảm ơn các bạn đã theo dõi. Hẹn gặp lại các bạn trong các video tiếp theo nhé! Mình làm rõ luôn, báo cáo tổng đốc VD, làm rõ luôn cái công thức máu cho tất cả các những nhân sự. Hãy đăng kí kênh để ủng hộ kênh của mình nhé. Cái cây vr, cái cây công tức máu đấy Thì cái đấy cũng rất là quan trọng để cho các bạn Để cho các bạn triển khai Thì cũng là
+
+Cũng rất là cảm ơn Tổng đốc cũng như là các anh chị BD và các phòng ba. là yên tâm. Thì đến giờ này tôi không phải nghĩ gì nữa. Rất yên tâm rồi. Bởi vì sao? Bởi vì có anh Đặng Tiến Dũng nói cho tôi rất là, rất là, rất hay. Tôi chỉ nói cũng rất hay, tôi cũng tiếp xúc rồi trong quá trình làm việc nữa.
+
+Thì đấy là cũng mong mỏi cho cái mô hình của MSA chúng ta là vận hành một cách trơn ru nhất, hiệu quả nhất và... Cũng rất mong và chúc để lần sau cho các MS là hoàn thành cái chỉ tiêu của mình MS ơi, họ nên chỉ tiêu vào MS, họ nên chỉ tiêu vào để cho đảm bảo được cho tư liên hợp nhiệm vụ và cũng như là có những thu nhập xứng đáng Vì vậy, cuối cùng xin cảm ơn.
+
+Cảm ơn anh Tín. Cảm ơn anh và về đến anh lời cảm ơn, lời biết ơn sâu sắc với những đóng góp rất là tích cực trong cái hành trình vừa rồi. Cảm ơn anh ạ và chúc anh thân hiệu sức khỏe. Vì chúng ta không có nhiều được quỹ thời gian trong buổi sáng, nên là bây giờ MSA còn một phần cuối, phần sau Thanh Hiếu sẽ chia sẻ về kết quả hoạt động của MSA
+
+của tháng 12 năm 2025
+
+[chị TRÚC LY]
+
+và mình sẽ thách thức mình gặp nhau lần thứ hai thì hôm nay có lẽ là dẫn theo mô tích cũ nhưng mà từ cái thành viên ngồi đây trong cái bài trò thách nhiệm của mình cũng lấy cái mô hình của... để mà mình thấy rằng là mình nên vẽ lại, định vị lại trong cái video của mình, trong từng cái phần 3 của mình để mà năm sau nó có một cái sự vận hành nó khác đi so với những năm cũ và tạo ra một sinh khí, tạo ra một cái tách nhiệm, tạo ra một cái...
+
+phụ thể lấy mô hình này để nhân bản, làm rộng ra
+
+Nội dung của mình chỉ được trình bày, ngắn gọn, xếp quả Và cái mục tiêu tuần này tương tác với ai làm gì Tạo xác cụ thể, không có lan man nữa Và không có nói dài dòng về cảm xúc
+
+Cảm xúc sẽ là nghỉ buổi khác, không dành cho hôm nay Hôm nay rất là nhiều đơn giản
+
+và nếu chúng ta bị xa đài thì chúng ta sẽ mất đi hiệu quả trong cảnh thứ 2 Cho nên là tôi sẽ nghĩ rằng là hôm nay tụi mình có thể cùng thức cũ nhưng mà ngắn gọn trong bầu tiên
+
+và hai làm gì trong tuần này, tương tác rõ, tên, thời gian và sau đó là tới từng video khác cũng đặt vấn đề chúng ta không tham gia một cách nó hợp như là tuần nãy giờ nữa thì Li xin mời lại các em và cũng đi nhanh nhắn đoạn kết quả và mục tiêu.
+
+sau đó sẽ qua những đơn vị khác và mọi người chuẩn bị nha chứ không có trong chuyện mình ngồi đây và mình vinh lặng như vậy em cũng không đồng ý
+
+Cảm ơn chị Ly
+
+[THANH HIẾU]
+
+Dạ, em chào các anh chị. Em có xin đi nhanh một chút xíu về phần kết quả của tháng 12. Còn cụ thể hơn thì chắc là sẽ có một buổi báo cáo của MFA đối với các anh chị VD cũng như là đối với sếp về kết quả kinh doanh của năm 2025. Đầu tiên về kết quả của tháng 12, thì tháng 12 hiện tại cũng gọi là một sự cố gắng của các thành viên MS Thì trong tháng 12 này thì MS cũng đưa được 116 bạn BY nhập học
+
+trong tháng 12, trong đó thì có 81 bạn là của chương trình thực học sinh 3 năm, 13 bạn là của chương trình kỹ sư, kỹ năng đặc định thì có 6 bạn. Vinh Cai Go thì có 3 bạn, và chương trình thực tập sinh NP thì có 7 bạn, chương trình thực tập sinh 1 năm thì có 5 bạn, và ngoài ra chương trình lưu học thì cũng có 1 bạn tham gia.
+
+Và ngoài 116 BY, thì cũng có 39 bạn nhập học theo chương trình BTN. Đối với số lượng kết quả này thì cũng đạt được 75% so với mục tiêu đã đạt ra trong tháng 12. Và trong các kết quả tháng 12 này thì em cũng xin phép được tuyên dương một số các đội và cũng nhờ các anh chị cho một tràn vỗ tay thật là lớn đối với các đội hiện tại đang có kết quả.
+
+giảm đầu trong tháng 12 này. Thì kết quả đội này là theo cái đội của năm 2025. Đầu tiên thì đội giảm đầu đó là đội số 6 với kết quả số lượng là 24 ly white 1 btn và... Đội số 6 cũng đã xuất sắc là cán đất và gọi là đứng vị trí tốc 1 của các thành viên MSA của mình. Và đội số 2 cũng là một sự cố gắng rất là nhiều từ team Trà Vân và Sắp Trăng.
+
+Với kết quả là 14 PY và 11 BTN Và thời trưởng đó chính là đoàn chỗ của Anh Úc Xin tất cả các đồng viên cho một tràng phỏng tay đối với team số 2
+
+Và tiếp theo team số 3, một thành viên, một đội trưởng cũng rất là trẻ nhưng mà cũng đã dẫn nhắc đội đến vị trí top 3 của tháng 12, đó là bên chỗ của Kiều My. với 13 BY, 1 BTN và tổng kết quả KPI là 10.53, xin chúc mừng team số 3. Và bên cạnh đó thì cũng có một số các thành viên team khác.
+
+Và cụ thể hơn, đối với kết quả của các thành viên cá nhân dẫn đầu thì xin các anh chị cho một trận phẫu thuật lớn dành cho chị Thảo Nguyên với sốt quả là 8 BY. Xin chúc mừng chị Thảo Nguyên vào vị trí tốt 1 của tháng 12. Tiếp theo là chị Dương Anh Thư với 12 BY trong tháng 12. Xin chúc mừng chị Dương Thư.
+
+Và vị trí số 3 là chị Nguyễn Thị Hường với kết quả là 6 BY trong tháng 12. Và ngoài ra thì cũng có các anh chị cũng đã đưa vào năm. và 5 và 6 BY cũng như là BTN trong tháng 12 này bao gồm là anh Úc, Kiều My, anh Hồng Ân, bạn Nhật Linh, bạn Hồng Nhung, chị Như Ấy và bạn Cậu Tiên
+
+MSA bên ban huấn luyện cũng sẽ có buổi gặp đối với các thành viên để hỗ trợ thêm cũng như là tìm thêm những lý do, cũng như là cách để hỗ trợ thêm cho các team, các thành viên trong tháng 1 này với kết quả bức phá hơn, thì MSA cũng ghi nhận kết quả của các thành viên để hỗ trợ thêm trong tháng này.
+
+Và trong khi chạy tháng 12 thì tụi em cũng gọi là nó có thêm cái nguồn dự kiến tha giãn cho tháng 1 thì dự kiến cho đến thời điểm hiện tại mà các bạn có khả năng đăng ký cũng như là hoàn thành hồ sơ. Đối với BY thì tụi em cũng có 70 bạn thì có thể là khai giảng trong tháng 1 này thì trong đó có 21 nữ và có 49 nam Với kết quả nữ này thì tụi em cũng có một buổi họp trong tuần vừa rồi để mà khai thác thêm cũng như là làm việc thêm với các team để mà chạy cho mục tiêu là 100 nữ trong tháng 1
+
+Và ngoài ra thì cũng có 34 btn sẽ dự kiến thai giãn trong tháng 1 này Với cái kết quả này thì nó chỉ bằng 50% so với cái mục tiêu của tháng 1 thì tụi em cũng sẽ hỏi lên cái phương án và chia sẻ ở cái phần sau Và cụ thể trong tháng 12 thì tụi em cũng có chăm sóc kết quả của Kim Cương Đen và bạn Đen Thì hiện tại đối với kết quả chăm sóc thì tụi em cũng chăm sóc là thêm lại 183 bạn
+
+là ứng viên đang hướng dẫn tham gia chương trình của mình cũng như là đang suy nghĩ và chưa có liên hệ được đối với nhóm Kim Cương Đen và Vàng Đen. Trong tuần vừa rồi, anh Ân cũng đã làm việc với các team Ở trong đó, sau khi sẵn lập và chăm sóc thì trong đó cũng có 14 bạn đã đăng ký tham gia chương trình và có 2 bạn thì đăng ký tham gia trong tháng 1
+
+Ngoài ra thì cũng có 85 mạng là hủy tham gia Thì đối với nhóm này thì bên chỗ của ban huấn luyện sẽ tiếp tục làm việc tiếp với các em ad để mang kết nối và tư vấn cũng như là giải đáp thêm các khách thách mất để các bạn yên tâm và các bạn quay trở lại tham gia chương trình của mình hơn
+
+Tiếp theo là nhóm kim cương đen của BTN. Trong tuần vừa rồi thì cũng 7 trên 19 bạn tiềm năng thì tụi em cũng đã duy trì và chăm sóc. Trong đó có 2 bạn ứng viên của chị và Dương Thư đang chăm sóc để chuyển đổi sang chương trình kỹ sư. Có 2 bạn của Hồng Trúc sẽ chăm sóc để khai giảng tại Bình Dương trong tháng 1 sắp tới.
+
+Và có 2 bạn ứng viên của anh Nhân Hiếu và của chị Phương ở Đà Nẵng thì cũng đang tiếp tục duy trì chăm sóc đó với các bạn này. Và 1 bạn là bên chỗ của chị Ngọc Hương thì đang chờ khai giảng online. Và đối với 12 bạn ứng viên còn lại thì hầu như thì MS cũng đã chăm sóc và các bạn này dường như là hủy đăng ký tham gia chương trình.
+
+Đối với nhóm này thì tụi em cũng sẽ tiếp tục chăm sóc tiếp và cố gắng mở một lớp thai giảng online B3 trước khoảng thời điểm nghỉ Tết để giữ chân các bạn tham gia chương trình của mình. Và trong tuần vừa rồi thì tụi em cũng họp với tất cả các cung tâm liên kết để lên cái phương án chạy mục tiêu cho 100 nữ của tháng 1.
+
+thì cũng rà soát lại những ứng viên có khả năng đăng kí tham gia, những bạn ứng viên tìm năng và phương án đối với từng team khai thác từ nhóm học viên của VTN cho đến những nguồn list hiện tại mà các thành viên đang chăm sóc cũng như là những nguồn kênh.
+
+Thì tụi em cũng tổng hợp lại những phương án mà hiện tại tụi em sẽ chạy cho mục tiêu của 100 nữ này. Đó là tụi em rà soát lại, đối với nhóm BTN cũng như nhóm học viên, cái nguồn list mà nữ, tiền năng cũng như những ứng viên đã chuyển qua deal nhưng chưa có chuyển đổi thì tụi em ưu tiên nhóm này.
+
+và khai thác những nhóm mà có khả năng chuyển đổi trong tháng 1 Và số 2, đó là tụi em cũng khai thác những nguồn list mới mà có khả năng chuyển đổi Thì trong tuần vừa rồi thì cũng làm với bên chỗ của anh Tiến và sẽ lọc lại nguồn list hot từ các kênh mà có
+
+tỷ lệ chuyển đổi cao mà đang còn ở trên kho, đó là nguồn Facebook, nguồn Apply, nguồn Call, nguồn Group, nguồn Shipping, nguồn người thân và kênh tổng tác viên. Thì tụi em sẽ lọc ra 960 số chia cho 48 thành viên MS1 để mà chăm sóc. Thì đây là cái nguồn mà tụi em sẽ bổ sung cái nguồn list này.
+
+từ trên hệ thống của mình và bên cạnh đó thì cũng ưu tiên những cái nguồn chạy quảng cáo và bổ sung thêm cái việc chạy quảng cáo hỗ trợ thêm cho các team để có thêm cái nguồn data mới và phân bổ về cho các thành viên EMS. Và trong tuần vừa rồi thì cũng làm việc với một số team về cái nguồn data nữ của các trường đang có trên hệ thống và phân bổ cho các team của mình. Thì đây cũng sẽ là cái nguồn mà tụi em chăm sóc trong quý 1 này để mà khai thác cho cái nguồn nữ.
+
+và cũng có những chính sách đề xuất với bên chỗ của anh Tiến để mà có thêm nguồn nữ cũng như là nguồn phập tác viên giới thiệu MS2 và MS3 đối với nguồn nữ của tháng 1 và trong quý một này. Và bên cạnh đó thì cũng hỗ trợ thêm những cái chính sách để mà tổ chức thêm những cái buổi webinar cho các trung tâm liên kết Và cũng trao đổi với bên chỗ của anh Tính tăng cường thêm cái rịa chảy quảng cáo cho
+
+một số các kênh trung tâm liên kết để mà khai thác về cái nguồn online của các kênh của mình. Và cái phương án thứ 5 đó là hỗ trợ những cái ứng viên mà chưa có nhập học. thì tụi em cũng trao đổi với các team. Một trong những lý do mà các thành viên cũng khó khăn trong việc chốt nguồn của tháng 1 đó là ứng viên còn đang đi làm, chưa có thể nhập học được và chưa có đủ chi phí thì cũng nhờ thêm bên chỗ của anh Tuấn hỗ trợ thêm một số các công ty mà cho phép phỏng vấn trước nhập học sau.
+
+Thì đối với những ứng viên mà chưa có thể nhập học trong tháng này thì tụi em cũng đưa vào trong các tuyển dụng cụ thể các công ty như thế này để các bạn có thể tham gia trước ngay từ thời điểm 3 giờ. Và một số các thông tin công ty tuyển dụng thì tụi em cũng cần thêm các thông tin cụ thể hơn, đặc biệt là các công ty tuyển dụng trong tháng 1 và tháng 2 để mà có thể tư vấn cụ thể và đưa vào trong các công ty đang tuyển dụng.
+
+Và ngoài ra thì cũng nhờ thêm bên chủ của chị Ly hỗ trợ thêm một số các cái trường hợp các bạn chưa có đủ chi phí để đóng thì thường là sau khoảng thời gian trước đó thì sẽ nhận thêm thưởng do đó thì cũng xin thêm một số các trường hợp mà đóng phí 5 đến 10 triệu trước để cho các bạn có thể...
+
+ở trong khoảng thời điểm này và phỏng vấn trong khoảng thời điểm tháng 1, tháng 2 thì cũng là một số các giải pháp để hỗ trợ thêm cho các bạn ứng viên để các bạn có thể bổ sung thêm cái nguồn trong khoảng thời điểm tháng 1, tháng 2 này. Thì đó là một số cái game mà tụi em cũng chạy thêm cũng như là cái phương án để mà MSA có thể chạy cho 100 nguồn nữ trong tháng 1.
+
+Và ngoài ra thì trong tuần vừa rồi thì tụi em cũng có một cái buổi làm việc với bên chỗ của anh Lan, cũng như là bên các thành viên phụ trách về các cái chương trình của mình. Thì đối với tầng chương trình thì cũng rà soát lại cái mục tiêu mà các team đang đặt Thì thông qua cái phần rà soát lần này thì cũng nhìn nhận có một số team hiện tại mình đang đặt cái mục tiêu khá là tốt, tuy nhiên vẫn còn một số nơi thì vẫn đang đặt dưới trên cảm tính và cái con số nó vẫn chưa có chiến lược để mà phát triển
+
+mục tiêu kinh doanh cho từng khu vực. Do đó, trong tuần này và cụ thể ngày mai cũng có một buổi làm việc từ chỉ đạo của bên chỗ cô Anh Lanh và sau đó sẽ có một buổi nữa để làm việc với các team và chốt lại công số mục tiêu kinh doanh cuối cùng cũng như là từng giải pháp.
+
+với từng trung tâm nhanh kết để dựa trên kế hoạch giải pháp này, thì các team sẽ chạy ngay trong khoảng thời điểm tháng 1, tháng 2 để mà đạt được con số mục tiêu kênh danh của năm 2026. Thì đây cũng là nội dung quan trọng nhất mà tụi em làm trong tuần vừa rồi, kết hợp song song với mô hình tổ chức, trình duyệt mô hình tổ chức cũng như là hoàn thiện về mục tiêu và giải pháp trong năm 2026.
+
+Và lần này thì trong cái phần mục tiêu này thì bên bàn huấn luyện cũng như là bên chỗ của anh Lanh cũng làm kỹ hơn rất là nhiều. Tại vì cái con số mục tiêu của năm nay nó không dừng lại ở con số, mà nó phải đi thực tế từ cái kênh cũng như là cái giải pháp rất là tự tin.
+
+Không phải là mọi người lập ra cái con số để mà mọi người... đưa lên để mà trình duyệt mà cái con số này nó phải đi cùng với giải pháp nó phải đi cùng với người thực hiện nó phải đi cùng với mục tiêu của tầng kênh để đạt được con số mục tiêu này thì mọi người phải nắm rõ về cách thực hiện đối với trung tâm liên kết của mình như thế nào
+
+Do đó, phần giải pháp trong năm nay thì cũng đã, mặc dù là cho đến thời điểm hiện tại là cũng đã qua 3 tuần thực hiện. Tuy nhiên thì cái phần này vẫn còn đang gà sóc một lần nữa để mà có cái phương án chốt lại cuối cùng đối với các team. Dạ, thì đây là cái phần mà trong tuần vừa rồi cũng có thực hiện đối với cái mục tiêu giải pháp 2026 Và cái nội dung này cũng sẽ tiếp tục làm trong họa tuần này
+
+Tiếp theo là về phần quy trình chăm sóc về các chương trình P3. Chắc là một xíu nữa bên chỗ của chị Thúy cũng sẽ chia sẻ về cái nội dung này. Trong tuần vừa rồi thì chị Thúy cũng đã làm việc với các thành viên thủ trách về các chương trình VPN. Vậy cũng có những bước chăm sóc cụ thể đối với các thành viên.
+
+Thiện xíu, đội chỉ huy cũng sẽ chia sẻ phụ thể hơn về phần này. Và cuối cùng là phần hành động trong tháng 1. Trong tháng 1 này, tụi em bám sát mục tiêu cao nhất đó là 100 nguồn nữ để đáp ứng các tân công ty tuyển dụng trong tháng 1. Và các giải pháp cũng sẽ đi kèm với những nguồn ngắn hạn và việc chăm sóc những list điều tiền năng mà hiện tại đang truyển khai. Và những nguồn list, tụi em trao đổi thêm đến chỗ của anh Tiến để phân bổ nguồn cho các team để bổ sung thêm nguồn list nữ để mà chạy.
+
+và tiếp cận với các nguồn ứng viên nữ. Trong tuần vừa rồi thì tụi em cũng làm với các team mà hiện tại có các trung tâm liên kết, có nguồn nữ. Thì tụi em cũng khai thác là trao đổi với 2 cô để mà tiếp cận trực tiếp những bụi tư vấn trực tiếp đối với các lớp tại khu vực các trung tâm liên kết.
+
+Các team cũng làm trong... phần này để mà hoàn thiện các chất hạch và đi cụ thể vào trong các trường để mà vừa có thể triển thai cái chương trình NB1 và bên cạnh đó thì cũng sẽ tìm kiếm cái nguồn ứng viên nữ để mà tuyển dụng cho các bạn. trong tháng 1, và ngoài ra thì cũng sẽ có một số cái lịch mà Huỳnh Yến có chia sẻ để mà làm việc với các team và lên cái tinh thần của các thành viên ở trong team và những cái phương hướng cụ thể trong năm 2026 này để mà triển thai.
+
+Đó là một số các nội dung cụ thả hơn về chương trình BTN. Chắc là em nhờ chị Thúy chia sẻ rõ hơn về chương trình BTN này.
+
+Cảm ơn Hiếu nhé. Em xin phép được nói ngắn về PTN đã trình thái ở trong tuần qua và kế hoạch ở trong tuần tiếp theo. Trong tuần qua thì bên anh Tín, anh chị DCC Cùng với bên Kaizen thì đã có ngồi eo đi với nhau về một số quy trình để chăm sóc tư vấn định hướng các bạn. Thì ở đây em đã chia làm 3 bước. Bước đầu tiên thì
+
+là dựa vào điều kiện kết thúc khóa ở tháng thứ Tư. Cái này được tính theo ngày khai giảm của các nước. Sẽ hiện thị trên đáp mò là một lần các nước sẽ kết thúc khóa cho một tháng tới. Và ở cái phần này thì bên DCC sẽ thêm cái chức năng đó là thông báo qua email cho giáo viên chủ nhiệm cộng với thầy Hồng Đức và sau đó thì giáo viên chủ nhiệm sẽ tiến hành là xét nhận nguyện vọng của các bạn.
+
+và lấy thông tin trực tiếp từ các bạn học viên đang học và kẻ kết quả lại về cho Thầy Vũ Đức. Sau đó, bước thứ 2 dựa theo tình hình thực tế của học viên trong từng lớp. Em gọi là ban phát triển BGN này gồm có lô Cô Nhiên, Thầy Đức và em. Em sẽ sàng lọc và nhìn xem lớp nào, nơi nào.
+
+cần tổ chức buổi định hướng để gặp các bạn thì thầy Hồng Đức sẽ tiến hành bảo vệ cho bước cô trồ ở nơi đó để sắp xếp thời gian và điều phối học viên tham gia. Về cái nội dung ngọc thì đây em sẽ chia làm 2 cái trường hợp. Đối với cái lớp mà có học viên mà còn như là năm nhất, năm 2, năm 3 thì cái mục tiêu chính ở đây đó là tập trung vào các cái chủ đề giúp học viên hiểu được cái giá trị và cơ hội khi có thêm một cái ngoại ngữ.
+
+Và đặc biệt là định hướng mục tiêu học chính nhật cho các bạn như là ngắn hẹn, dài hẹn, phương pháp học hiệu quả, v.v. Mục đích chính nữa là nhằm giúp các học viên ở đây là yêu thích Nhật Bản và có động lực tiếp tục học và duy trì việc linh khóa. Nội dung này thì tuyến của Aizen sẽ đảm nhận.
+
+Và cái nội dung đối với cái đối tượng thứ 2 ở đây đó là các lớp mà có học viên là sinh viên năm cuối thì đây là sẽ dựa vào cái mục tiêu nghề nghiệp, kỹ năng chuyên môn, trình độ tính nhật. và điều kiện tài chính, sức khỏe của từng em và sẽ tiến hành tổ chức tư vấn chuyên sâu, cơ hội việc làm và lộ trình phát triển bản thân cho các bạn với cách thực tế và rõ ràng nhất.
+
+Ở bước 3 ở đây thì việc ghi nhận kết quả trên hệ thống cũng rất là quan trọng để làm sao để biết được lớp nào đã tổ chức hay là kết quả cuối cùng có gì đó khác biệt so với việc chưa có sự can thiệp của bàn quản lý PTN hay không thì anh Tín cũng sẽ có hỗ trợ thiết lập trên dashboard của PTN. Và em cũng mong nhờ là anh Tín và anh chị DCC sẽ bắt đầu triển khai thử với các lớp ở hiện tại để bắt đầu áp dụng cho các lớp sẽ có sự định kết thúc ở trong nửa cuối tháng 1.
+
+và đồng tháng 2. Dạ. Thì vui cho chị cái slide tiếp theo. Dạ thì ngoài ra em cũng báo cáo bổ sung cái việc chăm sóc các các lớp có dự kiến kết thúc quá trong tháng 12 tại vì cái này sẽ làm phấn xíu liên tục. Dựa vào việc khai giảm của các bạn, lịch khai giảm sẽ có những lịch kết thúc khóa khác nhau. Trong tháng 12, hiện tại có 6 trên 14 lớp đã kết thúc khóa theo vụ thu hồi. Nhưng hiện tại vẫn còn trong trạng thái đang học. Ở đây sẽ có một số lý do. Ví dụ như lớp ở Huế.
+
+thì nó có sự thay đổi khoảng 2-3 tuần là cái lý do là kết thúc bán nhưng mà do các bạn lại dạy bổ sung thêm sau cái lịch nghỉ ở cái giai đoạn mà ảnh hưởng của bão, lũ. Và sau khi tương tác với cô Hạnh ở Huế thì cô Hạnh cũng cần sự tư vấn định hướng ở trong lớp K3 này. Và đối với thứ 2 là ở 2 lớp ở Đại học Phòng thương thì sẽ thay dạm lên khoảng 13 học viên trong tuần thứ 2 và tuần thứ 3 của tháng 1. Thì đây là MSA và bên KZ đã ổn định rồi.
+
+đã chốt được nguyện vọng của các bạn rồi thì cái này sẽ không cần sự can thiệp của bên bộ phận quản lý nữa. Và một cái lớp ở Tiền Giang đó là lớp phá 2. Lớp khóa 2 thì kết thúc khóa 2 để lên khóa 3 Thì cái lớp này thì có tỷ lệ lên khóa khoảng 50% thôi Tại vì cho các bạn nghe từ đầu các bạn đã có một cái mục tiêu là học kính nhật để lấy bằng CPT N5
+
+Hiện tại, các bạn đang trong 2 tuần luyện thi vì sẽ có khóa học tặng kèm. Kết thúc 2 khóa sẽ có tặng kèm khóa luyện thi. Chính như vậy, em cũng có đề xuất cô Hà Thi cũng sẽ tổ chức Tư vấn định hướng cho các bạn. cho lớp này để giúp các em hiểu thêm được mục tiêu về việc học tiếng Nhật và có định hướng để các em nâng tỷ lệ liên quan cao hơn. Và một lớp nữa ở Bến Tre thì cũng...
+
+đang học và để chờ lớp kết thúc vào tháng 1 này để gộp lại cùng học lên khóa 2. Một lớp ở Long An vừa mới kết thúc vào ngày thứ 6 tuần trước. thì có 4 em thôi, nhưng mà 3 em thì sẽ chờ để mở một cái lớp mới linh quán. Và thì trong cái tuần này thì bên chỗ của em Thầy Đức Cô Nhiên thì sẽ tương tác với trực tiếp Tiền Giang và Huế.
+
+để lên lịch, đồng thời là nội dung tư vấn định hướng cho hai lớp này để hy vọng mong các em sẽ có những thay đổi để các em sẽ có học clip lên ở kênh hóa tiếp theo. Dạ, cho chị một cái slide cuối cùng mới hiểu.
+
+Hiện tại, xong xong với việc tư vấn định hướng cho 2 lớp ở Tìn Giang và Huế, team sẽ bắt đầu thực hiện theo quy trình chăm sóc học viên ở 6 trên 14 lớp, có dự kiến kết thúc vào tháng 1. Ở trên sơ đồ này đang có Đồng Nai, Bình Triên, Vĩnh Long, Sắp Trăng, Huế và Tìn Giang.
+
+Thì em cũng đề xuất anh Tín cùng anh chị TCC là sẽ ấp dụng thử theo quy trình đã xây dựng ở trên để sẽ bắt đầu thại thử luôn ở trong tháng 1 này. Và đồng thời ở trong 14 lớp này thì đang có hiển thị 5 lớp 1B2. 5 lớp này em xin chuyển về đúng tuyến của anh Đông Huy để anh Đông Huy trực tiếp triển khai cho các bạn ở team Vĩnh Long Đó là những việc hiện tại ở trong tuần này và tuần tiếp theo
+
+các anh chị ở trong VTN sẽ trực tiếp thực hiện và hy vọng là những kế hoạch, những lộ trình như thế này thì một phần nào đó sẽ giúp cho các... Thầy cô các anh chị ở Trung tâm Linh Kết sẽ có được các bạn liên quan đến kỹ lệ nó nhiều hơn và sẽ đi sâu vào xây dựng những nội dung cụ thể để giúp các em ngoài những kiến thức chuyên môn hàng ngày ngoài việc giao tiếp với Thầy cô thì cũng sẽ có những cơ hội để gặp, tương tác được với những anh chị khác để giúp em hiểu hơn về mục tiêu của việc học tiếng Nhật.
+
+và định hướng để công việc lông dài thì nó rất là quan trọng. Dạ, em xin hết ạ.
+
+Đi đi em
+
+Dạ vâng ạ, thì cũng là cái nội dung hiện tại cùng chốt lại về cái phần báo cáo của bên MFA. Dạ, em nhờ các anh chị hướng dẫn thêm về cái nội dung ạ.
+
+Tùm sau các đội sẽ chạy kết quả của mình Nó ra kết quả gì thì chị cũng không có thấy rõ
+
+Rồi còn cái vấn đề sử dụng như là video, thì trong đó sẽ sử dụng như là có bao nhiêu cái lớp, bao nhiêu cái số lượng và vậy từ tuần này lớp nào đội nào sẽ làm cái gì thì mình cũng thể hóa nó ra luôn.
+
+Từ tuần sau chỉ còn mình báo cáo kết quả lại thôi Mình vẫn còn việc chuyển thai chi tiết, những cái giải pháp Mình sẽ gặp nhau trong tuần để mình nói câu chuyện đó cụ thể hơn
+
+Còn ở đây thì chị Nghĩa lọc giải thích quả không số và hay đang không được cái gì thì còn được cái gì thì lúc đó anh Dũng, anh Anh hay Dũng là anh...
+
+Mọi người đây sẽ có thêm những cái góp ý và những cái đưa thêm cái nội dung để mình nâng lại như thế nào thì mình sẽ bám sát vào cái kết quả hơn là mình đi vào
+
+Chắc là dũng cho chị ý kiến về cái mô hình, tại vì sau khi kiểm soát thì cái việc làm mô hình, cái kết quả mà sẽ đạt được
+
+Cách thức mà mình sẽ kiểm soát trong khoảng cùng như thế nào để thực tệ hóa nó ra
+
+Cảm ơn chị Ly. Cấu trúc về báo cáo thì như chị Ly chia sẻ thì nó cũng rất là cần thiết để mình cố động lại về cái đối chiếu với kết quả mình đã xây trong một năm thì đối chiếu trong cái tháng 1 này thì kết quả cần đạt được bao nhiêu và cái thực tế là bao nhiêu thì về cái cấu trúc này thì chắc là lần sau bên phía báo cáo tụi em sẽ đền hình lại cái cấu trúc như thế.
+
+Thứ 2 là nãy chị Ly hỏi về cái giải pháp Vì chắc có lẽ là hiếu lướt qua nhanh đến thời gian này Chứ còn nội dung về các action giải pháp thì chắc nó cũng hiện lên các hoạt động ở đây Nếu mà nó thiếu khâu nào thì chắc là... Không phải là giải pháp là chị thấy là kêu gắt vào kỹ lại để làm cái gì Nhưng mà chị nói là cái cách gì của cường đội...
+
+Tự nhiên trong đó là từ những cái giải pháp đó thì đội nào nhận lắm và cũng tin họ là cái gì Nếu mà đề kê như vậy thì chúng em sẽ làm, sẽ làm Nhưng mà vậy thì các đội có thực sự là làm giống những giải pháp như vậy không? Còn cái giải pháp đó ai mà mình làm
+
+Cụ thể dạy tên, thời gian và kết quả chứ không nói là đưa ra cái vấn đề nữa Nó cũng hiện ở con số mục tiêu ở bên phải cục 10 cùng của chị
+
+Còn nếu mà nó chưa chi tiết ở những cái yêu cầu vừa rồi đó thì chắc là ban huỳnh luyện của em ở đây sẽ cấu trúc lại cái báo cáo trong cái tuần tới Dạ
+
+là mục tiêu là bao nhiêu đó như vậy thì cùng này có thể là vẫn chạy theo cái kết quả để mà làm đảm bảo động tác có số lượng đó
+
+Các bạn hãy đăng ký kênh để ủng hộ kênh của mình nhé.
+
+Nó hơi nhỏ
+
+Cái trong đấy này là có một tổng qua mười tháng chưa thiếu rồi. Mình đang báo cáo về cái tuần kết thúc của tháng 12 và tuần mới của tháng 1. Hiện tại là trong cái nội dung này là em đang báo cáo về cái mục tiêu của tháng 1 này á anh.
+
+Và cái phần chỉ tiêu chung của tháng 1 thì hôm bữa là cũng có đang làm với bên chỗ của anh Lanh và cái phần mục tiêu Nên là xong cái phần mục tiêu của tháng 1 thì cũng sẽ gắp vô về cái phần mục tiêu tháng 1 Và quan trọng nhất trong tháng 1 thì sẽ là 100 nguồn nữ Nên là em đang để đây là cái giải pháp của 100 nguồn nữ trước
+
+Còn về bình thường, khi mà chia sẻ thì mỗi đội sẽ có một cái bản kế hoạch Nó cũng sẽ tương tự y chang như ở trong này Là về cái con số, về những cái kênh, những cái giải pháp mà mình sẽ thực hiện Trong tuần tuần và cái kết quả của các thành viên Cụ thể đối với từng giải pháp đó là cái gì Thì cái này là nó cũng sẽ có Những
+
+Tuần trước thì em cũng có báo cáo về cái nội dung tương tự như vậy là các đội sẽ có một cái bản kế hoạch riêng trong đó ai là người thực hiện và kế hoạch và mục tiêu như thế nào thì nó cũng sẽ có ở cái phần này Tuy nhiên thì trong cái đợt này thì nó đang gom chung về nội dung của các đội để mà chia sẻ cho các anh chị về cái phần giải pháp này trước nên là em không có đưa vô ở trong này
+
+Còn riêng và từng đội khi mà chia sẻ thì chắc đội cũng sẽ có cái bản riêng để mà chia sẻ về cái giải pháp của mình Thì nó cũng sẽ đáp ức đầy đủ những cái yêu cầu của bên chỗ của chị Ly á Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Vậy thì bây giờ bắt đầu từ 2026 với đề xuất của chị Ly thì chắc là anh em bên MSA, đặc biệt ban huynh luyện sẽ xây dựng cấu trúc lại để mình có cùng đồng bộ về mặt tư duy và result về kết quả về mặt giao diện báo cáo của chị Ly Rồi còn chi tiết detail thì khi mình mời bất kỳ một đội nào hoặc là ban huynh luyện sẽ làm việc riêng để mình siết chặt các phương án hành động để đạt được mục tiêu Còn tổng thể này chắc là Hiếu em note là mình sẽ thêm một cái mảng overview
+
+để cho ban huấn luyện BUD sẽ nhìn rằng những hành động của các đội như thế nào một số giải pháp cụ thể là gì và mục tiêu là con số trong tháng hoặc là trong tuần đó thì nó sẽ tổng quan hơn thì em ghi nhận ý của chị Ly là sẽ bổ sung thêm phần đó để lần sau nó rõ hơn
+
+Không có thời gian nếu như mà các đội đây...
+
+Em với Hiếu sẽ thảo luận thêm cái phần này để đưa ra cái phương án cho nó hòa hòa nhất đi Dạ, cảm ơn chị Lý
+
+Thì sao lại những trận chiến lập làm được? từ Codec Cloud sang cái Depth sắp tới nên là cái này chắc là cũng xung sinh là một cái thời gian để mà nó hoàn thiện được cái phần này và cuối cùng như vậy nó ra được cái Dashboard Toolset để nhìn nó rõ hơn để không có mất công mình phải trích lọc nội dung rồi phải làm lại nữa chị cái này chắc là phải cần một chút thời gian đang triển khai vậy?
+
+dạ, cái đó mình hướng đến thôi còn lại cái cây trong cái bản là nghĩa là cô đọng thời gian nghĩa là thích quả không số còn nghĩa là mình đi vào tổng quan trong cái bản mô cấp Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Nói như là định hình được cái mà BBVD muốn thấy và cái nội dung dữ liệu cần mình show lên thì cái này chắc là không sao, em sẽ ngồi vài chỗ hiếu để transforming thêm cái phần này Cố gắng phân ra báo cáo Pháp và báo cáo Bắc
+
+Chắc chắn nó phải khác nhau Nó đi theo cái tổng Cái tháng mà không làm rõ cái tháng ra là nó cứ luôn cục được
+
+Từ tháng đến tuần Vì mục tiêu của tháng và giải pháp và đề xuất của tháng Đó là một phần đó đã lại quyết định chia sẻ
+
+Thì nó bám vào trong đó Mỗi một tháng thì có một cái bầu cao tháng Tánh cao tháng
+
+Tháng đó nó linh với cái giải pháp hành động của năm Nhưng mà tuần thì nó linh với tháng Nó sẽ có những cái mới của tháng, của tuần À cái tuần này vừa rồi nó có những phát sinh như thế này Thấy cái giải pháp này rất tuyệt vời, triển khai ở những địa điểm này Chính thuật Ừ, chính thuật Rồi
+
+Anh nói thế này này, cái việc triển thai cái sở đổi của quốc lễ nó không chỉ 100 cái lưỡng này Nếu mà mình chỉ có tập trung 100 cái lưỡng này và trong khi đó thì còn bao nhiêu cái giải pháp nữa để ra các con số khác Con số mà nó... Chúng hạn vào vài tháng nữa dài hẳn thì em cứ làm với khách hiếu để sắp có cách.
+
+Cái này sắp thủ cái rồi anh nhớ anh chia sẻ phòng ký với anh Dạ Cái này thì nó chưa có thể hiện hết đâu ạ Dạ Nó chỉ đang là đầu tuần của tháng thì Vì từ cái ngày cuối năm tới bây giờ thì nó có một số ngày đó thì đốt kết và đi thẳng vào cái này Còn cái tổng thể của một năm và từng quý Các phương án hành động Dạ Thì Thì dạ Cái master plan tổng thể đó thì nó Nó sẽ chia ra từng quý và quý nó đổ xuống từng tháng như anh Lanh vừa nói đó Thì nó làm cái phần nó rộng hơn chút Dạ
+
+biết còn nội dung gì nữa không Hiếu ơi không biết trả về cho chị hiện tại ok rồi anh ạ để em chuyển khai tiếp một số các nội dung về những cái yêu cầu của các anh chị để mà hoàn thiện hơn về cái hệ thống quản lý của MSA để 
+
+[KHA]
+cho em ý ký vụ này Hiếu ơi anh có nhớ là đợt vừa rồi chỗ anh TÍn đó
+
+Với lại DCC có làm một quy trình tiếp nhận đăng ký MS Trong đó nó có luôn bước đăng ký về mục tiêu cho từng MS  Ở đây Dũng lúc nãy có nói về dashboard ngày hôm qua có trao đổi current dev mới Sẽ có thời gian làm phiên bản mới và hoàn thiện Nhưng mà thời gian để làm dashboard đó gì cũng phải qua Tết Thì mới có thể thấy được kết quả
+
+cùng là cao điểm nhất của năm chúng ta cũng không thể nào mà phó mặc cho cái tool đó để mình làm tiếp Nhưng những cái hiện tại hiện giờ của mình là mình đang có sẵn là mình có thể chỉ đạt được khoảng 60-70% kết quả mong muốn của cái dashboard mới thôi Nhưng mà đâu đó nó đang có những cái nơi để mình ghi nhận lại kết quả thực tế của từng người Đâu đó nó có cái nơi để ghi nhận lại mục tiêu mà mọi người đang đặt ra
+
+Thì nên là kết hợp những cái này trong cái giai đoạn chuyển đổi này Chứ nếu mà bây giờ mình bỏ hết để mình làm thủ công Mỗi tuần mình đang báo cáo lại hằng tuần tui đặt mục tiêu bao nhiêu, hằng tháng đặt mục tiêu bao nhiêu Và phải truy ngược về tuần trước, tháng trước để xem thì cái thời gian để mình làm báo cáo đó hay là cái thời gian để mình tổng hợp những cái nội dung này nó sẽ không có kịp thời để mình giám sát được team trong cái giai đoạn cao điểm của năm thì ý của anh là nên phát hành sử dụng những cái hiện có để mình tận dụng nó thì nếu trong quá trình làm có khó khăn cái gì thì anh cũng sẽ phối hợp thêm để anh hỗ trợ cho Dũng trong cái giai đoạn đầu nó tiếp nhận những cái số liệu mới
+
+[DŨNG]
+|Góc độ này thì em với Hiếu sẽ tiếp nhận và sẽ phối hợp cùng anh K để link lại các số liều data tận dụng các cái công cụ hiện tại trong thời gian mình thi công cái dashboard kia ha Cảm ơn anh K, sẽ ngồi với anh K thêm một chút này
+
+Chắc là em báo thêm luôn ạ. Tại vì cái module của bên chỗ của anh Tín thì hôm bữa anh Tín cũng có trao đổi tuần trước là sẽ nhập cái thông tin mục tiêu lên á, thì ở phần này thì em cũng có cái lộ trình là sau khi mà mọi người đặt xong cái phần mục tiêu trong tuần này thì cũng sẽ hướng dẫn cho các thành viên đặt lên, là bao gồm cả cái phần mục tiêu của bên HR bên chỗ của chị Phượng cũng sẽ đưa lên trên hệ thống luôn, thì em hiểu là khi mà bên hệ thống bên chỗ
+
+đắp bom mới còn ít thì nó cũng sẽ còn phải vào trong cái hệ thống này để mình lấy dữ liệu ra. Nên là những dữ liệu nào liên quan đến phần nhập liệu trên hệ thống thì đều sẽ hoàn thành trong thời điểm hiện tại. Còn ngoài ra trong phần thời điểm này thì em cũng sẽ áp dụng thêm những file Excel để mà gọi là cơ bản thôi để mà có thể quản lý được các hoạt động cũng như là giải pháp đối với các team.
+
+và trong thời điểm hiện tại nên là cũng sẽ có cái phần này trong cái nội dung mà hiện tại mọi người đang làm Với tinh thần là song song anh nhé, với tinh thần song song là trong thời gian thi công cái kia thì hiện tại là bác huynh luyện sẽ sử dụng những cái thủ công có thể sử dụng để phục vụ cho công việc đồng thời là liên lạc với các số liệu dữ liệu đã được ấn định trên BGIT để từ đó có cơ sở đối chiếu với các con số, các cái phương án hành động sao sát cùng với các đội
+
+Cảm ơn các bạn.
+
+Cảm ơn các bạn đã theo dõi. Hẹn gặp lại các bạn trong những video tiếp theo nhé!
+
+Và kết quả như thế nào? Và cái vấn đề chúng ta cần giải quyết trong tuần này với ai, việc gì? Chúng ta không đi sâu quá vào cái việc là giải quyết ngay trong cái buổi tiến thai Chúng ta đưa vấn đề là trao đổi với nhau sắc thức để mà làm sao đặc lực Để mà chúng ta có thể là trong tuần chúng ta triển thai được gì biết
+
+và báo cáo sắp tới thì sẽ rất là nhiều việc để chúng ta Thứ nhất là xây dựng như loại đội hình của mình Thứ hai là xem kết quả trong năm và đặt mục tiêu trong năm mới Vì đây là một khoảng thời gian mà rất là cần các biên gian phải chạy cùng với nhau Vì không thể nào là chúng ta đặt mục tiêu mà chúng ta không liên quan đến mục tiêu
+
+Và mọi người cũng có thể là lên kế hoạch gì đó và tương tác cùng với nhau để mà có thể là đặt cho cái tuần sau nó có sự rơm rã hơn hơn là đúng rồi.
+
+Trong những báo cáo chia sẻ của mình, chúng ta đưa ra cụ thể luôn Vấn đề là nhìn, ai được đứng nắp và không thời gian nào kết quả mong muốn là nhìn Chúng ta nên đưa cụ thể như vậy để mọi người có thể nhìn
+
+[TRÚC LY]
+
+Thì đây là cái hướng dẫn, hướng dẫn cách thức dễ dãy là chất lông là một công cụ như thế nào và khi mình tương tác làm với chất lông thì mình sẽ grow nó ra sau trong nội dung của mình và mình đổi qua như thế nào và cái quá trình khi mà mình nhận lại cái kết quả từ chất lông thì mình nên làm cái gì tiếp theo và cuối cùng là khi nào đi đến cái việc là cái văn bản đó,
+
+thì gần như là LY rút ngắn rất nhiều thời gian với Sếp trong cái việc dùng cái chát lông này. Ngày xưa khi muốn trình bày một vấn đề gì đó thì bản thân LY cũng phải đi gom tất cả các thành viên soạn thảo ra đưa ra ý kiến xong rồi vào họp với Sếp. Thì cứ một gần họp như vậy thì thời gian rất ngắn và Sếp lại rất nhiều những buổi họp tiếp theo. Cho nên là sau cái chỉ đạo ngày hôm đó thì ngày hôm sau Sếp lại có những ý tưởng chỉ đạo khác thì gần như như vậy sẽ rất khó để đến kết quả là trình ký mình việt một cái gì đó.
+
+Thì gần như trong cái thời gian qua thì khi mình dùng cái chát lông này thì dìm dìm lớn hơn 1 xíu. bản thân xếp và chỗ ly có thể là có những cái tương đồng với nhau về cái mà được Jack Long đưa thêm ý kiến và Jack Long hướng dẫn vào sao nó làm, sao mình xếp cách tự tin để ký bởi vì cái văn bản xếp ký nó đã đưa ra những đề xuất từng khi em đưa đề xuất thứ hai là đưa ra cá nhân ai muốn làm
+
+tổng hợp tổng hòa từ cái việc kiến thức những cái kho dữ liệu, những cái thông tin mà chắc không có cùng với cái sự là xếp đã nạp vô rất nhiều tư nguyên là sếp là người lãnh đạo cho nên khi mà ra một con bản này gần như giống như là sự chỉ đạo của sếp mà được bổ sung một cách rất là cụ thể hóa từng vấn đề thì từ đó thì mình có thể là dùng cái chất lông để mà có thể là đưa đến cái việc là truyền vi sếp một cách rất là hiệu quả và nhanh chóng thì ví dụ như lớp 3 này thôi thì trong buổi sáng ngày hôm buổi chiều này hôm trước thì Đăng Vi ngồi nói chuyện với sếp và sếp có một cái hướng dẫn là về cách sử dụng chất lông rất là đi ăn thôi, sau đó cái bình lãnh găng đó nên nó càng nhiều mà càng cẩn thận
+
+Và trong 1 buổi sáng đó, khi chị cần gửi cho sếp thì sếp đã làm 1 bản hướng dẫn rất là cụ thể, rõ ràng Nếu như cái việc này, bản thân Ly trước đây, Ly muốn làm được với sếp cái bản bản này Thì chắc có lẽ là 1 tuần cũng chưa xong được nữa Nhưng chỉ trong 1 buổi sáng thì sếp đã ra 1 bản hướng dẫn Và Ly dùng được để có thể đi trên đường hướng dẫn bọn người Thì đây là các cách mà Cát Long đang tiếp cho bản thân Ly Mình nhìn thấy rất là rõ về cái dự quả, về cái thời gian và cũng như là cái thất lượng của 1 cái bản hướng dẫn
+
+Hôm nay Li chia sẻ cái này là mong muốn rằng là hôm trước không chỉ chia sẻ rồi thì không có canh chịu như Li cũng như là không có những thành viên chịu trốt Thì hôm nay Li chia sẻ nhân lại Trong tuần này và trong các phút thời gian ngày sau, mọi người có thể làm việc với sếp dùng chát long này để mọi người được trình ký một cách nhanh chóng và dễ dàng hơn Trong lời định nghĩa, chát long không làm thay bạn Chát long giúp bạn nghỉ đủ, nghỉ sâu rồi tự chịu trách nhiệm với việc trình ký của mình Người đầu mối là người thấy trước, nghỉ trước, bắt tay trước họ biết rõ việc này do ai, nhận lại cái gì báo với ai và phải xong khi nào Có nghĩa là khi mình dùng chát long là tất cả những nội dung
+
+là mình phải chịu trách nhiệm với nội dung mình đề xuất Chết lông chỉ là bỡ rộng thêm và đề xuất thêm đưa thêm những cái ký mức, đưa thêm những cái thông tin dưỡng luyện để ra cái bước định một cách chính xác hơn thôi chứ không phải mình nhờ chết lông làm cho tất cả những cái đề xuất của mình thì nó không phải là như vậy
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn yêu cầu này đề xuất này giữ, yêu cầu này nên bổ sung cái gì thì mình nên đi rõ trong cái file mình làm như có chết không từ cốc bước 1 cái nào là nội dung này cần bỏ, nội dung nào cần giữ, nội dung nào cần bổ sung để khi gởi lại thì 2 bên có nguyên 1 sự đối tòa với nhau rồi đó
+
+Rồi cấp độ liên lạc là hướng tới... cái này một lát tôi sẽ... ở phía dưới
+
+Chỉ là không giới hạn về số lần tương tác của Trang Long vì vấn đề Để qua, để lại, đến khi nào văn bản mình cảm thấy là mình tự tin, mình suy nghĩ và mình đề xuất rằng là cái file này tôi đã làm đúng rồi, tôi đã suy nghĩ và nên thành xếp và cái đó là cái văn bản.
+
+Các bạn hãy đăng ký kênh để ủng hộ kênh của bạn nhé!
+
+Các bạn nhớ đăng ký kênh để ủng hộ kênh của mình nhé!
+
+Hãy đăng ký kênh để ủng hộ kênh của mình nhé! Bạn phải từng đánh giá quyết định lo dung cuối cùng Trách Long giúp bạn nghĩ đủ Rốt không nghĩ thay bạn Trách Long không chịu trình nghiệm Ký mọi nhân bản trình ký Vì là cho người trình trình nghiệm Không nói là Trách Long bảo vệ nên em là vậy Có nghĩa là khi mình đề xuất một vấn đề gì đó Trách Long trả lại thì mình làm sao đối thoại đến nhân bản cuối cùng Và khi mình trình ký thì đó là vấn đề của mình Đó là chịu trách nhiệm của mình Trong cái đề xuất đó Chứ không phải nói với xếp là Cái bản mà Trách Long đã là người hướng dẫn rồi Và em đi trình ký
+
+Các bạn nhớ đăng ký kênh để ủng hộ kênh của mình nhé! Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Lỗ thứ nhất là TV Super thì này không phải nha Có nghĩa là mình kể file rồi mình nhận về Ben trình xếp bị trả về hỏi về làm gì gây ra cái hiện trạng nha Thì cái vấn đề là đảy trách nhiệm ngược lại cho xếp Không có quan điểm cá nhân Thì cách sửa hả Tự nánh giá, tự quyết định Về cái thậu dung Trước khi hành trình Đây là lỗ thứ nhất là không phải là
+
+Mình là shipper, mình chỉ dẫn trách đôm xong mình định ký Và cô nói là em đem lên ship định ký thì cô nói câu đúng là Đây là bản em thấy hợp lý, em kề xuất ship ký Phải luôn làm mình là người chứng hiện cho các việc mình định ký cái vấn đề gì Và cái lỗi thứ 2 là hợp họ đồng mất trách nhiệm Nên là khi chúng ta hợp mỗi người đưa ra ý kiến Xong rồi chúng ta là người quyết định chọn ý kiến nào đó chúng ta đưa lên các nông Thì ý xếp muốn nói như thế này là chúng ta hợp với nhau Có thể là ai cũng đưa ra ý kiến của mình cả Và cái người đầu mối sẽ là người tập hợp tất cả những vấn đề, ý kiến của từng người Và khi mình đưa một vấn đề đó lên có thể là đưa ý kiến đa chiều các bạn bạn đó Thảo ý kiến của Trung Lưu là gì, ý kiến của Julie là gì, ý kiến của Nâng là gì Mình đưa ra các ý kiến như vậy khi mình trình bày Mình đưa ra thì chắc họ sẽ phân tích dựa trên những ý tưởng, đề xuất đó
+
+và chọn ra một đề xuất hợp lý Đây cũng là một cách để chúng ta có thể dùng chất lông trong nghĩa là chúng ta phân loại ra đề xuất nào là hợp lý nhất trong vấn đề của mình Chứ cũng không phải là chúng ta sau khi họp xong thì anh ta quyết định là đề xuất này là hợp lý thì anh ta chọn đề xuất nào còn đưa lên thì có thể nó cũng mất đi những ý tưởng và ý giúp của những người khác Vì đây là cái lỗi thứ 2
+
+Và lỗi thứ 3 là không bình dân quan điểm Nghĩa là khi mà đưa ra một văn bản cho đến lúc mình không ghi ý kiến là của ai Ví dụ là đây là của Trung Hiếu, đây là của Pháp Linh hay của ai đó Thì mình nên mô tả rõ nè để khi tới lúc trả lại thì phân tích biết rõ là của cá nhân nào hình định nhân trong cái vận đoạn đó thôi xíu xíu
+
+Đây là 6 cấp độ phan đo để biết các bác sĩ có xếp Ở dưới sẽ mô tả rõ từng cấp độ nào các hình huynh ra sao
+
+Ví dụ như là cấp độ 6, cấp độ xuất sắc là khi mà gặp trực tiếp ship trình bài xong rồi tâm thế là level cao nhất là quyết liệt và hiệu quả có đa vua điểm là ship nắm thông tin đầy đủ, nghe, nhìn, thấy được và quyết định nhanh và áp dụng là việc khẩu, tùy cái đạo dung của chúng ta, tùy cấp độ nào chứ không phải gửi một cái là chúng ta dùng cấp độ 6 hết thì nó không phải, một vấn đề của mình có thể là 2-3 ngày một vấn đề của mình có thể là một tuần thì cho ship thời gian để ship xử lý rất nhiều những cái đạo dung khác
+
+Các bạn nhớ ĐĂNG KÝ KÊNH ĐỂ XEM VIDEO MỚI NHÉ CÁM ƠN CÁC BẠN
+
+Các bạn nhớ đăng ký kênh để ủng hộ kênh của mình nhé! 4 đến 8 giờ, xác định vấn đề, đội điểm hướng dẫn, gỡ nhắc lông trong 4 giờ đầu, nhận bảo hồi, chỉnh sửa trong 12 giờ báo cáo Mình phân loại từng vấn đề để thực hiện cấp độ ưu tiên chứ không phải là mình cứ cái cấp độ nào cũng dùng hết trong vấn đề là thẩm cấp hay là quan trọng nha
+
+Rồi nếu mà những quá trình bình thường thôi thì có thể là...
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Dũng đá chị Diệp Trần Anh hỏi đá hổng tới Cảm ơn em
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Các thầy bột để đó.
+
+Sếp không rôm cho mình.
+
+Thế thì, cái nội dung mình đã soạn cộng đó xong rồi với mình và mình trao đổi với đối tác rồi Thế lúc này là...
+
+Gần như là đối với mình cái môi trước này là nó hoa xuyên
+
+Cái nhiệm vụ của anh là anh phải tạo ra cái phòng Đại nghị là mình phải đưa ra cái bối cảnh là hệ thống đường sách thành phố Chí Minh này.
+
+đang cần cái mùi nhân vật nổi lại và lền tảng của ISO-2 thì có cái khả năng gì cái kinh nghiệm ISO-2 và đối tác của ISO-2 có thể giúp gì cho cho cái việc đào tạo này thì mình phải đặt vấn đề trên lền tảng đó Và sau đó mình mới đưa ra cái nội dung hợp tác. Thì nội dung hợp tác trong emoji này là có 3 cái nội dung hợp tác. Thì mình phải viết ra 3 cái nội dung hợp tác.
+
+Nè!
+
+Đưa ra 3 lợi dụng hợp tác đó thì mình đề xuất cho Trán Long là căn cứ trên cái chức lăng của cái kinh nghiệm với Sông Hải với các đối tác của ISO-I và với cái... cái thông tin mà... mà chắc nó không có Thì đưa ra cho mấy yêu cầu thì anh có đưa ra yêu cầu Yêu cầu thứ nhất là trên lên tảng căn cứ pháp lý, pháp luật Thì cái hợp tác này
+
+nó ở cái phạm vi nào và nó có cái chức lăng của các đơn vị nó... nó đúng chưa Và thứ 2 nữa là trên cơ sở của cái chiến được của ISO-2 và kinh nghiệm của ISO-2 thì có cái đề xuất hợp tác gì thêm? ở trong đó, và xác nhận những trách nhiệm ở bên trong để làm rõ được trách nhiệm của công ty đường sát, trách nhiệm của ISU-2 và trách nhiệm của...
+
+cái đối tác của mình, thì mình làm càng rõ cái đó thì con Chát Long đưa ra cho mình một cái bản càng hoàn hảo và cuối cùng thì anh đưa cho sếp, thì sếp gửi lại cho anh cái bản nó gần như là cái bản mà Cũ mà mình đã làm, nhưng mà nó bổ sung vào một số những cái ý mà nó lấy từ bên Nhật qua.
+
+Mà mình không có biết Đó
+
+Thì đấy là cái mà anh anh thấy nó như vậy Nhưng mà một lần mình đưa lên như thế và nhiều lần mình đưa lên như thế Thì con chát lông nó sẽ có rất nhiều thông tin Và nó có cả tư duy của người đặt vấn đề luôn
+
+Mọi thông tin mà mình đưa nó sẽ nhớ và nó còn đối chiếu chéo với một phần khác nữa Có thể là bên đề xuất tác của anh Hiếu có một đơn viên quyển nào đó liên quay lần sắp thì nó vẫn nhớ được phần tác của anh Hiếu để nó kết nối lại với đề xuất của anh Nam sẽ có một hướng tốt hơn nữa cho việc thực tác
+
+Manalogic
+
+Còn ai ký gì nữa không? Em chỉ chia sẻ thêm 1 tí thôi Thế em hiểu ạ Của sợi quên chắc long là sợi quên cứng Mình tương tại quên chắc long và cùng cứng
+
+sẽ có trong quy trình đó Còn nếu mình kế suất Chắc Long để mình hỗ trợ thì lúc đó sẽ là một quan hệ giữa mình và Chắc Long và mình sẽ chia sẻ với các bạn thảo thảo cuối cùng cho nên em nghĩ lúc đó em sẽ có thể biết được trong quá trình gọi như thế nào đó là một cái vấn đề Một cái thử thái là em thấy trong khi mình sử dụng AI nếu như mình upload của cái công cụ này
+
+cũng là mình có thể bảo mật nó Nhưng mà nếu một người dùng hoặc có kỹ năng về product, nó có thể khai thạc rất là nhiều thông tin bởi vì đã được nạp hoạt động vào chất lọc. Thậm chí là những thông tin có thể bảo vệ cao hoặc là quan trọng với lợi nghệ hàng thì có khả năng là một người cũng có thể làm được điều đó.
+
+rất là khó kiểm soát Cho nên anh nghĩ nếu sau này em sẽ tự đưa ra một phiên bản chắc lắm thì có thể là một phiên bản có dễ hạn hơn Một số một khi bước đối nhất định thì không phải
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn có thể hỏi được thông tin của BOD hoặc là BOD có thể hỏi được nhiều thông tin của bộ phòng vang thì ở đây là do mình phân cấp mà do mình chưa làm được cái việc đó cho nên mới là chưa xếp và đang đứng giữa là như vậy
+
+Bên em không có những nội dung nói tình chất trên những vấn đề quan trọng như phái trò và nhận đốc của chị Lý Nhưng có những buổi đào tạo ở đây của sự nâng cao học viên thì cách bên em nó đơn giản hơn một tí Đã thấy cô sẽ gửi đến nội dung là vấn đề của học viên Trong buổi học đó hiện tại các bạn lo lắng nhiều gì, quan tâm nhiều gì?
+
+Trước đây khi mình chưa sử dụng trách lóng, nên em làm đề xuất là sẽ tập trung vào nội dung đề xuất định sự chủ đề Nhưng sau này thì em hưởng nhận nhiều nội dung là ý sai của học trò bao gồm những vấn đề học viên lo lắng, quan tâm về gì là mình nên đưa vào trong đề xuất nhé Bởi vì khi sử dụng nội dung đó vào trong trách lóng thì chắc chắn sẽ đi cùng đối với các bạn học viên này thì chắc em có những đề xuất gợi ý gì để...
+
+Trần Hoàng Bình và những kỹ nội dung về chủ đề đào tạo ông Lê Máy Tơ Sau đó sẽ gửi về kỹ nội dung của kỹ buổi học để thay cố dựa vào truyền bị kỹ nội dung đào tạo trước xíu Có nghĩa là quy trình kết nếu sẽ không có những bước máu tình chất để ký ra được trình kỹ duyệt mà sẽ có những phản hồi của kỹ nội dung đào tạo tướng ngực về kỹ buổi đào tạo
+
+Cô đơn của Học Viên Phương Vì hiện tại của Học Viên Phương Của Phái Thảo
+
+Cảm ơn các bạn đã theo dõi và hẹn gặp lại các bạn trong những video tiếp theo. Hẹn gặp lại các bạn trong những video tiếp theo nhé!
+
+Các bạn có ý kiến gì nữa không?
+
+Hẹn gặp lại các bạn trong những video tiếp theo! để làm sao trong tuần sau để phích lập 1 buổi thứ 2 mình sẽ ngồi trao đổi với nhau 1 cách nó năng động hơn, nó chủ động hơn và nó có những kết quả mình ghi nhận để vượt qua. để mình triển thai thành các chương trình hành động.
+
+Chắc hôm nay mình sẽ kết thúc ở đây trong việc là bộ người gì Thứ nhất là chỗ MS sẽ giúp giùm việc thay đổi là cấu trúc hợp, thay đổi là cấu trúc báo cáo Và những bộ ban khác thì dựa trên bộ mẫu của MS ngày hôm nay Thì sau mình sẽ làm mẫu lại cho từng video của mình trong việc đưa vấn đề ra
+
+Em xin chị Lê có đại diện của các DOD cũng như là các anh chị trưởng BIDU để tránh là tuần sau nó sẽ lặp lại giống như là buổi ngày hôm nay. thì em xin phép luôn mình chốt luôn cái cấu trúc và cái nội dung và cái thời lượng Nếu mà cùng một thời điểm mà tất cả cùng đăng ký thì lại nó vừa quá thời gian Nhưng mà nếu như để như hiện nay thì mặc dù là ví dụ như cũng có đề nghị có những cái phần báo cáo của bên các khối, khối kinh doanh, WU rồi đến khối đào tạo rồi đến khối bách thì em nghĩ rằng là có khoảng 15 phút để mình chốt luôn
+
+với lại chỗ Phú Kha, chỗ Dung thì nó sẽ không có bị lặp lại giống như là cũng duy trì được một thời gian rồi sau đó quay trở lại cũng có MSA với lại chỗ IDS. Thì nguyên toàn bộ cái phần của khối đào tạo mình tại vì mình đưa học viên vào, nhưng mà học viên cái tình hình học viên như thế nào, học viên nghỉ rồi chất lượng học viên như thế nào, rồi chuyển đổi học viên như thế nào, chuyển đổi lên PY ra sao thì gần như thông tin là nó cũng không có hoặc là các phòng ban có những cái nội dung nào.
+
+Ví dụ như ngày hôm nay thì chị Lê Thấy câu chuyện của quy trình Lê Long Sơn Mát Tơ mà em là một trong những thành viên mà được bố đem nhiều nhất về chương trình này. Tại vì thường là sếp có nói em một câu là Lan Vy rất là thích đi máy bay nhưng mà không bao giờ mua vé. Tại em ngồi ngay lầu 6 nên em thấy sếp vô là team của em vô gặp trực tiếp thôi.
+
+Chứ không có qua quy trình Lê Long Sơn Mát Tơ. Nhưng mà khi sếp hướng dẫn lại là tụi em bị một cái nhầm lẫn là chắc Long không phải là sếp. mà Trách Long sẽ là người giúp mình có góc nhìn đa chiều thay vì mình phải tự làm thì sẽ thông qua đó. Cái phần mà chị Ly đã đào tạo và chia sẻ hôm nay nó rất là phù hợp với các thành viên. Em cũng xin ý kiến ban thư ký rất là mong mình chốt cái này luôn.
+
+Và có chương trình MSA nó đã đi vào khung. thì cái thời lượng và cái nội dung trọng tâm là gì? Phần của IDS và CUCA thì quan tâm đến những nội dung gì? Phần khối đào tạo cũng vậy, bởi vì riêng khối đào tạo là em thấy 4 tuần này là không có phần cập nhật.
+
+liên quan đến tình hình học viên, chuyển đổi như thế nào, các khối bắt thì em xin phép có ý kiến. Rất là mong chủ chị Ly chủ trì để mình chốt cái phần nội dung này Và bên phía của Azutech thì bên anh Hiếu cũng Cũng có những cái chương trình ví dụ như là 2 tuần hay như thế nào đó để cập nhật Dạ thì em cũng
+
+Xin phép có phần ý kiến này luôn ạ
+
+Em ý kiến có thể tham dự trước phần này không? Em ý kiến thường xứng như thế này tức là em nghĩ là thực ra thì trong cái báo cáo cuối năm thì hầu như được bấy là một phần nào cũng có cả Tuy nhiên, thực ra trong báo cáo tháng thứ 2 thì hầu như là cũng là lát đát bộ phần của báo cáo. Em cũng hay nói, ví dụ như là nếu mà cho giải vang là phải trao hành trường cho MFA và cho anh Tuận. Tại vì hai bộ phần thường xuyên nhất đến giải vang thì chắc là sẽ cho em.
+
+Còn lại các bộ phần khác có thể là đồng thay đồng. Thì em nghĩ là như này, tức là trong câu chuyện, báo cáo ở đây chắc là sẽ bao gồm vài lý. Đầu tiên có mặt ở các bộ phận, đầu tiên là người dịch và người chết là cái thứ nhất. Cái thứ 2 nữa là cái kinh doanh đầu vào của MFA, cái đào tạo của bên chỗ...
+
+Thì em cũng sẽ nghĩ là có ý kiến là báo cáo... tức là trong 1 tháng thì bộ phận kinh doanh sẽ báo cáo 2 lần tất cả các bộ phận nào nguyên văn kinh doanh kể cả BU lẫn MSA kể cả BNCOPAN thì sẽ báo cáo tính chất là 2 lần Tuy nhiên đột xuất thì sẽ báo cáo nhưng các bộ phận là phòng ban gọi là khối phụ thuộc thì tính chất 1 tháng báo cáo 1 lần Thì như vậy thì nó sẽ duy trì sự đều đặt tại vì là tổng thể 1 cái vấn đề nó sẽ bao gống rất là nhiều nhiều cái yếu tố Và có lẽ đâu đó mình sẽ không thể cực khỏi sự ủng hộ
+
+hoặc là liên minh, hoặc là chỉ nhắm vào một vài bộ phận là luôn luôn phải báo cáo thì theo anh ý lần đó, nó sẽ phải đồng đều cả về khối các quốc gia với nhau kể cả là việc chỗ của Ấn Độ cũng phải nhảy vào báo cáo tại vì cái việc này thì khi có pháp nhân nào thì đều phải có cái dự trình dịch vật tại vì mình cũng trả lương mà nếu nó đứng ra đứng ra thì...
+
+Cái mức lương của người nước ngoài, nước trung trang và người Việt Thì em cũng suy nghĩ rằng là mình có sự rất là rõ ràng Và phải có cực lộ Như vận, trong cái báo cáo 10 năm Gần như ai báo cáo, trong 1 tháng ít nhất Bộ phận này có báo cáo 10 năm Tuy nhiên thì cường độ kinh doanh cũng nên có cảm nhận hơn Chẳng nhẽ thêm trong buổi sáng mình bảo đảo hết 15 người bị là không được
+
+Câu trúc chục Cái tư duy hệ thống đó System
+
+Khôi kinh doanh
+
+Các bạn học tập như thế nào? Nếu các bạn không quan tâm thì hãy lùa đầu vào và đầu ra Trong khi mình cứ nói nó sẽ ngồi vô vào mặt khúc giữa
+
+thì có thể nó sẽ xét trường đội xét trường đội thì nó sẽ xét lại và sẽ có cấu trúc báo cáo không ai muốn nói thì nói mà nếu có cấu trúc rõ ràng thì người ta chỉ nói là kết quả đó
+
+xong rồi phân phát thôi thì nó sẽ phù hợp trong thời gian đó tức là mỗi người sẽ sống súc cho mình chứ không phải là cái vấn đề mà mình cứ nguyên tục nào cũng có vấn đề thì mình chia sẻ vấn đề đó
+
+Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Trong 2 cơ cảm như này, em hết là cái mũ đầu vào Khi đưa vào là xong rồi học cái em nó đang tình trạng ra xa Cuối cùng cái đầu ra là chỗ em đã đuối để em lên
+
+Dạ cho em thêm ý kiến tới này các bạn ạ Hiện tại cái việc mà báo cáo về Các bạn nhớ đăng kí kênh để ủng hộ kênh của mình nhé! Về phía Kaizen, B3 có Phương Nhiên, Thầy Đức. Tùng nào cũng phối hợp với Thúy trong việc tổng hợp những thông tin, dữ liệu. Ví dụ như đang có bao nhiêu lớp tiếng Nhật vừa bị B3.
+
+và trong tháng có bao nhiêu lớp chuẩn bị lên khóa hay là tình tạng những cái bạn mà chuyển bỏ như thế nào dự kiến xuất hiệp năm nào, tháng nào để mà có sự chăm sóc tiếp theo. Ví dụ như là nội dung sáng ngày Thúy có báo cáo thì đấy là cái nội dung mà hiện tại KDN đang quản lý và cho Thị Đức, Cô Nhiên tổng hợp lại để đưa cho Thúy để mà làm cái báo cáo đều về sáng thứ 2
+
+Thì hiện tại là mình báo theo chương trình như thế Chương trình B2 cũng vậy Chương trình B2 thì tổng thể đó là anh Huy đang phủ trách về chương trình B2 Phó học cùng với cô Thư Cùng với cô Sung Tức là hiện tại mình báo theo chương trình và có sự phối hợp giữa người phụ trách cho chương trình là cái đầu MSA cùng với bộ phận giáo viên Cài Giang
+
+Thì em thấy hiện tại đang báo theo chương trình như vậy Và số liệu là phía KT tổng hợp lại để gửi cho các anh chị Để mà đại diện báo cáo Dạ thì đó là về chương trình V2, V3 một chương trình kỹ sư thì đặc biệt chương trình kỹ sư thì bên chỗ thầy Sơn hợp với thầy Hiếu là ví dụ như là chương trình kỹ sư thì chỗ thầy Sơn là đào tạo các lớp trình độ như thế nào đang học bằng N3 N2 bao nhiêu
+
+Thì chỗ thị sơ cũng đang theo dõi kế hoạch độc tạo này Và... và... và... và... À... Có cái nội dung báo cáo về cái phần này À... về chương trình tiết thực sinh thể dẫu của nhà thì tức là nó đi theo chương trình như thế cho nên là thực sự là nếu như mà nói là về phần đào tạo báo cáo thì bây giờ bá theo chương trình thì hiện tại em thấy tuần nào B2, B3 hầu như là cũng có báo cáo cả
+
+Còn phần thực tập sinh với kỹ sư thì chắc là em xin ghi nhận thêm phần này thì em cũng sẽ báo lại chỗ của nhà với thầy Sơn để mà trong cái thứ 2 sẽ báo cáo về cái trình độ đào tạo kỹ sư như thế nào và tình hình thực tập sinh ra làm sao
+
+Nhưng mà cái xem cũng ít ra cũng phải biết là trong tuần qua Tổng hợp trò của mình là bao nhiêu, ca nhảy như thế nào, nhìn mặt ra sao, những gì đó Cũng phải có những thông số tổng quan Chứ nếu đi theo tuần này nhìn thì sao khi nhìn thấy là không có Vẫn là có hóa chuyên vụ này mà mình phải đưa ra để mình có thông thường
+
+Nó nói lên cái điều gì trong cái buổi này để các bộ phận khác có cái hướng giải quyết Chứ không phải là lật một cái bạn tặng bao nhiêu học trò Người ta nói như là cái tình trạng đó, người ta phải nêu lên cái tình trạng và cùng nhau giải quyết và cùng nhau đặt vấn đề với ai, kết quả muốn là gì Nãy giờ người ta nói có báo cáo như là như vậy
+
+chứ không phải như là mong số lên khi mọi người đưa ra một vấn đề thì nó phải có sự tương pháp với ai và không muốn tuần này làm cái gì đạt kết quả của mình là cái gì
+
+Trong năm vừa qua thì cái báo cá học thứ 2 hàng tuần thì phần lớn chiếm đến có khi đến 90%. và cái câu chuyện về MSA
+
+Đó là vấn đề, chứ không phải là điều gì đâu
+
+Trong câu chuyện MSA thì nó cũng báo cáo các con số còn những cái đề xuất giải pháp trực diện. Tầng này tập trung vào làm gì cũng chưa có
+
+Thế là cái cách nào báo cáo của năm vừa rồi Cái thứ 2 nữa là
+
+Cái tổ chức dung mà mình kết luận trong buổi làm việc đó thì vừa rồi sếp chỉ ráo các biệt chỗ ca đang đẩy là những kết luận nó triển khai như thế nào? Thì cũng chưa kiểm soát được cái này Mình nhận cái thật trạng của năm tư, năm năm vừa rồi
+
+Đó là cái buổi đầu tiên họ nhìn thấy cái điều này để mà điều chỉnh
+
+Mặt khác là các bộ phật, cụ thể là các bí dụ, các bộ phật thì thỉnh thoảng có đưa vào cái báo cáo thì nó cũng đi theo cái hướng như vậy Nó không có cái chọc tấm
+
+là việc tổ chức báo cáo thứ 2 hàng tuần, họp thứ 2 hàng tuần thì nó không có thời gian vào ngày thứ Bảy. Ví dụ, ông BOD tổ chức buổi cuốn sáu này là chiều thứ sáu của cộng đồng. Thứ bảy thì có 7 vấn đề tuần sau có quyết định
+
+Trên toàn hệ thống có 7 vấn đề rất là quan trọng Thì khi ông điều tiết cuộc họp thế nào để 7 vấn đề đó nó phải làm? Còn các bộ phận báo cáo thì cũng phải đưa ra những vấn đề rất là quan trọng Chủ yếu là đề xuất để có liên quan đến các bộ phận tổng lực
+
+Vì đó là một số anh anh bổ sung thế thì vào cái phần tới anh thấy là chỗ ly thứ 7 ly thì có, chứ không phải là bên tối thứ 2 bắt đầu là bên thư ký mới đẩy lên à là tối phía nhật mới đẩy lên
+
+Bộ các review và các bộ phận phải có các vấn đề của mình đưa lên, ngoài báo cáo. Thời gian nó không có.
+
+Nhưng mà tuần này mình có thể chụp cái đó thì tuần sau.
+
+Phải ưu tiên cái nào quan trọng về chuyện hương dưỡi là thứ 2 và tập trung vào cái đó
+
+Chỉ có thay đổi như thế thôi thì cái buổi thứ 2 hàng tuần nó mới thực sự nó mới có cái động lực để mọi người ngồi họp, phải nói là như thế
+
+Nếu đã mình chọn thứ 7 rồi thì cái nội dung báo cáo của ngày thứ 2 nên gửi về ngày thứ 6 Thứ 6 Thứ 6 là review đi đó Thứ 7 là ông review đi đó là không có làm gì nữa Tập trung vào chuyện sáng thứ 7 đó Tập trung vào review đó Và các video gửi lên là phải nói anh cái này là trọng tâm, tuần sau là em muốn đề xuất cái này Nhưng mà cái báo cáo thì em cứ báo cáo thôi, nhưng mà còn cái đề xuất là tuần sau em có cái việc này rất là quan trọng
+
+Ví dụ BOD, bây giờ bên MSA, Châu Âu Dũng bảo là Thì nhìn cần tất cả các dân sự của MSA Là phải tuyển grem ít nhất là trong quý một Đấy là một cái, một điểm
+
+Nên nếu như thế thì cái thứ 2 của quản lý nó sẽ... từng quý, và từng quý xong thì nó rớt xuống thành từng tháng Vậy thì trong từng cuộc họp như vậy mình sẽ có thêm Top Action có nghĩa là những hoạt động ưu tiên nhất trong cái tuần này đó là cái gì ngoài cái action, phương án hành động của cái tháng đó Vậy thì trong cái tuần, ví dụ tuần ta họp đây thì kết thúc cái buổi họp đó mình phải đưa ra những Top Action trong cái khâu nào và liên quan đến ai, thì đấy chính là 3 cái tư duy mà em nghĩ rằng là mình cũng có thể tham khảo để chúng ta cùng nhau định vị cái Keyword
+
+Chúng ta làm việc cho nó dễ. Ví dụ như Top Action của tuần sau là những hành động nào. Thì đấy là cái mà em thấy ý của anh Lanh là nó nằm trong cái cấp nhìn đó của em. Trước đó cũng đã từng làm như thế. Và ở đây thì em thấy mình cần phải xây dựng lại từ cái việc là cuộc họp, trong cuộc họp nó cấu trúc thế nào, cuộc họp đó, thời lượng ra sao, ai báo cáo cái gì, và Top Action hành động kết thúc cái phần báo cáo đó là những hành động nào để tuần sau ra được cái kết quả gì.
+
+Thì em thấy nó khá là quan trọng cho cái phần này như thế. Dạ, em xin có chút ý kiến. Dạ tôi xin có chút ý kiến được không anh Lanh. Dạ tôi hôm nay có thể rất là mắc lòng bắt chạy khi nghe cô Trúc Ly với anh Lanh đặt vấn đề về cải thiến cái cuộc họp ạ.
+
+Rất là vấn đề của Dr. Lee Nail và anh Dan xoáy và nhắn mạnh và anh Dũng có ý kiến cuối tuần là tôi thấy rất là cấp thiết ra Và để cho cái cuộc họp này nó có chất lượng Nó khoa học, nó làm cái công tế mà tập hợp toàn đồng Ấn Độ Mà tôi thấy thật ra là cuộc họp mình nó chưa như anh Lan nói là nó không hiệu quả
+
+Vì thứ nhất là như anh Dũng nói, tôi đề nghị là Trong buổi họp đó bao nhiêu người được mời họp Mời phát biểu, mời phát biểu là phải chuẩn bị trước nội dân báo cho Ví dụ hôm đó cô Lê, hay là anh Danh, hay là anh Tín, hay là anh Tún chủ trì Mình phải xem trước nội dung Thứ 2 nữa là chỉ được quy định mỗi người được 10 phút là 10 phút Quá 10 phút là anh bị vi phạm
+
+Chứ không thể báo cáo quy định có 10 phút, anh làm tới mười mấy phút là anh vẫn báo cáo, tôi thấy như vậy là không tôn trọng như người Nga Tôi thấy như vậy, cho nên hôm nay Các vị vừa đề đặt vấn đề cải tiến của học tôi rất là mừng Thật tận như vậy, đó là vấn đề rất là cấp thiết Và nó rất là khoa học Nó khoa học về rất nhiều ý nghĩa khoa học như này Khoa học về nội dung, khoa học về...
+
+tâm lý về khoa học về sức khỏe tất cả thứ và cuối cùng người ta có nghe được hay không chứ mình cứ học mà người ta không nghe thì học làm chi tôi chỉ có ý kiến như vậy
+
+Dạ em còn một ý kiến nhỏ nữa ạ, nếu mà mình đã cải tiến thì mình cải tiến đến phần cùng luôn đi đúng 8h là có mỗi 3 thành viên ban thư ký có mặt và các anh chị VOD mà hot thôi. Đó cũng là một vấn đề. Một là mình xác định ai offline, ai online và thành phần nào tham gia. Và nếu đã tham gia thì mình cũng tham gia là bắt đầu ngay bởi vì khi mà chờ đợi nhau như vậy á, đặc biệt là các anh chị online nữa. Thì em cũng xin ý kiến chị Ly.
+
+Chị Ly là mình nên từ tối hóa qua, hãy đến giờ 8 giờ rưỡi đi tại vì còn xác định mấy một cái thứ nữa hết. Nếu vậy thì mình chỉnh lại cái thời gian cho nó phù hợp. 8 giờ rưỡi là phù hợp. Nhiều người còn di chuyển còn đằng kia làm như vậy thì nó sẽ không có...
+
+Dạ, dạ vâng, em cảm ơn chị Mọi người cùng mở mà Cái nội dung mà mình đã xấp xếp theo cái kịch bản của chị Ly nói á Chắc chắn là sẽ có phía người Nhật, họ cũng sẽ tham gia Thì 2 tuần nay, hay 3 tuần nay thì em có nhận cái thông tin của anh Satakura là Ảnh muốn nhìn thấy được cái bản share script là cái bản chất lợi cũng có thiêu than Nhưng mà do mình
+
+đang sử dụng Mixed MSTeam này để cho mọi người share báo cáo của mình Mỗi khi mọi người share báo cáo của mình là những người khác hay là những người tham gia offline ở đây sẽ không có thấy được nội dung như thế này nữa Và anh Satora cũng chỉ thấy màn hình của người share thôi Anh không có thấy màn hình máy chủ của mình đang chiếu cái bản transcript đang chiếu cái bản dịch đó Thì nếu mà linh hoạt, nếu mà có sự chủ động ở đây thì cái kịch bản này nên có cái nội dung chiếu cho ngày thứ 2 Sẵn là cái gì, báo cáo cái gì chiếu lên luôn để mình tổ chức cái nội dung chiếu
+
+để chúng mình cố định luôn là cái phần nào là phần báo cáo, cái phần nào là phần dịch chứ không có đổi share màn hình, nhiều người share nó sẽ không thấy được cái nội dung dịch của người dịch Ở đây lúc này thì Việt cũng đang hỗ trợ để dịch cho team bên Nhật nhưng mà chưa chắc là nó truyền tải được hết những cái nội dung của ngày hôm nay.
+
+Cái đó là chỉ cách nào đó để mọi người xem cái đó cho mọi người xem qua này được không? Dạ, xe ri thì mỗi người có 1 cái tài khoản ri của nó, chi phí nó sẽ đổi lên Dạ, nó đang mua theo gói là 30 giờ 1 tháng thì bao nhiêu tiền đó Hay là bao nhiêu giờ 1 tháng thì bao nhiêu tiền đó, nó có cái gói hết rồi
+
+Thì mình đang muốn tận dụng một cái tài khoản để cho sử dụng chung cho buổi họp Thì mình mới sử dụng cái nội dung phải đến trước khi mà mình báo cáo Còn chỉ có cái hướng là có thể là mở cái dính sách cấp thêm cho những người nào đang sử dụng hay làm việc với người Nhật hay là người Việt sâu sâu với nhau thì chi phí nó sẽ nhiều hơn một tí nhưng mà nó sẽ hiệu quả hơn nữa.
+
+Chỉ quyết định cái này Nha Ví dụ khi mà xe àm Người xe àm mà em xe đêm lên đó Thì... Giờ máy chủ của em nha, máy chủ của em cài thêm cái dịch Đúng không? Dịch thì em sẽ để một góc màn hình này Em xe cái máy chủ thì mọi người trong cái meeting đều thấy luôn Nhưng mà nếu như ai đó xe cái màn hình của họ À à à
+
+thì sẽ không còn thấy cái mạng hình máy chủ này nữa và có một cái nhân dụng cho máy chủ dạ thì nếu như vậy thì hãy xác nhuận cấp cái máy cho bán đơn ký đi cái máy mà vào vòng vòn cứ ra đầy hổm á thử xem coi như là cái máy đó Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+để tiết kiệm được lesson của dịch. Chơi MS thì khi nào trình bài thì cứ ngồi trực tiếp ở đây để chia sẻ, để nói với không còn lên kênh Thanh Hiếu hôm nay nữa. Dạ. Chờ mọi người nắm ý thầy nha. Mặc nếu mà MS mà chúng ta liên kết mình báo cáo thì có thể có một người chủ ngồi ở đây nè, chíu dùm.
+
+Dạ, chíu ở đây.
+
+Cảm ơn các bạn đã đón xem video này. Hẹn gặp lại các bạn trong những video tiếp theo.
+
+Nó nghĩa là sẽ ngày thứ 7 sẽ cố định lại cái danh sách tham gia ngày thứ 2 Và danh sách đó mọi người cũng nói hết để biết nhân sự của chị nha Cho mọi người bảo đó Để list lại cái danh sách và các video của bạn nào Hai đứa người tham gia trọng tiếp Hai đứa người tham gia online
+
+để mà có cái dịch tất
+
+Hẹn gặp lại các bạn trong những video tiếp theo nhé.
+
+Trong bài này tối Li sẽ tạo ra cái phơm để cho mọi người đóng góp trên cái phơm đó Thử đi đăng ký trước để cái người mà hớt tiền nắm trước nói chung là đã Còn cái việc mà tạo tát, tạo nhìn tính sau nó không phù hợp hết Nhưng trước mắt phải có cái link cho mọi người đăng ký vào cái nào Dạ, em hợp đăng làm cái này phù chị Li
+
+Hẹn gặp lại các bạn trong những video tiếp theo nhé. Đây là những hậu trường mà chúng ta cái nhánh 2 nó không có tình hình như là tinh thần hay là tính lý
+
+Cảm ơn các sếp, xin chào mọi người
+
+Cảm ơn Lan, cảm ơn chị Lê, cảm ơn Tuấn
+
+Cảm ơn anh. Chị em là Dũng hả? Sao không thấy gì hết? Yes. Hàng gì không thấy gì hết. Đó. Đứng lại vậy. Nhớ chị Phương chụp cho em cái đó đi. Anh lướt qua thì anh thấy ngay. Anh chụp cho em cái đó đi ha.
+
+Ủa em chốt được cái ngày đi Vũng Tàu chưa? Thầy Phước gọi thầy công ok rồi nè Ờ... Vũng Tàu hả chị? Cũng tàu, cũng tàu Hẹn gặp lại các bạn trong những video tiếp theo nhé! Các bạn hãy đăng kí cho kênh lalaschool Để không bỏ lỡ những video hấp dẫn
+
+Đúng rồi, đúng rồi.

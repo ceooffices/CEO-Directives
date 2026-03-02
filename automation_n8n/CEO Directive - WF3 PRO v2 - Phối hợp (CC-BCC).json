@@ -1,0 +1,240 @@
+{
+  "name": "CEO Directive - WF3 PRO v2 - Phối hợp (CC-BCC)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "23897b0e-08e3-4178-9e59-6631fd6f13b8",
+      "name": "Daily 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/f2c9e34f-5506-483f-a124-44ae37d38a30/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"property\": \"Tình trạng\",\n    \"select\": {\n      \"does_not_equal\": \"Hoàn thành\"\n    }\n  },\n  \"sorts\": [\n    {\n      \"property\": \"T4 - Thời hạn\",\n      \"direction\": \"ascending\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "a07965f7-cba5-4786-8c5c-93e4cfa62b01",
+      "name": "Query Active Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        0
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/1b71cdca92424f8ca4e628226103316e/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"property\": \"Active\",\n    \"checkbox\": {\n      \"equals\": true\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "d1291170-9514-4777-bb0f-e53766f4ceb1",
+      "name": "Query Message Library",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        0
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF3 PRO v2 - GROUP BY RECIPIENT + NOTION MESSAGES\n// CC: leson@esuhai.com, hoangkha@esuhai.com\n// BCC: chatlong@esuhai.com\n// ========================================\n\nvar tasksResponse = $('Query Active Tasks').first().json;\nvar messagesResponse = $('Query Message Library').first().json;\n\nvar allTasks = tasksResponse.results || [];\nvar allMessages = messagesResponse.results || [];\n\nvar today = new Date();\nvar dayOfWeek = today.getDay();\n\n// ========== PARSE MESSAGES BY CATEGORY ==========\nvar messagesByCategory = {};\n\nfor (var i = 0; i < allMessages.length; i++) {\n  var msg = allMessages[i];\n  var props = msg.properties || {};\n  \n  var category = '';\n  if (props.Category && props.Category.select) {\n    category = props.Category.select.name;\n  }\n  \n  var content = '';\n  if (props['Nội dung'] && props['Nội dung'].title && props['Nội dung'].title[0]) {\n    content = props['Nội dung'].title[0].plain_text;\n  }\n  \n  var usedCount = 0;\n  if (props['Used Count'] && props['Used Count'].number !== null) {\n    usedCount = props['Used Count'].number;\n  }\n  \n  if (category && content) {\n    if (!messagesByCategory[category]) {\n      messagesByCategory[category] = [];\n    }\n    messagesByCategory[category].push({\n      id: msg.id,\n      content: content,\n      usedCount: usedCount\n    });\n  }\n}\n\n// Function: Get random message (prefer less used)\nfunction getRandomMsg(cat) {\n  var msgs = messagesByCategory[cat];\n  if (!msgs || msgs.length === 0) {\n    return { content: '', id: null };\n  }\n  \n  // Sort by usedCount ascending\n  msgs.sort(function(a, b) { return a.usedCount - b.usedCount; });\n  \n  // Pick from top 3 least used\n  var poolSize = Math.min(3, msgs.length);\n  var pool = msgs.slice(0, poolSize);\n  var picked = pool[Math.floor(Math.random() * pool.length)];\n  \n  return picked;\n}\n\n// ========== GROUP TASKS BY RECIPIENT ==========\nvar tasksByRecipient = {};\n\nfor (var j = 0; j < allTasks.length; j++) {\n  var task = allTasks[j];\n  var tProps = task.properties || {};\n  \n  // Get title\n  var title = '';\n  for (var k1 in tProps) {\n    if (tProps[k1].type === 'title' && tProps[k1].title && tProps[k1].title[0]) {\n      title = tProps[k1].title[0].plain_text || '';\n      break;\n    }\n  }\n  \n  // Get deadline\n  var deadline = null;\n  var deadlineStr = '';\n  for (var k2 in tProps) {\n    var k2Lower = k2.toLowerCase();\n    if (k2Lower.indexOf('thời hạn') !== -1 || k2Lower.indexOf('t4') !== -1) {\n      if (tProps[k2].date && tProps[k2].date.start) {\n        deadline = new Date(tProps[k2].date.start);\n        deadlineStr = tProps[k2].date.start;\n      }\n      break;\n    }\n  }\n  \n  // Get recipient email\n  var recipientEmail = '';\n  var recipientName = '';\n  \n  for (var k3 in tProps) {\n    var k3Lower = k3.toLowerCase();\n    if (k3Lower.indexOf('người nhận') !== -1 || k3Lower.indexOf('đầu mối') !== -1 || k3Lower.indexOf('assignee') !== -1 || k3Lower.indexOf('email') !== -1) {\n      var prop = tProps[k3];\n      \n      if (prop.type === 'people' && prop.people && prop.people[0]) {\n        if (prop.people[0].person && prop.people[0].person.email) {\n          recipientEmail = prop.people[0].person.email;\n        }\n        recipientName = prop.people[0].name || '';\n      }\n      \n      if (prop.type === 'email' && prop.email) {\n        recipientEmail = prop.email;\n      }\n      \n      if (prop.type === 'rich_text' && prop.rich_text && prop.rich_text[0]) {\n        var txt = prop.rich_text[0].plain_text || '';\n        if (txt.indexOf('@') !== -1) {\n          recipientEmail = txt.trim();\n        }\n      }\n      \n      if (recipientEmail) break;\n    }\n  }\n  \n  // Skip if no email\n  if (!recipientEmail) continue;\n  \n  // Calculate days left\n  var daysLeft = null;\n  var status = 'normal';\n  if (deadline) {\n    daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));\n    if (daysLeft < 0) status = 'overdue';\n    else if (daysLeft <= 1) status = 'today';\n    else if (daysLeft <= 3) status = 'soon';\n  }\n  \n  // Group\n  if (!tasksByRecipient[recipientEmail]) {\n    tasksByRecipient[recipientEmail] = {\n      email: recipientEmail,\n      name: recipientName,\n      tasks: [],\n      hasOverdue: false,\n      hasDueSoon: false\n    };\n  }\n  \n  tasksByRecipient[recipientEmail].tasks.push({\n    id: task.id,\n    title: title,\n    deadline: deadlineStr,\n    daysLeft: daysLeft,\n    status: status,\n    url: task.url || 'https://www.notion.so/' + task.id.replace(/-/g, '')\n  });\n  \n  if (status === 'overdue') tasksByRecipient[recipientEmail].hasOverdue = true;\n  if (status === 'soon' || status === 'today') tasksByRecipient[recipientEmail].hasDueSoon = true;\n}\n\n// ========== BUILD OUTPUT ==========\nvar results = [];\n\nfor (var email in tasksByRecipient) {\n  var r = tasksByRecipient[email];\n  \n  // Select messages\n  var greeting = getRandomMsg('greeting');\n  var intro, subjectMsg;\n  \n  if (r.hasOverdue) {\n    intro = getRandomMsg('intro_overdue');\n    subjectMsg = getRandomMsg('subject_overdue');\n  } else if (r.hasDueSoon) {\n    intro = getRandomMsg('intro_deadline');\n    subjectMsg = getRandomMsg('subject_deadline');\n  } else {\n    intro = getRandomMsg('intro_progress');\n    subjectMsg = getRandomMsg('subject_progress');\n  }\n  \n  var offerHelp = getRandomMsg('offer_help');\n  var closing = (dayOfWeek === 5) ? getRandomMsg('closing_friday') : getRandomMsg('closing');\n  \n  // Build task HTML\n  var taskHtml = '';\n  for (var m = 0; m < r.tasks.length; m++) {\n    var t = r.tasks[m];\n    var icon = '🟢';\n    var statusTxt = '';\n    \n    if (t.status === 'overdue') {\n      icon = '🔴';\n      statusTxt = ' (quá hạn ' + Math.abs(t.daysLeft) + ' ngày)';\n    } else if (t.status === 'today') {\n      icon = '🟠';\n      statusTxt = ' (hôm nay)';\n    } else if (t.status === 'soon') {\n      icon = '🟡';\n      statusTxt = ' (còn ' + t.daysLeft + ' ngày)';\n    }\n    \n    taskHtml += '<tr style=\"border-bottom:1px solid #eee;\">';\n    taskHtml += '<td style=\"padding:12px;font-size:20px;text-align:center;\">' + icon + '</td>';\n    taskHtml += '<td style=\"padding:12px;\"><a href=\"' + t.url + '\" style=\"color:#2c3e50;text-decoration:none;font-weight:500;\">' + t.title + '</a><span style=\"color:#e74c3c;font-size:13px;\">' + statusTxt + '</span></td>';\n    taskHtml += '<td style=\"padding:12px;color:#7f8c8d;font-size:13px;\">' + (t.deadline || 'Chưa có') + '</td>';\n    taskHtml += '</tr>';\n  }\n  \n  results.push({\n    recipientEmail: email,\n    recipientName: r.name || email.split('@')[0],\n    ccEmails: 'leson@esuhai.com, hoangkha@esuhai.com',\n    bccEmails: 'chatlong@esuhai.com',\n    subject: subjectMsg.content || '[Phối hợp] Cập nhật tiến độ công việc',\n    greeting: greeting.content || 'Anh/chị ơi,',\n    intro: intro.content || 'Em đang tổng hợp tiến độ, nhờ anh/chị hỗ trợ cập nhật ạ.',\n    offerHelp: offerHelp.content || 'Nếu có gì cần phối hợp, anh/chị cứ nói em nhé.',\n    closing: closing.content || 'Cảm ơn anh/chị!',\n    taskCount: r.tasks.length,\n    hasOverdue: r.hasOverdue,\n    hasDueSoon: r.hasDueSoon,\n    taskListHtml: taskHtml\n  });\n}\n\nif (results.length === 0) {\n  return [{ json: { shouldSend: false, message: 'Không có task nào cần gửi' } }];\n}\n\nreturn results.map(function(item) { return { json: item }; });"
+      },
+      "id": "033c24db-d351-41f6-93b5-2fdb4c8cb896",
+      "name": "Process and Build Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "hasEmail",
+              "leftValue": "={{ $json.recipientEmail }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d4269bdb-3086-4f5f-8b21-28b816dab4e7",
+      "name": "Filter Valid Recipients",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.recipientEmail }}",
+        "subject": "={{ $json.subject }}",
+        "message": "=<div style=\"font-family:'Segoe UI',Arial,sans-serif;max-width:650px;margin:0 auto;background:#fff;\">\n<div style=\"background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:25px;text-align:center;border-radius:10px 10px 0 0;\">\n<h1 style=\"color:#fff;margin:0;font-size:18px;font-weight:500;\">📋 Phối hợp Công việc</h1>\n<p style=\"color:rgba(255,255,255,0.8);margin:8px 0 0 0;font-size:13px;\">Văn phòng Tổng Giám đốc - EsuhaiGroup</p>\n</div>\n<div style=\"padding:30px;background:#f8f9fa;border:1px solid #e9ecef;\">\n<p style=\"font-size:15px;color:#2c3e50;margin:0 0 15px 0;\">{{ $json.greeting }}</p>\n<p style=\"font-size:15px;color:#555;line-height:1.6;margin:0 0 25px 0;\">{{ $json.intro }}</p>\n<div style=\"background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);\">\n<div style=\"background:#2c3e50;padding:12px 15px;\">\n<span style=\"color:#fff;font-size:14px;font-weight:500;\">📌 Các công việc cần cập nhật ({{ $json.taskCount }} task)</span>\n</div>\n<table style=\"width:100%;border-collapse:collapse;\">{{ $json.taskListHtml }}</table>\n</div>\n<p style=\"font-size:14px;color:#7f8c8d;margin:25px 0 20px 0;font-style:italic;\">{{ $json.offerHelp }}</p>\n<div style=\"text-align:center;margin:25px 0;\">\n<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdrrYz9M4kb4DarNqTTHvm5MzilOTz1fAHyLSYMNsp7nvK13A/viewform\" style=\"display:inline-block;background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:14px 35px;text-decoration:none;border-radius:25px;font-weight:500;font-size:14px;box-shadow:0 4px 15px rgba(17,153,142,0.3);\">✏️ Cập nhật Tiến độ</a>\n</div>\n<p style=\"font-size:15px;color:#2c3e50;margin:0;\">{{ $json.closing }}</p>\n<p style=\"font-size:14px;color:#555;margin:10px 0 0 0;\">Hoàng Kha<br><span style=\"color:#7f8c8d;\">Trợ lý Tổng Giám đốc</span></p>\n</div>\n<div style=\"background:#2c3e50;padding:15px;text-align:center;border-radius:0 0 10px 10px;\">\n<p style=\"color:#bdc3c7;margin:0;font-size:11px;\">Email tự động từ Hệ thống Theo dõi Chỉ đạo CEO</p>\n<p style=\"color:#7f8c8d;margin:5px 0 0 0;font-size:10px;\">Vui lòng không reply trực tiếp email này</p>\n</div>\n</div>",
+        "options": {}
+      },
+      "id": "817c0a99-94da-4e0b-86ef-8a6a0db9e77b",
+      "name": "Send Email CC-BCC",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        0
+      ],
+      "webhookId": "1bb9bb82-a11a-4960-a02c-316342d313cd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily 9AM": {
+      "main": [
+        [
+          {
+            "node": "Query Active Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Active Tasks": {
+      "main": [
+        [
+          {
+            "node": "Query Message Library",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Message Library": {
+      "main": [
+        [
+          {
+            "node": "Process and Build Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process and Build Emails": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Recipients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Recipients": {
+      "main": [
+        [
+          {
+            "node": "Send Email CC-BCC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7e193566-cbc0-4f24-b350-770dd72d61f0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "8VhlGdJ09iqSVwar",
+  "tags": []
+}

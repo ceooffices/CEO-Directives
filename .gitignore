@@ -1,0 +1,20 @@
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp files
+*.tmp
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# Sensitive
+.env
+*.key

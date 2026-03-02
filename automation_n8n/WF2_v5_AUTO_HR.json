@@ -1,0 +1,503 @@
+{
+  "name": "CEO Directive - WF2 - Xử lý Form Làm rõ (v5 AUTO HR)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf2-form-clarification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "🔔 Webhook: Form Submit",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "wf2-form-clarification"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF2 v5 processing', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "📤 Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF2 v5 - VALIDATE & EXTRACT DATA\n// Multi-level parsing + validation\n// ========================================\n\nconst input = $input.first().json;\n\nconsole.log('[WF2 v5] ==========================================');\nconsole.log('[WF2 v5] Processing form submission');\n\n// ==========================================\n// MULTI-LEVEL PAYLOAD PARSING\n// ==========================================\nlet data = null;\nlet parseSource = 'unknown';\n\n// Level 1: FLAT structure (v4 Apps Script)\nif (input.body?.clarificationId) {\n  data = input.body;\n  parseSource = 'input.body (FLAT)';\n}\n// Level 2: Nested in data\nelse if (input.body?.data?.clarificationId) {\n  data = input.body.data;\n  parseSource = 'input.body.data';\n}\n// Level 3: Double nested\nelse if (input.body?.body?.data?.clarificationId) {\n  data = input.body.body.data;\n  parseSource = 'input.body.body.data';\n}\n// Level 4: Direct body without data wrapper\nelse if (input.body?.body?.clarificationId) {\n  data = input.body.body;\n  parseSource = 'input.body.body';\n}\n// Level 5: Direct at root\nelse if (input.clarificationId) {\n  data = input;\n  parseSource = 'input (root)';\n}\n\nif (!data) {\n  console.log('[WF2 v5] ERROR: Could not parse payload');\n  console.log('[WF2 v5] Input structure:', JSON.stringify(input).substring(0, 500));\n  return {\n    json: {\n      isValid: false,\n      isTest: false,\n      errors: ['Could not parse payload - no clarificationId found'],\n      parseSource: 'FAILED',\n      rawInput: JSON.stringify(input).substring(0, 200)\n    }\n  };\n}\n\nconsole.log('[WF2 v5] Parse source:', parseSource);\n\n// ==========================================\n// CHECK FOR TEST PAYLOAD\n// ==========================================\nconst isTest = data._isTest === true || \n               (data.clarificationId && data.clarificationId.startsWith('TEST-'));\n\nif (isTest) {\n  console.log('[WF2 v5] Test payload detected - will skip task creation');\n}\n\n// ==========================================\n// EXTRACT & VALIDATE FIELDS\n// ==========================================\nconst clarificationId = data.clarificationId || '';\nconst nguonChiDao = data.nguonChiDao || '';\nconst ngayNhanChiDao = data.ngayNhanChiDao || '';\nconst noiDungGoc = data.noiDungGoc || '';\nconst dauMoiT1 = data.dauMoiT1 || '';\nconst t2NhiemVu = data.t2NhiemVu || '';\nconst t3ChiTieu = data.t3ChiTieu || '';\nconst t4ThoiHan = data.t4ThoiHan || '';\nconst ghiChu = data.ghiChu || '';\nconst xacNhan = data.xacNhan === true || data.xacNhan === 'true' || \n                (typeof data.xacNhan === 'string' && data.xacNhan.includes('xác nhận'));\nconst respondentEmail = data.respondentEmail || 'anonymous';\nconst formResponseId = data.formResponseId || '';\n\nconsole.log('[WF2 v5] Fields extracted:');\nconsole.log('  clarificationId:', clarificationId.substring(0, 20) + '...');\nconsole.log('  dauMoiT1:', dauMoiT1);\nconsole.log('  t2NhiemVu:', t2NhiemVu.substring(0, 30) + '...');\nconsole.log('  t3ChiTieu:', t3ChiTieu.substring(0, 30) + '...');\nconsole.log('  t4ThoiHan:', t4ThoiHan);\nconsole.log('  xacNhan:', xacNhan);\n\n// ==========================================\n// VALIDATION\n// ==========================================\nconst errors = [];\n\nif (!clarificationId || clarificationId.length < 10) {\n  errors.push('Thiếu Mã Clarification');\n}\nif (!t2NhiemVu || t2NhiemVu.length < 3) {\n  errors.push('Thiếu T2 - Nhiệm vụ');\n}\nif (!t3ChiTieu || t3ChiTieu.length < 3) {\n  errors.push('Thiếu T3 - Chỉ tiêu');\n}\nif (!t4ThoiHan) {\n  errors.push('Thiếu T4 - Thời hạn');\n}\nif (!xacNhan) {\n  errors.push('Chưa xác nhận');\n}\n\nconst isValid = errors.length === 0;\n\nconsole.log('[WF2 v5] Validation:', isValid ? '✅ PASSED' : '❌ FAILED');\nif (!isValid) {\n  console.log('[WF2 v5] Errors:', errors.join(', '));\n}\n\n// ==========================================\n// DETERMINE MISSING TAGS TO CLEAR\n// ==========================================\n// Nếu đủ 4T thì clear hết, nếu thiếu thì để lại tags tương ứng\nlet missingTags = [];\nif (!dauMoiT1) missingTags.push('Thiếu T1-TÊN');\nif (!t2NhiemVu) missingTags.push('Thiếu T2-NHIỆM VỤ');\nif (!t3ChiTieu) missingTags.push('Thiếu T3-CHỈ TIÊU');\nif (!t4ThoiHan) missingTags.push('Thiếu T4-THỜI HẠN');\n\nconst has4T = missingTags.length === 0;\n\n// ==========================================\n// PREPARE HR SEARCH KEYWORDS\n// ==========================================\n// Extract search keywords from T1\n// \"HR Vy\" → \"Vy\"\n// \"Thanh Hiếu\" → \"Hiếu\"\n// \"Nhóm MSA\" → \"MSA\"\nlet hrSearchKeyword = '';\nif (dauMoiT1) {\n  // Remove common prefixes\n  hrSearchKeyword = dauMoiT1\n    .replace(/^(HR|Nhóm|Ms\\.?|Mr\\.?)\\s*/i, '')\n    .trim();\n  \n  // If still has multiple words, take the last one (usually the given name)\n  const words = hrSearchKeyword.split(/\\s+/);\n  if (words.length > 1) {\n    hrSearchKeyword = words[words.length - 1];\n  }\n}\n\nconsole.log('[WF2 v5] HR Search keyword:', hrSearchKeyword);\n\nreturn {\n  json: {\n    isValid,\n    isTest,\n    errors,\n    parseSource,\n    \n    // Form data\n    clarificationId,\n    nguonChiDao,\n    ngayNhanChiDao,\n    noiDungGoc,\n    dauMoiT1,\n    t2NhiemVu,\n    t3ChiTieu,\n    t4ThoiHan,\n    ghiChu,\n    xacNhan,\n    respondentEmail,\n    formResponseId,\n    \n    // Computed\n    has4T,\n    missingTags,\n    hrSearchKeyword,\n    today: new Date().toISOString().split('T')[0]\n  }\n};"
+      },
+      "id": "validate-extract",
+      "name": "📊 Validate & Extract",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-test",
+              "leftValue": "={{ $json.isTest }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-not-test",
+      "name": "IF: Not Test?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [710, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "is-valid",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-valid",
+      "name": "IF: Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [940, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-keyword",
+              "leftValue": "={{ $json.hrSearchKeyword }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-has-hr-keyword",
+      "name": "IF: Có T1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1170, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/8d88b66f-94e3-4a1a-85a8-74f2422a2db7/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"filter\": {\n    \"or\": [\n      {\n        \"property\": \"Tên Gọi\",\n        \"rich_text\": {\n          \"contains\": \"{{ $json.hrSearchKeyword }}\"\n        }\n      },\n      {\n        \"property\": \"Họ và Tên\",\n        \"title\": {\n          \"contains\": \"{{ $json.hrSearchKeyword }}\"\n        }\n      }\n    ]\n  },\n  \"page_size\": 1\n}",
+        "options": {}
+      },
+      "id": "search-hr",
+      "name": "🔍 Search HR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 0],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract HR info from search result\nconst formData = $('IF: Có T1?').first().json;\nconst searchResult = $input.first().json;\n\nlet hrId = '';\nlet hrEmail = '';\nlet hrName = '';\nlet hrFound = false;\n\ntry {\n  const results = searchResult.results || [];\n  if (results.length > 0) {\n    const hr = results[0];\n    hrId = hr.id;\n    hrEmail = hr.properties?.['Email']?.email || '';\n    hrName = hr.properties?.['Họ và Tên']?.title?.[0]?.plain_text || '';\n    hrFound = true;\n    console.log('[WF2 v5] HR Found:', hrName, '-', hrEmail);\n  } else {\n    console.log('[WF2 v5] HR Not found for keyword:', formData.hrSearchKeyword);\n  }\n} catch (e) {\n  console.log('[WF2 v5] Error parsing HR result:', e.message);\n}\n\nreturn {\n  json: {\n    ...formData,\n    hrId,\n    hrEmail,\n    hrName,\n    hrFound\n  }\n};"
+      },
+      "id": "extract-hr",
+      "name": "📝 Extract HR Info",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1630, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// No HR search - pass through\nconst formData = $('IF: Có T1?').first().json;\n\nreturn {\n  json: {\n    ...formData,\n    hrId: '',\n    hrEmail: '',\n    hrName: '',\n    hrFound: false\n  }\n};"
+      },
+      "id": "no-hr-search",
+      "name": "📄 No HR Search",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 200]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"✅ Đã xác nhận\"\n      }\n    },\n    \"T1 - ĐẦU MỐI\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.dauMoiT1 }}\"\n          }\n        }\n      ]\n    },\n    \"T2 - NHIỆM VỤ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t2NhiemVu }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - CHỈ TIÊU\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t3ChiTieu }}\"\n          }\n        }\n      ]\n    },\n    \"T4 - THỜI HẠN\": {\n      \"date\": {\n        \"start\": \"{{ $json.t4ThoiHan }}\"\n      }\n    },\n    \"📅 Ngày xác nhận\": {\n      \"date\": {\n        \"start\": \"{{ $json.today }}\"\n      }\n    },\n    \"Ghi chú\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.ghiChu }}\"\n          }\n        }\n      ]\n    },\n    \"Thiếu yếu tố nào\": {\n      \"multi_select\": {{ $json.has4T ? '[]' : JSON.stringify($json.missingTags.map(t => ({name: t}))) }}\n    }{{ $json.hrFound ? ',\\n    \"👤 Người nhận chỉ đạo (HR)\": {\\n      \"relation\": [\\n        {\\n          \"id\": \"' + $json.hrId + '\"\\n        }\\n      ]\\n    },\\n    \"📧 Email đầu mối\": {\\n      \"email\": \"' + $json.hrEmail + '\"\\n    }' : '' }}\n  }\n}",
+        "options": {}
+      },
+      "id": "update-clarification",
+      "name": "📝 Update Clarification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1860, 100],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"f2c9e34f-5506-483f-a124-44ae37d38a30\"\n  },\n  \"properties\": {\n    \"Tiêu đề\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.dauMoiT1 }}: {{ $json.t2NhiemVu.substring(0, 80) }}\"\n          }\n        }\n      ]\n    },\n    \"Trạng thái\": {\n      \"select\": {\n        \"name\": \"📋 Chưa bắt đầu\"\n      }\n    },\n    \"T2 - Nhiệm vụ\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t2NhiemVu }}\"\n          }\n        }\n      ]\n    },\n    \"T3 - Chỉ tiêu\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"{{ $json.t3ChiTieu }}\"\n          }\n        }\n      ]\n    },\n    \"Deadline (T4)\": {\n      \"date\": {\n        \"start\": \"{{ $json.t4ThoiHan }}\"\n      }\n    },\n    \"Ghi chú\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"Từ Clarification: {{ $json.clarificationId.substring(0, 8) }}... | {{ $json.ghiChu.substring(0, 100) }}\"\n          }\n        }\n      ]\n    },\n    \"Chỉ đạo gốc\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $json.clarificationId }}\"\n        }\n      ]\n    }{{ $json.hrFound ? ',\\n    \"👤 Người thực hiện\": {\\n      \"relation\": [\\n        {\\n          \"id\": \"' + $json.hrId + '\"\\n        }\\n      ]\\n    }' : '' }}\n  }\n}",
+        "options": {}
+      },
+      "id": "create-task",
+      "name": "✅ Create Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2090, 100],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('📝 Extract HR Info').item.json.hrEmail || $('📄 No HR Search').item.json.respondentEmail || 'hoangkha@esuhai.com' }}",
+        "subject": "=✅ [WF2] Task đã tạo: {{ $('📝 Extract HR Info').item.json.dauMoiT1 || $('📄 No HR Search').item.json.dauMoiT1 }}: {{ ($('📝 Extract HR Info').item.json.t2NhiemVu || $('📄 No HR Search').item.json.t2NhiemVu).substring(0, 40) }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #28a745 0%, #20c997 100%); padding: 20px; text-align: center;\">\n    <h2 style=\"color: #fff; margin: 0;\">✅ Task Đã Được Tạo</h2>\n  </div>\n  <div style=\"padding: 20px; background: #f5f5f5;\">\n    <p>Chỉ đạo đã được xác nhận và Task đã được tạo thành công!</p>\n    \n    <div style=\"background: #fff; padding: 15px; border-left: 4px solid #28a745; margin: 15px 0;\">\n      <h3 style=\"color: #28a745; margin-top: 0;\">{{ $('📝 Extract HR Info').item.json.dauMoiT1 || $('📄 No HR Search').item.json.dauMoiT1 }}: {{ ($('📝 Extract HR Info').item.json.t2NhiemVu || $('📄 No HR Search').item.json.t2NhiemVu).substring(0, 60) }}</h3>\n      <p><strong>T1 - Đầu mối:</strong> {{ $('📝 Extract HR Info').item.json.dauMoiT1 || $('📄 No HR Search').item.json.dauMoiT1 }}</p>\n      <p><strong>T2 - Nhiệm vụ:</strong> {{ $('📝 Extract HR Info').item.json.t2NhiemVu || $('📄 No HR Search').item.json.t2NhiemVu }}</p>\n      <p><strong>T3 - Chỉ tiêu:</strong> {{ $('📝 Extract HR Info').item.json.t3ChiTieu || $('📄 No HR Search').item.json.t3ChiTieu }}</p>\n      <p><strong>T4 - Deadline:</strong> {{ $('📝 Extract HR Info').item.json.t4ThoiHan || $('📄 No HR Search').item.json.t4ThoiHan }}</p>\n      {{ $('📝 Extract HR Info').item.json.hrFound ? '<p><strong>HR Linked:</strong> ' + $('📝 Extract HR Info').item.json.hrName + ' (' + $('📝 Extract HR Info').item.json.hrEmail + ')</p>' : '' }}\n    </div>\n    \n    <p style=\"color: #888; font-size: 12px;\">Processed by WF2 v5 AUTO HR</p>\n  </div>\n</div>",
+        "options": {
+          "ccList": "hoangkha@esuhai.com"
+        }
+      },
+      "id": "send-success-email",
+      "name": "📧 Send Success Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2320, 100],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\"\n  },\n  \"properties\": {\n    \"Log\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"WF2: Task created - {{ ($('📝 Extract HR Info').item.json.dauMoiT1 || $('📄 No HR Search').item.json.dauMoiT1).substring(0, 30) }}\"\n          }\n        }\n      ]\n    },\n    \"Workflow\": {\n      \"select\": {\n        \"name\": \"WF2 - Form Làm rõ\"\n      }\n    },\n    \"Status\": {\n      \"select\": {\n        \"name\": \"✅ Success\"\n      }\n    },\n    \"Clarification\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $('📝 Extract HR Info').item.json.clarificationId || $('📄 No HR Search').item.json.clarificationId }}\"\n        }\n      ]\n    },\n    \"Details\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"HR: {{ $('📝 Extract HR Info').item.json.hrFound ? $('📝 Extract HR Info').item.json.hrName : 'Not found' }} | Parse: {{ $('📝 Extract HR Info').item.json.parseSource || $('📄 No HR Search').item.json.parseSource }}\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-success",
+      "name": "📊 Log Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2550, 100],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\"\n  },\n  \"properties\": {\n    \"Log\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"WF2: Validation FAILED\"\n          }\n        }\n      ]\n    },\n    \"Workflow\": {\n      \"select\": {\n        \"name\": \"WF2 - Form Làm rõ\"\n      }\n    },\n    \"Status\": {\n      \"select\": {\n        \"name\": \"❌ Error\"\n      }\n    },\n    \"Details\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"Errors: {{ $json.errors.join(', ') }} | Parse: {{ $json.parseSource }}\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-error",
+      "name": "📊 Log Error",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1170, 300],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Test payload - skip processing\nconsole.log('[WF2 v5] Test payload - skipping');\nreturn { json: { status: 'skipped', reason: 'test_payload' } };"
+      },
+      "id": "skip-test",
+      "name": "⏭️ Skip Test",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [940, 400]
+    }
+  ],
+  "connections": {
+    "🔔 Webhook: Form Submit": {
+      "main": [
+        [
+          {
+            "node": "📤 Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Validate & Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Validate & Extract": {
+      "main": [
+        [
+          {
+            "node": "IF: Not Test?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Not Test?": {
+      "main": [
+        [
+          {
+            "node": "IF: Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "⏭️ Skip Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Valid?": {
+      "main": [
+        [
+          {
+            "node": "IF: Có T1?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📊 Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Có T1?": {
+      "main": [
+        [
+          {
+            "node": "🔍 Search HR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📄 No HR Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Search HR": {
+      "main": [
+        [
+          {
+            "node": "📝 Extract HR Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Extract HR Info": {
+      "main": [
+        [
+          {
+            "node": "📝 Update Clarification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 No HR Search": {
+      "main": [
+        [
+          {
+            "node": "📝 Update Clarification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Update Clarification": {
+      "main": [
+        [
+          {
+            "node": "✅ Create Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Create Task": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Success Email": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "esuhai-n8n-cloud"
+  },
+  "tags": []
+}

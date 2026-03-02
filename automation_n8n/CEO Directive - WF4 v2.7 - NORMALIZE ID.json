@@ -1,0 +1,352 @@
+{
+  "name": "CEO Directive - WF4 v2.7 - NORMALIZE ID",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "form-progress-update",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        7440,
+        -1312
+      ],
+      "id": "cefc21b2-1668-4b96-a359-f213c1dc7499",
+      "name": "📥 Nhận Webhook",
+      "webhookId": "87e5514d-a1ac-4969-9fef-db496cf39112"
+    },
+    {
+      "parameters": {
+        "jsCode": "// SIMPLIFIED - No deduplication, just pass through\nconst payload = $input.first().json;\nreturn { shouldProcess: true, ...payload };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7664,
+        -1312
+      ],
+      "id": "a8c57a35-6111-4e71-81b1-cda174d1ba83",
+      "name": "✅ Pass Through"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "leftValue": "={{ $json.shouldProcess }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        7872,
+        -1312
+      ],
+      "id": "812e45e4-0737-4f5c-a976-edef376c7c6c",
+      "name": "✅ Filter 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $input.first().json;\nconst row = p.body?.data || p.data || p.body || p;  // ← SỬA DÒNG NÀY!\n\nlet taskId = '', notes = '', status = '';\n\nfor (const [k, v] of Object.entries(row)) {\n  const key = k.toLowerCase();\n  if (key.includes('task') && key.includes('id')) taskId = v;\n  else if (key.includes('ghi chú')) notes = v;\n  else if (key.includes('trạng thái')) status = v;\n}\n\nlet notionStatus = 'Đúng kế hoạch';\nif (status.toLowerCase().includes('hoàn thành')) notionStatus = 'Hoàn thành';\n\nreturn {\n  taskId: (taskId || '').trim().replace(/-/g, ''),\n  email: p.respondentEmail || p.body?.respondentEmail || 'hoangkha@esuhai.com',\n  formResponseId: p.formResponseId || p.body?.formResponseId,\n  timestamp: p.timestamp || p.body?.timestamp || new Date().toISOString(),\n  notes: (notes || '').trim(),\n  notionStatus,\n  hasTaskId: taskId && taskId.length > 0\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8064,
+        -1312
+      ],
+      "id": "2c7d2355-bf99-4e7b-a9ff-4d4c51a5e513",
+      "name": "📋 Extract"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "leftValue": "={{ $json.hasTaskId }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        8272,
+        -1312
+      ],
+      "id": "56fbb4b0-aca5-46ed-9fe3-6feadee770d7",
+      "name": "✅ Filter 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// SIMPLIFIED v2.7 - Single input from GET Task\n// Access formData from Extract node\n\nconst taskData = $input.first().json;\nconst formData = $('Extract').first().json;\n\nreturn {\n  // FormData fields\n  formResponseId: formData.formResponseId,\n  email: formData.email,\n  timestamp: formData.timestamp,\n  notes: formData.notes,\n  notionStatus: formData.notionStatus,\n  \n  // Task data from Notion\n  taskName: taskData.properties?.['Tên Task']?.title?.[0]?.plain_text || 'Unknown',\n  taskUrl: taskData.url,\n  currentProgress: taskData.properties?.['% Hoàn Thành']?.number || 0,\n  \n  // Combined for UPDATE\n  taskId: formData.taskId\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8768,
+        -1552
+      ],
+      "id": "a5dc7737-3ecd-44c6-9059-1bb8235aeb4f",
+      "name": "🔧 Combine Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst formData = item.formData;\nconst task = item.task;\n\nif (!task.properties) {\n  throw new Error('Task not found or invalid');\n}\n\nconst existing = task.properties['Ghi chú & Trở ngại']?.rich_text?.[0]?.plain_text || '';\nconst ts = new Date(formData.timestamp).toLocaleString('vi-VN');\nconst newNote = `[${ts}] ${formData.notes}`;\nconst final = existing ? existing + '\\n\\n' + newNote : newNote;\n\nreturn {\n  taskId: formData.taskId,\n  email: formData.email,\n  formResponseId: formData.formResponseId,\n  taskTitle: task.properties?.['Tiêu đề']?.title?.[0]?.plain_text || 'Task',\n  taskUrl: task.url,\n  notionStatus: formData.notionStatus,\n  notes: formData.notes,\n  updateBody: JSON.stringify({\n    properties: {\n      'Tình trạng': { select: { name: formData.notionStatus } },\n      'Ghi chú & Trở ngại': { rich_text: [{ text: { content: final.substring(0, 2000) } }] }\n    }\n  })\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9264,
+        -1312
+      ],
+      "id": "93e5013e-8a70-4c10-af55-72c5deb6ed20",
+      "name": "🔧 Build"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.taskId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.updateBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9536,
+        -1536
+      ],
+      "id": "d5695ba3-dedc-4344-b416-145455e019c6",
+      "name": "💾 UPDATE",
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// MANUAL MERGE #2 - Combine build data + update result\n// Input 0: build data\n// Input 1: update result\n\nconst items = $input.all();\n\nif (items.length !== 2) {\n  throw new Error(`Expected 2 inputs, got ${items.length}`);\n}\n\nconst buildData = items[0].json;\nconst updateResult = items[1].json;\n\n// Pass build data to email node\nreturn buildData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9792,
+        -1312
+      ],
+      "id": "e557de58-768e-421e-9ebc-1d785682eaf5",
+      "name": "🔧 Combine Result"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=✅ Đã cập nhật: {{ $json.taskTitle }}",
+        "message": "=<div style=\"font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5;\">\n  <div style=\"background: #11998e; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"margin: 0;\">✅ Đã cập nhật!</h1>\n  </div>\n  <div style=\"background: white; padding: 30px;\">\n    <h2>{{ $json.taskTitle }}</h2>\n    <p><strong>Trạng thái:</strong> {{ $json.notionStatus }}</p>\n    <p><strong>Ghi chú:</strong> {{ $json.notes }}</p>\n    <a href=\"{{ $json.taskUrl }}\" style=\"display: inline-block; background: #11998e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 20px;\">Xem Task</a>\n  </div>\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        10128,
+        -1328
+      ],
+      "id": "0d9e066b-83f4-46d4-9af8-e3033c6bb112",
+      "name": "📧 Email",
+      "webhookId": "0c7862a0-95f1-4f39-841b-30aeaa621ade",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.taskId }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        8544,
+        -1184
+      ],
+      "id": "e38f3d14-f689-4136-893a-5f66c5c5843b",
+      "name": "Get a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "📥 Nhận Webhook": {
+      "main": [
+        [
+          {
+            "node": "✅ Pass Through",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Pass Through": {
+      "main": [
+        [
+          {
+            "node": "✅ Filter 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Filter 1": {
+      "main": [
+        [
+          {
+            "node": "📋 Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Extract": {
+      "main": [
+        [
+          {
+            "node": "✅ Filter 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Filter 2": {
+      "main": [
+        [
+          {
+            "node": "Get a database page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔧 Combine Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Combine Data": {
+      "main": [
+        [
+          {
+            "node": "🔧 Build",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Build": {
+      "main": [
+        [
+          {
+            "node": "💾 UPDATE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔧 Combine Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Combine Result": {
+      "main": [
+        [
+          {
+            "node": "📧 Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a database page": {
+      "main": [
+        [
+          {
+            "node": "🔧 Combine Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "38aabf97-604b-439a-b2ae-51d167b6d52f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "zrKPgpZckOMg3Owj",
+  "tags": []
+}

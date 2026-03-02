@@ -1,0 +1,652 @@
+{
+  "name": "CEO Directive - WF1 - Gửi yêu cầu Xác nhận (v11 COMPLETE)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf1-new-clarification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🔔 Webhook: New Clarification",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 200],
+      "webhookId": "wf1-new-clarification"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF1 v11 triggered', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "📤 Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 100]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "⏰ Schedule: Mỗi 4 giờ",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"or\": [\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"equals\": \"🆕 Mới tạo\"\n        }\n      },\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"equals\": \"📧 Đã gửi email\"\n        }\n      },\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"equals\": \"Chờ làm rõ\"\n        }\n      }\n    ]\n  },\n  \"sorts\": [\n    {\n      \"property\": \"Ngày tạo\",\n      \"direction\": \"ascending\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "query-clarifications",
+      "name": "📋 Query Clarifications",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// WF1 v11 - EXTRACT & RATE LIMIT CHECK\n// Combines v9 logic + v10 rate limiting\n// ========================================\n\nconst input = $input.first().json;\nconst results = input.results || [];\n\nconst now = new Date();\nconst today = now.toISOString().split('T')[0];\n\nconsole.log('[WF1 v11] ==========================================');\nconsole.log('[WF1 v11] Total clarifications found:', results.length);\nconsole.log('[WF1 v11] Date today:', today);\n\nif (results.length === 0) {\n  console.log('[WF1 v11] No clarifications to process');\n  return { json: { hasItems: false, items: [], skipped: 0, toProcess: 0 } };\n}\n\nconst items = [];\nlet skippedCount = 0;\nlet rateLimitedCount = 0;\n\nfor (const page of results) {\n  const props = page.properties;\n  const id = page.id;\n  \n  // ==========================================\n  // EXTRACT BASIC INFO\n  // ==========================================\n  const title = props['Tiêu đề']?.title?.[0]?.plain_text || 'Untitled';\n  const status = props['Tình trạng']?.select?.name || '';\n  const nguon = props['Nguồn']?.select?.name || 'CEO';\n  const noiDungGoc = props['Nội dung gốc']?.rich_text?.[0]?.plain_text || '';\n  const ngayNhan = props['Ngày nhận']?.date?.start || '';\n  const ghiChu = props['Ghi chú']?.rich_text?.[0]?.plain_text || '';\n  \n  // T2, T3 from Clarification (may be empty)\n  const t2NhiemVu = props['T2 - NHIỆM VỤ']?.rich_text?.[0]?.plain_text || '';\n  const t3ChiTieu = props['T3 - CHỈ TIÊU']?.rich_text?.[0]?.plain_text || '';\n  \n  // ==========================================\n  // EMAIL INFO\n  // ==========================================\n  const emailDauMoi = props['📧 Email đầu mối']?.email || '';\n  \n  // HR Relation for email lookup\n  const hrRelation = props['👤 Người nhận chỉ đạo (HR)']?.relation || [];\n  const hrIds = hrRelation.map(r => r.id);\n  \n  // ==========================================\n  // OUTCOME RELATION (for T3 lookup)\n  // ==========================================\n  const outcomeRelation = props['Kết quả mong đợi']?.relation || [];\n  const outcomeIds = outcomeRelation.map(r => r.id);\n  \n  // ==========================================\n  // RATE LIMITING FIELDS\n  // ==========================================\n  const soLanGui = props['📧 Số lần gửi']?.number || 0;\n  const ngayGuiGanNhat = props['📅 Ngày gửi gần nhất']?.date?.start || '';\n  \n  console.log('[WF1 v11] Processing:', title.substring(0, 40));\n  console.log('  Status:', status);\n  console.log('  Outcome IDs:', outcomeIds.length);\n  console.log('  HR IDs:', hrIds.length);\n  console.log('  Email đầu mối:', emailDauMoi || '(empty)');\n  console.log('  Số lần gửi:', soLanGui);\n  console.log('  Ngày gửi gần nhất:', ngayGuiGanNhat || '(never)');\n  \n  // ==========================================\n  // RATE LIMIT CHECK\n  // ==========================================\n  let shouldSkip = false;\n  let skipReason = '';\n  \n  // Check: Đã gửi >= 2 lần hôm nay?\n  if (ngayGuiGanNhat === today && soLanGui >= 2) {\n    shouldSkip = true;\n    skipReason = 'Đã gửi ' + soLanGui + ' lần hôm nay (max 2)';\n    rateLimitedCount++;\n  }\n  \n  // Check: Status đã xác nhận thì skip\n  if (status === '✅ Đã xác nhận') {\n    shouldSkip = true;\n    skipReason = 'Đã xác nhận rồi';\n  }\n  \n  if (shouldSkip) {\n    console.log('  ⏭️ SKIPPED:', skipReason);\n    skippedCount++;\n    continue;\n  }\n  \n  // ==========================================\n  // DETERMINE EMAIL RESOLUTION PATH\n  // ==========================================\n  let emailPath = 'fallback';\n  if (emailDauMoi) {\n    emailPath = 'direct';\n  } else if (hrIds.length > 0) {\n    emailPath = 'hr_lookup';\n  }\n  \n  // ==========================================\n  // ADD TO PROCESS QUEUE\n  // ==========================================\n  items.push({\n    clarificationId: id,\n    title,\n    status,\n    nguon,\n    noiDungGoc,\n    ngayNhan,\n    ghiChu,\n    t2NhiemVu,\n    t3ChiTieu,\n    \n    // Email resolution\n    emailDauMoi,\n    hrIds,\n    emailPath,\n    needHrLookup: emailPath === 'hr_lookup',\n    \n    // Outcome for T3\n    outcomeIds,\n    needOutcomeFetch: outcomeIds.length > 0 && !t3ChiTieu,\n    \n    // Rate limit tracking\n    soLanGuiHienTai: soLanGui,\n    ngayGuiGanNhat,\n    soLanGuiMoi: ngayGuiGanNhat === today ? soLanGui + 1 : 1,\n    isNewToday: ngayGuiGanNhat !== today,\n    \n    today,\n    pageUrl: page.url\n  });\n  \n  console.log('  ✅ Added to queue (path:', emailPath, ', needOutcome:', outcomeIds.length > 0 && !t3ChiTieu, ')');\n}\n\nconsole.log('[WF1 v11] ==========================================');\nconsole.log('[WF1 v11] Summary:');\nconsole.log('  Total found:', results.length);\nconsole.log('  Rate limited:', rateLimitedCount);\nconsole.log('  Other skipped:', skippedCount - rateLimitedCount);\nconsole.log('  To process:', items.length);\n\nreturn {\n  json: {\n    hasItems: items.length > 0,\n    items,\n    skipped: skippedCount,\n    rateLimited: rateLimitedCount,\n    toProcess: items.length,\n    timestamp: now.toISOString()\n  }\n};"
+      },
+      "id": "extract-data",
+      "name": "📊 Extract & Rate Limit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [710, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-items",
+              "leftValue": "={{ $json.hasItems }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-has-items",
+      "name": "IF: Có Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [940, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-items",
+      "name": "🔄 Loop Each Item",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1170, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "need-outcome",
+              "leftValue": "={{ $json.needOutcomeFetch }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-need-outcome",
+      "name": "IF: Cần Outcome?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1400, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.outcomeIds[0] }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-outcome",
+      "name": "🎯 Fetch Outcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1630, 100],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge T3 from Outcome\nconst item = $('🔄 Loop Each Item').first().json;\nconst outcome = $input.first().json;\n\nlet t3FromOutcome = '';\n\ntry {\n  t3FromOutcome = outcome.properties?.['T3 - CHỈ TIÊU']?.rich_text?.[0]?.plain_text || \n                  outcome.properties?.['Chỉ tiêu thành công']?.rich_text?.[0]?.plain_text || '';\n  console.log('[WF1 v11] T3 from Outcome:', t3FromOutcome.substring(0, 50));\n} catch (e) {\n  console.log('[WF1 v11] Could not extract T3 from Outcome');\n}\n\nreturn {\n  json: {\n    ...item,\n    t3ChiTieu: item.t3ChiTieu || t3FromOutcome,\n    t3Source: t3FromOutcome ? 'outcome' : 'clarification'\n  }\n};"
+      },
+      "id": "merge-t3",
+      "name": "🔀 Merge T3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1860, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// No Outcome path - pass through\nconst item = $('🔄 Loop Each Item').first().json;\nreturn { json: { ...item, t3Source: 'clarification' } };"
+      },
+      "id": "no-outcome",
+      "name": "📄 No Outcome",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1630, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "need-hr",
+              "leftValue": "={{ $json.needHrLookup }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-need-hr",
+      "name": "IF: Cần HR Lookup?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2090, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.hrIds[0] }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-hr",
+      "name": "👤 Fetch HR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2320, 100],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract email from HR record\nconst item = $('IF: Cần HR Lookup?').first().json;\nconst hr = $input.first().json;\n\nlet hrEmail = '';\nlet hrName = '';\n\ntry {\n  hrEmail = hr.properties?.['Email']?.email || \n            hr.properties?.['📧 Email']?.email || '';\n  hrName = hr.properties?.['Họ và tên']?.title?.[0]?.plain_text || '';\n  console.log('[WF1 v11] HR Email:', hrEmail, 'Name:', hrName);\n} catch (e) {\n  console.log('[WF1 v11] Could not extract email from HR');\n}\n\nreturn {\n  json: {\n    ...item,\n    hrEmail,\n    hrName,\n    emailResolved: hrEmail || item.emailDauMoi || 'vynnl@esuhai.com',\n    emailSource: hrEmail ? 'hr_lookup' : (item.emailDauMoi ? 'direct' : 'fallback')\n  }\n};"
+      },
+      "id": "resolve-hr-email",
+      "name": "📧 Resolve HR Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2550, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Direct/Fallback path - no HR lookup needed\nconst item = $('IF: Cần HR Lookup?').first().json;\n\nreturn {\n  json: {\n    ...item,\n    emailResolved: item.emailDauMoi || 'vynnl@esuhai.com',\n    emailSource: item.emailDauMoi ? 'direct' : 'fallback'\n  }\n};"
+      },
+      "id": "direct-fallback",
+      "name": "📧 Direct/Fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2320, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build prefill URL for Google Form\nconst item = $input.first().json;\n\nconst baseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw/viewform';\nconst params = new URLSearchParams();\n\n// Form entry IDs from notion_id_mapping.json\nparams.append('entry.1684171280', item.clarificationId || '');\nparams.append('entry.1878008034', item.nguon || '');\nparams.append('entry.1953342780', item.ngayNhan || '');\nparams.append('entry.1839616630', item.noiDungGoc || '');\nparams.append('entry.649583359', item.title?.split(':')[0]?.trim() || '');\n\n// Pre-fill T2, T3 if available\nif (item.t2NhiemVu) {\n  params.append('entry.1319518938', item.t2NhiemVu);\n}\nif (item.t3ChiTieu) {\n  params.append('entry.1910876946', item.t3ChiTieu);\n}\n\nconst prefillUrl = baseUrl + '?' + params.toString();\n\nconsole.log('[WF1 v11] Prefill URL built for:', item.title?.substring(0, 40));\nconsole.log('[WF1 v11] Email to:', item.emailResolved, '(' + item.emailSource + ')');\n\nreturn {\n  json: {\n    ...item,\n    prefillUrl,\n    ccEmail: 'hoangkha@esuhai.com'\n  }\n};"
+      },
+      "id": "build-url",
+      "name": "🔗 Build Prefill URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2780, 200]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.emailResolved }}",
+        "subject": "=📋 [Cần xác nhận] {{ $json.title.substring(0, 50) }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center;\">\n    <h2 style=\"color: #fff; margin: 0;\">📋 Yêu cầu Xác nhận Chỉ đạo</h2>\n  </div>\n  <div style=\"padding: 20px; background: #f5f5f5;\">\n    <p>Chào bạn,</p>\n    <p>Bạn có một chỉ đạo cần xác nhận và bổ sung thông tin 4T:</p>\n    \n    <div style=\"background: #fff; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;\">\n      <h3 style=\"color: #667eea; margin-top: 0;\">{{ $json.title }}</h3>\n      <p><strong>Nguồn:</strong> {{ $json.nguon }}</p>\n      <p><strong>Ngày nhận:</strong> {{ $json.ngayNhan }}</p>\n      <p><strong>Nội dung:</strong> {{ $json.noiDungGoc.substring(0, 200) }}{{ $json.noiDungGoc.length > 200 ? '...' : '' }}</p>\n      {{ $json.t3ChiTieu ? '<p><strong>Chỉ tiêu (T3):</strong> ' + $json.t3ChiTieu + '</p>' : '' }}\n    </div>\n    \n    <div style=\"text-align: center; margin: 20px 0;\">\n      <a href=\"{{ $json.prefillUrl }}\" style=\"display: inline-block; background: #667eea; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;\">✅ Xác nhận & Bổ sung 4T</a>\n    </div>\n    \n    <p style=\"color: #888; font-size: 12px;\">Lần gửi: {{ $json.soLanGuiMoi }}/2 hôm nay | Via: {{ $json.emailSource }}</p>\n  </div>\n</div>",
+        "options": {
+          "ccList": "={{ $json.ccEmail }}"
+        }
+      },
+      "id": "send-email",
+      "name": "📧 Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [3010, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"📧 Đã gửi email\"\n      }\n    },\n    \"📧 Số lần gửi\": {\n      \"number\": {{ $json.soLanGuiMoi }}\n    },\n    \"📅 Ngày gửi gần nhất\": {\n      \"date\": {\n        \"start\": \"{{ $json.today }}\"\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "update-clarification",
+      "name": "📝 Update Clarification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3240, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": {\n    \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\"\n  },\n  \"properties\": {\n    \"Log\": {\n      \"title\": [\n        {\n          \"text\": {\n            \"content\": \"WF1: Email #{{ $json.soLanGuiMoi }} to {{ $json.emailResolved.substring(0, 25) }}\"\n          }\n        }\n      ]\n    },\n    \"Workflow\": {\n      \"select\": {\n        \"name\": \"WF1 - Gửi xác nhận\"\n      }\n    },\n    \"Status\": {\n      \"select\": {\n        \"name\": \"✅ Success\"\n      }\n    },\n    \"Clarification\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $json.clarificationId }}\"\n        }\n      ]\n    },\n    \"Details\": {\n      \"rich_text\": [\n        {\n          \"text\": {\n            \"content\": \"Source: {{ $json.emailSource }}, T3: {{ $json.t3Source || 'N/A' }}\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-success",
+      "name": "📊 Log Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3470, 200],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Back to loop for next item\nreturn $input.all();"
+      },
+      "id": "back-to-loop",
+      "name": "↩️ Back to Loop",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3700, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// No items to process\nconsole.log('[WF1 v11] No items to process - workflow complete');\nreturn { json: { status: 'complete', message: 'No items need email' } };"
+      },
+      "id": "no-items",
+      "name": "✅ No Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1170, 400]
+    }
+  ],
+  "connections": {
+    "🔔 Webhook: New Clarification": {
+      "main": [
+        [
+          {
+            "node": "📤 Webhook Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📋 Query Clarifications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⏰ Schedule: Mỗi 4 giờ": {
+      "main": [
+        [
+          {
+            "node": "📋 Query Clarifications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Query Clarifications": {
+      "main": [
+        [
+          {
+            "node": "📊 Extract & Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Extract & Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "IF: Có Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Có Items?": {
+      "main": [
+        [
+          {
+            "node": "🔄 Loop Each Item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "✅ No Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Loop Each Item": {
+      "main": [
+        [
+          {
+            "node": "IF: Cần Outcome?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Cần Outcome?": {
+      "main": [
+        [
+          {
+            "node": "🎯 Fetch Outcome",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📄 No Outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Fetch Outcome": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge T3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Merge T3": {
+      "main": [
+        [
+          {
+            "node": "IF: Cần HR Lookup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 No Outcome": {
+      "main": [
+        [
+          {
+            "node": "IF: Cần HR Lookup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Cần HR Lookup?": {
+      "main": [
+        [
+          {
+            "node": "👤 Fetch HR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📧 Direct/Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👤 Fetch HR": {
+      "main": [
+        [
+          {
+            "node": "📧 Resolve HR Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Resolve HR Email": {
+      "main": [
+        [
+          {
+            "node": "🔗 Build Prefill URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Direct/Fallback": {
+      "main": [
+        [
+          {
+            "node": "🔗 Build Prefill URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔗 Build Prefill URL": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Email": {
+      "main": [
+        [
+          {
+            "node": "📝 Update Clarification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Update Clarification": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Success": {
+      "main": [
+        [
+          {
+            "node": "↩️ Back to Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "↩️ Back to Loop": {
+      "main": [
+        [
+          {
+            "node": "🔄 Loop Each Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "esuhai-n8n-cloud"
+  },
+  "tags": []
+}

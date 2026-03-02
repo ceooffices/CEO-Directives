@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "version": "1.3",
+    "description": "Notion Database & Collection ID Mapping for ClaudeK",
+    "last_updated": "2026-01-03",
+    "updated_by": "ClaudeK - Added WF1 v13 workflow info",
+    "changelog": [
+      "v1.1: Thêm meetings database, đổi sessions → reports",
+      "v1.2: Thêm wf_logs database, thêm relation Clarifications → Outcomes",
+      "v1.3: Thêm WF1 v13 workflow properties và quy trình 2 bước"
+    ]
+  },
+  
+  "databases": {
+    "project_hub": {
+      "name": "PROJECT HUB - Trung Tâm Dự Án",
+      "database_id": "527ae80e-16cf-42f2-a856-c5334b3e866d",
+      "collection_id": "e438ec2f-6726-42cd-80b5-b504edd0a0ff",
+      "url": "https://www.notion.so/527ae80e16cf42f2a856c5334b3e866d"
+    },
+    "tasks": {
+      "name": "Bảng Quản trị Hành động",
+      "database_id": "f2c9e34f-5506-483f-a124-44ae37d38a30",
+      "collection_id": "90fd1939-bd71-4b2d-92d6-251f71e9e895",
+      "url": "https://www.notion.so/f2c9e34f5506483fa12444ae37d38a30"
+    },
+    "reports": {
+      "name": "Báo cáo Tổng hợp",
+      "name_old": "Nhật ký Buổi làm việc ClaudeK",
+      "database_id": "b033bbc3-5903-4142-8626-feafed22502a",
+      "collection_id": "ec7beaab-4cb0-4d2d-9695-91253b143242",
+      "url": "https://www.notion.so/b033bbc3590341428626feafed22502a",
+      "note": "Renamed from 'sessions' to 'reports' on 27/12/2025"
+    },
+    "clarifications": {
+      "name": "Chỉ đạo Cần Làm Rõ",
+      "database_id": "9abf8678-830d-47d6-9e4f-189a41b28493",
+      "collection_id": "37cb3605-8e3a-455d-8157-21c6043756e9",
+      "url": "https://www.notion.so/9abf8678830d47d69e4f189a41b28493",
+      "relations": {
+        "Kết quả mong đợi": "collection://27a57569-0f9d-41a6-a7f4-1a073d7183f1"
+      },
+      "key_properties_wf1_v13": {
+        "Email người chỉ đạo": "rollup from 'Người chỉ đạo' relation",
+        "Email đầu mối": "rollup from 'T1 - ĐẦU MỐI' relation",
+        "✅ Đã duyệt bởi người chỉ đạo": "select (Chưa duyệt/Đã duyệt/Từ chối)",
+        "LENH_GUI_LOI_NHAC": "select (empty/Đã nhắc/Gửi lời nhắc) - Anti-spam",
+        "TINH_TRANG": "select (Chờ làm rõ/Đã gửi email/Đã tạo task)"
+      }
+    },
+    "outcomes": {
+      "name": "Kết quả Mong đợi",
+      "database_id": "9ed1d7fb-eb64-40de-8f9d-4ddd744437aa",
+      "collection_id": "27a57569-0f9d-41a6-a7f4-1a073d7183f1",
+      "url": "https://www.notion.so/9ed1d7fbeb6440de8f9d4ddd744437aa",
+      "relations": {
+        "Chỉ đạo liên quan": "collection://37cb3605-8e3a-455d-8157-21c6043756e9"
+      }
+    },
+    "hr": {
+      "name": "Danh Bạ Nhân Sự",
+      "database_id": "8d88b66f-94e3-4a1a-85a8-74f2422a2db7",
+      "collection_id": "01a4c730-5265-492a-84cb-07395f2a30d3",
+      "url": "https://www.notion.so/8d88b66f94e34a1a85a874f2422a2db7",
+      "note": "Contains email addresses for WF1 v13 2-step workflow"
+    },
+    "meetings": {
+      "name": "Ghi chép cuộc họp",
+      "database_id": "29279870-ebff-80c8-b06b-d169a64e1d31",
+      "collection_id": "29279870-ebff-8032-ba8c-000b6ca77b45",
+      "url": "https://www.notion.so/29279870ebff80c8b06bd169a64e1d31",
+      "note": "NGUỒN ĐẦU VÀO CHÍNH - CEO dùng hàng ngày"
+    },
+    "wf_logs": {
+      "name": "📊 WF Logs",
+      "database_id": "53a48a4f-29ba-46d2-8e53-3f358d3c513c",
+      "collection_id": "42047399-0443-45d2-8853-b142d15ecf71",
+      "url": "https://www.notion.so/53a48a4f29ba46d28e533f358d3c513c",
+      "note": "Logs cho n8n workflows - WF1, WF2, WF3. Includes ⚠️ Warning status for validation errors",
+      "added": "2025-12-28",
+      "updated_v13": "2026-01-03"
+    }
+  },
+  
+  "collection_to_database": {
+    "e438ec2f-6726-42cd-80b5-b504edd0a0ff": "527ae80e-16cf-42f2-a856-c5334b3e866d",
+    "90fd1939-bd71-4b2d-92d6-251f71e9e895": "f2c9e34f-5506-483f-a124-44ae37d38a30",
+    "ec7beaab-4cb0-4d2d-9695-91253b143242": "b033bbc3-5903-4142-8626-feafed22502a",
+    "37cb3605-8e3a-455d-8157-21c6043756e9": "9abf8678-830d-47d6-9e4f-189a41b28493",
+    "27a57569-0f9d-41a6-a7f4-1a073d7183f1": "9ed1d7fb-eb64-40de-8f9d-4ddd744437aa",
+    "01a4c730-5265-492a-84cb-07395f2a30d3": "8d88b66f-94e3-4a1a-85a8-74f2422a2db7",
+    "29279870-ebff-8032-ba8c-000b6ca77b45": "29279870-ebff-80c8-b06b-d169a64e1d31",
+    "42047399-0443-45d2-8853-b142d15ecf71": "53a48a4f-29ba-46d2-8e53-3f358d3c513c"
+  },
+  
+  "workflow_flow": {
+    "description": "Luồng xử lý chỉ đạo CEO",
+    "flow": [
+      "meetings → clarifications → tasks",
+      "meetings → outcomes → clarifications → tasks",
+      "meetings → reports (báo cáo tổng hợp)"
+    ],
+    "new_relations": {
+      "clarifications_to_outcomes": "Kết quả mong đợi ↔ Chỉ đạo liên quan"
+    }
+  },
+
+  "wf1_v13_2step": {
+    "version": "13.0",
+    "updated": "2026-01-03",
+    "description": "2-STEP APPROVAL WORKFLOW",
+    "step1": {
+      "name": "Người chỉ đạo duyệt",
+      "query": {
+        "filter": "Status = 'Chờ làm rõ' AND '✅ Đã duyệt bởi người chỉ đạo' is_empty"
+      },
+      "email_to": "Email người chỉ đạo (rollup)",
+      "cc": ["hoangkha@esuhai.com"],
+      "subject": "[Cần Duyệt] [title]",
+      "update": "Status = 'Đã gửi email'"
+    },
+    "step2": {
+      "name": "Đầu mối nhận việc",
+      "query": {
+        "filter": "'✅ Đã duyệt' = 'Đã duyệt' AND Status ≠ 'Đã tạo task' AND (LENH_GUI_LOI_NHAC is_empty OR 'Gửi lời nhắc')"
+      },
+      "email_to": "Email đầu mối (rollup)",
+      "cc": ["Email người chỉ đạo", "hoangkha@esuhai.com", "vynnl@esuhai.com"],
+      "subject": "[Cần Làm Rõ] [title] - Hạn: [T4]",
+      "update": "LENH_GUI_LOI_NHAC = 'Đã nhắc', Status = 'Đã gửi email'"
+    },
+    "validation": {
+      "if_node": "sendTo && emailSubject must not be empty",
+      "on_fail": "Log to WF Logs with Status = ⚠️ Warning",
+      "error_details": "Missing: To/Subject"
+    }
+  },
+
+  "form_entry_ids": {
+    "form_cu": {
+      "form_id": "1cqQQ6i_flcil5msjouFvvqBIETqyV0Ukcf2Ysrqsth4",
+      "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw/viewform",
+      "entries": {
+        "maClarification": "1684171280",
+        "nguonChiDao": "1878008034",
+        "ngayNhanChiDao": "1953342780",
+        "noiDungGoc": "1839616630",
+        "dauMoiT1": "649583359",
+        "t2NhiemVu": "1319518938",
+        "t3ChiTieu": "1910876946",
+        "t4ThoiHan": "1661283634",
+        "ghiChu": "1985703119",
+        "xacNhan": "429936070"
+      }
+    }
+  },
+  
+  "usage_guide": {
+    "fetch_by_collection_id": "Use collection_to_database mapping to get database_id, then fetch",
+    "example": "collection://90fd1939... → database_id: f2c9e34f... → notion-fetch(f2c9e34f...)",
+    "primary_input": "meetings database - CEO creates daily meeting notes here",
+    "logs": "wf_logs database - n8n workflows log here (includes ⚠️ Warning for validation errors)"
+  }
+}

@@ -1,0 +1,379 @@
+{
+  "name": "CEO Directive - WF1: Gửi yêu cầu Xác nhận (v8.2 - Form CŨ)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "⏰ Schedule: Mỗi giờ",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"or\": [\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"equals\": \"🆕 Mới tạo\"\n        }\n      },\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"equals\": \"Chờ làm rõ\"\n        }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "query-clarifications",
+      "name": "📋 Query Clarifications",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// WF1 v8.2 - Extract & Filter với Email Limiting\n// Form CŨ: 1cqQQ6i_flcil5msjouFvvqBIETqyV0Ukcf2Ysrqsth4\n\nconst results = $input.first().json.results || [];\nconst today = new Date().toISOString().split('T')[0];\n\nconst eligibleItems = [];\nconst skippedItems = [];\nconst needsHrLookup = [];\nconst directEmail = [];\n\nfor (const page of results) {\n  const props = page.properties;\n  \n  // Basic info\n  const id = page.id;\n  const tieuDe = props['Tiêu đề']?.title?.[0]?.plain_text || 'Không có tiêu đề';\n  \n  // Email limiting - check số lần gửi và ngày gửi\n  const soLanGui = props['📧 Số lần gửi']?.number || 0;\n  const ngayGuiRaw = props['📅 Ngày gửi gần nhất']?.date?.start || null;\n  const ngayGuiGanNhat = ngayGuiRaw ? ngayGuiRaw.split('T')[0] : null;\n  \n  // Check if can send today\n  const isToday = ngayGuiGanNhat === today;\n  const canSend = !isToday || soLanGui < 2;\n  \n  if (!canSend) {\n    skippedItems.push({\n      id,\n      title: tieuDe,\n      reason: `Đã gửi ${soLanGui} lần hôm nay (${today})`\n    });\n    continue;\n  }\n  \n  // Extract all properties for prefill\n  const nguon = props['Nguồn']?.select?.name || '';\n  const ngayNhan = props['Ngày nhận']?.date?.start || '';\n  const noiDungGoc = props['Nội dung gốc']?.rich_text?.[0]?.plain_text || '';\n  const t2NhiemVu = props['T2 - NHIỆM VỤ']?.rich_text?.[0]?.plain_text || '';\n  const t3ChiTieu = props['T3 - CHỈ TIÊU']?.rich_text?.[0]?.plain_text || '';\n  const t4ThoiHan = props['T4 - THỜI HẠN']?.date?.start || '';\n  const ghiChu = props['Ghi chú']?.rich_text?.[0]?.plain_text || '';\n  \n  // Email resolution\n  const emailDauMoi = props['📧 Email đầu mối']?.email || '';\n  const hrRelation = props['👤 Người nhận chỉ đạo (HR)']?.relation || [];\n  const hrId = hrRelation.length > 0 ? hrRelation[0].id : null;\n  \n  const item = {\n    id,\n    tieuDe,\n    nguon,\n    ngayNhan,\n    noiDungGoc,\n    t2NhiemVu,\n    t3ChiTieu,\n    t4ThoiHan,\n    ghiChu,\n    emailDauMoi,\n    hrId,\n    soLanGui,\n    newSoLanGui: isToday ? soLanGui + 1 : 1,\n    todayDate: today\n  };\n  \n  eligibleItems.push(item);\n  \n  // Categorize by email source\n  if (emailDauMoi) {\n    directEmail.push(item);\n  } else if (hrId) {\n    needsHrLookup.push(item);\n  } else {\n    // Use fallback\n    item.resolvedEmail = 'vynnl@esuhai.com';\n    item.resolvedName = 'HR Vy (Fallback)';\n    item.usedFallback = true;\n    directEmail.push(item);\n  }\n}\n\nconsole.log(`[WF1 v8.2] Total: ${results.length}, Eligible: ${eligibleItems.length}, Skipped: ${skippedItems.length}`);\nconsole.log(`[WF1 v8.2] Direct email: ${directEmail.length}, Needs HR lookup: ${needsHrLookup.length}`);\nif (skippedItems.length > 0) {\n  console.log('[WF1 v8.2] Skipped items:', JSON.stringify(skippedItems, null, 2));\n}\n\nreturn {\n  eligibleItems,\n  skippedItems,\n  needsHrLookup,\n  directEmail,\n  stats: {\n    total: results.length,\n    eligible: eligibleItems.length,\n    skipped: skippedItems.length,\n    directEmail: directEmail.length,\n    needsHrLookup: needsHrLookup.length\n  }\n};"
+      },
+      "id": "extract-filter",
+      "name": "🔧 Extract & Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "needs-hr",
+              "leftValue": "={{ $json.stats.needsHrLookup }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-needs-hr",
+      "name": "IF: Cần HR Lookup?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 0],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get unique HR IDs to lookup\nconst needsHrLookup = $input.first().json.needsHrLookup || [];\nconst hrIds = [...new Set(needsHrLookup.map(item => item.hrId).filter(Boolean))];\n\nreturn hrIds.map(id => ({ hrId: id }));"
+      },
+      "id": "prepare-hr-lookup",
+      "name": "🔧 Prepare HR IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, -100],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.hrId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-hr",
+      "name": "👤 Fetch HR Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, -100],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine HR lookup results with items\nconst hrResults = $input.all().map(item => item.json);\nconst originalData = $('🔧 Extract & Filter').first().json;\n\n// Build HR lookup map\nconst hrMap = {};\nfor (const hr of hrResults) {\n  if (hr.id) {\n    const props = hr.properties || {};\n    hrMap[hr.id] = {\n      name: props['Họ và tên']?.title?.[0]?.plain_text || \n            props['Tên']?.title?.[0]?.plain_text || \n            'Không có tên',\n      email: props['Email']?.email || \n             props['📧 Email']?.email || ''\n    };\n  }\n}\n\n// Merge needsHrLookup with HR data\nconst needsHrLookup = originalData.needsHrLookup || [];\nconst resolvedFromHr = [];\n\nfor (const item of needsHrLookup) {\n  const hrData = hrMap[item.hrId];\n  if (hrData && hrData.email) {\n    item.resolvedEmail = hrData.email;\n    item.resolvedName = hrData.name;\n    item.usedFallback = false;\n  } else {\n    // Fallback if HR has no email\n    item.resolvedEmail = 'vynnl@esuhai.com';\n    item.resolvedName = hrData?.name || 'HR Vy (Fallback)';\n    item.usedFallback = true;\n  }\n  resolvedFromHr.push(item);\n}\n\n// Combine with directEmail items\nconst directEmail = originalData.directEmail || [];\nfor (const item of directEmail) {\n  if (!item.resolvedEmail) {\n    item.resolvedEmail = item.emailDauMoi;\n    item.resolvedName = '';\n    item.usedFallback = false;\n  }\n}\n\nconst allItems = [...directEmail, ...resolvedFromHr];\n\nconsole.log(`[WF1 v8.2] Combined ${allItems.length} items for email`);\n\nreturn { allItems, hrMap };"
+      },
+      "id": "combine-hr",
+      "name": "🔧 Combine HR Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, -100],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// No HR lookup needed - use direct email items\nconst originalData = $input.first().json;\nconst directEmail = originalData.directEmail || [];\n\nfor (const item of directEmail) {\n  if (!item.resolvedEmail) {\n    item.resolvedEmail = item.emailDauMoi || 'vynnl@esuhai.com';\n    item.resolvedName = '';\n    item.usedFallback = !item.emailDauMoi;\n  }\n}\n\nconsole.log(`[WF1 v8.2] Direct path: ${directEmail.length} items`);\n\nreturn { allItems: directEmail };"
+      },
+      "id": "direct-path",
+      "name": "🔧 Direct Email Path",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 100],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge from both paths\nconst items = $input.all().flatMap(i => i.json.allItems || []);\nconsole.log(`[WF1 v8.2] Merged ${items.length} items for processing`);\nreturn items.map(item => ({ json: item }));"
+      },
+      "id": "merge-paths",
+      "name": "🔀 Merge Paths",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1540, 0],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// WF1 v8.2 - Build Prefill URL cho Form CŨ\n// Form ID: 1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw\n\nconst item = $input.first().json;\n\n// Entry IDs cho Form CŨ (đã verify)\nconst entryIds = {\n  maClarification: '1684171280',   // Mã Clarification\n  nguonChiDao: '1878008034',       // Nguồn chỉ đạo\n  ngayNhanChiDao: '1953342780',    // Ngày nhận chỉ đạo\n  noiDungGoc: '1839616630',        // Nội dung chỉ đạo gốc\n  dauMoiT1: '649583359',           // Đầu mối thực hiện (T1)\n  t2NhiemVu: '1319518938',         // T2 - Nhiệm vụ\n  t3ChiTieu: '1910876946',         // T3 - Chỉ tiêu\n  t4ThoiHan: '1661283634',         // T4 - Thời hạn (Deadline)\n  ghiChu: '1985703119',            // Ghi chú\n  xacNhan: '429936070'             // Xác nhận (checkbox - không prefill)\n};\n\n// Build form URL\nconst formId = '1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw';\nconst baseUrl = `https://docs.google.com/forms/d/e/${formId}/viewform?usp=pp_url`;\n\n// Build prefill params\nconst params = [\n  `entry.${entryIds.maClarification}=${encodeURIComponent(item.id || '')}`,\n  `entry.${entryIds.nguonChiDao}=${encodeURIComponent(item.nguon || '')}`,\n  `entry.${entryIds.ngayNhanChiDao}=${encodeURIComponent(item.ngayNhan || '')}`,\n  `entry.${entryIds.noiDungGoc}=${encodeURIComponent(item.noiDungGoc || '')}`,\n  `entry.${entryIds.dauMoiT1}=${encodeURIComponent(item.resolvedName || '')}`,\n  `entry.${entryIds.t2NhiemVu}=${encodeURIComponent(item.t2NhiemVu || '')}`,\n  `entry.${entryIds.t3ChiTieu}=${encodeURIComponent(item.t3ChiTieu || '')}`,\n  `entry.${entryIds.t4ThoiHan}=${encodeURIComponent(item.t4ThoiHan || '')}`,\n  `entry.${entryIds.ghiChu}=${encodeURIComponent(item.ghiChu || '')}`\n].join('&');\n\nconst prefillUrl = `${baseUrl}&${params}`;\n\n// Build email content\nconst lanGui = item.newSoLanGui || 1;\nconst subjectPrefix = `[Lần ${lanGui}]`;\nconst greeting = item.resolvedName ? `Chào ${item.resolvedName},` : 'Chào Anh/Chị,';\n\nconst emailSubject = `${subjectPrefix} Yêu cầu xác nhận chỉ đạo: ${item.tieuDe}`;\n\nconst emailBody = `${greeting}\n\nBạn nhận được yêu cầu xác nhận nhận chỉ đạo từ hệ thống CEO Directive.\n\n📋 **Thông tin chỉ đạo:**\n- Tiêu đề: ${item.tieuDe}\n- Nguồn: ${item.nguon || 'Chưa xác định'}\n- Ngày nhận: ${item.ngayNhan || 'Chưa xác định'}\n- Nội dung: ${item.noiDungGoc || 'Xem chi tiết trong form'}\n\n🔗 **Vui lòng xác nhận tại đây:**\n${prefillUrl}\n\n⚠️ Lưu ý:\n- Vui lòng kiểm tra thông tin đã điền sẵn\n- Bổ sung các thông tin còn thiếu (T2, T3, T4 nếu có)\n- Tick xác nhận và gửi form\n\nTrân trọng,\nHệ thống CEO Directive - EsuhaiGroup`;\n\nreturn {\n  ...item,\n  prefillUrl,\n  emailSubject,\n  emailBody,\n  emailTo: item.resolvedEmail,\n  emailCc: 'hoangkha@esuhai.com'\n};"
+      },
+      "id": "build-prefill-url",
+      "name": "🔧 Build Prefill URL (Form CŨ)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 0],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.emailTo }}",
+        "subject": "={{ $json.emailSubject }}",
+        "emailType": "text",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "ccList": "={{ $json.emailCc }}"
+        }
+      },
+      "id": "send-email",
+      "name": "📧 Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1980, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail-credentials-id",
+          "name": "Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Tình trạng\": {\n      \"select\": {\n        \"name\": \"📧 Đã gửi email\"\n      }\n    },\n    \"📧 Số lần gửi\": {\n      \"number\": {{ $json.newSoLanGui }}\n    },\n    \"📅 Ngày gửi gần nhất\": {\n      \"date\": {\n        \"start\": \"{{ $json.todayDate }}\"\n      }\n    },\n    \"Form gửi\": {\n      \"url\": \"{{ $json.prefillUrl }}\"\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "update-notion",
+      "name": "📝 Update Notion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 0],
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials-id",
+          "name": "Notion API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "⏰ Schedule: Mỗi giờ": {
+      "main": [
+        [
+          {
+            "node": "📋 Query Clarifications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Query Clarifications": {
+      "main": [
+        [
+          {
+            "node": "🔧 Extract & Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Extract & Filter": {
+      "main": [
+        [
+          {
+            "node": "IF: Cần HR Lookup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Cần HR Lookup?": {
+      "main": [
+        [
+          {
+            "node": "🔧 Prepare HR IDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔧 Direct Email Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Prepare HR IDs": {
+      "main": [
+        [
+          {
+            "node": "👤 Fetch HR Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👤 Fetch HR Info": {
+      "main": [
+        [
+          {
+            "node": "🔧 Combine HR Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Combine HR Data": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Paths",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Direct Email Path": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Paths",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Merge Paths": {
+      "main": [
+        [
+          {
+            "node": "🔧 Build Prefill URL (Form CŨ)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Build Prefill URL (Form CŨ)": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Email": {
+      "main": [
+        [
+          {
+            "node": "📝 Update Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "esuhai-n8n-cloud"
+  },
+  "tags": []
+}

@@ -1,0 +1,188 @@
+{
+  "name": "CEO Directive - WF2 v2 - Xử lý Form Làm rõ (FIXED)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": { "item": [{ "hour": 8 }] },
+        "documentId": { "__rl": true, "value": "1inVI8zCFDdERgCT1xjKITjzWohsx56gWUI8lrQzhv4U", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Form Responses 1", "mode": "name" },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "d68ee75d-fc43-41f9-b216-3d5f05c0c9e5",
+      "name": "Google Sheets Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [352, -224],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": { "id": "gnJeRuxzy76trrRj", "name": "Google Sheets Trigger account" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// EXTRACT FORM DATA - v2 FIXED\n// Thêm: missingFields để báo cho Invalid flow\n// ========================================\n\nconst row = $input.first().json;\nconst columns = Object.keys(row);\n\nconst findField = function(keywords, excludeKeywords) {\n  excludeKeywords = excludeKeywords || [];\n  for (var i = 0; i < columns.length; i++) {\n    var col = columns[i];\n    var colLC = col.toLowerCase();\n    var hasKeyword = false;\n    var hasExclude = false;\n    for (var j = 0; j < keywords.length; j++) {\n      if (colLC.indexOf(keywords[j].toLowerCase()) !== -1) { hasKeyword = true; break; }\n    }\n    for (var k = 0; k < excludeKeywords.length; k++) {\n      if (colLC.indexOf(excludeKeywords[k].toLowerCase()) !== -1) { hasExclude = true; break; }\n    }\n    if (hasKeyword && !hasExclude) return row[col] || '';\n  }\n  return '';\n};\n\nvar timestamp = row['Timestamp'] || row['Dấu thời gian'] || '';\nvar email = row['Email Address'] || row['Địa chỉ email'] || '';\nvar clarificationId = findField(['mã clarification', 'clarification id', 'mã chỉ đạo']);\nvar nguonChiDao = findField(['nguồn chỉ đạo', 'nguồn']);\nvar ngayNhanChiDao = findField(['ngày nhận']);\nvar noiDungChiDaoGoc = findField(['nội dung chỉ đạo gốc', 'nội dung chỉ đạo']);\nvar dauMoiT1 = findField(['đầu mối', 't1']);\nvar t2NhiemVu = findField(['t2', 'nhiệm vụ']);\nvar t3ChiTieu = findField(['t3', 'chỉ tiêu']);\nvar t4ThoiHanRaw = findField(['t4', 'thời hạn', 'deadline']);\nvar ghiChu = findField(['ghi chú', 'thắc mắc']);\nvar xacNhanRaw = findField(['xác nhận']);\n\nvar xacNhanDoc = false;\nvar camKetThucHien = false;\nif (xacNhanRaw) {\n  var xacNhanLC = xacNhanRaw.toString().toLowerCase();\n  xacNhanDoc = xacNhanLC.indexOf('xác nhận') !== -1 || xacNhanLC.indexOf('đã hiểu') !== -1;\n  camKetThucHien = xacNhanLC.indexOf('cam kết') !== -1;\n}\n\nvar t4ThoiHan = t4ThoiHanRaw;\nif (t4ThoiHanRaw && t4ThoiHanRaw.indexOf('/') !== -1) {\n  var parts = t4ThoiHanRaw.split('/');\n  if (parts.length === 3) {\n    var month = parts[0].length === 1 ? '0' + parts[0] : parts[0];\n    var day = parts[1].length === 1 ? '0' + parts[1] : parts[1];\n    var year = parts[2];\n    t4ThoiHan = year + '-' + month + '-' + day;\n  }\n}\n\n// ========== VALIDATE + LIST MISSING FIELDS ==========\nvar missingFields = [];\nif (!noiDungChiDaoGoc) missingFields.push('Nội dung chỉ đạo gốc');\nif (!t2NhiemVu) missingFields.push('T2 - Nhiệm vụ');\nif (!t3ChiTieu) missingFields.push('T3 - Chỉ tiêu');\nif (!t4ThoiHan) missingFields.push('T4 - Thời hạn');\n\nvar has4T = missingFields.length === 0;\nvar isConfirmed = Boolean(xacNhanDoc || camKetThucHien);\nvar hasId = Boolean(clarificationId && clarificationId.length > 10);\n\nif (!isConfirmed) missingFields.push('Xác nhận (chưa tick)');\nif (!hasId) missingFields.push('Mã Clarification (trống hoặc không hợp lệ)');\n\nreturn {\n  timestamp, email: email || 'hoangkha@esuhai.com',\n  clarificationId: (clarificationId || '').toString().trim(),\n  noiDungChiDaoGoc, dauMoiT1, t2NhiemVu, t3ChiTieu, t4ThoiHan,\n  nguonChiDao, ghiChu, xacNhanDoc, camKetThucHien,\n  has4T, isConfirmed, hasId,\n  isValid: has4T && isConfirmed && hasId,\n  missingFields: missingFields\n};"
+      },
+      "id": "0c28de7b-ba3a-4506-a710-6ed772001aeb",
+      "name": "Extract Form Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [576, -224]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e31b14a0-f217-4a16-b50d-b3ec47a705d1",
+      "name": "IF: Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [800, -224]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": { "__rl": true, "value": "f2c9e34f-5506-483f-a124-44ae37d38a30", "mode": "id" },
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            { "key": "Tiêu đề|title", "title": "={{ $json.noiDungChiDaoGoc }}" },
+            { "key": "T2 - Nhiệm vụ|rich_text", "textContent": "={{ $json.t2NhiemVu }}" },
+            { "key": "T3 - Chỉ tiêu|rich_text" },
+            { "key": "T4 - Thời hạn|date", "timezone": "Asia/Ho_Chi_Minh" },
+            { "key": "Ưu tiên|select", "selectValue": "🟠 Trung bình" },
+            { "key": "Nguồn giao việc|rich_text" },
+            { "key": "Tình trạng|select", "selectValue": "Đúng kế hoạch" },
+            { "key": "Cấp độ|select", "selectValue": "Cấp 1-CEO" },
+            { "key": "Tiến độ|rich_text" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6369958d-7c10-48a1-b4c7-804efcd18da1",
+      "name": "Create Task in Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [1024, -224],
+      "credentials": { "notionApi": { "id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI" } }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Notion-Version", "value": "2022-06-28" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"Chỉ đạo Cần Làm Rõ\": {\n      \"relation\": [\n        {\n          \"id\": \"{{ $('Extract Form Data').first().json.clarificationId }}\"\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [1232, -224],
+      "id": "36159a6a-53c3-46c1-aae4-e0c17c9b371a",
+      "name": "HTTP Request - Link Clarification",
+      "credentials": { "notionApi": { "id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI" } }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": { "__rl": true, "value": "={{ $('Extract Form Data').first().json.clarificationId }}", "mode": "id" },
+        "propertiesUi": {
+          "propertyValues": [
+            { "key": "Tình trạng|select", "selectValue": "Đã tạo task" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5dfa72e6-3168-4dcd-91f1-b38635ae2ce7",
+      "name": "Update Clarification Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [1440, -224],
+      "credentials": { "notionApi": { "id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI" } }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Extract Form Data').first().json.email }}",
+        "subject": "=✅ Đã tạo Task: {{ $('Extract Form Data').first().json.noiDungChiDaoGoc.substring(0, 50) }}",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto; background: #ffffff;\">\n  <div style=\"background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"color: #ffffff; margin: 0; font-size: 24px;\">✅ Task đã được tạo thành công!</h1>\n  </div>\n  <div style=\"padding: 30px; background: #f8f9fa; border: 1px solid #e9ecef;\">\n    <p style=\"font-size: 16px; color: #333;\">Xin chào,</p>\n    <p style=\"font-size: 15px; color: #555; line-height: 1.6;\">Cảm ơn bạn đã xác nhận chỉ đạo. Task đã được tạo trong hệ thống Notion.</p>\n    <div style=\"background: #ffffff; border-left: 4px solid #11998e; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);\">\n      <h3 style=\"color: #11998e; margin-top: 0;\">📌 {{ $('Extract Form Data').first().json.noiDungChiDaoGoc }}</h3>\n      <table style=\"width: 100%; border-collapse: collapse;\">\n        <tr style=\"border-bottom: 1px solid #eee;\"><td style=\"padding: 10px 0; color: #888; width: 140px;\">Đầu mối (T1):</td><td style=\"padding: 10px 0; color: #333;\">{{ $('Extract Form Data').first().json.dauMoiT1 }}</td></tr>\n        <tr style=\"border-bottom: 1px solid #eee;\"><td style=\"padding: 10px 0; color: #888;\">T2 - Nhiệm vụ:</td><td style=\"padding: 10px 0; color: #333;\">{{ $('Extract Form Data').first().json.t2NhiemVu }}</td></tr>\n        <tr style=\"border-bottom: 1px solid #eee;\"><td style=\"padding: 10px 0; color: #888;\">T3 - Chỉ tiêu:</td><td style=\"padding: 10px 0; color: #333;\">{{ $('Extract Form Data').first().json.t3ChiTieu }}</td></tr>\n        <tr><td style=\"padding: 10px 0; color: #888;\">T4 - Thời hạn:</td><td style=\"padding: 10px 0; color: #e74c3c; font-weight: bold;\">{{ $('Extract Form Data').first().json.t4ThoiHan }}</td></tr>\n      </table>\n    </div>\n    <div style=\"text-align: center; margin: 30px 0;\">\n      <a href=\"{{ $('Create Task in Notion').first().json.url }}\" style=\"display: inline-block; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px;\">👉 Xem Task trong Notion</a>\n    </div>\n  </div>\n  <div style=\"background: #343a40; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;\">\n    <p style=\"color: #adb5bd; margin: 0; font-size: 13px;\">Hệ thống theo dõi Chỉ đạo CEO - EsuhaiGroup</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "f4f2655c-e1c1-459d-af55-04bcf2890219",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1664, -224],
+      "webhookId": "211d8a20-567e-4e8a-91ca-1b35b2c92991",
+      "credentials": { "gmailOAuth2": { "id": "QMCQ41m8F8hiBKal", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "sendTo": "=hoangkha@esuhai.com, {{ $('Extract Form Data').first().json.email }}",
+        "subject": "=⚠️ [WF2] Form Làm Rõ THIẾU THÔNG TIN: {{ $('Extract Form Data').first().json.noiDungChiDaoGoc ? $('Extract Form Data').first().json.noiDungChiDaoGoc.substring(0,40) : 'Không rõ nội dung' }}",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #f44336 0%, #e91e63 100%); padding: 25px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"color: #fff; margin: 0; font-size: 20px;\">⚠️ Form Làm Rõ - Thiếu Thông Tin</h1>\n  </div>\n  <div style=\"background: #fff; padding: 25px; border: 1px solid #ddd;\">\n    <p>Anh Kha,</p>\n    <p>Hệ thống nhận được 1 form xác nhận chỉ đạo nhưng <strong>THIẾU THÔNG TIN</strong>, không thể tạo Task tự động.</p>\n    <div style=\"background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0;\">\n      <strong>📧 Người gửi:</strong> {{ $('Extract Form Data').first().json.email }}<br>\n      <strong>📅 Thời gian:</strong> {{ $('Extract Form Data').first().json.timestamp }}<br>\n      <strong>📝 Nội dung:</strong> {{ $('Extract Form Data').first().json.noiDungChiDaoGoc || '(trống)' }}<br>\n      <strong>🆔 Mã Clarification:</strong> {{ $('Extract Form Data').first().json.clarificationId || '(trống)' }}\n    </div>\n    <h3 style=\"color: #c00;\">❌ Các trường bị thiếu:</h3>\n    <ul>\n      {{ $('Extract Form Data').first().json.missingFields.map(f => '<li style=\"color: #c00; margin: 5px 0;\">' + f + '</li>').join('') }}\n    </ul>\n    <h3>✅ Hành động cần làm:</h3>\n    <ol>\n      <li>Liên hệ người gửi form để bổ sung thông tin</li>\n      <li>Hoặc tạo Task thủ công trên Notion</li>\n    </ol>\n  </div>\n  <div style=\"background: #343a40; padding: 15px; text-align: center; border-radius: 0 0 8px 8px;\">\n    <p style=\"color: #adb5bd; margin: 0; font-size: 12px;\">WF2 v2 FIXED - EsuhaiGroup | {{ $now.format('DD/MM/YYYY HH:mm') }}</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "invalid-alert-email-001",
+      "name": "📧 Alert: Invalid Submission",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1024, 0],
+      "webhookId": "wf2-invalid-alert",
+      "credentials": { "gmailOAuth2": { "id": "QMCQ41m8F8hiBKal", "name": "Gmail account" } }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [[{ "node": "Extract Form Data", "type": "main", "index": 0 }]]
+    },
+    "Extract Form Data": {
+      "main": [[{ "node": "IF: Valid?", "type": "main", "index": 0 }]]
+    },
+    "IF: Valid?": {
+      "main": [
+        [{ "node": "Create Task in Notion", "type": "main", "index": 0 }],
+        [{ "node": "📧 Alert: Invalid Submission", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create Task in Notion": {
+      "main": [[{ "node": "HTTP Request - Link Clarification", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request - Link Clarification": {
+      "main": [[{ "node": "Update Clarification Status", "type": "main", "index": 0 }]]
+    },
+    "Update Clarification Status": {
+      "main": [[{ "node": "Send Confirmation Email", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "wf2-v2-fixed-20260302",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "Isb66Myr6PZF5ajx",
+  "tags": []
+}

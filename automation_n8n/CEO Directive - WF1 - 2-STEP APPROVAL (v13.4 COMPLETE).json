@@ -1,0 +1,937 @@
+{
+  "name": "CEO Directive - WF1 - 2-STEP APPROVAL (v13.4 COMPLETE)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf1-manual",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9a002173-fcd8-401a-bc71-3735463191e5",
+      "name": "🚨 Manual Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        13200,
+        -16
+      ],
+      "webhookId": "wf1-manual"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8,13,17 * * *"
+            }
+          ]
+        }
+      },
+      "id": "b91d0f64-0471-4718-9d82-32d8487cd9c5",
+      "name": "⏰ Auto: 08:00, 13:00, 17:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        13216,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'auto' } };"
+      },
+      "id": "5f64bd94-6f2c-41d3-b1f7-8810c1159aef",
+      "name": "Set: Auto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13488,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'manual' } };"
+      },
+      "id": "42256b01-be08-4ffe-bb36-e39fb0f635f8",
+      "name": "Set: Manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13472,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF1 v13.4 triggered', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "4916052a-78e9-4ce1-8b11-853b7583b4be",
+      "name": "📤 Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        13392,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      {\"property\": \"TINH_TRANG\", \"select\": {\"equals\": \"Chờ làm rõ\"}},\n      {\n        \"or\": [\n          {\"property\": \"✅ Đã duyệt bởi người chỉ đạo\", \"select\": {\"is_empty\": true}},\n          {\"property\": \"✅ Đã duyệt bởi người chỉ đạo\", \"select\": {\"equals\": \"Chưa duyệt\"}}\n        ]\n      }\n    ]\n  },\n  \"page_size\": 100\n}",
+        "options": {}
+      },
+      "id": "a9ab9e7f-5014-492b-a01d-136366264bd0",
+      "name": "📋 Query STEP1: Chờ duyệt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        13808,
+        -640
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      {\"property\": \"TINH_TRANG\", \"select\": {\"does_not_equal\": \"Đã tạo task\"}},\n      {\"property\": \"✅ Đã duyệt bởi người chỉ đạo\", \"select\": {\"equals\": \"Đã duyệt\"}},\n      {\n        \"or\": [\n          {\"property\": \"LENH_GUI_LOI_NHAC\", \"select\": {\"is_empty\": true}},\n          {\"property\": \"LENH_GUI_LOI_NHAC\", \"select\": {\"equals\": \"Gửi lời nhắc\"}}\n        ]\n      }\n    ]\n  },\n  \"page_size\": 100\n}",
+        "options": {}
+      },
+      "id": "90fa14e0-0a2f-4c51-8167-ef144030eb1c",
+      "name": "📋 Query STEP2: Đã duyệt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        13808,
+        -16
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        14128,
+        -640
+      ],
+      "id": "f5dbe113-c393-4abd-b207-edd235cecad7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        14128,
+        -16
+      ],
+      "id": "5d07e5ff-8529-4111-b1d3-5326f0ade487",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {},
+      "id": "987639db-adda-49f4-b009-061a50c38c9c",
+      "name": "🔀 Merge Queries",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        14480,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// EXTRACTDATA v13.4 - WF1 2-STEP APPROVAL WITH PSYCHOLOGY\n// ============================================================\n// Purpose: Extract and validate clarification data for email workflow\n// Mode: Run Once for All Items\n// Version: 13.4 - Same as 13.3, no changes needed\n// ============================================================\n\nconst items = $input.all();\nconst results = [];\n\nconst ALWAYS_CC = ['hoangkha@esuhai.com', 'vynnl@esuhai.com'];\n\nfunction safeText(arr) {\n  if (!Array.isArray(arr) || arr.length === 0) return '';\n  return arr.map(t => t.plain_text || '').join('');\n}\n\nfunction safeSelect(select) {\n  if (!select || !select.name) return '';\n  return select.name;\n}\n\nfunction safeDate(date) {\n  if (!date || !date.start) return '';\n  return date.start;\n}\n\nfunction safeRelation(relation) {\n  if (!Array.isArray(relation) || relation.length === 0) return null;\n  return relation[0];\n}\n\nfunction safeRollup(rollup) {\n  if (!rollup || rollup.type !== 'array' || !Array.isArray(rollup.array)) return '';\n  if (rollup.array.length === 0) return '';\n  const firstItem = rollup.array[0];\n  if (firstItem.type === 'email') return firstItem.email || '';\n  if (firstItem.type === 'rich_text') return safeText(firstItem.rich_text);\n  return '';\n}\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const page = item.json;\n  const props = page.properties || {};\n  \n  const id = page.id;\n  const tieuDe = safeText(props['Tiêu đề']?.title);\n  const nguon = safeSelect(props['Nguồn']?.select);\n  const ngayNhan = safeDate(props['Ngày nhận']?.date);\n  const noiDung = safeText(props['Nội dung gốc']?.rich_text);\n  \n  const tinhTrang = safeSelect(props['TÌNH TRẠNG']?.select);\n  const daDuyet = safeSelect(props['✅ Đã duyệt bởi người chỉ đạo']?.select);\n  const lenhGuiLoiNhac = safeSelect(props['LỆNH GỬI LỜI NHẮC']?.select);\n  \n  const nguoiChiDaoRelation = safeRelation(props['Người chỉ đạo']?.relation);\n  const emailNguoiChiDao = safeRollup(props['Email người chỉ đạo']?.rollup);\n  const tenNguoiChiDao = safeText(props['Tên người chỉ đạo']?.rollup?.array?.[0]?.title || []);\n  \n  const dauMoiRelation = safeRelation(props['T1 - ĐẦU MỐI']?.relation);\n  const emailDauMoi = safeRollup(props['Email đầu mối']?.rollup);\n  const tenDauMoi = safeText(props['Tên đầu mối']?.rollup?.array?.[0]?.title || []);\n  \n  const t2NhiemVu = safeText(props['T2 - NHIỆM VỤ']?.rich_text);\n  const t3ChiTieu = safeText(props['T3 - CHỈ TIÊU']?.rich_text);\n  const t4ThoiHan = safeDate(props['T4 - THỜI HẠN']?.date);\n  \n  if (!emailNguoiChiDao || emailNguoiChiDao === '') {\n    results.push({\n      json: {\n        clarificationId: id,\n        warning: true,\n        error: 'MISSING_NGUOI_CHI_DAO',\n        message: `[${tieuDe}] Thiếu Email người chỉ đạo`,\n        tieuDe,\n        tinhTrang,\n        daDuyet,\n        logStatus: '⚠️ Warning',\n        logError: 'Missing: Email người chỉ đạo',\n        logDetails: `ID: ${id}, Title: ${tieuDe}`,\n        sendTo: '',\n        emailSubject: '',\n        url: page.url,\n        version: '13.4'\n      }\n    });\n    continue;\n  }\n  \n  let step = '';\n  let sendTo = '';\n  let emailSubject = '';\n  let ccTo = [];\n  \n  if (!daDuyet || daDuyet === '' || daDuyet === 'Chưa duyệt') {\n    step = 'STEP1';\n    sendTo = emailNguoiChiDao;\n    emailSubject = `[Cần Duyệt] ${tieuDe || 'Chỉ đạo mới'}`;\n    ccTo = ALWAYS_CC.filter(e => e !== sendTo);\n    \n  } else if (daDuyet === 'Đã duyệt') {\n    if (!emailDauMoi || emailDauMoi === '') {\n      results.push({\n        json: {\n          clarificationId: id,\n          warning: true,\n          error: 'MISSING_DAU_MOI',\n          message: `[${tieuDe}] Thiếu Email đầu mối`,\n          tieuDe,\n          emailNguoiChiDao,\n          tenNguoiChiDao,\n          tinhTrang,\n          daDuyet,\n          logStatus: '⚠️ Warning',\n          logError: 'Missing: Email đầu mối',\n          logDetails: `ID: ${id}, Title: ${tieuDe}`,\n          sendTo: '',\n          emailSubject: '',\n          url: page.url,\n          version: '13.4'\n        }\n      });\n      continue;\n    }\n    \n    step = 'STEP2';\n    sendTo = emailDauMoi;\n    emailSubject = `[Cần Làm Rõ] ${tieuDe || 'Chỉ đạo'} - Hạn: ${t4ThoiHan || 'Chưa xác định'}`;\n    \n    const ccList = new Set(ALWAYS_CC);\n    if (emailNguoiChiDao) ccList.add(emailNguoiChiDao);\n    ccList.delete(sendTo);\n    ccTo = Array.from(ccList);\n    \n  } else {\n    continue;\n  }\n  \n  results.push({\n    json: {\n      clarificationId: id,\n      step,\n      tieuDe,\n      nguon,\n      ngayNhan,\n      noiDung,\n      emailNguoiChiDao,\n      tenNguoiChiDao,\n      emailDauMoi,\n      tenDauMoi,\n      sendTo,\n      emailSubject,\n      ccTo: ccTo.join(', '),\n      tinhTrang,\n      daDuyet,\n      lenhGuiLoiNhac,\n      t2NhiemVu,\n      t3ChiTieu,\n      t4ThoiHan,\n      url: page.url,\n      version: '13.4'\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "59c1ec4f-2a96-482c-8c69-6def70d41301",
+      "name": "⚙️ ExtractData",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14704,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-data",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8fb7a2b3-553b-451c-9bdb-28b6172708c7",
+      "name": "IF: Has Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        14928,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.step === 'STEP1' && !$json.warning ? 0 : 1 }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        15248,
+        -544
+      ],
+      "id": "df9c137f-0ee1-4ff7-8bb2-c961f403b409",
+      "name": "🔀 Switch #1: STEP1"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.step === 'STEP2' && !$json.warning ? 0 : 1 }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        15488,
+        -144
+      ],
+      "id": "6f79d265-e2ec-4327-aabc-a31a91b46d93",
+      "name": "🔀 Switch #2: STEP2/Warning"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.sendTo }}",
+        "subject": "={{ $json.emailSubject }}",
+        "message": "<!DOCTYPE html>\n<html>\n<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">\n  <div style=\"max-width: 600px; margin: 0 auto; padding: 20px;\">\n    \n    <h2 style=\"color: #2563eb;\">🎯 YÊU CẦU DUYỆT CHỈ ĐẠO QUAN TRỌNG</h2>\n    \n    <p>Kính gửi <strong>{{$json.tenNguoiChiDao}}</strong>,</p>\n    \n    <p>Trong cuộc họp <strong>{{$json.nguon}}</strong> ngày <strong>{{$json.ngayNhan}}</strong>, Anh/Chị đã đưa ra chỉ đạo sau:</p>\n    \n    <div style=\"background: #f3f4f6; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0;\">\n      <strong>📋 NỘI DUNG:</strong><br>\n      {{$json.noiDung}}\n    </div>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <h3 style=\"color: #059669;\">📝 PHÂN TÍCH SƠ BỘ (Cần Anh/Chị xác nhận):</h3>\n    \n    <ul style=\"list-style: none; padding-left: 0;\">\n      <li style=\"margin: 10px 0;\">✓ <strong>T1 - ĐẦU MỐI:</strong> {{$json.tenDauMoi}}</li>\n      <li style=\"margin: 10px 0;\">✓ <strong>T2 - NHIỆM VỤ:</strong> {{$json.t2NhiemVu || $json.tieuDe}}</li>\n      <li style=\"margin: 10px 0;\">❓ <strong>T3 - CHỈ TIÊU:</strong> {{$json.t3ChiTieu || \"Cần xác nhận\"}}</li>\n      <li style=\"margin: 10px 0;\">❓ <strong>T4 - THỜI HẠN:</strong> {{$json.t4ThoiHan || \"Cần xác nhận\"}}</li>\n    </ul>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <h3 style=\"color: #7c3aed;\">💡 TẠI SAO CẦN DUYỆT:</h3>\n    \n    <ul>\n      <li><strong>Đảm bảo chính xác:</strong> Anh/Chị xác nhận lại thông tin trước khi giao cho đầu mối</li>\n      <li><strong>Tiết kiệm thời gian:</strong> {{$json.tenDauMoi}} sẽ nhận được hướng dẫn rõ ràng, không phải hỏi lại</li>\n      <li><strong>Theo dõi tiến độ:</strong> CEO sẽ nhìn thấy tiến độ xử lý chỉ đạo của Anh/Chị</li>\n    </ul>\n    \n    <div style=\"text-align: center; margin: 30px 0;\">\n      <a href=\"{{$json.url}}\" style=\"background: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;\">\n        👉 DUYỆT NGAY TẠI ĐÂY\n      </a>\n    </div>\n    \n    <div style=\"background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;\">\n      <strong>⏰ Chúng tôi đã BẮT ĐẦU xử lý chỉ đạo này.</strong> Sau khi Anh/Chị duyệt, hệ thống sẽ tự động gửi email cho {{$json.tenDauMoi}} để triển khai ngay.\n    </div>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <p style=\"color: #6b7280; font-size: 14px;\">\n      <em>Trân trọng,</em><br>\n      <em>Hệ thống WF1 v13.4 - EsuhaiGroup</em><br>\n      <em>📧 Hỗ trợ: hoangkha@esuhai.com</em>\n    </p>\n    \n  </div>\n</body>\n</html>",
+        "options": {
+          "ccList": "={{$json.ccTo}}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        15616,
+        -928
+      ],
+      "id": "d62c067c-02fb-4beb-ba8d-b156fda70d11",
+      "name": "📧 Send Email STEP1",
+      "webhookId": "a9912d26-1f7e-4957-957c-09f8f1836f64",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.sendTo }}",
+        "subject": "={{ $json.emailSubject }}",
+        "message": "<!DOCTYPE html>\n<html>\n<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">\n  <div style=\"max-width: 600px; margin: 0 auto; padding: 20px;\">\n    \n    <h2 style=\"color: #059669;\">🎯 NHIỆM VỤ MỚI TỪ {{$json.tenNguoiChiDao}}</h2>\n    \n    <p>Kính gửi <strong>{{$json.tenDauMoi}}</strong>,</p>\n    \n    <p><strong>{{$json.tenNguoiChiDao}}</strong> đã <strong style=\"color: #059669;\">PHÊ DUYỆT</strong> và giao nhiệm vụ sau cho em:</p>\n    \n    <div style=\"background: #f3f4f6; padding: 15px; border-left: 4px solid #059669; margin: 20px 0;\">\n      <strong>📋 NỘI DUNG:</strong><br>\n      {{$json.noiDung}}\n    </div>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <h3 style=\"color: #2563eb;\">📝 YÊU CẦU CỤ THỂ (4T):</h3>\n    \n    <ul style=\"list-style: none; padding-left: 0;\">\n      <li style=\"margin: 10px 0;\">✓ <strong>T1 - ĐẦU MỐI:</strong> {{$json.tenDauMoi}} (đã được chỉ định)</li>\n      <li style=\"margin: 10px 0;\">✓ <strong>T2 - NHIỆM VỤ:</strong> {{$json.t2NhiemVu || $json.tieuDe}}</li>\n      <li style=\"margin: 10px 0;\">❓ <strong>T3 - CHỈ TIÊU:</strong> {{$json.t3ChiTieu || \"Cần em xác nhận\"}}</li>\n      <li style=\"margin: 10px 0;\">❓ <strong>T4 - THỜI HẠN:</strong> {{$json.t4ThoiHan || \"Cần em xác nhận\"}}</li>\n    </ul>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <h3 style=\"color: #7c3aed;\">💡 TẠI SAO CẦN XÁC NHẬN:</h3>\n    \n    <ul>\n      <li><strong>Làm rõ kỳ vọng:</strong> Đảm bảo em hiểu đúng yêu cầu của {{$json.tenNguoiChiDao}}</li>\n      <li><strong>Cam kết có ý thức:</strong> \"Người Nói Phải LÀM\" - Em xác nhận là em cam kết làm</li>\n      <li><strong>CEO theo dõi:</strong> Tiến độ sẽ được báo cáo trực tiếp lên CEO</li>\n    </ul>\n    \n    <div style=\"text-align: center; margin: 30px 0;\">\n      <a href=\"{{$json.url}}\" style=\"background: #059669; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;\">\n        👉 XÁC NHẬN 4T NGAY\n      </a>\n    </div>\n    \n    <div style=\"background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;\">\n      <strong>⏰ Chúng tôi đã BẮT ĐẦU tạo Task cho em.</strong> Sau khi em xác nhận đầy đủ 4T, hệ thống sẽ hoàn tất Task và em có thể bắt đầu thực hiện ngay.\n    </div>\n    \n    <div style=\"background: #dbeafe; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0;\">\n      <strong>🏆 Đồng nghiệp khác đã xác nhận 4T trong vòng 24h.</strong> Em cũng làm được!\n    </div>\n    \n    <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n    \n    <p style=\"color: #6b7280; font-size: 14px;\">\n      <em>Trân trọng,</em><br>\n      <em>Hệ thống WF1 v13.4 - EsuhaiGroup</em><br>\n      <em>📧 Hỗ trợ: hoangkha@esuhai.com</em>\n    </p>\n    \n  </div>\n</body>\n</html>",
+        "options": {
+          "ccList": "={{$json.ccTo}}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        16064,
+        -336
+      ],
+      "id": "6ea9d76f-75ef-4638-8832-bc1f15dbee9d",
+      "name": "📧 Send Email STEP2",
+      "webhookId": "49e2b1fb-8cd4-47b1-8562-9fda5345d5d8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $('🔀 Switch #1: STEP1').item.json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"TINH_TRANG\": { \"select\": { \"name\": \"Đã gửi email\" } }\n  }\n}",
+        "options": {}
+      },
+      "id": "3e5931bc-6efa-49e0-a847-0f33cab61425",
+      "name": "🔄 Update Status STEP1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        15856,
+        -784
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{$json.clarificationId}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"LENH_GUI_LOI_NHAC\": { \"select\": { \"name\": \"Đã nhắc\" } },\n    \"TINH_TRANG\": { \"select\": { \"name\": \"Đã gửi email\" } }\n  }\n}",
+        "options": {}
+      },
+      "id": "a3c8cc19-f002-414d-98a1-8063c153555f",
+      "name": "🔄 Update Status STEP2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16304,
+        -336
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n  \n  let status = \"⚠️ Warning\";\n  \n  if (data.sendTo && data.emailSubject && data.clarificationId) {\n    status = \"✅ Success\";\n  }\n  \n  if (data.logStatus) {\n    status = data.logStatus;\n  }\n  \n  const body = {\n    parent: { database_id: \"53a48a4f29ba46d28e533f358d3c513c\" },\n    properties: {\n      \"Log\": { \n        title: [{ \n          text: { \n            content: `WF1 - ${data.step || 'No step'}` \n          } \n        }] \n      },\n      \"Workflow\": { \n        select: { \n          name: \"WF1 - Gửi email\" \n        } \n      },\n      \"Status\": { \n        select: { \n          name: status\n        } \n      },\n      \"Clarification\": { \n        relation: data.clarificationId ? [{ id: data.clarificationId }] : [] \n      },\n      \"Details\": { \n        rich_text: [{ \n          text: { \n            content: data.logDetails || \n                     data.message || \n                     `ID: ${data.clarificationId}\\nTitle: ${data.tieuDe}\\nTo: ${data.sendTo || 'N/A'}\\nSubject: ${data.emailSubject || 'N/A'}` || \n                     \"No details\"\n          } \n        }] \n      }\n    }\n  };\n  \n  if (data.sendTo) {\n    body.properties[\"Email To\"] = { email: data.sendTo };\n  }\n  \n  return { json: body };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        15856,
+        -576
+      ],
+      "id": "60455d8a-a649-4059-bd4a-8d9b2360b3ee",
+      "name": "Code STEP1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n  \n  let status = \"⚠️ Warning\";\n  \n  if (data.sendTo && data.emailSubject && data.clarificationId) {\n    status = \"✅ Success\";\n  }\n  \n  if (data.logStatus) {\n    status = data.logStatus;\n  }\n  \n  const body = {\n    parent: { database_id: \"53a48a4f29ba46d28e533f358d3c513c\" },\n    properties: {\n      \"Log\": { \n        title: [{ \n          text: { \n            content: `WF1 - ${data.step || 'No step'}` \n          } \n        }] \n      },\n      \"Workflow\": { \n        select: { \n          name: \"WF1 - Gửi email\" \n        } \n      },\n      \"Status\": { \n        select: { \n          name: status\n        } \n      },\n      \"Clarification\": { \n        relation: data.clarificationId ? [{ id: data.clarificationId }] : [] \n      },\n      \"Details\": { \n        rich_text: [{ \n          text: { \n            content: data.logDetails || \n                     data.message || \n                     `ID: ${data.clarificationId}\\nTitle: ${data.tieuDe}\\nTo: ${data.sendTo || 'N/A'}\\nSubject: ${data.emailSubject || 'N/A'}` || \n                     \"No details\"\n          } \n        }] \n      }\n    }\n  };\n  \n  if (data.sendTo) {\n    body.properties[\"Email To\"] = { email: data.sendTo };\n  }\n  \n  return { json: body };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16544,
+        -336
+      ],
+      "id": "bf82bf49-ede6-43c0-88a7-f5930b173613",
+      "name": "Code STEP2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n  \n  const body = {\n    parent: { database_id: \"53a48a4f29ba46d28e533f358d3c513c\" },\n    properties: {\n      \"Log\": { \n        title: [{ \n          text: { \n            content: `WF1 - Warning` \n          } \n        }] \n      },\n      \"Workflow\": { \n        select: { \n          name: \"WF1 - Gửi email\" \n        } \n      },\n      \"Status\": { \n        select: { \n          name: \"⚠️ Warning\"\n        } \n      },\n      \"Clarification\": { \n        relation: data.clarificationId ? [{ id: data.clarificationId }] : [] \n      },\n      \"Details\": { \n        rich_text: [{ \n          text: { \n            content: data.logDetails || data.message || data.error || \"Unknown warning\"\n          } \n        }] \n      }\n    }\n  };\n  \n  return { json: body };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16080,
+        -64
+      ],
+      "id": "73683378-acf9-4fb5-8b30-d4f434785241",
+      "name": "Code Warning"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "a472ffb8-f710-440a-969e-bed934231113",
+      "name": "📊 Log Success STEP1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16096,
+        -576
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "7e119563-7242-43e0-ac36-f2bc277636a3",
+      "name": "📊 Log Success STEP2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16784,
+        -336
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "15728903-a77a-4b17-a9ad-1d28bec552da",
+      "name": "📊 Log Warning",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16368,
+        -64
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "hoangkha@esuhai.com",
+        "subject": "=⚠️ [WF1 Warning] {{ $now.format('DD/MM/YYYY HH:mm') }} - {{ $json.allItems.length }} items cần xử lý",
+        "message": "<div style=\"font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto;\">   <div style=\"background: #f44336; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;\">     <h2 style=\"color: #fff; margin: 0;\">⚠️ WF1 - CÓ ITEMS CẦN XỬ LÝ THỦ CÔNG</h2>   </div>      <div style=\"background: #fff; padding: 20px; border: 1px solid #ddd;\">     <p>Anh Kha,</p>     <p>Workflow WF1 v13.4 phát hiện <strong>{{ $json.allItems.length }}</strong> items không thể gửi email tự động do thiếu thông tin.</p>          <h3>📋 CHI TIẾT:</h3>     <table style=\"width: 100%; border-collapse: collapse; margin: 15px 0;\">       <tr style=\"background: #f5f5f5;\">         <th style=\"border: 1px solid #ddd; padding: 10px; text-align: left;\">#</th>         <th style=\"border: 1px solid #ddd; padding: 10px; text-align: left;\">Tiêu đề</th>         <th style=\"border: 1px solid #ddd; padding: 10px; text-align: left;\">Lỗi</th>         <th style=\"border: 1px solid #ddd; padding: 10px; text-align: left;\">Link</th>       </tr>       {{ $json.allItems.slice(0, 20).map((item, i) => `<tr>         <td style=\"border: 1px solid #ddd; padding: 8px;\">${i+1}</td>         <td style=\"border: 1px solid #ddd; padding: 8px;\">${item.tieuDe || 'N/A'}</td>         <td style=\"border: 1px solid #ddd; padding: 8px; color: #c00;\">${item.error === 'MISSING_NGUOI_CHI_DAO' ? 'Thiếu Email người chỉ đạo' : item.error === 'MISSING_DAU_MOI' ? 'Thiếu Email đầu mối' : item.error || 'Lỗi không xác định'}</td>         <td style=\"border: 1px solid #ddd; padding: 8px;\"><a href=\"https://notion.so/${(item.id || '').replace(/-/g, '')}\">Mở</a></td>       </tr>`).join('') }}     </table>          {{ $json.allItems.length > 20 ? `<p><em>... và ${$json.allItems.length - 20} items khác</em></p>` : '' }}          <h3>✅ HÀNH ĐỘNG CẦN LÀM:</h3>     <ol>       <li>Mở từng Clarification qua link ở trên</li>       <li>Bổ sung thông tin thiếu:         <ul>           <li>Nếu thiếu \"Người chỉ đạo\" → Thêm relation vào HR database</li>           <li>Nếu thiếu \"Email đầu mối\" → Thêm relation vào HR database</li>         </ul>       </li>       <li>Sau khi sửa → Workflow sẽ tự động chạy lại lần chạy tiếp theo</li>     </ol>          <hr style=\"margin: 20px 0; border: none; border-top: 1px solid #ddd;\">     <p style=\"color: #666; font-size: 12px;\">       Workflow: WF1 v13.4<br>       Thời gian: {{ $now.format('DD/MM/YYYY HH:mm:ss') }}<br>       Tổng items lỗi: {{ $json.allItems.length }}     </p>   </div> </div> ```  **3.3.** Field **\"Subject\"**: ``` [WF1 Warning] {{ $now.format('DD/MM/YYYY HH:mm') }} - {{ $json.allItems.length }} items cần xử lý",
+        "options": {
+          "ccList": "vynnl@esuhai.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        16432,
+        240
+      ],
+      "id": "816c46ba-b839-4987-a985-4f88f9d66170",
+      "name": "📧 Send Error Summary",
+      "webhookId": "0d80fd16-db51-4fe3-81f1-cec21d258e44",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "98e37f95-81bd-408e-b472-d18b10f3d8b7",
+      "name": "🏁 Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        17232,
+        -336
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e84c83aa-f2cd-4113-b9ee-8b13ac150b97",
+      "name": "🏁 No Items",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        15248,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "allItem",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        16096,
+        240
+      ],
+      "id": "f2080311-8b69-4b66-9896-5f4e5b597c5e",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🚨 Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "📤 Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set: Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⏰ Auto: 08:00, 13:00, 17:00": {
+      "main": [
+        [
+          {
+            "node": "Set: Auto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Auto": {
+      "main": [
+        [
+          {
+            "node": "📋 Query STEP1: Chờ duyệt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📋 Query STEP2: Đã duyệt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Manual": {
+      "main": [
+        [
+          {
+            "node": "📋 Query STEP1: Chờ duyệt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📋 Query STEP2: Đã duyệt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Query STEP1: Chờ duyệt": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Query STEP2: Đã duyệt": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Queries",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🔀 Merge Queries": {
+      "main": [
+        [
+          {
+            "node": "⚙️ ExtractData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚙️ ExtractData": {
+      "main": [
+        [
+          {
+            "node": "IF: Has Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Has Items?": {
+      "main": [
+        [
+          {
+            "node": "🔀 Switch #1: STEP1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🏁 No Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Switch #1: STEP1": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Email STEP1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔀 Switch #2: STEP2/Warning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Switch #2: STEP2/Warning": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Email STEP2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code Warning",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Email STEP1": {
+      "main": [
+        [
+          {
+            "node": "🔄 Update Status STEP1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code STEP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Email STEP2": {
+      "main": [
+        [
+          {
+            "node": "🔄 Update Status STEP2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code STEP2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Update Status STEP1": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Update Status STEP2": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code STEP1": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Success STEP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code STEP2": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Success STEP2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Warning": {
+      "main": [
+        [
+          {
+            "node": "📊 Log Warning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Success STEP1": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Success STEP2": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Log Warning": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📧 Send Error Summary": {
+      "main": [
+        [
+          {
+            "node": "🏁 Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Error Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "3fe54442-2aa3-46c9-b252-0dcdfd98e40a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "EY8IRwgSIg3gzYJJ",
+  "tags": []
+}

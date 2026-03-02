@@ -1,0 +1,382 @@
+{
+  "meta": {
+    "version": "12.9",
+    "name": "WF1 - Gửi yêu cầu Xác nhận",
+    "updated": "2025-12-28",
+    "changes": [
+      "Đọc email từ Rollup property: 📧 Email (auto)",
+      "Fallback: 📧 Email đầu mối (manual) nếu có",
+      "Không cần WF0, không cần fetch HR",
+      "Simplest possible flow"
+    ]
+  },
+  "name": "CEO Directive - WF1 - Gửi yêu cầu Xác nhận (v12.9 ROLLUP)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "cronExpression", "expression": "0 8,13,16 * * *"}]}
+      },
+      "id": "schedule-trigger",
+      "name": "⏰ Auto: 08:00, 13:00, 16:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf1-manual-all",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-manual",
+      "name": "🚨 Manual: Tất cả",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 400],
+      "webhookId": "wf1-manual-all"
+    },
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "minutes", "minutesInterval": 5}]}
+      },
+      "id": "poll-checkbox",
+      "name": "🔔 Poll: Checkbox 5 phút",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'auto' } };"
+      },
+      "id": "set-auto",
+      "name": "Set: Auto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'manual' } };"
+      },
+      "id": "set-manual",
+      "name": "Set: Manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'checkbox' } };"
+      },
+      "id": "set-checkbox",
+      "name": "Set: Checkbox",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF1 v12.9 triggered', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "📤 Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      {\n        \"or\": [\n          { \"property\": \"Tình trạng\", \"select\": { \"equals\": \"Chờ làm rõ\" } },\n          { \"property\": \"Tình trạng\", \"select\": { \"equals\": \"📧 Đã gửi email\" } },\n          { \"property\": \"Tình trạng\", \"select\": { \"equals\": \"🆕 Mới tạo\" } }\n        ]\n      },\n      {\n        \"or\": [\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"CEO\" } },\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"BOD\" } },\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"Họp BQT\" } }\n        ]\n      }\n    ]\n  },\n  \"sorts\": [{ \"property\": \"Ngày nhận\", \"direction\": \"ascending\" }]\n}",
+        "options": {}
+      },
+      "id": "query-clarifications-auto",
+      "name": "📋 Query Clarifications (Auto)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 200],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"filter\": { \"property\": \"🔔 Nhắc ngay\", \"checkbox\": { \"equals\": true } } }",
+        "options": {}
+      },
+      "id": "query-clarifications-checkbox",
+      "name": "📋 Query Clarifications (Checkbox)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 600],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/53a48a4f-29ba-46d2-8e53-3f358d3c513c/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      { \"property\": \"Workflow\", \"select\": { \"equals\": \"WF1 - Gửi email\" } },\n      { \"property\": \"Status\", \"select\": { \"equals\": \"✅ Success\" } }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "query-logs",
+      "name": "📊 Query WF Logs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 0],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/1b71cdca-9242-4f8c-a4e6-28226103316e/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"filter\": { \"property\": \"Active\", \"checkbox\": { \"equals\": true } } }",
+        "options": {}
+      },
+      "id": "query-messages",
+      "name": "📚 Query Messages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 400],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {"mode": "combine", "combineBy": "combineAll", "options": {}},
+      "id": "merge-auto",
+      "name": "🔀 Merge Auto",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1000, 100]
+    },
+    {
+      "parameters": {"mode": "combine", "combineBy": "combineAll", "options": {}},
+      "id": "merge-checkbox",
+      "name": "🔀 Merge Checkbox",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1000, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// WF1 v12.9 - ĐỌC EMAIL TỪ ROLLUP\n// Property: 📧 Email (auto) - Rollup từ T1-ĐẦU MỐI → Email\n// Fallback: 📧 Email đầu mối (manual field)\n// ============================================================\n\nconst inputs = $input.all();\n\nlet clarifications = [];\nlet logs = [];\nlet messages = [];\nlet triggerSource = 'auto';\n\nfor (const inp of inputs) {\n  if (inp.json?.triggerSource) {\n    triggerSource = inp.json.triggerSource;\n    continue;\n  }\n  \n  const results = inp.json?.results || [];\n  if (results.length === 0) continue;\n  \n  const firstProps = results[0]?.properties || {};\n  \n  if (firstProps['Tiêu đề']) {\n    clarifications = results;\n  } else if (firstProps['Workflow']) {\n    logs = results;\n  } else if (firstProps['Category']) {\n    messages = results;\n  }\n}\n\nconsole.log('==========================================');\nconsole.log('[WF1 v12.9] Trigger:', triggerSource);\nconsole.log('[WF1 v12.9] Clarifications:', clarifications.length);\nconsole.log('[WF1 v12.9] WF Logs:', logs.length);\nconsole.log('[WF1 v12.9] Messages:', messages.length);\n\nconst now = new Date();\nconst today = now.toISOString().split('T')[0];\nconst isFriday = now.getDay() === 5;\n\n// Build Log Count Map\nconst logCountMap = {};\nfor (const log of logs) {\n  const props = log.properties || {};\n  const clarRel = props['Clarification']?.relation || [];\n  const timestamp = props['Timestamp']?.created_time || log.created_time || '';\n  const logDate = timestamp.split('T')[0];\n  \n  for (const rel of clarRel) {\n    const clarId = rel.id;\n    if (!logCountMap[clarId]) logCountMap[clarId] = { total: 0, today: 0 };\n    logCountMap[clarId].total++;\n    if (logDate === today) logCountMap[clarId].today++;\n  }\n}\n\n// Build Message Library\nconst msgLib = { greeting: [], intro_progress: [], intro_deadline: [], offer_help: [], closing: [], closing_friday: [] };\nmessages.forEach(msg => {\n  const props = msg.properties || {};\n  const cat = props['Category']?.select?.name || '';\n  const content = props['Nội dung']?.title?.[0]?.plain_text || '';\n  if (cat && content && msgLib[cat]) msgLib[cat].push(content);\n});\n\nfunction pick(arr) { return arr?.length ? arr[Math.floor(Math.random() * arr.length)] : ''; }\n\nif (!clarifications.length) {\n  console.log('[WF1 v12.9] NO clarifications');\n  return [];\n}\n\nconst outputItems = [];\nlet skippedHasTask = 0, skippedRateLimit = 0;\n\nfor (const page of clarifications) {\n  const props = page.properties;\n  const id = page.id;\n  \n  const title = props['Tiêu đề']?.title?.[0]?.plain_text || 'Untitled';\n  const status = props['Tình trạng']?.select?.name || '';\n  const nguon = props['Nguồn']?.select?.name || 'CEO';\n  const noiDungGoc = props['Nội dung gốc']?.rich_text?.[0]?.plain_text || '';\n  const ngayNhan = props['Ngày nhận']?.date?.start || '';\n  const t2NhiemVu = props['T2 - NHIỆM VỤ']?.rich_text?.[0]?.plain_text || '';\n  const t3ChiTieu = props['T3 - CHỈ TIÊU']?.rich_text?.[0]?.plain_text || '';\n  \n  // ========== ĐỌC EMAIL TỪ NHIỀU NGUỒN ==========\n  // Ưu tiên 1: Rollup property (auto từ HR)\n  // Rollup trả về array of objects hoặc có thể là rollup object\n  let emailFromRollup = '';\n  const rollupProp = props['📧 Email (auto)'];\n  if (rollupProp) {\n    // Rollup type có thể là: array, rollup object\n    if (rollupProp.rollup?.array?.[0]?.email) {\n      emailFromRollup = rollupProp.rollup.array[0].email;\n    } else if (rollupProp.email) {\n      emailFromRollup = rollupProp.email;\n    }\n  }\n  \n  // Ưu tiên 2: Manual email field\n  const emailManual = props['📧 Email đầu mối']?.email || '';\n  \n  // Ưu tiên 3: Fallback\n  const emailResolved = emailFromRollup || emailManual || 'vynnl@esuhai.com';\n  let emailSource = 'fallback';\n  if (emailFromRollup) emailSource = 'rollup';\n  else if (emailManual) emailSource = 'manual';\n  \n  // Lấy tên từ T1-ĐẦU MỐI nếu có\n  const t1Relation = props['T1 - ĐẦU MỐI']?.relation || [];\n  \n  const taskRelation = props['Công việc (sau khi rõ)']?.relation || [];\n  const hasTask = taskRelation.length > 0 || status === '✅ Đã tạo task';\n  \n  const nhacNgay = props['🔔 Nhắc ngay']?.checkbox || false;\n  \n  const logCount = logCountMap[id] || { total: 0, today: 0 };\n  \n  console.log('-----');\n  console.log('ID:', id.substring(0,8));\n  console.log('Title:', title.substring(0, 30));\n  console.log('  📧 Rollup:', emailFromRollup || '(empty)');\n  console.log('  📧 Manual:', emailManual || '(empty)');\n  console.log('  📧 Resolved:', emailResolved, '(' + emailSource + ')');\n  console.log('  hasTask:', hasTask, '| checkbox:', nhacNgay);\n  console.log('  logs - total:', logCount.total, '| today:', logCount.today);\n  \n  if (hasTask) {\n    console.log('  → SKIP: has task');\n    skippedHasTask++;\n    continue;\n  }\n  \n  if (!nhacNgay && logCount.today >= 2) {\n    console.log('  → SKIP: rate limit');\n    skippedRateLimit++;\n    continue;\n  }\n  \n  // Build email content\n  const soLanGuiMoi = logCount.today + 1;\n  const alertLevel = soLanGuiMoi === 1 ? 'gentle' : 'serious';\n  \n  const greeting = pick(msgLib.greeting) || 'Chào anh/chị,';\n  const intro = soLanGuiMoi === 1 \n    ? (pick(msgLib.intro_progress) || 'Em đang tổng hợp tiến độ, nhờ anh/chị xác nhận giúp ạ.')\n    : (pick(msgLib.intro_deadline) || 'Sếp có hỏi tiến độ, em cần anh/chị xác nhận sớm ạ.');\n  const offerHelp = pick(msgLib.offer_help) || 'Nếu cần hỗ trợ, anh/chị cứ nói em nhé.';\n  const closing = isFriday ? (pick(msgLib.closing_friday) || 'Cuối tuần vui!') : (pick(msgLib.closing) || 'Trân trọng!');\n  const subject = soLanGuiMoi === 1 \n    ? '📋 [Cần xác nhận] ' + title.substring(0, 50) \n    : '⚠️ [Nhắc lần ' + soLanGuiMoi + '] ' + title.substring(0, 50);\n  \n  // Build prefill URL\n  const formId = '1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw';\n  const encode = (str) => encodeURIComponent(str || '');\n  const params = [];\n  params.push('entry.1684171280=' + encode(id));\n  params.push('entry.1878008034=' + encode(nguon));\n  params.push('entry.1953342780=' + encode(ngayNhan));\n  params.push('entry.1839616630=' + encode(noiDungGoc || title));\n  if (t2NhiemVu) params.push('entry.1319518938=' + encode(t2NhiemVu));\n  if (t3ChiTieu) params.push('entry.1910876946=' + encode(t3ChiTieu));\n  const prefillUrl = 'https://docs.google.com/forms/d/e/' + formId + '/viewform?' + params.join('&');\n  \n  outputItems.push({\n    json: {\n      clarificationId: id,\n      title, status, nguon, noiDungGoc, ngayNhan, t2NhiemVu, t3ChiTieu,\n      emailResolved, emailSource,\n      soLanGuiTotal: logCount.total,\n      soLanGuiToday: logCount.today,\n      soLanGuiMoi, alertLevel, nhacNgay,\n      emailSubject: subject,\n      emailGreeting: greeting,\n      emailIntro: intro,\n      emailOfferHelp: offerHelp,\n      emailClosing: closing,\n      prefillUrl,\n      today, isFriday,\n      pageUrl: page.url,\n      triggerSource,\n      ccEmails: 'hoangkha@esuhai.com, vynnl@esuhai.com'\n    }\n  });\n  \n  console.log('  → QUEUED (' + alertLevel + ') to:', emailResolved);\n}\n\nconsole.log('==========================================');\nconsole.log('[WF1 v12.9] To process:', outputItems.length);\nconsole.log('  Skipped (has task):', skippedHasTask);\nconsole.log('  Skipped (rate limit):', skippedRateLimit);\n\nreturn outputItems;"
+      },
+      "id": "extract-data",
+      "name": "📊 Extract Data (Rollup)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1280, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict"},
+          "conditions": [{"id": "has-items", "leftValue": "={{ $json.clarificationId }}", "rightValue": "", "operator": {"type": "string", "operation": "notEquals"}}],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-has-items",
+      "name": "IF: Có Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1510, 300]
+    },
+    {
+      "parameters": {"options": {}},
+      "id": "loop-items",
+      "name": "🔁 Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1740, 200]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.emailResolved }}",
+        "subject": "={{ $json.emailSubject }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto;\">\n  <div style=\"background: {{ $json.alertLevel === 'serious' ? 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}; padding: 25px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h2 style=\"color: #fff; margin: 0;\">{{ $json.alertLevel === 'serious' ? '⚠️ Nhắc nhở Lần ' + $json.soLanGuiMoi : '📋 Yêu cầu Xác nhận' }}</h2>\n    <p style=\"color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 13px;\">Chỉ đạo từ {{ $json.nguon }} | Tổng: {{ $json.soLanGuiTotal + 1 }} lần</p>\n  </div>\n  <div style=\"padding: 25px; background: #f8f9fa;\">\n    <p>{{ $json.emailGreeting }}</p>\n    <p>{{ $json.emailIntro }}</p>\n    <div style=\"background: #fff; padding: 20px; border-left: 4px solid {{ $json.alertLevel === 'serious' ? '#f5af19' : '#667eea' }}; margin: 20px 0;\">\n      <h3 style=\"color: {{ $json.alertLevel === 'serious' ? '#f12711' : '#667eea' }}; margin: 0 0 12px 0;\">{{ $json.title }}</h3>\n      <p><strong>Nguồn:</strong> {{ $json.nguon }}</p>\n      <p><strong>Ngày nhận:</strong> {{ $json.ngayNhan || 'Chưa xác định' }}</p>\n      <p><strong>Nội dung:</strong> {{ ($json.noiDungGoc || '').substring(0, 200) }}{{ ($json.noiDungGoc || '').length > 200 ? '...' : '' }}</p>\n      {{ $json.t3ChiTieu ? '<p><strong>Chỉ tiêu:</strong> ' + $json.t3ChiTieu + '</p>' : '' }}\n    </div>\n    <div style=\"text-align: center; margin: 25px 0;\">\n      <a href=\"{{ $json.prefillUrl }}\" style=\"display: inline-block; background: {{ $json.alertLevel === 'serious' ? '#f12711' : '#667eea' }}; color: #fff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold;\">✅ Xác nhận & Bổ sung 4T</a>\n    </div>\n    <p style=\"color: #666;\">{{ $json.emailOfferHelp }}</p>\n  </div>\n  <div style=\"padding: 20px; background: #fff; border-radius: 0 0 8px 8px;\">\n    <p>{{ $json.emailClosing }}</p>\n    <p style=\"color: #888; font-size: 12px;\">Hoàng Kha | Trợ lý CEO<br><span style=\"color: #aaa;\">Trigger: {{ $json.triggerSource }} | Email: {{ $json.emailSource }}</span></p>\n  </div>\n</div>",
+        "options": {"ccList": "={{ $json.ccEmails }}"}
+      },
+      "id": "send-email",
+      "name": "📧 Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1970, 200],
+      "credentials": {"gmailOAuth2": {"id": "QMCQ41m8F8hiBKal", "name": "Gmail account"}}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": { \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\" },\n  \"properties\": {\n    \"Log\": { \"title\": [{ \"text\": { \"content\": \"{{ $json.nguon }}: {{ $json.title.substring(0, 40) }}\" } }] },\n    \"Workflow\": { \"select\": { \"name\": \"WF1 - Gửi email\" } },\n    \"Status\": { \"select\": { \"name\": \"✅ Success\" } },\n    \"Clarification\": { \"relation\": [{ \"id\": \"{{ $json.clarificationId }}\" }] },\n    \"Email To\": { \"email\": \"{{ $json.emailResolved }}\" },\n    \"Details\": { \"rich_text\": [{ \"text\": { \"content\": \"Lần {{ $json.soLanGuiMoi }} | Tổng {{ $json.soLanGuiTotal + 1 }} | {{ $json.triggerSource }} | {{ $json.emailSource }}\" } }] }\n  }\n}",
+        "options": {}
+      },
+      "id": "log-success",
+      "name": "📊 Log to WF Logs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 200],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Notion-Version", "value": "2022-06-28"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"properties\": {\n    \"Tình trạng\": { \"select\": { \"name\": \"📧 Đã gửi email\" } },\n    \"🔔 Nhắc ngay\": { \"checkbox\": false }\n  }\n}",
+        "options": {}
+      },
+      "id": "reset-checkbox",
+      "name": "📝 Reset Checkbox",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2430, 200],
+      "credentials": {"notionApi": {"id": "sDlz7N367IegDSAc", "name": "Notion ESUHAI"}}
+    },
+    {
+      "parameters": {},
+      "id": "no-op-done",
+      "name": "🏁 All Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1740, 400]
+    },
+    {
+      "parameters": {},
+      "id": "no-op-empty",
+      "name": "🏁 No Items",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1740, 500]
+    }
+  ],
+  "connections": {
+    "⏰ Auto: 08:00, 13:00, 16:00": {
+      "main": [[{"node": "Set: Auto", "type": "main", "index": 0}]]
+    },
+    "🚨 Manual: Tất cả": {
+      "main": [[
+        {"node": "📤 Response", "type": "main", "index": 0},
+        {"node": "Set: Manual", "type": "main", "index": 0}
+      ]]
+    },
+    "🔔 Poll: Checkbox 5 phút": {
+      "main": [[{"node": "Set: Checkbox", "type": "main", "index": 0}]]
+    },
+    "Set: Auto": {
+      "main": [[
+        {"node": "📋 Query Clarifications (Auto)", "type": "main", "index": 0},
+        {"node": "📊 Query WF Logs", "type": "main", "index": 0},
+        {"node": "📚 Query Messages", "type": "main", "index": 0}
+      ]]
+    },
+    "Set: Manual": {
+      "main": [[
+        {"node": "📋 Query Clarifications (Auto)", "type": "main", "index": 0},
+        {"node": "📊 Query WF Logs", "type": "main", "index": 0},
+        {"node": "📚 Query Messages", "type": "main", "index": 0}
+      ]]
+    },
+    "Set: Checkbox": {
+      "main": [[
+        {"node": "📋 Query Clarifications (Checkbox)", "type": "main", "index": 0},
+        {"node": "📊 Query WF Logs", "type": "main", "index": 0},
+        {"node": "📚 Query Messages", "type": "main", "index": 0}
+      ]]
+    },
+    "📋 Query Clarifications (Auto)": {
+      "main": [[{"node": "🔀 Merge Auto", "type": "main", "index": 0}]]
+    },
+    "📋 Query Clarifications (Checkbox)": {
+      "main": [[{"node": "🔀 Merge Checkbox", "type": "main", "index": 0}]]
+    },
+    "📊 Query WF Logs": {
+      "main": [[
+        {"node": "🔀 Merge Auto", "type": "main", "index": 1},
+        {"node": "🔀 Merge Checkbox", "type": "main", "index": 1}
+      ]]
+    },
+    "📚 Query Messages": {
+      "main": [[
+        {"node": "🔀 Merge Auto", "type": "main", "index": 2},
+        {"node": "🔀 Merge Checkbox", "type": "main", "index": 2}
+      ]]
+    },
+    "🔀 Merge Auto": {
+      "main": [[{"node": "📊 Extract Data (Rollup)", "type": "main", "index": 0}]]
+    },
+    "🔀 Merge Checkbox": {
+      "main": [[{"node": "📊 Extract Data (Rollup)", "type": "main", "index": 0}]]
+    },
+    "📊 Extract Data (Rollup)": {
+      "main": [[{"node": "IF: Có Items?", "type": "main", "index": 0}]]
+    },
+    "IF: Có Items?": {
+      "main": [
+        [{"node": "🔁 Loop Over Items", "type": "main", "index": 0}],
+        [{"node": "🏁 No Items", "type": "main", "index": 0}]
+      ]
+    },
+    "🔁 Loop Over Items": {
+      "main": [
+        [{"node": "📧 Send Email", "type": "main", "index": 0}],
+        [{"node": "🏁 All Done", "type": "main", "index": 0}]
+      ]
+    },
+    "📧 Send Email": {
+      "main": [[{"node": "📊 Log to WF Logs", "type": "main", "index": 0}]]
+    },
+    "📊 Log to WF Logs": {
+      "main": [[{"node": "📝 Reset Checkbox", "type": "main", "index": 0}]]
+    },
+    "📝 Reset Checkbox": {
+      "main": [[{"node": "🔁 Loop Over Items", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {"executionOrder": "v1"},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 3,
+  "updatedAt": "2025-12-28T22:10:00.000Z",
+  "versionId": "v12.9"
+}

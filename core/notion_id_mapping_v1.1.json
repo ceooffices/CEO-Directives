@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "description": "Notion Database & Collection ID Mapping for ClaudeK",
+    "last_updated": "2025-12-27",
+    "updated_by": "ClaudeK - Database Integration Update",
+    "changelog": [
+      "v1.1: Thêm meetings database, đổi sessions → reports"
+    ]
+  },
+  
+  "databases": {
+    "project_hub": {
+      "name": "PROJECT HUB - Trung Tâm Dự Án",
+      "database_id": "527ae80e-16cf-42f2-a856-c5334b3e866d",
+      "collection_id": "e438ec2f-6726-42cd-80b5-b504edd0a0ff",
+      "url": "https://www.notion.so/527ae80e16cf42f2a856c5334b3e866d"
+    },
+    "tasks": {
+      "name": "Bảng Quản trị Hành động",
+      "database_id": "f2c9e34f-5506-483f-a124-44ae37d38a30",
+      "collection_id": "90fd1939-bd71-4b2d-92d6-251f71e9e895",
+      "url": "https://www.notion.so/f2c9e34f5506483fa12444ae37d38a30"
+    },
+    "reports": {
+      "name": "Báo cáo Tổng hợp",
+      "name_old": "Nhật ký Buổi làm việc ClaudeK",
+      "database_id": "b033bbc3-5903-4142-8626-feafed22502a",
+      "collection_id": "ec7beaab-4cb0-4d2d-9695-91253b143242",
+      "url": "https://www.notion.so/b033bbc3590341428626feafed22502a",
+      "note": "Renamed from 'sessions' to 'reports' on 27/12/2025"
+    },
+    "clarifications": {
+      "name": "Chỉ đạo Cần Làm Rõ",
+      "database_id": "9abf8678-830d-47d6-9e4f-189a41b28493",
+      "collection_id": "37cb3605-8e3a-455d-8157-21c6043756e9",
+      "url": "https://www.notion.so/9abf8678830d47d69e4f189a41b28493"
+    },
+    "outcomes": {
+      "name": "Kết quả Mong đợi",
+      "database_id": "9ed1d7fb-eb64-40de-8f9d-4ddd744437aa",
+      "collection_id": "27a57569-0f9d-41a6-a7f4-1a073d7183f1",
+      "url": "https://www.notion.so/9ed1d7fbeb6440de8f9d4ddd744437aa"
+    },
+    "hr": {
+      "name": "Danh Bạ Nhân Sự",
+      "database_id": "8d88b66f-94e3-4a1a-85a8-74f2422a2db7",
+      "collection_id": "01a4c730-5265-492a-84cb-07395f2a30d3",
+      "url": "https://www.notion.so/8d88b66f94e34a1a85a874f2422a2db7"
+    },
+    "meetings": {
+      "name": "Ghi chép cuộc họp",
+      "database_id": "29279870-ebff-80c8-b06b-d169a64e1d31",
+      "collection_id": "29279870-ebff-8032-ba8c-000b6ca77b45",
+      "url": "https://www.notion.so/29279870ebff80c8b06bd169a64e1d31",
+      "note": "NGUỒN ĐẦU VÀO CHÍNH - CEO dùng hàng ngày"
+    }
+  },
+  
+  "collection_to_database": {
+    "e438ec2f-6726-42cd-80b5-b504edd0a0ff": "527ae80e-16cf-42f2-a856-c5334b3e866d",
+    "90fd1939-bd71-4b2d-92d6-251f71e9e895": "f2c9e34f-5506-483f-a124-44ae37d38a30",
+    "ec7beaab-4cb0-4d2d-9695-91253b143242": "b033bbc3-5903-4142-8626-feafed22502a",
+    "37cb3605-8e3a-455d-8157-21c6043756e9": "9abf8678-830d-47d6-9e4f-189a41b28493",
+    "27a57569-0f9d-41a6-a7f4-1a073d7183f1": "9ed1d7fb-eb64-40de-8f9d-4ddd744437aa",
+    "01a4c730-5265-492a-84cb-07395f2a30d3": "8d88b66f-94e3-4a1a-85a8-74f2422a2db7",
+    "29279870-ebff-8032-ba8c-000b6ca77b45": "29279870-ebff-80c8-b06b-d169a64e1d31"
+  },
+  
+  "workflow_flow": {
+    "description": "Luồng xử lý chỉ đạo CEO",
+    "flow": [
+      "meetings → clarifications → tasks",
+      "meetings → outcomes → clarifications → tasks",
+      "meetings → reports (báo cáo tổng hợp)"
+    ]
+  },
+  
+  "usage_guide": {
+    "fetch_by_collection_id": "Use collection_to_database mapping to get database_id, then fetch",
+    "example": "collection://90fd1939... → database_id: f2c9e34f... → notion-fetch(f2c9e34f...)",
+    "primary_input": "meetings database - CEO creates daily meeting notes here"
+  }
+}

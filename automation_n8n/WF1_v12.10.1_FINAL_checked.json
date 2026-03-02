@@ -1,0 +1,643 @@
+{
+  "name": "CEO Directive - WF1 - Gửi yêu cầu Xác nhận (v12.10.1 FINAL)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf1-manual-all",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "af1c970a-c7d3-40e6-9234-c7ed3622f559",
+      "name": "🚨 Manual: Tất cả",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        13712,
+        160
+      ],
+      "webhookId": "wf1-manual-all"
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'auto' } };"
+      },
+      "id": "0c63e037-41f1-4925-8682-6eabbeb813da",
+      "name": "Set: Auto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14016,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'manual' } };"
+      },
+      "id": "44d6c28e-5eb6-4f19-b19a-e63f12aa2df5",
+      "name": "Set: Manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14016,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'WF1 v12.9 triggered', timestamp: new Date().toISOString() } }}",
+        "options": {}
+      },
+      "id": "dbd9a1af-0ff8-4cfe-a865-1b24ed8c8617",
+      "name": "📤 Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        14016,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/53a48a4f-29ba-46d2-8e53-3f358d3c513c/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      { \"property\": \"Workflow\", \"select\": { \"equals\": \"WF1 - Gửi email\" } },\n      { \"property\": \"Status\", \"select\": { \"equals\": \"✅ Success\" } }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "a31837be-189c-412f-a794-31bf9e8285a4",
+      "name": "📊 Query WF Logs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        14640,
+        96
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/1b71cdca-9242-4f8c-a4e6-28226103316e/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"filter\": { \"property\": \"Active\", \"checkbox\": { \"equals\": true } } }",
+        "options": {}
+      },
+      "id": "22a09ece-3fb2-402e-8ed4-822aef77de5b",
+      "name": "📚 Query Messages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        14640,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "b24c1bfe-e78d-4d89-8f9e-457e70e6f3ff",
+      "name": "🔀 Merge Auto",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        14976,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "has-items",
+              "leftValue": "={{ $json.clarificationId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d6cc2cb2-401a-4de2-b349-21c1b5310b1f",
+      "name": "IF: Có Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        15552,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.sendTo }}",
+        "subject": "={{ $json.emailSubject }}",
+        "message": "=<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 650px; margin: 0 auto;\">\n  <div style=\"background: {{ $json.alertLevel === 'serious' ? 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}; padding: 25px; text-align: center; border-radius: 8px 8px 0 0;\">\n    <h2 style=\"color: #fff; margin: 0;\">{{ $json.alertLevel === 'serious' ? '⚠️ Nhắc nhở Lần ' + $json.soLanGuiMoi : '📋 Yêu cầu Xác nhận' }}</h2>\n    <p style=\"color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 13px;\">Chỉ đạo từ {{ $json.nguon }} | Tổng: {{ $json.soLanGuiTotal + 1 }} lần</p>\n  </div>\n  <div style=\"padding: 25px; background: #f8f9fa;\">\n    <p>{{ $json.emailGreeting }}</p>\n    <p>{{ $json.emailIntro }}</p>\n    <div style=\"background: #fff; padding: 20px; border-left: 4px solid {{ $json.alertLevel === 'serious' ? '#f5af19' : '#667eea' }}; margin: 20px 0;\">\n      <h3 style=\"color: {{ $json.alertLevel === 'serious' ? '#f12711' : '#667eea' }}; margin: 0 0 12px 0;\">{{ $json.tieuDe }}</h3>\n      <p><strong>Nguồn:</strong> {{ $json.nguon }}</p>\n      <p><strong>Ngày nhận:</strong> {{ $json.ngayNhan || 'Chưa xác định' }}</p>\n      <p><strong>Nội dung:</strong> {{ ($json.noiDungGoc || '').substring(0, 200) }}{{ ($json.noiDungGoc || '').length > 200 ? '...' : '' }}</p>\n      {{ $json.t3ChiTieu ? '<p><strong>Chỉ tiêu:</strong> ' + $json.t3ChiTieu + '</p>' : '' }}\n    </div>\n    <div style=\"text-align: center; margin: 25px 0;\">\n      <a href=\"{{ $json.prefillUrl }}\" style=\"display: inline-block; background: {{ $json.alertLevel === 'serious' ? '#f12711' : '#667eea' }}; color: #fff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold;\">✅ Xác nhận & Bổ sung 4T</a>\n    </div>\n    <p style=\"color: #666;\">{{ $json.emailOfferHelp }}</p>\n  </div>\n  <div style=\"padding: 20px; background: #fff; border-radius: 0 0 8px 8px;\">\n    <p>{{ $json.emailClosing }}</p>\n    <p style=\"color: #888; font-size: 12px;\">Hoàng Kha | Trợ lý CEO<br><span style=\"color: #aaa;\">Trigger: {{ $json.triggerSource }} | Email: {{ $json.emailSource }}</span></p>\n  </div>\n</div>",
+        "options": {
+          "ccList": "={{ $json.ccTo }}"
+        }
+      },
+      "id": "0cbbea6d-f969-47f5-bc99-5f145c7b5b9b",
+      "name": "📧 Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        16016,
+        -224
+      ],
+      "webhookId": "050e40a7-6c4d-498d-831f-3613004b5e2a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QMCQ41m8F8hiBKal",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"parent\": { \"database_id\": \"53a48a4f-29ba-46d2-8e53-3f358d3c513c\" },\n  \"properties\": {\n    \"Log\": { \n      \"title\": [{ \n        \"text\": { \n          \"content\": \"WF1: {{ $json.tieuDe ? $json.tieuDe.substring(0, 50) : 'No title' }}\" \n        } \n      }] \n    },\n    \"Workflow\": { \n      \"select\": { \"name\": \"WF1 - Gửi email\" } \n    },\n    \"Status\": { \n      \"select\": { \"name\": \"✅ Success\" } \n    },\n    \"Clarification\": { \n      \"relation\": [{ \n        \"id\": \"{{ $json.clarificationId }}\" \n      }] \n    },\n    \"Email To\": { \n      \"email\": \"{{ $json.sendTo || 'no-email@esuhai.com' }}\" \n    },\n    \"Details\": { \n      \"rich_text\": [{ \n        \"text\": { \n          \"content\": \"Nguồn: {{ $json.nguon || 'N/A' }} | To: {{ $json.sendTo || 'N/A' }} | CC: {{ $json.ccTo || 'N/A' }}\" \n        } \n      }] \n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "d738069e-915b-4c15-b6f4-b1b361731805",
+      "name": "📊 Log to WF Logs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16016,
+        0
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "c3d76100-f7e4-4a9e-abdf-2c7296822554",
+      "name": "🏁 All Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        16256,
+        208
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "260868b0-01e4-43ab-8573-60584bab186e",
+      "name": "🏁 No Items",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        16016,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ================================================================\n// WF1 EXTRACT DATA - VERSION 12.18\n// FIX: Removed isClarificationPage() check - trust QueryClarifications filter\n// SCHEMA VERIFIED: 2025-12-29\n// ================================================================\n\n// =========== CONSTANTS ===========\nconst WF_LOGS_DB_ID = '53a48a4f-29ba-46d2-8e53-3f358d3c513c';\n\nconst FORM_BASE_URL = \n  'https://docs.google.com/forms/d/e/1FAIpQLSdzRTOucM4qWwlxyx3yEelDorBv2ADnL8jFUUW7-xpqdidvBw/viewform';\n\nconst FORM_ENTRIES = {\n  maClarification: '1684171280',\n  nguonChiDao: '1878008034',\n  ngayNhanChiDao: '1953342780',\n  noiDungGoc: '1839616630',\n  dauMoiT1: '649583359',\n  t2NhiemVu: '1319518938',\n  t3ChiTieu: '1910876946',\n  t4ThoiHan: '1661283634',\n  ghiChu: '1985703119',\n  xacNhan: '429936070'\n};\n\n// =========== CC CONFIGURATION ===========\n// LUÔN CC tới những người này\nconst ALWAYS_CC_EMAILS = [\n  'hoangkha@esuhai.com',\n  'vynnl@esuhai.com'\n];\n\n// Fallback khi không có email đầu mối\nconst FALLBACK_SEND_TO = 'vynnl@esuhai.com';\n\n// =========== HELPER FUNCTIONS ===========\n\nfunction safeText(richTextArray) {\n  if (!richTextArray || !Array.isArray(richTextArray)) return '';\n  return richTextArray.map(t => t.plain_text || '').join('').trim();\n}\n\nfunction safeDate(dateObj) {\n  if (!dateObj || !dateObj.start) return '';\n  return dateObj.start;\n}\n\nfunction safeSelect(selectObj) {\n  if (!selectObj || !selectObj.name) return '';\n  return selectObj.name;\n}\n\nfunction safeTitle(titleArray) {\n  if (!titleArray || !Array.isArray(titleArray)) return '';\n  return titleArray.map(t => t.plain_text || '').join('').trim();\n}\n\nfunction safeRelationFirst(relationArray) {\n  if (!relationArray || !Array.isArray(relationArray) || relationArray.length === 0) return null;\n  return relationArray[0].id || null;\n}\n\nfunction safeMultiSelect(multiSelectArray) {\n  if (!multiSelectArray || !Array.isArray(multiSelectArray)) return [];\n  return multiSelectArray.map(item => item.name || '').filter(Boolean);\n}\n\nfunction safeRollup(rollupObj) {\n  if (!rollupObj) return '';\n  if (rollupObj.type === 'array' && Array.isArray(rollupObj.array)) {\n    const firstItem = rollupObj.array[0];\n    if (!firstItem) return '';\n    if (firstItem.type === 'email') return firstItem.email || '';\n    if (firstItem.type === 'rich_text') return safeText(firstItem.rich_text);\n    if (firstItem.type === 'title') return safeTitle(firstItem.title);\n  }\n  if (rollupObj.type === 'string') return rollupObj.string || '';\n  if (rollupObj.type === 'number') return String(rollupObj.number || '');\n  return '';\n}\n\nfunction buildPrefillUrl(data) {\n  const params = [];\n  const mappings = {\n    [FORM_ENTRIES.maClarification]: data.maClarification || '',\n    [FORM_ENTRIES.nguonChiDao]: data.nguonChiDao || '',\n    [FORM_ENTRIES.ngayNhanChiDao]: data.ngayNhanChiDao || '',\n    [FORM_ENTRIES.noiDungGoc]: data.noiDungGoc || '',\n    [FORM_ENTRIES.dauMoiT1]: data.dauMoiT1 || '',\n    [FORM_ENTRIES.t2NhiemVu]: data.t2NhiemVu || '',\n    [FORM_ENTRIES.t3ChiTieu]: data.t3ChiTieu || '',\n    [FORM_ENTRIES.t4ThoiHan]: data.t4ThoiHan || '',\n    [FORM_ENTRIES.ghiChu]: data.ghiChu || '',\n    [FORM_ENTRIES.xacNhan]: data.xacNhan || ''\n  };\n  for (const [entryId, value] of Object.entries(mappings)) {\n    if (value) {\n      params.push(`entry.${entryId}=${encodeURIComponent(String(value))}`);\n    }\n  }\n  return `${FORM_BASE_URL}?${params.join('&')}`;\n}\n\nfunction formatDateVN(dateStr) {\n  if (!dateStr) return '';\n  try {\n    const d = new Date(dateStr);\n    if (isNaN(d.getTime())) return dateStr;\n    return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;\n  } catch {\n    return dateStr;\n  }\n}\n\nfunction truncate(str, maxLen = 100) {\n  if (!str) return '';\n  if (str.length <= maxLen) return str;\n  return str.substring(0, maxLen - 3) + '...';\n}\n\nfunction extractPages(inputItem) {\n  const pages = [];\n  const json = inputItem.json;\n  \n  if (json.properties && json.id) {\n    pages.push(json);\n    return pages;\n  }\n  \n  if (json.result?.properties && json.result?.id) {\n    pages.push(json.result);\n    return pages;\n  }\n  \n  if (json.results && Array.isArray(json.results)) {\n    for (const result of json.results) {\n      if (result.properties && result.id) {\n        pages.push(result);\n      }\n    }\n    return pages;\n  }\n  \n  if (json.object === 'list' && json.results) {\n    for (const result of json.results) {\n      if (result.properties && result.id) {\n        pages.push(result);\n      }\n    }\n    return pages;\n  }\n  \n  return pages;\n}\n\n/**\n * Build CC list based on business rules\n * @param {string} sendToEmail - Primary recipient\n * @param {string} nguon - Source of directive (CEO, BOD, etc.)\n * @returns {string} Comma-separated CC emails\n */\nfunction buildCcList(sendToEmail, nguon) {\n  const ccSet = new Set();\n  \n  // 1. LUÔN CC tới hoangkha và vynnl\n  for (const email of ALWAYS_CC_EMAILS) {\n    // Không CC chính người nhận\n    if (email.toLowerCase() !== sendToEmail.toLowerCase()) {\n      ccSet.add(email);\n    }\n  }\n  \n  // 2. Nếu nguồn là CEO, có thể thêm email CEO (nếu cần)\n  // Hiện tại không có email CEO trong schema\n  // Có thể mở rộng sau khi có thêm thông tin\n  \n  // 3. Convert Set to comma-separated string\n  const ccArray = Array.from(ccSet);\n  return ccArray.join(', ');\n}\n\n// =========== MAIN PROCESSING ===========\n\nconst allItems = $input.all();\nconst results = [];\nlet skippedCount = 0;\nlet processedCount = 0;\n\n// Detect trigger source\nlet triggerSource = 'Auto';\ntry {\n  const firstItem = allItems[0]?.json;\n  if (firstItem?.source) {\n    triggerSource = firstItem.source;\n  }\n} catch (e) {\n  triggerSource = 'Auto';\n}\n\nconsole.log(`[v12.18] Processing ${allItems.length} input items`);\n\nfor (const item of allItems) {\n  try {\n    const pages = extractPages(item);\n    \n    for (const page of pages) {\n      // ========================================\n      // REMOVED: isClarificationPage() check\n      // Trust QueryClarifications filter already correct\n      // ========================================\n      \n      const props = page.properties;\n      const clarificationId = page.id || '';\n      const clarificationUrl = page.url || `https://notion.so/${clarificationId.replace(/-/g, '')}`;\n      \n      // Extract fields\n      const tieuDe = safeTitle(props['Tiêu đề']?.title);\n      const tinhTrang = safeSelect(props['Tình trạng']?.select);\n      const nguon = safeSelect(props['Nguồn']?.select);\n      const ngayNhan = safeDate(props['Ngày nhận']?.date);\n      const noiDungGoc = safeText(props['Nội dung gốc']?.rich_text);\n      const t1DauMoiRelation = safeRelationFirst(props['T1 - ĐẦU MỐI']?.relation);\n      const t2NhiemVu = safeText(props['T2 - NHIỆM VỤ']?.rich_text);\n      const t3ChiTieu = safeText(props['T3 - CHỈ TIÊU']?.rich_text);\n      const t4ThoiHan = safeDate(props['T4 - THỜI HẠN']?.date);\n      const ghiChu = safeText(props['Ghi chú']?.rich_text);\n      const emailDauMoiRollup = safeRollup(props['Email đầu mối']?.rollup);\n      const thieuYeuTo = safeMultiSelect(props['Thiếu yếu tố nào']?.multi_select);\n      \n      // ========================================\n      // EMAIL RESOLUTION - v12.18\n      // ========================================\n      \n      // Primary recipient (sendTo)\n      let sendToEmail = emailDauMoiRollup;\n      let useFallback = false;\n      let fallbackReason = '';\n      \n      if (!sendToEmail) {\n        sendToEmail = FALLBACK_SEND_TO;\n        useFallback = true;\n        fallbackReason = t1DauMoiRelation \n          ? 'Rollup email trống, có HR relation - cần cập nhật email trong HR' \n          : 'Không có email đầu mối và không có HR relation';\n      }\n      \n      // CC list - LUÔN có hoangkha và vynnl\n      const ccTo = buildCcList(sendToEmail, nguon);\n      \n      // ========================================\n      // BUILD PREFILL URL\n      // ========================================\n      const prefillData = {\n        maClarification: clarificationId.replace(/-/g, ''),\n        nguonChiDao: nguon,\n        ngayNhanChiDao: formatDateVN(ngayNhan),\n        noiDungGoc: truncate(noiDungGoc, 500),\n        dauMoiT1: t1DauMoiRelation ? `[HR:${t1DauMoiRelation.substring(0,8)}]` : '',\n        t2NhiemVu: truncate(t2NhiemVu, 300),\n        t3ChiTieu: truncate(t3ChiTieu, 300),\n        t4ThoiHan: formatDateVN(t4ThoiHan),\n        ghiChu: truncate(ghiChu, 200),\n        xacNhan: 'Tôi xác nhận thông tin trên là chính xác'\n      };\n      \n      const prefillUrl = buildPrefillUrl(prefillData);\n      \n      // ========================================\n      // BUILD EMAIL CONTENT\n      // ========================================\n      const missingItems = thieuYeuTo.length > 0 ? thieuYeuTo.join(', ') : 'Chưa xác định';\n      const emailSubject = `[Cần Làm Rõ] ${truncate(tieuDe, 50)} - Hạn: ${formatDateVN(t4ThoiHan) || 'Chưa xác định'}`;\n      \n      const emailBody = `\nKính gửi Anh/Chị phụ trách,\n\nBan Điều hành cần Anh/Chị xác nhận và bổ sung thông tin cho chỉ đạo sau:\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📋 CHỈ ĐẠO CẦN LÀM RÕ\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📌 Tiêu đề: ${tieuDe || '(Chưa có)'}\n📅 Ngày nhận: ${formatDateVN(ngayNhan) || 'Chưa xác định'}\n🔗 Nguồn: ${nguon || 'Chưa xác định'}\n\n📝 Nội dung gốc:\n${noiDungGoc || '(Chưa có nội dung)'}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ THIẾU YẾU TỐ: ${missingItems}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n✏️ THÔNG TIN CẦN XÁC NHẬN (4T):\n\n👤 T1 - Đầu mối: ${t1DauMoiRelation ? '✓ Đã có' : '❓ Cần xác nhận'}\n📋 T2 - Nhiệm vụ: ${t2NhiemVu || '❓ Cần xác nhận'}\n🎯 T3 - Chỉ tiêu: ${t3ChiTieu || '❓ Cần xác nhận'}\n⏰ T4 - Thời hạn: ${formatDateVN(t4ThoiHan) || '❓ Cần xác nhận'}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n👉 VUI LÒNG XÁC NHẬN TẠI ĐÂY:\n${prefillUrl}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⏱️ Thời hạn phản hồi: 24 giờ\n📧 Liên hệ hỗ trợ: hoangkha@esuhai.com\n\nTrân trọng,\nBan Thư ký BOD\n(Email tự động từ hệ thống ClaudeK)\n`.trim();\n\n      // ========================================\n      // BUILD RESULT\n      // ========================================\n      const result = {\n        // Core identifiers\n        clarificationId,\n        clarificationUrl,\n        \n        // Extracted data\n        tieuDe,\n        tinhTrang,\n        nguon,\n        ngayNhan,\n        noiDungGoc,\n        t1DauMoiRelation,\n        t2NhiemVu,\n        t3ChiTieu,\n        t4ThoiHan,\n        ghiChu,\n        thieuYeuTo,\n        \n        // ========================================\n        // EMAIL CONFIG - v12.18\n        // ========================================\n        sendTo: sendToEmail,                    // Primary recipient\n        ccTo: ccTo,                             // LUÔN có hoangkha, vynnl\n        useFallback,\n        fallbackReason,\n        \n        // Email content\n        emailSubject,\n        emailBody,\n        \n        // Form URL\n        prefillUrl,\n        \n        // Gmail node compatibility\n        triggerSource: triggerSource,\n        emailSource: nguon || 'Hệ thống',\n        \n        // Metadata\n        processedAt: new Date().toISOString(),\n        version: '12.18'\n      };\n      \n      results.push({ json: result });\n      processedCount++;\n    }\n    \n  } catch (error) {\n    console.error('[v12.18] Error:', error.message);\n    results.push({\n      json: {\n        error: true,\n        errorMessage: error.message,\n        triggerSource: 'Error',\n        emailSource: 'Error',\n        sendTo: FALLBACK_SEND_TO,\n        ccTo: ALWAYS_CC_EMAILS.join(', '),\n        emailSubject: '[ERROR] Lỗi xử lý chỉ đạo',\n        emailBody: `Có lỗi xảy ra: ${error.message}`,\n        rawData: item.json\n      }\n    });\n  }\n}\n\nconsole.log(`[v12.18] Done. Processed: ${processedCount}, Skipped: ${skippedCount}`);\n\nif (results.length === 0) {\n  return [{\n    json: {\n      warning: true,\n      message: `Không có Clarification nào cần xử lý. Skipped ${skippedCount} items.`,\n      triggerSource: 'None',\n      emailSource: 'None',\n      sendTo: '',\n      ccTo: '',\n      emailSubject: '',\n      emailBody: '',\n      version: '12.18'\n    }\n  }];\n}\n\nreturn results;"
+      },
+      "id": "a9c3cbda-046d-4c87-9348-1bee783b254a",
+      "name": "ExtractData",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        15312,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"filter\": {\n    \"and\": [\n      {\n        \"property\": \"TINH_TRANG\",\n        \"select\": {\n          \"does_not_equal\": \"Đã tạo task\"\n        }\n      },\n      {\n        \"or\": [\n          { \"property\": \"LENH_GUI_LOI_NHAC\", \"select\": { \"is_empty\": true } },\n          { \"property\": \"LENH_GUI_LOI_NHAC\", \"select\": { \"equals\": \"Gửi lời nhắc\" } }\n        ]\n      },\n      {\n        \"or\": [\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"BOD\" } },\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"CEO\" } },\n          { \"property\": \"Nguồn\", \"select\": { \"equals\": \"Họp BQT\" } }\n        ]\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "f6f56b6a-b072-41a9-87f1-35a6fca6f99f",
+      "name": "QueryClarifications_Auto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        14640,
+        -256
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        13696,
+        640
+      ],
+      "id": "d9d21d29-eb4a-4711-a52d-ca18bd41bb26",
+      "name": "Poll 5mins"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/9abf8678-830d-47d6-9e4f-189a41b28493/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"filter\": {\n    \"and\": [\n      {\n        \"timestamp\": \"created_time\",\n        \"created_time\": {\n          \"on_or_after\": \"{{ $now.setZone('Asia/Ho_Chi_Minh').startOf('day').toISO() }}\"\n        }\n      },\n      {\n        \"property\": \"Tình trạng\",\n        \"select\": {\n          \"does_not_equal\": \"Đã tạo task\"\n        }\n      },\n      {\n        \"or\": [\n          { \"property\": \"LỆNH GỬI LỜI NHẮC\", \"select\": { \"is_empty\": true } },\n          { \"property\": \"LỆNH GỬI LỜI NHẮC\", \"select\": { \"equals\": \"Gửi lời nhắc\" } }\n        ]\n      }\n    ]\n  },\n  \"page_size\": 100\n}",
+        "options": {}
+      },
+      "id": "bdd04bb5-4c9c-4181-a75f-cfcefe1a32a7",
+      "name": "QueryClarifications_Poll",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        14640,
+        640
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { triggerSource: 'poll' } };"
+      },
+      "id": "05a70228-f3e4-4db5-b00a-0083a5aff1ad",
+      "name": "Set: Poll",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14016,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8,13,17 * * *"
+            }
+          ]
+        }
+      },
+      "id": "0055323a-182a-4750-8b25-c4ee35f8e4e0",
+      "name": "⏰ Auto: 08:00, 13:00, 17:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        13712,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/pages/{{ $json.clarificationId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28   Send Body: ON"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"properties\": {\n    \"VwY^\": {\n      \"select\": {\n        \"name\": \"Đã nhắc\"\n      }\n    },\n    \"[KXz\": {\n      \"select\": {\n        \"name\": \"Đã gửi email\"\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16016,
+        272
+      ],
+      "id": "c1d50b5a-bdc3-4a02-8486-467d45bca2bd",
+      "name": "HTTP Request",
+      "credentials": {
+        "notionApi": {
+          "id": "sDlz7N367IegDSAc",
+          "name": "Notion ESUHAI"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🚨 Manual: Tất cả": {
+      "main": [
+        [
+          {
+            "node": "📤 Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set: Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Auto": {
+      "main": [
+        [
+          {
+            "node": "QueryClarifications_Auto",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Query WF Logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📚 Query Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Manual": {
+      "main": [
+        [
+          {
+            "node": "QueryClarifications_Auto",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Query WF Logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📚 Query Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Merge Auto": {
+      "main": [
+        [
+          {
+            "node": "ExtractData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Có Items?": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Log to WF Logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🏁 No Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ExtractData": {
+      "main": [
+        [
+          {
+            "node": "IF: Có Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QueryClarifications_Auto": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Auto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll 5mins": {
+      "main": [
+        [
+          {
+            "node": "Set: Poll",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📚 Query Messages": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Auto",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "QueryClarifications_Poll": {
+      "main": [
+        [
+          {
+            "node": "🔀 Merge Auto",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set: Poll": {
+      "main": [
+        [
+          {
+            "node": "QueryClarifications_Poll",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Query WF Logs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📚 Query Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⏰ Auto: 08:00, 13:00, 17:00": {
+      "main": [
+        [
+          {
+            "node": "Set: Auto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "🏁 All Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "96042ce4-73f2-4e16-9d8d-38fbfa777c7f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "713be899eac04f9192785798e717fb5898ccbfb1aeeb4016ea13e34e3e92a901"
+  },
+  "id": "EY8IRwgSIg3gzYJJ",
+  "tags": []
+}
