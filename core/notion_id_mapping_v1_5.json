@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "version": "1.5",
+    "description": "Notion Database ID Mapping - HỆ THỐNG MỚI qua MCP",
+    "last_updated": "2026-03-02",
+    "updated_by": "Antigravity MCP - Tạo mới toàn bộ databases",
+    "changelog": [
+      "v1.1: Thêm meetings database, đổi sessions → reports",
+      "v1.2: Thêm wf_logs database, thêm relation Clarifications → Outcomes",
+      "v1.3: Thêm WF1 v13 workflow properties và quy trình 2 bước",
+      "v1.4: 4T→5T (thêm T5), Tasks archived, WF1 v14, bỏ WF2",
+      "v1.5: TẠO MỚI databases qua Notion API. Bỏ PROJECT HUB, thêm Mục tiêu Cam kết 2026. Relations cần thiết lập thủ công."
+    ]
+  },
+
+  "parent_page": {
+    "name": "📋 Hệ Thống Tracking Chỉ Đạo",
+    "page_id": "317ce590-e9e6-81d1-bfd2-c8a0deec6e94",
+    "parent": "CEO's Desks (2ffce590-e9e6-807e-a22e-e712f0179068)",
+    "url": "https://www.notion.so/H-Th-ng-Tracking-Ch-o-317ce590e9e681d1bfd2c8a0deec6e94"
+  },
+
+  "databases": {
+    "meetings": {
+      "name": "📅 Ghi chép Cuộc họp",
+      "database_id": "317ce590-e9e6-811e-9dbf-d7a4d86b7231",
+      "url": "https://www.notion.so/317ce590e9e6811e9dbfd7a4d86b7231",
+      "status": "active",
+      "role": "INPUT - Hiếu tạo sau họp BOD"
+    },
+    "outcomes": {
+      "name": "🎯 Kết quả Mong đợi",
+      "database_id": "317ce590-e9e6-815c-98a4-eeb4da421b0e",
+      "url": "https://www.notion.so/317ce590e9e6815c98a4eeb4da421b0e",
+      "status": "active",
+      "role": "Mục tiêu chiến lược từ BOD"
+    },
+    "clarifications": {
+      "name": "📋 Chỉ đạo Cần Làm Rõ",
+      "database_id": "317ce590-e9e6-8150-a14e-cc16d23334ae",
+      "url": "https://www.notion.so/317ce590e9e68150a14ecc16d23334ae",
+      "status": "active",
+      "role": "TRACKING CHÍNH - WF1 query database này",
+      "key_properties": {
+        "TINH_TRANG": "select (Chờ làm rõ / Đã gửi email / Đã xác nhận 5T / Hoàn thành)",
+        "✅ Đã duyệt bởi người chỉ đạo": "select (Chưa duyệt / Đã duyệt / Từ chối)",
+        "LENH_GUI_LOI_NHAC": "select (Đã nhắc / Gửi lời nhắc)",
+        "Email đầu mối": "email",
+        "Email người chỉ đạo": "email",
+        "T4 - Thời hạn": "date"
+      }
+    },
+    "hr": {
+      "name": "👤 Danh Bạ Nhân Sự",
+      "database_id": "317ce590-e9e6-81dd-a047-de62f0d7d1ee",
+      "url": "https://www.notion.so/317ce590e9e681dda047de62f0d7d1ee",
+      "status": "active",
+      "role": "Master data nhân sự - WF1 rollup email"
+    },
+    "commitments": {
+      "name": "🏆 Mục tiêu Cam kết 2026",
+      "database_id": "317ce590-e9e6-8100-adf2-f1fdb139e581",
+      "url": "https://www.notion.so/317ce590e9e68100adf2f1fdb139e581",
+      "status": "active",
+      "role": "MỚI v1.5 - So sánh mục tiêu vs kết quả hàng tháng"
+    },
+    "reports": {
+      "name": "📊 Báo cáo Tổng hợp",
+      "database_id": "317ce590-e9e6-8117-a699-ff8e3ae333ce",
+      "url": "https://www.notion.so/317ce590e9e68117a699ff8e3ae333ce",
+      "status": "active",
+      "role": "OUTPUT - Báo cáo cho anh Kha"
+    },
+    "wf_logs": {
+      "name": "📊 WF Logs",
+      "database_id": "317ce590-e9e6-810f-a675-ed3e784f0493",
+      "url": "https://www.notion.so/317ce590e9e6810fa675ed3e784f0493",
+      "status": "active",
+      "role": "n8n workflow execution logs"
+    }
+  },
+
+  "deprecated_databases": {
+    "tasks": {
+      "name": "Bảng Quản trị Hành động",
+      "status": "ARCHIVED",
+      "note": "Không dùng từ v1.4. Track tại Clarifications."
+    },
+    "project_hub": {
+      "name": "PROJECT HUB",
+      "status": "REMOVED",
+      "note": "Bỏ từ v1.5. Thay bằng Mục tiêu Cam kết 2026."
+    }
+  },
+
+  "pending_manual_setup": {
+    "relations": [
+      "Clarifications → Outcomes (Kết quả mong đợi)",
+      "Clarifications → HR (T1 - Đầu mối)",
+      "Clarifications → HR (Người chỉ đạo)",
+      "Outcomes → Meetings (Ghi chép cuộc họp)",
+      "Commitments → Outcomes (liên kết mục tiêu)"
+    ],
+    "rollups": [
+      "Clarifications: Email đầu mối (rollup từ HR relation)",
+      "Clarifications: Email người chỉ đạo (rollup từ HR relation)"
+    ]
+  }
+}
