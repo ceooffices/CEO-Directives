@@ -1514,6 +1514,147 @@
       .ghichu-input.required::placeholder { color: #ef4444; }
       .date-icon { font-size: 14px; margin-right: 4px; opacity: 0.6; vertical-align: middle; }
 
+      /* ============================================ */
+      /* STITCH-INSPIRED: AVATAR INITIALS             */
+      /* ============================================ */
+      .avatar-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .avatar-circle {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+        text-transform: uppercase;
+      }
+      .avatar-name {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.3;
+      }
+      /* Avatar color palette */
+      .av-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+      .av-green { background: linear-gradient(135deg, #10b981, #059669); }
+      .av-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+      .av-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+      .av-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+      .av-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+      .av-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+      .av-slate { background: linear-gradient(135deg, #64748b, #475569); }
+
+      /* ============================================ */
+      /* STITCH-INSPIRED: DEPARTMENT COLOR TAGS        */
+      /* ============================================ */
+      .dept-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+      }
+      .dept-tag-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      /* Department tag colors */
+      .tag-nhansu { background: #dbeafe; color: #1e40af; }
+      .tag-nhansu .dept-tag-dot { background: #3b82f6; }
+      .tag-kinhdoanh { background: #d1fae5; color: #065f46; }
+      .tag-kinhdoanh .dept-tag-dot { background: #10b981; }
+      .tag-cntt { background: #ede9fe; color: #5b21b6; }
+      .tag-cntt .dept-tag-dot { background: #8b5cf6; }
+      .tag-daotao { background: #fef3c7; color: #92400e; }
+      .tag-daotao .dept-tag-dot { background: #f59e0b; }
+      .tag-ketoan { background: #fce7f3; color: #9d174d; }
+      .tag-ketoan .dept-tag-dot { background: #ec4899; }
+      .tag-bangd { background: #fee2e2; color: #991b1b; }
+      .tag-bangd .dept-tag-dot { background: #ef4444; }
+      .tag-default { background: #f1f5f9; color: #475569; }
+      .tag-default .dept-tag-dot { background: #94a3b8; }
+
+      /* ============================================ */
+      /* STITCH-INSPIRED: SUMMARY CARDS                */
+      /* ============================================ */
+      .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 20px 24px;
+        border-top: 2px solid var(--border);
+      }
+      .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 20px;
+        border-radius: var(--radius-sm);
+        background: #f8fafc;
+        border: 1.5px solid var(--border);
+        transition: all 0.2s;
+      }
+      .summary-card:hover {
+        border-color: rgba(59,130,246,0.3);
+        background: #eff6ff;
+      }
+      .summary-card-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .sc-blue { background: #dbeafe; }
+      .sc-green { background: #d1fae5; }
+      .sc-amber { background: #fef3c7; }
+      .summary-card-info { flex: 1; }
+      .summary-card-value {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1.2;
+      }
+      .summary-card-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* ============================================ */
+      /* STITCH-INSPIRED: COUNTDOWN BADGE              */
+      /* ============================================ */
+      .countdown-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .countdown-future { background: #dbeafe; color: #1e40af; }
+      .countdown-today { background: #d1fae5; color: #065f46; animation: stepPulse 2s infinite; }
+      .countdown-past { background: #fee2e2; color: #991b1b; }
+
       /* FOOTER GEAR */
       .footer-gear {
         float: right;
@@ -1837,6 +1978,30 @@
             <tbody id="scheduleTableBody"></tbody>
           </table>
         </div>
+        <!-- STITCH-INSPIRED: Summary Cards -->
+        <div class="summary-cards" id="scheduleSummary">
+          <div class="summary-card">
+            <div class="summary-card-icon sc-blue">👥</div>
+            <div class="summary-card-info">
+              <div class="summary-card-value" id="sumPresenter">—</div>
+              <div class="summary-card-label">Người trình bày</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-icon sc-green">📋</div>
+            <div class="summary-card-info">
+              <div class="summary-card-value" id="sumReport">—</div>
+              <div class="summary-card-label">Nội dung báo cáo</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-icon sc-amber">⏱</div>
+            <div class="summary-card-info">
+              <div class="summary-card-value" id="sumDuration">—</div>
+              <div class="summary-card-label">Tổng thời lượng</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO -->
@@ -1952,6 +2117,86 @@
       var pendingModalCallback = null;
       var currentEmailType = null;
       var isTableEditing = false;
+
+      // ========================================
+      // STITCH-INSPIRED HELPERS
+      // ========================================
+      var AVATAR_COLORS = ['av-blue','av-green','av-amber','av-red','av-purple','av-teal','av-pink','av-slate'];
+
+      function getInitials(name) {
+        if (!name) return '?';
+        var parts = String(name).trim().split(/\s+/);
+        if (parts.length >= 2) return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+        return parts[0].substring(0,2).toUpperCase();
+      }
+
+      function getAvatarColor(name) {
+        var hash = 0;
+        var s = String(name||'');
+        for (var i = 0; i < s.length; i++) hash = s.charCodeAt(i) + ((hash << 5) - hash);
+        return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+      }
+
+      function getAvatarHtml(name) {
+        var initials = getInitials(name);
+        var color = getAvatarColor(name);
+        return '<div class="avatar-cell">'
+          + '<div class="avatar-circle ' + color + '">' + initials + '</div>'
+          + '<span class="avatar-name">' + escapeHtml(name) + '</span>'
+          + '</div>';
+      }
+
+      var DEPT_TAG_MAP = {
+        'nhân sự': 'tag-nhansu', 'nhan su': 'tag-nhansu', 'hr': 'tag-nhansu',
+        'kinh doanh': 'tag-kinhdoanh', 'kinhdoanh': 'tag-kinhdoanh', 'sales': 'tag-kinhdoanh',
+        'cntt': 'tag-cntt', 'it': 'tag-cntt', 'công nghệ': 'tag-cntt',
+        'đào tạo': 'tag-daotao', 'dao tao': 'tag-daotao', 'training': 'tag-daotao',
+        'kế toán': 'tag-ketoan', 'ke toan': 'tag-ketoan', 'tài chính': 'tag-ketoan',
+        'ban gđ': 'tag-bangd', 'ban giám đốc': 'tag-bangd', 'bod': 'tag-bangd', 'ban gd': 'tag-bangd'
+      };
+
+      function getDeptTagClass(dept) {
+        var key = String(dept||'').toLowerCase().trim();
+        for (var k in DEPT_TAG_MAP) {
+          if (key.indexOf(k) !== -1) return DEPT_TAG_MAP[k];
+        }
+        return 'tag-default';
+      }
+
+      function getDeptTagHtml(dept) {
+        var tagClass = getDeptTagClass(dept);
+        return '<span class="dept-tag ' + tagClass + '">'
+          + '<span class="dept-tag-dot"></span>'
+          + escapeHtml(dept)
+          + '</span>';
+      }
+
+      function getCountdownBadge(targetDateStr) {
+        if (!targetDateStr) return '';
+        var now = new Date(); now.setHours(0,0,0,0);
+        var target = new Date(targetDateStr); target.setHours(0,0,0,0);
+        var diff = Math.round((target - now) / (1000*60*60*24));
+        var cls, text;
+        if (diff > 0) { cls = 'countdown-future'; text = 'Còn ' + diff + ' ngày'; }
+        else if (diff === 0) { cls = 'countdown-today'; text = 'Hôm nay'; }
+        else { cls = 'countdown-past'; text = 'Đã qua ' + Math.abs(diff) + ' ngày'; }
+        return '<span class="countdown-badge ' + cls + '">' + text + '</span>';
+      }
+
+      function updateScheduleSummary() {
+        var count = scheduleItems.length;
+        var total = 0;
+        for (var i = 0; i < count; i++) {
+          total += (parseInt(String(scheduleItems[i].tlTB).replace(/'/g,'')) || 0)
+                 + (parseInt(String(scheduleItems[i].tlCD).replace(/'/g,'')) || 0);
+        }
+        var el1 = document.getElementById('sumPresenter');
+        var el2 = document.getElementById('sumReport');
+        var el3 = document.getElementById('sumDuration');
+        if (el1) el1.textContent = count + ' người';
+        if (el2) el2.textContent = count + ' nội dung';
+        if (el3) el3.textContent = total + ' phút';
+      }
 
       // ========================================
       // INITIALIZATION
@@ -2207,14 +2452,10 @@
         var schedTitle = document.getElementById('scheduleTitle');
         if (dateInput) {
           var parts = dateInput.split('-');
-          var target = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-          var today = new Date();
-          today.setHours(0,0,0,0);
-          var diffDays = Math.ceil((target - today) / (1000*60*60*24));
-          var countdown = diffDays > 0 ? ' (còn lại ' + diffDays + ' ngày)' :
-                          diffDays === 0 ? ' (HÔM NAY)' :
-                          ' (đã qua ' + Math.abs(diffDays) + ' ngày)';
-          schedTitle.innerHTML = 'LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI <span class="date-icon">&#128339;</span>' + parts[2] + '/' + parts[1] + '/' + parts[0] + countdown;
+          var dateStr = parts[0] + '-' + parts[1] + '-' + parts[2];
+          var displayDate = parts[2] + '/' + parts[1] + '/' + parts[0];
+          var badge = getCountdownBadge(dateStr);
+          schedTitle.innerHTML = 'LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI <span class="date-icon">&#128339;</span>' + displayDate + ' ' + badge;
         }
         
         google.script.run
@@ -2277,11 +2518,11 @@
             + '<td style="text-align:center">' + (it.stt||i+1) + '</td>'
             + '<td style="white-space:nowrap;font-weight:800;color:#2563eb">' + it.calcTime + '</td>'
             + '<td>' + escapeHtml(it.content) + '</td>'
-            + '<td>' + escapeHtml(it.presenter) + '</td>'
+            + '<td>' + getAvatarHtml(it.presenter) + '</td>'
             + '<td>' + emailDisplay + '</td>'
             + '<td style="text-align:center"><input type="number" value="' + tbVal + '" min="5" max="120" step="5" class="cd-input' + (isSchedEditing ? ' editing' : '') + '" onchange="onTbChange('+i+',this.value)" title="Thời lượng trình bày (phút)"' + disabledAttr + '></td>'
             + '<td style="text-align:center"><input type="number" value="' + cdVal + '" min="5" max="120" step="5" class="cd-input' + (isSchedEditing ? ' editing' : '') + '" onchange="onCdChange('+i+',this.value)" title="Thời lượng chỉ đạo (phút)"' + disabledAttr + '></td>'
-            + '<td>' + escapeHtml(it.related) + '</td>'
+            + '<td>' + getDeptTagHtml(it.related) + '</td>'
             + '</tr>';
         }
         // Footer with total
@@ -2290,6 +2531,7 @@
           + '<td style="color:#2563eb">' + endTime + ' (≈' + totalMin + ' phút)</td>'
           + '<td colspan="5"></td></tr>';
         tbody.innerHTML = html;
+        updateScheduleSummary();
       }
 
       function onTbChange(index, val) {
@@ -2679,8 +2921,8 @@
             return (
               '<tr class="row-highlight">' +
               '<td class="th-stt">' + orderVal + '</td>' +
-              '<td style="font-weight:700">' + escapeHtml(item.hoTen) + '</td>' +
-              '<td><span style="font-weight:700;color:var(--c-total)">' + escapeHtml(item.boPhan) + '</span></td>' +
+              '<td>' + getAvatarHtml(item.hoTen) + '</td>' +
+              '<td>' + getDeptTagHtml(item.boPhan) + '</td>' +
               '<td><div class="cell-content">' + escapeHtml(item.noiDung) + '</div></td>' +
               '<td class="th-center">' + tlHtml + '</td>' +
               '<td class="th-center">' + cdHtml + '</td>' +
