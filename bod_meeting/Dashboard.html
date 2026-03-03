@@ -899,6 +899,116 @@
         margin-top: 4px;
       }
       .warning-note::before { content: '' !important; }
+
+      /* ============================================ */
+      /* INTERACTIVE CHECKLIST & GUIDE                */
+      /* ============================================ */
+      .step-guide { padding: 4px 0 0; }
+      .guide-intro {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+      .checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+      }
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 0;
+        transition: opacity 0.3s;
+      }
+      .check-icon {
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 2px solid #cbd5e1;
+        font-size: 12px;
+        font-weight: 900;
+        color: #94a3b8;
+        flex-shrink: 0;
+        transition: all 0.3s;
+      }
+      .check-item.checked .check-icon {
+        background: var(--c-approved);
+        border-color: var(--c-approved);
+        color: #fff;
+      }
+      .check-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: color 0.3s;
+      }
+      .check-item.checked .check-text {
+        color: var(--c-approved);
+        text-decoration: line-through;
+        text-decoration-color: rgba(16,185,129,0.3);
+      }
+      .guide-actions {
+        margin-top: 12px;
+      }
+      .guide-label {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+      .guide-steps {
+        list-style: none;
+        counter-reset: step-counter;
+        padding: 0;
+        margin: 0 0 14px;
+      }
+      .guide-steps li {
+        counter-increment: step-counter;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        padding: 5px 0 5px 32px;
+        position: relative;
+        line-height: 1.5;
+      }
+      .guide-steps li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--c-total);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .guide-note {
+        font-size: 12px;
+        font-weight: 600;
+        font-style: italic;
+        color: #d97706;
+        background: #fffbeb;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        line-height: 1.5;
+      }
       .cd-input {
         width: 60px;
         padding: 4px 6px;
@@ -1278,94 +1388,167 @@
         </div>
       </div>
 
-      <!-- PROCESS BAR -->
+      <!-- QUY TRÌNH CHUẨN BỊ — INTERACTIVE -->
       <div class="process-section" id="processSection">
         <div class="process-header">
-          <h2>QUY TRINH CHUAN BI</h2>
+          <h2>QUY TRÌNH CHUẨN BỊ CUỘC HỌP</h2>
           <span class="process-target" id="processTarget">Đang tải...</span>
         </div>
         <div class="process-bar" id="processBar">
           <div class="process-step" data-step="1" onclick="toggleStep(1)">
             <div class="step-circle">1</div>
-            <div class="step-label">Đăng ký</div>
-            <div class="step-desc">T3→T6</div>
+            <div class="step-label">Tiếp nhận</div>
+            <div class="step-desc">T3 → T5</div>
             <div class="step-count" id="stepCount1"></div>
           </div>
           <div class="process-step" data-step="2" onclick="toggleStep(2)">
             <div class="step-circle">2</div>
-            <div class="step-label">Duyệt</div>
-            <div class="step-desc">T6→T7</div>
+            <div class="step-label">Phê duyệt</div>
+            <div class="step-desc">T5 → T6</div>
             <div class="step-count" id="stepCount2"></div>
           </div>
           <div class="process-step" data-step="3" onclick="toggleStep(3)">
             <div class="step-circle">3</div>
-            <div class="step-label">Lịch trình</div>
+            <div class="step-label">Xếp lịch</div>
             <div class="step-desc">CN 20:00</div>
             <div class="step-count" id="stepCount3"></div>
           </div>
           <div class="process-step" data-step="4" onclick="toggleStep(4)">
             <div class="step-circle">4</div>
-            <div class="step-label">Họp BOD</div>
+            <div class="step-label">Biên bản</div>
             <div class="step-desc">Thứ 2</div>
             <div class="step-count" id="stepCount4"></div>
           </div>
         </div>
-        <!-- Step 1 details -->
+
+        <!-- BƯỚC 1: TIẾP NHẬN ĐĂNG KÝ -->
         <div class="step-details" id="stepDetail1">
-          <h3>Buoc 1: Dang ky bao cao</h3>
-          <ul>
-            <li>Nhân viên/Trưởng bộ phận truy cập Google Form</li>
-            <li>Nhập: Nội dung, Thời lượng, Cần QĐ từ BOD?, Ngày họp</li>
-            <li>Deadline: Thứ 6 hàng tuần</li>
-          </ul>
-          <button class="action-btn btn-red" onclick="sendBulkReminder()">Gui nhac tat ca bo phan chua dang ky</button>
-          <div class="btn-hint">Ket qua du kien khi kich hoat nut lenh: Gui email nhac nho den email dai dien cua cac bo phan chua submit form. CC anh Kha. Khong anh huong du lieu.</div>
-          <div class="action-msg" id="msg1"></div>
+          <h3>BƯỚC 1: TIẾP NHẬN ĐĂNG KÝ</h3>
+          <div class="step-guide">
+            <p class="guide-intro">Các bộ phận bắt buộc gửi nội dung báo cáo qua Google Form. BTC theo dõi tiến độ tại bảng bên dưới.</p>
+            <div class="checklist" id="checklist1">
+              <div class="check-item" data-check="formOpen">
+                <span class="check-icon">○</span>
+                <span class="check-text">Form đăng ký đang mở nhận nội dung</span>
+              </div>
+              <div class="check-item" data-check="hasRegistrations">
+                <span class="check-icon">○</span>
+                <span class="check-text">Có ít nhất 1 đăng ký được ghi nhận</span>
+              </div>
+              <div class="check-item" data-check="allDeptDone">
+                <span class="check-icon">○</span>
+                <span class="check-text">Tất cả bộ phận bắt buộc đã đăng ký</span>
+              </div>
+            </div>
+            <div class="guide-actions">
+              <p class="guide-label">Nếu còn bộ phận chưa đăng ký:</p>
+              <button class="action-btn btn-red" onclick="sendBulkReminder()">Gửi nhắc tất cả bộ phận chưa đăng ký</button>
+              <div class="btn-hint">Kết quả dự kiến khi kích hoạt: Gửi email nhắc nhở đến đại diện các bộ phận chưa submit form. CC Ban Tổ Chức. Không ảnh hưởng dữ liệu hiện tại.</div>
+              <div class="action-msg" id="msg1"></div>
+            </div>
+          </div>
         </div>
-        <!-- Step 2 details -->
+
+        <!-- BƯỚC 2: PHÊ DUYỆT NỘI DUNG -->
         <div class="step-details" id="stepDetail2">
-          <h3>Buoc 2: Phe duyet noi dung</h3>
-          <ul>
-            <li>BOD Chủ trì mở Sheet → Duyệt từng đăng ký</li>
-            <li>Cột Trạng thái: Duyệt / Từ chối / Hoãn</li>
-            <li>Cột Thứ tự: Nhập số thứ tự trình bày</li>
-          </ul>
-          <button class="action-btn btn-amber" onclick="sendApprovalReminder()">Nhac phe duyet</button>
-          <div class="btn-hint">Ket qua du kien: Gui email nhac Ban To Chuc duyet noi dung con cho. Khong thay doi du lieu.</div>
-          <button class="action-btn btn-blue" onclick="sendApprovalResults()">Gui ket qua duyet</button>
-          <div class="btn-hint">Ket qua du kien: Gui email thong bao ket qua (Duyet/Tu choi/Hoan) den tung nguoi dang ky. Nguoi da nhan roi se KHONG gui lai.</div>
-          <div class="action-msg" id="msg2"></div>
+          <h3>BƯỚC 2: PHÊ DUYỆT NỘI DUNG</h3>
+          <div class="step-guide">
+            <p class="guide-intro">BOD Hosting xem xét từng nội dung đăng ký tại bảng "DANH SÁCH ĐĂNG KÝ" bên dưới. Chọn trạng thái phê duyệt và thứ tự trình bày, sau đó bấm "Lưu phê duyệt".</p>
+            <div class="checklist" id="checklist2">
+              <div class="check-item" data-check="hasPending">
+                <span class="check-icon">○</span>
+                <span class="check-text">Đã xem xét tất cả đăng ký (không còn "Chờ duyệt")</span>
+              </div>
+              <div class="check-item" data-check="hasOrder">
+                <span class="check-icon">○</span>
+                <span class="check-text">Đã xếp thứ tự trình bày cho nội dung được duyệt</span>
+              </div>
+              <div class="check-item" data-check="resultSent">
+                <span class="check-icon">○</span>
+                <span class="check-text">Đã gửi kết quả phê duyệt đến người đăng ký</span>
+              </div>
+            </div>
+            <div class="guide-actions">
+              <p class="guide-label">Hướng dẫn thao tác:</p>
+              <ol class="guide-steps">
+                <li>Cuộn xuống bảng "DANH SÁCH ĐĂNG KÝ"</li>
+                <li>Cột "Phê duyệt" → chọn: Duyệt / Từ chối / Hoãn</li>
+                <li>Cột "Thứ tự" → nhập số thứ tự trình bày (1, 2, 3...)</li>
+                <li>Bấm nút "Lưu phê duyệt" để ghi nhận</li>
+              </ol>
+              <button class="action-btn btn-amber" onclick="sendApprovalReminder()">Gửi nhắc phê duyệt</button>
+              <div class="btn-hint">Kết quả dự kiến: Gửi email nhắc Ban Tổ Chức duyệt nội dung còn chờ. Không thay đổi dữ liệu.</div>
+              <button class="action-btn btn-blue" onclick="sendApprovalResults()">Gửi kết quả phê duyệt</button>
+              <div class="btn-hint">Kết quả dự kiến: Gửi email thông báo kết quả (Duyệt/Từ chối/Hoãn) đến từng người đăng ký. Người đã nhận rồi sẽ không gửi lại.</div>
+              <div class="action-msg" id="msg2"></div>
+            </div>
+          </div>
         </div>
-        <!-- Step 3 details -->
+
+        <!-- BƯỚC 3: XẾP LỊCH TRÌNH -->
         <div class="step-details" id="stepDetail3">
-          <h3>Buoc 3: Tao & gui lich trinh</h3>
-          <ul>
-            <li>Tạo lịch trình từ các đăng ký đã duyệt</li>
-            <li>Gửi lịch trình cho tất cả thành viên (CN 20:00)</li>
-            <li class="warning-note">⚠️ Lưu ý: Thời lượng chỉ đạo tối đa 20ph trên Form. Nếu bộ phận cần nhiều hơn, chỉnh trực tiếp trong bảng lịch trình bên dưới.</li>
-          </ul>
-          <button class="action-btn btn-green" onclick="loadSchedulePreview()">Xem lich trinh</button>
-          <div class="btn-hint">Ket qua du kien: Hien thi lich trinh du kien ben duoi. Cho phep chinh thoi luong chi dao. Khong gui email.</div>
-          <div class="action-msg" id="msg3"></div>
-          <div id="schedulePreviewArea"></div>
+          <h3>BƯỚC 3: XẾP LỊCH TRÌNH HỌP</h3>
+          <div class="step-guide">
+            <p class="guide-intro">Hệ thống tự động tạo lịch trình từ các nội dung đã duyệt. BTC xem trước, điều chỉnh thời lượng chỉ đạo nếu cần, rồi gửi cho toàn bộ thành viên.</p>
+            <div class="checklist" id="checklist3">
+              <div class="check-item" data-check="scheduleReady">
+                <span class="check-icon">○</span>
+                <span class="check-text">Lịch trình đã được tạo từ nội dung duyệt</span>
+              </div>
+              <div class="check-item" data-check="scheduleSent">
+                <span class="check-icon">○</span>
+                <span class="check-text">Lịch trình đã gửi cho tất cả thành viên</span>
+              </div>
+            </div>
+            <div class="guide-actions">
+              <p class="guide-label">Hướng dẫn thao tác:</p>
+              <ol class="guide-steps">
+                <li>Bấm "Xem trước lịch trình" để kiểm tra</li>
+                <li>Điều chỉnh cột "CĐ" (Thời lượng chỉ đạo) nếu cần</li>
+                <li>Khi sẵn sàng → bấm "Gửi lịch trình" để thông báo toàn bộ</li>
+              </ol>
+              <div class="guide-note">Lưu ý: Thời lượng chỉ đạo mặc định 10 phút. Nếu bộ phận cần nhiều hơn, chỉnh trực tiếp trong bảng lịch trình bên dưới trước khi gửi.</div>
+              <button class="action-btn btn-green" onclick="loadSchedulePreview()">Xem trước lịch trình</button>
+              <div class="btn-hint">Kết quả dự kiến: Hiển thị lịch trình dự kiến phía dưới. Cho phép chỉnh thời lượng chỉ đạo. Không gửi email.</div>
+              <div class="action-msg" id="msg3"></div>
+              <div id="schedulePreviewArea"></div>
+            </div>
+          </div>
         </div>
-        <!-- Step 4 details -->
+
+        <!-- BƯỚC 4: BIÊN BẢN SAU HỌP -->
         <div class="step-details" id="stepDetail4">
-          <h3>Buoc 4: Hop BOD</h3>
-          <ul>
-            <li>Cuộc họp diễn ra Thứ 2 hàng tuần, 08:30</li>
-            <li>Hiếu ghi biên bản 1-2h sau họp</li>
-            <li>Gửi biên bản song ngữ Việt-Nhật</li>
-          </ul>
+          <h3>BƯỚC 4: BIÊN BẢN SAU CUỘC HỌP</h3>
+          <div class="step-guide">
+            <p class="guide-intro">Cuộc họp diễn ra Thứ 2 hàng tuần lúc 08:30. Sau họp, Thư ký ghi biên bản và gửi cho toàn bộ thành viên.</p>
+            <div class="checklist" id="checklist4">
+              <div class="check-item" data-check="meetingDone">
+                <span class="check-icon">○</span>
+                <span class="check-text">Cuộc họp đã diễn ra</span>
+              </div>
+              <div class="check-item" data-check="minutesSent">
+                <span class="check-icon">○</span>
+                <span class="check-text">Biên bản đã gửi cho thành viên</span>
+              </div>
+            </div>
+            <div class="guide-actions">
+              <p class="guide-label">Quy trình sau họp:</p>
+              <ol class="guide-steps">
+                <li>Thư ký ghi biên bản trong vòng 1-2 giờ sau họp</li>
+                <li>Dịch song ngữ Việt-Nhật (nếu có thành viên Nhật)</li>
+                <li>Gửi biên bản qua email cho toàn bộ danh sách</li>
+              </ol>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- DEPT STATUS -->
       <div class="dept-section" id="deptSection">
         <div class="section-header">
-          <h2>BO PHAN BAT BUOC</h2>
-          <button class="action-btn btn-red" onclick="sendBulkReminder()" id="bulkRemindBtn">Nhac tat ca</button>
-          <div class="btn-hint">Ket qua du kien: Gui email nhac den BP chua dang ky</div>
+          <h2>BỘ PHẬN BẮT BUỘC BÁO CÁO</h2>
+          <button class="action-btn btn-red" onclick="sendBulkReminder()" id="bulkRemindBtn">Nhắc tất cả</button>
+          <div class="btn-hint">Kết quả dự kiến: Gửi email nhắc nhở đến bộ phận chưa đăng ký. CC Ban Tổ Chức.</div>
         </div>
         <div style="overflow-x:auto">
           <table class="dept-table">
@@ -1383,7 +1566,7 @@
       <!-- SCHEDULE PREVIEW -->
       <div class="schedule-section" id="scheduleSection" style="display:none">
         <div class="section-header">
-          <h2 id="scheduleTitle">LICH TRINH LAM VIEC BOD THU HAI</h2>
+          <h2 id="scheduleTitle">LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI</h2>
           <div>
             <button class="action-btn btn-green" onclick="sendSchedule()" id="sendScheduleBtn">Gui lich trinh</button>
           </div>
@@ -1882,11 +2065,13 @@
             renderTable(data.items);
             // Update cards wrapper title
             updateCardsTitle(data, displayDate);
+            // Auto-check process checklists based on real data
+            updateChecklists(data);
           })
           .withFailureHandler(function (err) {
             document.getElementById("tableBody").innerHTML =
               '<tr><td colspan="7"><div class="empty-state">' +
-              '<div class="empty-icon">❌</div>' +
+              '<div class="empty-icon">--</div>' +
               "<p>Lỗi tải dữ liệu: " +
               (err.message || "Không xác định") +
               "</p></div></td></tr>";
@@ -1898,9 +2083,84 @@
         var ct = document.getElementById('cardsTitle');
         if (!ct) return;
         if (displayDate) {
-          ct.textContent = 'THONG KE DANG KY — ' + displayDate.toUpperCase();
+          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ — ' + displayDate.toUpperCase();
         } else {
-          ct.textContent = 'THONG KE DANG KY';
+          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ';
+        }
+      }
+
+      // ========================================
+      // AUTO-CHECK PROCESS CHECKLISTS
+      // ========================================
+      function updateChecklists(data) {
+        if (!data || !data.items) return;
+        var items = data.items;
+        var total = items.length;
+        var approved = 0, pending = 0, hasOrder = 0;
+
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].status === 'Duyệt') approved++;
+          if (items[i].status === 'Chờ duyệt') pending++;
+          if (items[i].thuTu && parseInt(items[i].thuTu) > 0) hasOrder++;
+        }
+
+        // --- STAGE 1: Tiếp nhận ---
+        setCheck('formOpen', true); // Form luôn mở trong phase này
+        setCheck('hasRegistrations', total > 0);
+
+        // Kiểm tra tất cả bộ phận bắt buộc
+        var deptRows = document.querySelectorAll('#deptTableBody tr');
+        var allDeptDone = true;
+        var deptCount = 0;
+        for (var d = 0; d < deptRows.length; d++) {
+          deptCount++;
+          var statusCell = deptRows[d].querySelector('.dept-status');
+          if (statusCell && statusCell.textContent.indexOf('Chưa') >= 0) {
+            allDeptDone = false;
+          }
+        }
+        setCheck('allDeptDone', deptCount > 0 && allDeptDone);
+
+        // --- STAGE 2: Phê duyệt ---
+        setCheck('hasPending', total > 0 && pending === 0);
+        setCheck('hasOrder', approved > 0 && hasOrder >= approved);
+        setCheck('resultSent', false); // Cần backend confirm
+
+        // --- STAGE 3: Xếp lịch ---
+        setCheck('scheduleReady', approved > 0 && hasOrder > 0);
+        setCheck('scheduleSent', false); // Cần backend confirm
+
+        // --- STAGE 4: Biên bản ---
+        setCheck('meetingDone', false); // Manual
+        setCheck('minutesSent', false); // Manual
+
+        // Update progress count trên step bar
+        updateStepProgress();
+      }
+
+      function setCheck(key, isDone) {
+        var el = document.querySelector('.check-item[data-check="' + key + '"]');
+        if (!el) return;
+        var icon = el.querySelector('.check-icon');
+        if (isDone) {
+          el.classList.add('checked');
+          if (icon) icon.textContent = '✓';
+        } else {
+          el.classList.remove('checked');
+          if (icon) icon.textContent = '○';
+        }
+      }
+
+      function updateStepProgress() {
+        for (var s = 1; s <= 4; s++) {
+          var checklist = document.getElementById('checklist' + s);
+          if (!checklist) continue;
+          var allItems = checklist.querySelectorAll('.check-item');
+          var doneItems = checklist.querySelectorAll('.check-item.checked');
+          var countEl = document.getElementById('stepCount' + s);
+          if (countEl && allItems.length > 0) {
+            countEl.textContent = doneItems.length + '/' + allItems.length;
+          }
         }
       }
 
