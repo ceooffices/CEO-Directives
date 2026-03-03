@@ -99,7 +99,11 @@ function getDashboardData(searchDate) {
       status: status || "Chờ duyệt",
       thamGia: row[cols.thamGia] || "",
       daGuiEmail: row[cols.daGuiEmail] || "",
-      thuTu: parseInt(row[cols.thuTu]) || 0, // [V8.1] Thứ tự trình bày cho Dashboard inline
+      thuTu: parseInt(row[cols.thuTu]) || 0,
+      ghiChu: (row[cols.ghiChu] || "").toString(),
+      tlCD:
+        parseInt(row[cols.thoiLuongChiDao]) ||
+        getDefaultChiDaoTime(row[cols.boPhan]),
     });
   }
   return result;

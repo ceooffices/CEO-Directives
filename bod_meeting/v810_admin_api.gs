@@ -42,35 +42,81 @@ function saveApprovalFromDashboard(jsonUpdates) {
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
-    if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký: " + CONFIG.SHEET_RESPONSES };
+    if (!sheet)
+      return {
+        success: false,
+        msg: "Không tìm thấy sheet đăng ký: " + CONFIG.SHEET_RESPONSES,
+      };
 
     var cols = CONFIG.COLUMN_MAP;
-    // Chuyển sang 1-based cho getRange
     var statusColIdx = cols.status + 1;
     var thuTuColIdx = cols.thuTu + 1;
+    var ghiChuColIdx = cols.ghiChu + 1;
+    var tlCDColIdx = cols.thoiLuongChiDao + 1;
 
     var count = 0;
+    var missing = [];
     for (var i = 0; i < updates.length; i++) {
       var item = updates[i];
       var rowNum = parseInt(item.row);
-      if (!rowNum || rowNum < 2) continue; // Bỏ qua dòng không hợp lệ
+      if (!rowNum || rowNum < 2) continue;
 
-      // Cập nhật Trạng thái
-      if (item.status) {
-        sheet.getRange(rowNum, statusColIdx).setValue(item.status);
+      var status = (item.status || "").toString().trim();
+
+      // Validate: Hoãn/Từ chối bắt buộc có ghi chú
+      if (
+        (status === "Hoãn" || status === "Từ chối") &&
+        (!item.ghiChu || !item.ghiChu.toString().trim())
+      ) {
+        var hoTen =
+          item.hoTen ||
+          sheet.getRange(rowNum, cols.hoTen + 1).getValue() ||
+          "dòng " + rowNum;
+        missing.push(hoTen + " (" + status + ")");
+        continue;
       }
 
-      // Cập nhật Thứ tự (chỉ khi > 0, bỏ qua khi = 0 để giữ nguyên)
+      // Cập nhật Trạng thái
+      if (status) {
+        sheet.getRange(rowNum, statusColIdx).setValue(status);
+      }
+
+      // Cập nhật Thứ tự (chỉ khi > 0)
       if (item.thuTu !== undefined && parseInt(item.thuTu) > 0) {
         sheet.getRange(rowNum, thuTuColIdx).setValue(parseInt(item.thuTu));
+      }
+
+      // Cập nhật GHI CHÚ BOD
+      if (item.ghiChu !== undefined) {
+        sheet
+          .getRange(rowNum, ghiChuColIdx)
+          .setValue(item.ghiChu.toString().trim());
+      }
+
+      // Cập nhật Thời lượng chỉ đạo
+      if (item.tlCD !== undefined && parseInt(item.tlCD) > 0) {
+        sheet.getRange(rowNum, tlCDColIdx).setValue(parseInt(item.tlCD));
       }
 
       count++;
     }
 
+    if (missing.length > 0) {
+      return {
+        success: false,
+        msg:
+          "Chưa nhập lý do cho: " +
+          missing.join(", ") +
+          ". Vui lòng bổ sung lý do Hoãn/Từ chối trong cột Ghi chú BOD.",
+      };
+    }
+
     return { success: true, msg: "Đã lưu " + count + " phê duyệt thành công" };
   } catch (e) {
-    return { success: false, msg: "Lỗi saveApprovalFromDashboard: " + e.message };
+    return {
+      success: false,
+      msg: "Lỗi saveApprovalFromDashboard: " + e.message,
+    };
   }
 }
 
@@ -85,9 +131,22 @@ function saveApprovalFromDashboard(jsonUpdates) {
  */
 function saveEmailTemplate(key, jsonTemplate) {
   try {
-    var validKeys = ["reminder", "bulk_reminder", "approval_reminder", "approval_result", "schedule"];
+    var validKeys = [
+      "reminder",
+      "bulk_reminder",
+      "approval_reminder",
+      "approval_result",
+      "schedule",
+    ];
     if (validKeys.indexOf(key) === -1) {
-      return { success: false, msg: "Key không hợp lệ: " + key + ". Chỉ chấp nhận: " + validKeys.join(", ") };
+      return {
+        success: false,
+        msg:
+          "Key không hợp lệ: " +
+          key +
+          ". Chỉ chấp nhận: " +
+          validKeys.join(", "),
+      };
     }
 
     // Validate JSON
@@ -128,7 +187,12 @@ function saveEmailTemplate(key, jsonTemplate) {
  */
 function getAccessUsers() {
   try {
-    var sheet = getOrCreateSheet_("Users", ["Email", "Ho ten", "Vai tro", "Trang thai"]);
+    var sheet = getOrCreateSheet_("Users", [
+      "Email",
+      "Ho ten",
+      "Vai tro",
+      "Trang thai",
+    ]);
     var data = sheet.getDataRange().getValues();
 
     // Nếu chỉ có header hoặc trống → tạo admin mặc định
@@ -146,7 +210,7 @@ function getAccessUsers() {
         email: email,
         name: (data[i][1] || "").toString().trim(),
         role: (data[i][2] || "viewer").toString().trim(),
-        status: (data[i][3] || "pending").toString().trim()
+        status: (data[i][3] || "pending").toString().trim(),
       });
     }
     return result;
@@ -168,17 +232,32 @@ function updateUserAccess(email, newStatus) {
   try {
     var validStatus = ["approved", "pending", "blocked"];
     if (validStatus.indexOf(newStatus) === -1) {
-      return { success: false, msg: "Trạng thái không hợp lệ: " + newStatus + ". Chỉ chấp nhận: " + validStatus.join(", ") };
+      return {
+        success: false,
+        msg:
+          "Trạng thái không hợp lệ: " +
+          newStatus +
+          ". Chỉ chấp nhận: " +
+          validStatus.join(", "),
+      };
     }
     if (!email) return { success: false, msg: "Thiếu email" };
 
-    var sheet = getOrCreateSheet_("Users", ["Email", "Ho ten", "Vai tro", "Trang thai"]);
+    var sheet = getOrCreateSheet_("Users", [
+      "Email",
+      "Ho ten",
+      "Vai tro",
+      "Trang thai",
+    ]);
     var data = sheet.getDataRange().getValues();
 
     for (var i = 1; i < data.length; i++) {
       if (data[i][0].toString().trim().toLowerCase() === email.toLowerCase()) {
         sheet.getRange(i + 1, 4).setValue(newStatus);
-        return { success: true, msg: "Đã cập nhật " + email + " → " + newStatus };
+        return {
+          success: true,
+          msg: "Đã cập nhật " + email + " → " + newStatus,
+        };
       }
     }
 
@@ -199,14 +278,22 @@ function updateUserAccess(email, newStatus) {
 function addUserAccess(jsonUser) {
   try {
     var user = JSON.parse(jsonUser);
-    if (!user.email) return { success: false, msg: "Thiếu email trong dữ liệu user" };
+    if (!user.email)
+      return { success: false, msg: "Thiếu email trong dữ liệu user" };
 
-    var sheet = getOrCreateSheet_("Users", ["Email", "Ho ten", "Vai tro", "Trang thai"]);
+    var sheet = getOrCreateSheet_("Users", [
+      "Email",
+      "Ho ten",
+      "Vai tro",
+      "Trang thai",
+    ]);
     var data = sheet.getDataRange().getValues();
 
     // Kiểm tra email đã tồn tại chưa
     for (var i = 1; i < data.length; i++) {
-      if (data[i][0].toString().trim().toLowerCase() === user.email.toLowerCase()) {
+      if (
+        data[i][0].toString().trim().toLowerCase() === user.email.toLowerCase()
+      ) {
         return { success: false, msg: "Email đã tồn tại: " + user.email };
       }
     }
@@ -216,7 +303,7 @@ function addUserAccess(jsonUser) {
       user.email,
       user.name || "",
       user.role || "viewer",
-      user.status || "pending"
+      user.status || "pending",
     ]);
 
     return { success: true, msg: "Đã thêm " + user.email };
@@ -248,21 +335,21 @@ function getAdminSettings() {
       ccEmail: Session.getActiveUser().getEmail(),
       btcEmails: "",
       formLink: "",
-      sheetLink: ""
+      sheetLink: "",
     };
 
     // Ánh xạ key trong sheet → field trong result
     var keyMap = {
-      "cfg_startTime": "startTime",
-      "cfg_regDeadline": "regDeadline",
-      "cfg_apprDeadline": "apprDeadline",
-      "cfg_scheduleSend": "scheduleSend",
-      "cfg_maxPresentation": "maxPresentation",
-      "cfg_defaultCD": "defaultCD",
-      "cfg_ccEmail": "ccEmail",
-      "cfg_btcEmails": "btcEmails",
-      "cfg_formLink": "formLink",
-      "cfg_sheetLink": "sheetLink"
+      cfg_startTime: "startTime",
+      cfg_regDeadline: "regDeadline",
+      cfg_apprDeadline: "apprDeadline",
+      cfg_scheduleSend: "scheduleSend",
+      cfg_maxPresentation: "maxPresentation",
+      cfg_defaultCD: "defaultCD",
+      cfg_ccEmail: "ccEmail",
+      cfg_btcEmails: "btcEmails",
+      cfg_formLink: "formLink",
+      cfg_sheetLink: "sheetLink",
     };
 
     // Bắt đầu từ defaults
@@ -310,7 +397,7 @@ function saveAdminSettings(jsonSettings) {
       ccEmail: "cfg_ccEmail",
       btcEmails: "cfg_btcEmails",
       formLink: "cfg_formLink",
-      sheetLink: "cfg_sheetLink"
+      sheetLink: "cfg_sheetLink",
     };
 
     for (var field in settings) {

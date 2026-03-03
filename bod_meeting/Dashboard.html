@@ -1494,9 +1494,25 @@
       }
       .approval-order:focus { border-color: #2563eb; outline: none; }
 
-      /* TABLE HELPER CLASSES */
       .th-stt { width: 60px; text-align: center; }
       .th-center { text-align: center; }
+      .ghichu-cell { min-width: 120px; }
+      .ghichu-input {
+        width: 100%;
+        min-width: 100px;
+        padding: 6px 8px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        resize: vertical;
+        min-height: 32px;
+        font-family: inherit;
+        transition: border-color 0.2s;
+      }
+      .ghichu-input:focus { border-color: #2563eb; outline: none; }
+      .ghichu-input.required { border-color: #ef4444; background: #fef2f2; }
+      .ghichu-input.required::placeholder { color: #ef4444; }
+      .date-icon { font-size: 14px; margin-right: 4px; opacity: 0.6; vertical-align: middle; }
 
       /* FOOTER GEAR */
       .footer-gear {
@@ -1523,7 +1539,10 @@
       </div>
       <div class="date-picker">
         <div class="date-picker-label">Chọn ngày báo cáo</div>
-        <input type="date" id="dateInput" onchange="onDateChange()" title="Chọn ngày báo cáo">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="date-icon">&#128339;</span>
+          <input type="date" id="dateInput" onchange="onDateChange()" title="Chọn ngày báo cáo">
+        </div>
       </div>
     </header>
 
@@ -1738,7 +1757,7 @@
       <!-- BỘ PHẬN BẮT BUỘC BÁO CÁO (kèm ngày) -->
       <div class="dept-section" id="deptSection">
         <div class="section-header">
-          <h2>BỘ PHẬN BẮT BUỘC BÁO CÁO <span id="deptDateLabel" class="process-target"></span></h2>
+          <h2>BỘ PHẬN BẮT BUỘC BÁO CÁO <span class="date-icon">&#128339;</span><span id="deptDateLabel" class="process-target"></span></h2>
           <button class="action-btn btn-red" onclick="showEmailPreview('reminder')" id="bulkRemindBtn">Nhắc tất cả</button>
         </div>
         <div class="btn-hint" style="padding:0 20px 8px">Kết quả dự kiến: Gửi email nhắc nhở đến bộ phận chưa đăng ký. CC Ban Tổ Chức.</div>
@@ -1793,11 +1812,12 @@
                 <th class="th-center">T.Lượng (phút)</th>
                 <th class="th-center">CĐ dự kiến (phút)</th>
                 <th class="th-center">Phê duyệt</th>
+                <th class="ghichu-cell">Ghi chú BOD</th>
               </tr>
             </thead>
             <tbody id="tableBody">
               <tr>
-                <td colspan="7">
+                <td colspan="8">
                   <div class="loading-state">
                     <div class="spinner"></div>
                     <p>Đang tải dữ liệu...</p>
@@ -2143,7 +2163,7 @@
           var countdown = diffDays > 0 ? ' (còn lại ' + diffDays + ' ngày)' :
                           diffDays === 0 ? ' (HÔM NAY)' :
                           ' (đã qua ' + Math.abs(diffDays) + ' ngày)';
-          schedTitle.textContent = 'LICH TRINH LAM VIEC BOD THU HAI ' + parts[2] + '/' + parts[1] + '/' + parts[0] + countdown;
+          schedTitle.innerHTML = 'LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI <span class="date-icon">&#128339;</span>' + parts[2] + '/' + parts[1] + '/' + parts[0] + countdown;
         }
         
         google.script.run
@@ -2307,7 +2327,7 @@
         var ct = document.getElementById('cardsTitle');
         if (!ct) return;
         if (displayDate) {
-          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ — ' + displayDate.toUpperCase();
+          ct.innerHTML = 'THỐNG KÊ ĐĂNG KÝ — <span class="date-icon">&#128339;</span>' + displayDate.toUpperCase();
         } else {
           ct.textContent = 'THỐNG KÊ ĐĂNG KÝ';
         }
@@ -2537,12 +2557,12 @@
         var titleEl = document.getElementById('tableTitle');
         var dispDate = getDisplayDateFromInput();
         if (titleEl && dispDate) {
-          titleEl.textContent = 'CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO (' + dispDate + ')';
+          titleEl.innerHTML = 'CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO (<span class="date-icon">&#128339;</span>' + dispDate + ')';
         }
 
         if (!items || items.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="7"><div class="empty-state">' +
+            '<tr><td colspan="8"><div class="empty-state">' +
             '<div class="empty-icon">--</div>' +
             "<p>Không có đăng ký nào" +
             (activeFilter !== "all"
@@ -2556,20 +2576,26 @@
 
         tbody.innerHTML = items
           .map(function (item, index) {
-            // Build select options
-            var selectHtml = '<select class="approval-select" data-row="' + item.row + '" title="Trạng thái phê duyệt">';
+            // Build select with onchange to toggle ghiChu required
+            var selectHtml = '<select class="approval-select" data-row="' + item.row + '" title="Trạng thái phê duyệt" onchange="onStatusChange(this)">';
             for (var s = 0; s < statusOptions.length; s++) {
               var selected = (item.status === statusOptions[s]) ? ' selected' : '';
               selectHtml += '<option value="' + statusOptions[s] + '"' + selected + '>' + statusOptions[s] + '</option>';
             }
             selectHtml += '</select>';
 
-            // Order = thứ tự trình bày (hiển thị ở cột đầu)
+            // Order = thứ tự trình bày
             var orderVal = (item.thuTu && item.thuTu > 0) ? item.thuTu : '';
 
-            // CĐ dự kiến (thời lượng chỉ đạo) — mặc định 10 phút
+            // CĐ dự kiến
             var cdVal = item.tlCD || 10;
             var cdHtml = '<input type="number" class="approval-order" data-row="' + item.row + '" data-field="cd" value="' + cdVal + '" min="5" max="120" step="5" title="Thời lượng chỉ đạo dự kiến (phút)">';
+
+            // Ghi chú BOD — bắt buộc khi Hoãn/Từ chối
+            var isReqNote = (item.status === 'Hoãn' || item.status === 'Từ chối');
+            var ghiChuClass = 'ghichu-input' + (isReqNote ? ' required' : '');
+            var ghiChuPh = isReqNote ? 'Bắt buộc nhập lý do...' : 'Ghi chú (nếu có)...';
+            var ghiChuHtml = '<textarea class="' + ghiChuClass + '" data-row="' + item.row + '" placeholder="' + ghiChuPh + '">' + escapeHtml(item.ghiChu || '') + '</textarea>';
 
             return (
               '<tr class="row-highlight">' +
@@ -2580,10 +2606,28 @@
               '<td class="th-center" style="font-weight:700">' + escapeHtml(item.thoiLuong) + '</td>' +
               '<td class="th-center">' + cdHtml + '</td>' +
               '<td class="th-center">' + selectHtml + '</td>' +
+              '<td class="ghichu-cell">' + ghiChuHtml + '</td>' +
               '</tr>'
             );
           })
           .join("");
+      }
+
+      // Handle status change — toggle required on ghiChu
+      function onStatusChange(selectEl) {
+        var row = selectEl.closest('tr');
+        if (!row) return;
+        var textarea = row.querySelector('.ghichu-input');
+        if (!textarea) return;
+        var val = selectEl.value;
+        if (val === 'Hoãn' || val === 'Từ chối') {
+          textarea.classList.add('required');
+          textarea.placeholder = 'Bắt buộc nhập lý do ' + val.toLowerCase() + '...';
+          textarea.focus();
+        } else {
+          textarea.classList.remove('required');
+          textarea.placeholder = 'Ghi chú (nếu có)...';
+        }
       }
 
       // ========================================
@@ -2640,19 +2684,37 @@
       // APPROVAL FUNCTIONS
       // ========================================
       function saveApprovals() {
-        var selects = document.querySelectorAll('#tableBody .approval-select');
-        var cdInputs = document.querySelectorAll('#tableBody .approval-order[data-field="cd"]');
+        var rows = document.querySelectorAll('#tableBody tr.row-highlight');
         var updates = [];
-        for (var i = 0; i < selects.length; i++) {
-          var rowNum = parseInt(selects[i].getAttribute('data-row'));
+        var missingNotes = [];
+        for (var i = 0; i < rows.length; i++) {
+          var selectEl = rows[i].querySelector('.approval-select');
+          var cdInput = rows[i].querySelector('.approval-order[data-field="cd"]');
+          var ghiChuEl = rows[i].querySelector('.ghichu-input');
+          if (!selectEl) continue;
+          var rowNum = parseInt(selectEl.getAttribute('data-row'));
           if (!rowNum) continue;
-          var cdVal = cdInputs[i] ? (parseInt(cdInputs[i].value) || 10) : 10;
+          var status = selectEl.value;
+          var ghiChu = ghiChuEl ? ghiChuEl.value.trim() : '';
+          var cdVal = cdInput ? (parseInt(cdInput.value) || 10) : 10;
+
+          // Client-side validate: Hoãn/Từ chối bắt buộc ghi chú
+          if ((status === 'Hoãn' || status === 'Từ chối') && !ghiChu) {
+            missingNotes.push(rows[i].querySelector('td:nth-child(2)').textContent.trim() + ' (' + status + ')');
+            if (ghiChuEl) { ghiChuEl.classList.add('required'); ghiChuEl.focus(); }
+          }
+
           updates.push({
             row: rowNum,
-            status: selects[i].value,
-            thuTu: 0, // auto from order display
-            tlCD: cdVal
+            status: status,
+            thuTu: 0,
+            tlCD: cdVal,
+            ghiChu: ghiChu
           });
+        }
+        if (missingNotes.length > 0) {
+          showMsg('approvalMsg', 'Chưa nhập lý do cho: ' + missingNotes.join(', ') + '. Vui lòng bổ sung lý do Hoãn/Từ chối.', 'error');
+          return;
         }
         if (updates.length === 0) {
           showMsg('approvalMsg', 'Không có dữ liệu để lưu', 'error');
