@@ -318,7 +318,7 @@
       }
 
       .table-header h2 {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 800;
         letter-spacing: -0.3px;
       }
@@ -701,7 +701,7 @@
         gap: 8px;
       }
       .process-header h2 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 800;
         color: var(--text);
       }
@@ -942,7 +942,7 @@
         gap: 10px;
       }
       .dept-section .section-header h2 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 800;
       }
       .dept-table { width: 100%; border-collapse: collapse; }
@@ -1013,7 +1013,7 @@
         gap: 10px;
       }
       .schedule-section .section-header h2 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 800;
       }
       .schedule-table { width: 100%; border-collapse: collapse; }
@@ -1217,6 +1217,27 @@
         transition: border-color 0.2s;
       }
       .approval-order:focus { border-color: #2563eb; outline: none; }
+
+      /* ============================================ */
+      /* ADMIN BUTTON                                  */
+      /* ============================================ */
+      .admin-btn {
+        padding: 10px 18px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        backdrop-filter: blur(10px);
+      }
+      .admin-btn:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.5);
+      }
     </style>
   </head>
 
@@ -1224,7 +1245,7 @@
     <!-- ======== HEADER ======== -->
     <header class="header">
       <div class="header-left">
-        <div class="header-logo">🏛️</div>
+        <div class="header-logo">BOD</div>
         <div>
           <h1>BOD Meeting Dashboard</h1>
           <div class="header-sub">
@@ -1235,6 +1256,7 @@
       <div class="date-picker">
         <input type="date" id="dateInput" onchange="onDateChange()" title="Chọn ngày họp">
       </div>
+      <button class="admin-btn" onclick="openAdminPage()" title="Mở trang quản trị">QUAN TRI</button>
     </header>
 
     <!-- ======== MAIN CONTENT ======== -->
@@ -1242,7 +1264,7 @@
 
       <!-- STAT CARDS -->
       <div class="cards-wrapper">
-        <div class="cards-wrapper-title" id="cardsTitle">THỐNG KÊ ĐĂNG KÝ</div>
+        <div class="cards-wrapper-title" id="cardsTitle">THONG KE DANG KY</div>
         <div class="cards-grid" id="cardsGrid">
           <div class="stat-card card-total">
             <div class="card-number">—</div>
@@ -1270,7 +1292,7 @@
       <!-- PROCESS BAR -->
       <div class="process-section" id="processSection">
         <div class="process-header">
-          <h2>QUY TRÌNH CHUẨN BỊ</h2>
+          <h2>QUY TRINH CHUAN BI</h2>
           <span class="process-target" id="processTarget">Đang tải...</span>
         </div>
         <div class="process-bar" id="processBar">
@@ -1301,46 +1323,46 @@
         </div>
         <!-- Step 1 details -->
         <div class="step-details" id="stepDetail1">
-          <h3>Bước 1: Đăng ký báo cáo</h3>
+          <h3>Buoc 1: Dang ky bao cao</h3>
           <ul>
             <li>Nhân viên/Trưởng bộ phận truy cập Google Form</li>
             <li>Nhập: Nội dung, Thời lượng, Cần QĐ từ BOD?, Ngày họp</li>
             <li>Deadline: Thứ 6 hàng tuần</li>
           </ul>
-          <button class="action-btn btn-red" onclick="sendBulkReminder()">📧 Gửi nhắc tất cả bộ phận chưa đăng ký</button>
-          <div class="btn-hint">💡 Kết quả dự kiến khi kích hoạt nút lệnh: Gửi email nhắc nhở đến email đại diện của các bộ phận chưa submit form. CC anh Kha. Không ảnh hưởng dữ liệu.</div>
+          <button class="action-btn btn-red" onclick="sendBulkReminder()">Gui nhac tat ca bo phan chua dang ky</button>
+          <div class="btn-hint">Ket qua du kien khi kich hoat nut lenh: Gui email nhac nho den email dai dien cua cac bo phan chua submit form. CC anh Kha. Khong anh huong du lieu.</div>
           <div class="action-msg" id="msg1"></div>
         </div>
         <!-- Step 2 details -->
         <div class="step-details" id="stepDetail2">
-          <h3>Bước 2: Phê duyệt nội dung</h3>
+          <h3>Buoc 2: Phe duyet noi dung</h3>
           <ul>
             <li>BOD Chủ trì mở Sheet → Duyệt từng đăng ký</li>
             <li>Cột Trạng thái: Duyệt / Từ chối / Hoãn</li>
             <li>Cột Thứ tự: Nhập số thứ tự trình bày</li>
           </ul>
-          <button class="action-btn btn-amber" onclick="sendApprovalReminder()">📧 Nhắc phê duyệt</button>
-          <div class="btn-hint">💡 Kết quả dự kiến: Gửi email nhắc Ban Tổ Chức duyệt nội dung còn chờ. Không thay đổi dữ liệu.</div>
-          <button class="action-btn btn-blue" onclick="sendApprovalResults()">📬 Gửi kết quả duyệt</button>
-          <div class="btn-hint">💡 Kết quả dự kiến: Gửi email thông báo kết quả (Duyệt/Từ chối/Hoãn) đến từng người đăng ký. Người đã nhận rồi sẽ KHÔNG gửi lại.</div>
+          <button class="action-btn btn-amber" onclick="sendApprovalReminder()">Nhac phe duyet</button>
+          <div class="btn-hint">Ket qua du kien: Gui email nhac Ban To Chuc duyet noi dung con cho. Khong thay doi du lieu.</div>
+          <button class="action-btn btn-blue" onclick="sendApprovalResults()">Gui ket qua duyet</button>
+          <div class="btn-hint">Ket qua du kien: Gui email thong bao ket qua (Duyet/Tu choi/Hoan) den tung nguoi dang ky. Nguoi da nhan roi se KHONG gui lai.</div>
           <div class="action-msg" id="msg2"></div>
         </div>
         <!-- Step 3 details -->
         <div class="step-details" id="stepDetail3">
-          <h3>Bước 3: Tạo & gửi lịch trình</h3>
+          <h3>Buoc 3: Tao & gui lich trinh</h3>
           <ul>
             <li>Tạo lịch trình từ các đăng ký đã duyệt</li>
             <li>Gửi lịch trình cho tất cả thành viên (CN 20:00)</li>
             <li class="warning-note">⚠️ Lưu ý: Thời lượng chỉ đạo tối đa 20ph trên Form. Nếu bộ phận cần nhiều hơn, chỉnh trực tiếp trong bảng lịch trình bên dưới.</li>
           </ul>
-          <button class="action-btn btn-green" onclick="loadSchedulePreview()">📋 Xem lịch trình</button>
-          <div class="btn-hint">💡 Kết quả dự kiến: Hiển thị lịch trình dự kiến bên dưới. Cho phép chỉnh thời lượng chỉ đạo. Không gửi email.</div>
+          <button class="action-btn btn-green" onclick="loadSchedulePreview()">Xem lich trinh</button>
+          <div class="btn-hint">Ket qua du kien: Hien thi lich trinh du kien ben duoi. Cho phep chinh thoi luong chi dao. Khong gui email.</div>
           <div class="action-msg" id="msg3"></div>
           <div id="schedulePreviewArea"></div>
         </div>
         <!-- Step 4 details -->
         <div class="step-details" id="stepDetail4">
-          <h3>Bước 4: Họp BOD</h3>
+          <h3>Buoc 4: Hop BOD</h3>
           <ul>
             <li>Cuộc họp diễn ra Thứ 2 hàng tuần, 08:30</li>
             <li>Hiếu ghi biên bản 1-2h sau họp</li>
@@ -1352,19 +1374,19 @@
       <!-- APPROVAL SECTION -->
       <div class="approval-section" id="approvalSection">
         <div class="section-header">
-          <h2>PHÊ DUYỆT NỘI DUNG</h2>
+          <h2>PHE DUYET NOI DUNG</h2>
           <div>
-            <button class="action-btn btn-green" onclick="saveApprovals()">Lưu phê duyệt</button>
+            <button class="action-btn btn-green" onclick="saveApprovals()">Luu phe duyet</button>
           </div>
         </div>
-        <div class="btn-hint" style="padding:0 28px 8px">Chọn trạng thái và thứ tự cho từng đăng ký, sau đó nhấn "Lưu phê duyệt"</div>
+        <div class="btn-hint" style="padding:0 28px 8px">Chon trang thai va thu tu cho tung dang ky, sau do nhan "Luu phe duyet"</div>
         <div style="overflow-x:auto">
           <table class="approval-table">
             <thead><tr>
-              <th>STT</th><th>Họ tên</th><th>Bộ phận</th><th>Nội dung</th><th>TL</th><th>Trạng thái</th><th>Thứ tự</th>
+              <th>STT</th><th>Ho ten</th><th>Bo phan</th><th>Noi dung</th><th>TL</th><th>Trang thai</th><th>Thu tu</th>
             </tr></thead>
             <tbody id="approvalTableBody">
-              <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Đang tải...</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Dang tai...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1374,9 +1396,9 @@
       <!-- DEPT STATUS -->
       <div class="dept-section" id="deptSection">
         <div class="section-header">
-          <h2>BỘ PHẬN BẮT BUỘC</h2>
-          <button class="action-btn btn-red" onclick="sendBulkReminder()" id="bulkRemindBtn">📧 Nhắc tất cả</button>
-          <div class="btn-hint">💡 Kết quả dự kiến: Gửi email nhắc đến BP chưa đăng ký</div>
+          <h2>BO PHAN BAT BUOC</h2>
+          <button class="action-btn btn-red" onclick="sendBulkReminder()" id="bulkRemindBtn">Nhac tat ca</button>
+          <div class="btn-hint">Ket qua du kien: Gui email nhac den BP chua dang ky</div>
         </div>
         <div style="overflow-x:auto">
           <table class="dept-table">
@@ -1394,9 +1416,9 @@
       <!-- SCHEDULE PREVIEW -->
       <div class="schedule-section" id="scheduleSection" style="display:none">
         <div class="section-header">
-          <h2 id="scheduleTitle">LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI</h2>
+          <h2 id="scheduleTitle">LICH TRINH LAM VIEC BOD THU HAI</h2>
           <div>
-            <button class="action-btn btn-green" onclick="sendSchedule()" id="sendScheduleBtn">📨 Gửi lịch trình</button>
+            <button class="action-btn btn-green" onclick="sendSchedule()" id="sendScheduleBtn">Gui lich trinh</button>
           </div>
         </div>
         <div style="overflow-x:auto">
@@ -1412,7 +1434,7 @@
       <!-- DATA TABLE -->
       <div class="table-wrapper">
         <div class="table-header">
-          <h2>DANH SÁCH ĐĂNG KÝ</h2>
+          <h2>DANH SACH DANG KY</h2>
           <div id="filterBadge"></div>
         </div>
         <div class="table-scroll">
@@ -1447,35 +1469,36 @@
       </div>
     </div>
 
-    <!-- ======== JAVASCRIPT ======== -->
     <!-- ======== PREVIEW MODAL ======== -->
     <div class="modal-overlay" id="previewModal">
       <div class="modal-box">
         <div class="modal-header">
-          <h3 id="modalTitle">XEM TRƯỚC NỘI DUNG</h3>
+          <h3 id="modalTitle">XEM TRUOC NOI DUNG</h3>
           <button class="modal-close" onclick="closeModal()">&times;</button>
         </div>
         <div class="modal-body">
-          <label>Người nhận</label>
+          <label>Nguoi nhan</label>
           <input type="text" class="preview-field" id="modalTo" readonly>
-          <label>Tiêu đề</label>
+          <label>Tieu de</label>
           <input type="text" class="preview-field" id="modalSubject">
-          <label>Nội dung email</label>
+          <label>Noi dung email</label>
           <textarea class="preview-field" id="modalBody"></textarea>
         </div>
         <div class="modal-footer">
-          <button class="btn-modal btn-cancel" onclick="closeModal()">Hủy</button>
-          <button class="btn-modal btn-send" id="modalSendBtn" onclick="modalConfirmSend()">Gửi ngay</button>
+          <button class="btn-modal btn-cancel" onclick="closeModal()">Huy</button>
+          <button class="btn-modal btn-send" id="modalSendBtn" onclick="modalConfirmSend()">Gui ngay</button>
         </div>
       </div>
     </div>
 
+    <!-- ======== JAVASCRIPT ======== -->
     <script>
       // ========================================
       // STATE
       // ========================================
       var currentData = null;
       var activeFilter = "all";
+      var pendingModalCallback = null; // For modal confirm flow
 
       // ========================================
       // INITIALIZATION
@@ -1491,115 +1514,14 @@
         setDefaultDate();
         loadData();
         loadDeptStatus();
-        loadApprovalData();
+        loadApprovalTable();
       }
 
       // ========================================
-      // MODAL PREVIEW SYSTEM
+      // ADMIN PAGE NAVIGATION
       // ========================================
-      var modalCallback = null; // callback khi nhấn gửi
-
-      function openModal(title, to, subject, body, onSend) {
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalTo').value = to;
-        document.getElementById('modalSubject').value = subject;
-        document.getElementById('modalBody').value = body;
-        modalCallback = onSend;
-        document.getElementById('previewModal').classList.add('show');
-      }
-
-      function closeModal() {
-        document.getElementById('previewModal').classList.remove('show');
-        modalCallback = null;
-      }
-
-      function modalConfirmSend() {
-        if (modalCallback) {
-          var subject = document.getElementById('modalSubject').value;
-          var body = document.getElementById('modalBody').value;
-          modalCallback(subject, body);
-        }
-        closeModal();
-      }
-
-      // Close modal on overlay click
-      document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal-overlay')) closeModal();
-      });
-
-      // ========================================
-      // APPROVAL SECTION
-      // ========================================
-      var approvalItems = [];
-
-      function loadApprovalData() {
-        var tbody = document.getElementById('approvalTableBody');
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Đang tải...</td></tr>';
-        google.script.run
-          .withSuccessHandler(renderApprovalTable)
-          .withFailureHandler(function(e) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#ef4444">Lỗi: '+(e.message||'Không xác định')+'</td></tr>';
-          })
-          .getDashboardData(getSearchDateFromInput());
-      }
-
-      function renderApprovalTable(data) {
-        var tbody = document.getElementById('approvalTableBody');
-        if (!data || !data.items || data.items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Không có đăng ký nào</td></tr>';
-          return;
-        }
-        approvalItems = data.items;
-        var statusOpts = ['Chờ duyệt', 'Duyệt', 'Từ chối', 'Hoãn'];
-        var html = '';
-        for (var i = 0; i < data.items.length; i++) {
-          var it = data.items[i];
-          var selHtml = '<select class="approval-select" id="appr_status_'+i+'">';
-          for (var s = 0; s < statusOpts.length; s++) {
-            var sel = it.status === statusOpts[s] ? ' selected' : '';
-            selHtml += '<option value="'+statusOpts[s]+'"'+sel+'>'+statusOpts[s]+'</option>';
-          }
-          selHtml += '</select>';
-          var orderVal = it.thuTu || '';
-          html += '<tr>'
-            + '<td style="text-align:center;color:#94a3b8;font-weight:800">'+(i+1)+'</td>'
-            + '<td style="font-weight:700">'+escapeHtml(it.hoTen)+'</td>'
-            + '<td>'+escapeHtml(it.boPhan)+'</td>'
-            + '<td><div class="cell-content">'+escapeHtml(it.noiDung)+'</div></td>'
-            + '<td style="text-align:center">'+escapeHtml(it.thoiLuong)+'</td>'
-            + '<td>'+selHtml+'</td>'
-            + '<td><input type="number" class="approval-order" id="appr_order_'+i+'" value="'+orderVal+'" min="1" max="99" placeholder="—"></td>'
-            + '</tr>';
-        }
-        tbody.innerHTML = html;
-      }
-
-      function saveApprovals() {
-        var updates = [];
-        for (var i = 0; i < approvalItems.length; i++) {
-          var statusEl = document.getElementById('appr_status_'+i);
-          var orderEl = document.getElementById('appr_order_'+i);
-          if (!statusEl) continue;
-          updates.push({
-            row: approvalItems[i].row,
-            hoTen: approvalItems[i].hoTen,
-            status: statusEl.value,
-            thuTu: orderEl ? parseInt(orderEl.value) || 0 : 0
-          });
-        }
-        showMsg('approvalMsg', 'Đang lưu...', '');
-        google.script.run
-          .withSuccessHandler(function(r) {
-            showMsg('approvalMsg', r.msg || 'Đã lưu thành công!', r.success ? 'success' : 'error');
-            if (r.success) {
-              loadData(); // Refresh cards + table
-              loadApprovalData(); // Refresh approval table
-            }
-          })
-          .withFailureHandler(function(e) {
-            showMsg('approvalMsg', 'Lỗi: '+e.message, 'error');
-          })
-          .saveApprovalFromDashboard(JSON.stringify(updates));
+      function openAdminPage() {
+        google.script.run.showAdminPage();
       }
 
       // ========================================
@@ -1646,9 +1568,9 @@
       function renderProcess(data) {
         if (!data) return;
         processData = data;
-        document.getElementById('processTarget').textContent = '📅 ' + data.targetDate;
+        document.getElementById('processTarget').textContent = data.targetDate;
         var steps = document.querySelectorAll('.process-step');
-        var icons = ['📝','✅','📋','🏛️'];
+        var icons = ['1','2','3','4'];
         var doneIcon = '✔';
         for (var i = 0; i < steps.length; i++) {
           var s = data.steps[i];
@@ -1744,82 +1666,80 @@
       }
 
       function sendDeptReminder(name, email) {
-        var displayDate = getDisplayDate();
-        openModal(
-          'NHẮC NHỞ ĐĂNG KÝ — ' + name,
-          email,
-          '[BOD Meeting] Nhắc nhở đăng ký nội dung họp ' + displayDate,
-          'Kính gửi ' + name + ',\n\nĐây là nhắc nhở về việc đăng ký nội dung cho buổi làm việc BOD ngày ' + displayDate + '.\n\nVui lòng truy cập Google Form để đăng ký trước hạn.\n\nTrân trọng.',
-          function(subject, body) {
-            showMsg('deptMsg', 'Đang gửi...', '');
+        openPreviewModal({
+          title: 'XEM TRUOC EMAIL NHAC NHO',
+          to: email,
+          subject: 'Nhac nho dang ky bao cao BOD - ' + name,
+          body: 'Kinh gui ' + name + ',\n\nDay la email nhac nho dang ky bao cao cho buoi hop BOD ngay ' + getDisplayDate() + '.\n\nVui long truy cap Google Form de dang ky truoc deadline.\n\nTran trong.',
+          onSend: function(editedData) {
+            showMsg('deptMsg', 'Dang gui...', '');
             google.script.run
               .withSuccessHandler(function(r) {
                 showMsg('deptMsg', r.msg, r.success ? 'success' : 'error');
                 if (r.success) loadDeptStatus();
               })
-              .withFailureHandler(function(e) { showMsg('deptMsg', 'Lỗi: '+e.message, 'error'); })
-              .sendDeptReminderWeb(name, email, displayDate);
+              .withFailureHandler(function(e) { showMsg('deptMsg', 'Loi: '+e.message, 'error'); })
+              .sendDeptReminderWeb(name, email, getDisplayDate());
           }
-        );
+        });
       }
 
       function sendBulkReminder() {
-        var displayDate = getDisplayDate();
-        openModal(
-          'NHẮC NHỞ HÀNG LOẠT',
-          'Tất cả bộ phận chưa đăng ký',
-          '[BOD Meeting] Nhắc nhở đăng ký nội dung họp ' + displayDate,
-          'Kính gửi Trưởng bộ phận,\n\nĐây là nhắc nhở về việc đăng ký nội dung cho buổi làm việc BOD ngày ' + displayDate + '.\n\nVui lòng truy cập Google Form để đăng ký trước hạn. Email này sẽ CC anh Kha.\n\nTrân trọng.',
-          function(subject, body) {
-            showMsg('deptMsg', 'Đang gửi hàng loạt...', '');
-            showMsg('msg1', 'Đang gửi...', '');
+        openPreviewModal({
+          title: 'XEM TRUOC EMAIL NHAC NHO HANG LOAT',
+          to: 'Tat ca bo phan chua dang ky',
+          subject: 'Nhac nho dang ky bao cao BOD - ' + getDisplayDate(),
+          body: 'Kinh gui cac Bo phan,\n\nDay la email nhac nho dang ky noi dung bao cao cho buoi hop BOD ngay ' + getDisplayDate() + '.\n\nHien tai bo phan chua submit form dang ky. Vui long truy cap Form va hoan tat truoc deadline.\n\nEmail nay duoc gui tu dong, CC anh Kha. Khong thay doi du lieu.\n\nTran trong.',
+          onSend: function(editedData) {
+            showMsg('deptMsg', 'Dang gui hang loat...', '');
+            showMsg('msg1', 'Dang gui...', '');
             google.script.run
               .withSuccessHandler(function(r) {
-                var msg = 'Đã gửi: ' + r.sent + ' | Lỗi: ' + r.failed;
+                var msg = 'Da gui: ' + r.sent + ' | Loi: ' + r.failed;
                 if (r.details) msg += '\n' + r.details;
                 showMsg('deptMsg', msg, r.sent > 0 ? 'success' : 'error');
                 showMsg('msg1', msg, r.sent > 0 ? 'success' : 'error');
                 loadDeptStatus();
               })
               .withFailureHandler(function(e) {
-                showMsg('deptMsg', 'Lỗi: '+e.message, 'error');
-                showMsg('msg1', 'Lỗi: '+e.message, 'error');
+                showMsg('deptMsg', 'Loi: '+e.message, 'error');
+                showMsg('msg1', 'Loi: '+e.message, 'error');
               })
-              .sendBulkReminderWeb(getSelectedDate(), displayDate);
+              .sendBulkReminderWeb(getSelectedDate(), getDisplayDate());
           }
-        );
+        });
       }
 
       function sendApprovalReminder() {
-        openModal(
-          'NHẮC PHÊ DUYỆT',
-          'Ban Tổ Chức (BTC)',
-          '[BOD Meeting] Nhắc duyệt nội dung đăng ký',
-          'Kính gửi BTC,\n\nHiện còn nhiều nội dung đăng ký chưa được phê duyệt cho buổi làm việc BOD sắp tới.\n\nVui lòng vào Sheet để duyệt các nội dung còn chờ.\n\nTrân trọng.',
-          function(subject, body) {
-            showMsg('msg2', 'Đang gửi...', '');
+        openPreviewModal({
+          title: 'XEM TRUOC EMAIL NHAC PHE DUYET',
+          to: 'Ban To Chuc (BTC)',
+          subject: 'Nhac nho phe duyet noi dung bao cao BOD - ' + getDisplayDate(),
+          body: 'Kinh gui Ban To Chuc,\n\nHien co dang ky bao cao BOD dang cho phe duyet cho ngay ' + getDisplayDate() + '.\n\nVui long truy cap Dashboard de xu ly.\n\nKhong thay doi du lieu.\n\nTran trong.',
+          onSend: function(editedData) {
+            showMsg('msg2', 'Dang gui...', '');
             google.script.run
               .withSuccessHandler(function(r) { showMsg('msg2', r.msg, r.success ? 'success' : 'error'); })
-              .withFailureHandler(function(e) { showMsg('msg2', 'Lỗi: '+e.message, 'error'); })
+              .withFailureHandler(function(e) { showMsg('msg2', 'Loi: '+e.message, 'error'); })
               .sendApprovalReminderWeb(getSelectedDate(), getDisplayDate());
           }
-        );
+        });
       }
 
       function sendApprovalResults() {
-        openModal(
-          'GỬI KẾT QUẢ DUYỆT',
-          'Tất cả người đăng ký',
-          '[BOD Meeting] Kết quả phê duyệt nội dung',
-          'Kính gửi bạn,\n\nNội dung bạn đăng ký đã được phê duyệt.\n\n(Email này gửi tự động tới từng người đăng ký. Người đã nhận rồi sẽ KHÔNG bị gửi lại.)\n\nTrân trọng.',
-          function(subject, body) {
-            showMsg('msg2', 'Đang gửi kết quả duyệt...', '');
+        openPreviewModal({
+          title: 'XEM TRUOC EMAIL KET QUA PHE DUYET',
+          to: 'Tat ca nguoi dang ky',
+          subject: 'Ket qua phe duyet bao cao BOD - ' + getDisplayDate(),
+          body: 'Kinh gui Anh/Chi,\n\nDay la thong bao ket qua phe duyet noi dung bao cao BOD ngay ' + getDisplayDate() + '.\n\nKet qua: [Duyet / Tu choi / Hoan]\n\nNguoi da nhan email truoc do se KHONG bi gui lai. Tu danh dau "da gui" de chong trung.\n\nTran trong.',
+          onSend: function(editedData) {
+            showMsg('msg2', 'Dang gui ket qua duyet...', '');
             google.script.run
-              .withSuccessHandler(function(r) { showMsg('msg2', r||'Đã gửi!', 'success'); })
-              .withFailureHandler(function(e) { showMsg('msg2', 'Lỗi: '+e.message, 'error'); })
+              .withSuccessHandler(function(r) { showMsg('msg2', r||'Da gui!', 'success'); })
+              .withFailureHandler(function(e) { showMsg('msg2', 'Loi: '+e.message, 'error'); })
               .sendApprovalResultEmails();
           }
-        );
+        });
       }
 
       // ========================================
@@ -1844,7 +1764,7 @@
           var countdown = diffDays > 0 ? ' (còn lại ' + diffDays + ' ngày)' :
                           diffDays === 0 ? ' (HÔM NAY)' :
                           ' (đã qua ' + Math.abs(diffDays) + ' ngày)';
-          schedTitle.textContent = 'LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI ' + parts[2] + '/' + parts[1] + '/' + parts[0] + countdown;
+          schedTitle.textContent = 'LICH TRINH LAM VIEC BOD THU HAI ' + parts[2] + '/' + parts[1] + '/' + parts[0] + countdown;
         }
         
         google.script.run
@@ -1927,28 +1847,28 @@
       }
 
       function sendSchedule() {
-        openModal(
-          'GỬI LỊCH TRÌNH HỌP',
-          'Tất cả thành viên liên quan + CC anh Kha',
-          '[BOD Meeting] Lịch trình làm việc BOD',
-          'Kính gửi Anh/Chị,\n\nGửi đến Anh/Chị lịch trình làm viỆc BOD sắp tới.\n\n(Lịch trình chi tiết sẽ được gửi kèm.)\n\nĐiều này sẽ:\n• Tạo lịch trình trong Sheet\n• Gửi email lịch trình đến tất cả người liên quan\n• CC anh Kha\n\nTrân trọng.',
-          function(subject, body) {
+        openPreviewModal({
+          title: 'XEM TRUOC EMAIL LICH TRINH',
+          to: 'Tat ca thanh vien BOD',
+          subject: 'Lich trinh lam viec BOD - ' + getDisplayDate(),
+          body: 'Kinh gui Anh/Chi,\n\nGui Anh/Chi lich trinh lam viec BOD ngay ' + getDisplayDate() + '.\n\n(Bang lich trinh se duoc dinh kem trong email)\n\nTran trong.',
+          onSend: function(editedData) {
             var btn = document.getElementById('sendScheduleBtn');
-            btn.disabled = true; btn.textContent = 'Đang gửi...';
+            btn.disabled = true; btn.textContent = 'Dang gui...';
             google.script.run
               .withSuccessHandler(function(r) {
                 btn.disabled = false;
-                btn.textContent = '✔ Đã gửi!';
+                btn.textContent = 'Da gui!';
                 showMsg('msg3', r.msg, r.success ? 'success' : 'error');
               })
               .withFailureHandler(function(e) {
                 btn.disabled = false;
-                btn.textContent = 'Gửi lịch trình';
-                showMsg('msg3', 'Lỗi: '+e.message, 'error');
+                btn.textContent = 'Gui lich trinh';
+                showMsg('msg3', 'Loi: '+e.message, 'error');
               })
               .sendScheduleFromDashboard();
           }
-        );
+        });
       }
 
       // ========================================
@@ -1979,7 +1899,7 @@
         // Update cards title immediately
         var ct = document.getElementById('cardsTitle');
         if (displayDate && ct) {
-          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ — ' + displayDate.toUpperCase();
+          ct.textContent = 'THONG KE DANG KY — ' + displayDate.toUpperCase();
         }
 
         google.script.run
@@ -1988,6 +1908,7 @@
             activeFilter = "all";
             renderCards(data);
             renderTable(data.items);
+            renderApprovalTable(data.items);
             // Update cards wrapper title
             updateCardsTitle(data, displayDate);
           })
@@ -2006,9 +1927,9 @@
         var ct = document.getElementById('cardsTitle');
         if (!ct) return;
         if (displayDate) {
-          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ — ' + displayDate.toUpperCase();
+          ct.textContent = 'THONG KE DANG KY — ' + displayDate.toUpperCase();
         } else {
-          ct.textContent = 'THỐNG KÊ ĐĂNG KÝ';
+          ct.textContent = 'THONG KE DANG KY';
         }
       }
 
@@ -2128,9 +2049,22 @@
         }
 
         renderTable(filteredItems);
-        // Auto scroll đến bảng danh sách đăng ký
-        var tableWrap = document.querySelector('.table-wrapper');
-        if (tableWrap) tableWrap.scrollIntoView({behavior:'smooth', block:'start'});
+
+        // Auto scroll to relevant section
+        var scrollTargets = {
+          'all': 'tableBody',
+          'Duyệt': 'approvalSection',
+          'Chờ duyệt': 'approvalSection',
+          'Từ chối': 'tableBody',
+          'Hoãn': 'tableBody'
+        };
+        var targetId = scrollTargets[key] || 'tableBody';
+        var targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          setTimeout(function() {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
       }
 
       // ========================================
@@ -2235,6 +2169,99 @@
       // ========================================
       // START
       // ========================================
+      // ========================================
+      // MODAL PREVIEW FUNCTIONS
+      // ========================================
+      function openPreviewModal(opts) {
+        document.getElementById('modalTitle').textContent = opts.title || 'XEM TRUOC NOI DUNG';
+        document.getElementById('modalTo').value = opts.to || '';
+        document.getElementById('modalSubject').value = opts.subject || '';
+        document.getElementById('modalBody').value = opts.body || '';
+        pendingModalCallback = opts.onSend || null;
+        document.getElementById('previewModal').classList.add('show');
+      }
+      function closeModal() {
+        document.getElementById('previewModal').classList.remove('show');
+        pendingModalCallback = null;
+      }
+      function modalConfirmSend() {
+        var editedData = {
+          to: document.getElementById('modalTo').value,
+          subject: document.getElementById('modalSubject').value,
+          body: document.getElementById('modalBody').value
+        };
+        closeModal();
+        if (pendingModalCallback) pendingModalCallback(editedData);
+      }
+
+      // ========================================
+      // APPROVAL TABLE FUNCTIONS
+      // ========================================
+      function loadApprovalTable() {
+        if (!currentData || !currentData.items) {
+          // Retry after data loads
+          setTimeout(function() {
+            if (currentData && currentData.items) renderApprovalTable(currentData.items);
+          }, 2000);
+          return;
+        }
+        renderApprovalTable(currentData.items);
+      }
+      function renderApprovalTable(items) {
+        var tbody = document.getElementById('approvalTableBody');
+        if (!items || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Khong co dang ky nao</td></tr>';
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < items.length; i++) {
+          var it = items[i];
+          var statusVal = it.status || 'Cho duyet';
+          html += '<tr data-row="' + (it.row || '') + '">'
+            + '<td style="text-align:center">' + (i+1) + '</td>'
+            + '<td><strong>' + escapeHtml(it.hoTen) + '</strong></td>'
+            + '<td>' + escapeHtml(it.boPhan) + '</td>'
+            + '<td><div class="cell-content">' + escapeHtml(it.noiDung) + '</div></td>'
+            + '<td style="text-align:center">' + escapeHtml(it.thoiLuong) + '</td>'
+            + '<td><select class="approval-select" data-index="' + i + '" title="Trang thai phe duyet">'
+            + '<option value="Chờ duyệt"' + (statusVal === 'Chờ duyệt' ? ' selected' : '') + '>Cho duyet</option>'
+            + '<option value="Duyệt"' + (statusVal === 'Duyệt' ? ' selected' : '') + '>Duyet</option>'
+            + '<option value="Từ chối"' + (statusVal === 'Từ chối' ? ' selected' : '') + '>Tu choi</option>'
+            + '<option value="Hoãn"' + (statusVal === 'Hoãn' ? ' selected' : '') + '>Hoan</option>'
+            + '</select></td>'
+            + '<td><input type="number" class="approval-order" value="' + (it.thuTu || '') + '" min="1" max="99" data-index="' + i + '" placeholder="-" title="Thu tu trinh bay"></td>'
+            + '</tr>';
+        }
+        tbody.innerHTML = html;
+      }
+      function saveApprovals() {
+        var selects = document.querySelectorAll('.approval-select');
+        var orders = document.querySelectorAll('.approval-order');
+        var updates = [];
+        for (var i = 0; i < selects.length; i++) {
+          var idx = parseInt(selects[i].getAttribute('data-index'));
+          var item = currentData.items[idx];
+          updates.push({
+            row: item.row || (idx + 2),
+            status: selects[i].value,
+            thuTu: orders[i] ? (parseInt(orders[i].value) || 0) : 0
+          });
+        }
+        showMsg('approvalMsg', 'Dang luu...', '');
+        google.script.run
+          .withSuccessHandler(function(r) {
+            showMsg('approvalMsg', r.msg || 'Da luu!', r.success ? 'success' : 'error');
+            if (r.success) { loadData(); loadDeptStatus(); }
+          })
+          .withFailureHandler(function(e) {
+            showMsg('approvalMsg', 'Loi: ' + e.message, 'error');
+          })
+          .saveApprovalChanges(updates);
+      }
+
+      // Re-render approval when data loads
+      var _origLoadDataSuccess = null;
+
       init();
     </script>
   </body>
