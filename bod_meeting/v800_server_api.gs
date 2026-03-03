@@ -23,6 +23,39 @@ function showDashboardDialog() {
   SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard V8.0");
 }
 
+// ===== HELPER: NAME → EMAIL (tra từ HR sheet + responses) =====
+function loadNameToEmailMap_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var nameToEmail = {};
+
+  // 1. Từ bảng nhân sự (HR sheet): col NAME=3, col EMAIL=6 (1-based)
+  var hrSheet = ss.getSheetByName(CONFIG.SHEET_HR);
+  if (hrSheet && hrSheet.getLastRow() >= 2) {
+    var lastRow = hrSheet.getLastRow();
+    var names  = hrSheet.getRange(2, CONFIG.HR_COL_NAME,  lastRow - 1, 1).getValues();
+    var emails = hrSheet.getRange(2, CONFIG.HR_COL_EMAIL, lastRow - 1, 1).getValues();
+    for (var i = 0; i < names.length; i++) {
+      var n = (names[i][0]  || '').toString().trim();
+      var e = (emails[i][0] || '').toString().trim().toLowerCase();
+      if (n && e) nameToEmail[n] = e;
+    }
+  }
+
+  // 2. Từ bảng đăng ký: hoTen (col I) → email (col J) — đầy đủ hơn
+  var respSheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  if (respSheet && respSheet.getLastRow() >= 2) {
+    var cols = CONFIG.COLUMN_MAP;
+    var data = respSheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      var n = (data[i][cols.hoTen] || '').toString().trim();
+      var e = (data[i][cols.email] || '').toString().trim().toLowerCase();
+      if (n && e && !nameToEmail[n]) nameToEmail[n] = e;
+    }
+  }
+
+  return nameToEmail;
+}
+
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
 function getAvailableDates() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -320,26 +353,15 @@ function getDeptRegistrationStatus(searchDate) {
 }
 
 // ===== API: GUI NHAC NHO 1 BO PHAN =====
-function sendDeptReminderWeb(deptName, deptEmail, displayDate) {
+function sendDeptReminderWeb(deptName, deptEmail, displayDate, contactName) {
   if (!deptEmail || !isValidEmail(deptEmail))
     return { success: false, msg: "Email không hợp lệ: " + deptEmail };
   try {
-    var subject = "[NHẮC NHỞ] Đăng ký BOD - " + displayDate;
-    var body =
-      "Kính gửi Anh/Chị (" +
-      deptName +
-      "),\n\n" +
-      "Bộ phận " +
-      deptName +
-      " CHƯA ĐĂNG KÝ báo cáo cho cuộc họp BOD.\n" +
-      "📅 Ngày họp: " +
-      displayDate +
-      "\n" +
-      "⏰ 08:30\n\n" +
-      "Vui lòng truy cập Form đăng ký và submit nội dung sớm nhất.\n\n" +
-      "Trân trọng,\nBan Thư ký Meeting BOD";
-    GmailApp.sendEmail(deptEmail, subject, body, {
-      name: "BTC Meeting BOD",
+    var subject = "BOD MEETING — NHẮC NHỞ ĐĂNG KÝ BÁO CÁO — " + displayDate;
+    var htmlBody = buildReminderEmail(deptName, contactName || "", displayDate, "");
+    GmailApp.sendEmail(deptEmail, subject, "", {
+      name: CONFIG.EMAIL_SENDER_NAME,
+      htmlBody: htmlBody,
       cc: "hoangkha@esuhai.com",
     });
     return {
@@ -359,7 +381,7 @@ function sendBulkReminderWeb(searchDate, displayDate) {
     msgs = [];
   for (var i = 0; i < depts.length; i++) {
     if (depts[i].status === "missing" && depts[i].email) {
-      var r = sendDeptReminderWeb(depts[i].name, depts[i].email, displayDate);
+      var r = sendDeptReminderWeb(depts[i].name, depts[i].email, displayDate, depts[i].contact);
       if (r.success) {
         sent++;
         msgs.push("✔ " + depts[i].name);
@@ -380,26 +402,11 @@ function sendApprovalReminderWeb(searchDate, displayDate) {
   if (stats.pending === 0)
     return { success: false, msg: "Không có đăng ký nào chờ duyệt!" };
   try {
-    var subject = "[NHẮC NHỞ] Phê duyệt đăng ký BOD - " + displayDate;
-    var body =
-      "Kính gửi Ban Tổ Chức,\n\n" +
-      "Hiện còn " +
-      stats.pending +
-      " đăng ký CHƯA ĐƯỢC DUYỆT cho cuộc họp:\n" +
-      "📅 " +
-      displayDate +
-      "\n\n" +
-      "📊 Tổng: " +
-      stats.total +
-      " | Duyệt: " +
-      stats.approved +
-      " | Chờ: " +
-      stats.pending +
-      "\n\n" +
-      "Vui lòng mở Sheet và duyệt các nội dung.\n\n" +
-      "Trân trọng,\nHệ thống BOD Dashboard";
-    GmailApp.sendEmail(btcEmails.all.join(","), subject, body, {
-      name: "BTC Meeting BOD",
+    var subject = "BOD MEETING — NHẮC PHÊ DUYỆT NỘI DUNG — " + displayDate;
+    var htmlBody = buildApprovalReminderEmail(displayDate, stats.pending);
+    GmailApp.sendEmail(btcEmails.all.join(","), subject, "", {
+      name: CONFIG.EMAIL_SENDER_NAME,
+      htmlBody: htmlBody,
     });
     return {
       success: true,
@@ -445,8 +452,14 @@ function getSchedulePreview(searchDate) {
             tlTB: (scheduleSheet.getRange(i, 5).getValue() || "").toString(),
             tlCD: (scheduleSheet.getRange(i, 6).getValue() || "").toString(),
             related: (scheduleSheet.getRange(i, 7).getValue() || "").toString(),
+            email: "",
           });
         }
+      }
+      // Bổ sung email bằng cách tra tên người trình bày
+      var nameToEmail = loadNameToEmailMap_();
+      for (var j = 0; j < result.items.length; j++) {
+        result.items[j].email = nameToEmail[result.items[j].presenter] || "";
       }
       return result;
     }
@@ -477,6 +490,7 @@ function getSchedulePreview(searchDate) {
       tlTB: tlTB,
       tlCD: tlCD,
       related: tenLQ || "",
+      email: (row[cols.email] || "").toString().trim(),
     });
   }
   items.sort(function (a, b) {

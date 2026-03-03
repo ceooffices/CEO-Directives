@@ -834,53 +834,41 @@ function buildEmailNewRegistration(data) {
 
 function buildEmailApproved(data) {
   return {
-    subject: "[Kết quả BOD] ✅ " + data.noiDung.substring(0, 30),
+    subject: "BOD MEETING — KẾT QUẢ PHÊ DUYỆT — ĐÃ DUYỆT: " + data.noiDung.substring(0, 40),
     body:
-      "Kính gửi " +
-      data.hoTen +
-      ",\n\n────────────────────────────────────\nNội dung: " +
-      data.noiDung +
-      "\nNgày họp: " +
-      data.ngayHop +
-      "\nBộ phận: " +
-      data.boPhan +
-      "\n────────────────────────────────────\n\nKẾT QUẢ: ✅ ĐÃ ĐƯỢC DUYỆT / 承認済み\n\nVui lòng chuẩn bị nội dung trình bày.\nLịch trình chính thức sẽ được gửi trước ngày họp.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
+      "Kính gửi " + data.hoTen + ",\n\n" +
+      "Nội dung: " + data.noiDung + "\n" +
+      "Ngày họp: " + data.ngayHop + "\n" +
+      "Kết quả: ĐÃ DUYỆT\n\n" +
+      "Vui lòng chuẩn bị nội dung trình bày.\n\nTrân trọng,\nBTC Meeting BOD",
+    htmlBody: buildApprovalResultEmail(data.hoTen, data.ngayHop, "Duyệt", data.noiDung, data.ghiChu),
   };
 }
 
 function buildEmailRejected(data) {
   return {
-    subject: "[Kết quả BOD] ❌ " + data.noiDung.substring(0, 30),
+    subject: "BOD MEETING — KẾT QUẢ PHÊ DUYỆT — TỪ CHỐI: " + data.noiDung.substring(0, 40),
     body:
-      "Kính gửi " +
-      data.hoTen +
-      ",\n\n────────────────────────────────────\nNội dung: " +
-      data.noiDung +
-      "\nNgày họp: " +
-      data.ngayHop +
-      "\nBộ phận: " +
-      data.boPhan +
-      "\n────────────────────────────────────\n\nKẾT QUẢ: ❌ CHƯA ĐƯỢC DUYỆT\nLý do: " +
-      (data.ghiChu || "(Không có ghi chú)") +
-      "\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
+      "Kính gửi " + data.hoTen + ",\n\n" +
+      "Nội dung: " + data.noiDung + "\n" +
+      "Ngày họp: " + data.ngayHop + "\n" +
+      "Kết quả: TỪ CHỐI\n" +
+      "Lý do: " + (data.ghiChu || "(Không có ghi chú)") + "\n\nTrân trọng,\nBTC Meeting BOD",
+    htmlBody: buildApprovalResultEmail(data.hoTen, data.ngayHop, "Từ chối", data.noiDung, data.ghiChu),
   };
 }
 
 function buildEmailPostponed(data) {
   return {
-    subject: "[Kết quả BOD] ⏸️ " + data.noiDung.substring(0, 30),
+    subject: "BOD MEETING — KẾT QUẢ PHÊ DUYỆT — HOÃN LẠI: " + data.noiDung.substring(0, 40),
     body:
-      "Kính gửi " +
-      data.hoTen +
-      ",\n\n────────────────────────────────────\nNội dung: " +
-      data.noiDung +
-      "\nNgày họp: " +
-      data.ngayHop +
-      "\nBộ phận: " +
-      data.boPhan +
-      "\n────────────────────────────────────\n\nKẾT QUẢ: ⏸️ TẠM HOÃN\nLý do: " +
-      (data.ghiChu || "(Không có ghi chú)") +
-      "\n\nNội dung sẽ được xem xét cho kỳ họp tiếp theo.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
+      "Kính gửi " + data.hoTen + ",\n\n" +
+      "Nội dung: " + data.noiDung + "\n" +
+      "Ngày họp: " + data.ngayHop + "\n" +
+      "Kết quả: HOÃN LẠI\n" +
+      "Lý do: " + (data.ghiChu || "(Không có ghi chú)") +
+      "\n\nNội dung sẽ được xem xét cho kỳ họp tiếp theo.\n\nTrân trọng,\nBTC Meeting BOD",
+    htmlBody: buildApprovalResultEmail(data.hoTen, data.ngayHop, "Hoãn", data.noiDung, data.ghiChu),
   };
 }
 
@@ -889,19 +877,16 @@ function buildEmailSchedule(data) {
     ? "Link Teams: " + data.teamsLink + "\n"
     : "";
   return {
-    subject: "[Lịch trình BOD / BODスケジュール] " + data.ngayHop,
+    subject: "BOD MEETING — LỊCH TRÌNH LÀM VIỆC — " + data.ngayHop,
     body:
-      "Kính gửi Quý Anh/Chị,\n\nLịch trình họp Ban Quản Trị đã được xác nhận.\n\n════════════════════════════════════\nNgày họp: " +
-      data.ngayHop +
-      "\nGiờ họp: " +
-      data.gioHop +
-      "\nĐịa điểm: " +
-      data.diaDiem +
-      "\n" +
+      "Kính gửi Quý Anh/Chị,\n\nLịch trình họp BOD đã được xác nhận.\n\n" +
+      "Ngày họp: " + data.ngayHop + "\n" +
+      "Giờ họp: " + data.gioHop + "\n" +
+      "Địa điểm: " + data.diaDiem + "\n" +
       teamsInfo +
-      "════════════════════════════════════\n\nNỘI DUNG:\n────────────────────────────────────\n" +
-      data.agendaList +
-      "────────────────────────────────────\n\nChi tiết xem file đính kèm.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
+      "\nNỘI DUNG:\n" + data.agendaList +
+      "\nChi tiết xem file đính kèm.\n\nTrân trọng,\nBTC Meeting BOD — ESUHAI GROUP",
+    htmlBody: buildScheduleEmail(data.ngayHop, data.items || []),
   };
 }
 
@@ -909,13 +894,15 @@ function sendEmail(emailData) {
   try {
     if (!emailData.to || !isValidEmail(emailData.to.split(",")[0]))
       return false;
-    MailApp.sendEmail({
+    const opts = {
       to: emailData.to,
       cc: emailData.cc || "",
       subject: emailData.subject,
       body: emailData.body,
       name: CONFIG.EMAIL_SENDER_NAME,
-    });
+    };
+    if (emailData.htmlBody) opts.htmlBody = emailData.htmlBody;
+    MailApp.sendEmail(opts);
     return true;
   } catch (e) {
     Logger.log("Email error: " + e.message);
@@ -925,14 +912,16 @@ function sendEmail(emailData) {
 
 function sendEmailWithAttachment(emailData, pdfBlob) {
   try {
-    MailApp.sendEmail({
+    const opts = {
       to: emailData.to,
       cc: emailData.cc || "",
       subject: emailData.subject,
       body: emailData.body,
       attachments: [pdfBlob],
       name: CONFIG.EMAIL_SENDER_NAME,
-    });
+    };
+    if (emailData.htmlBody) opts.htmlBody = emailData.htmlBody;
+    MailApp.sendEmail(opts);
     return true;
   } catch (e) {
     Logger.log("Email attachment error: " + e.message);
@@ -1330,18 +1319,19 @@ function sendScheduleEmail() {
   const searchDate = extractSearchDate(ngayHopRaw);
   const meetingCfg = getMeetingConfig();
   let agendaList = "";
+  const schedItems = [];
   for (let i = CONFIG.AGENDA_START_ROW; i <= CONFIG.AGENDA_END_ROW; i++) {
     const content = scheduleSheet.getRange(i, 3).getValue();
     if (content && content.toString().trim()) {
+      const stt       = scheduleSheet.getRange(i, 1).getValue();
+      const timeVal   = scheduleSheet.getRange(i, 2).getValue();
+      const presenter = (scheduleSheet.getRange(i, 4).getValue() || "").toString();
+      const tlTB      = (scheduleSheet.getRange(i, 5).getValue() || "").toString();
+      const tlCD      = (scheduleSheet.getRange(i, 6).getValue() || "").toString();
       agendaList +=
-        scheduleSheet.getRange(i, 1).getValue() +
-        ". " +
-        formatTime(scheduleSheet.getRange(i, 2).getValue()) +
-        "  " +
-        content +
-        "\n   Trình bày: " +
-        scheduleSheet.getRange(i, 4).getValue() +
-        "\n\n";
+        stt + ". " + formatTime(timeVal) + "  " + content +
+        "\n   Trình bày: " + presenter + "\n\n";
+      schedItems.push({ stt: stt, time: formatTime(timeVal), content: content.toString(), presenter: presenter, tlTB: tlTB, tlCD: tlCD });
     }
   }
   const cols = CONFIG.COLUMN_MAP;
@@ -1380,6 +1370,7 @@ function sendScheduleEmail() {
     diaDiem: meetingCfg.diaDiem,
     teamsLink: meetingCfg.teamsLink,
     agendaList: agendaList || "(Chưa có nội dung)\n",
+    items: schedItems,
   });
   sendEmailWithAttachment(
     {
