@@ -1,0 +1,14 @@
+# Backup / reference files — không push lên cloud
+Code_v782_backup.gs
+v800_server_api.gs
+v810_admin_api.gs
+Ma_v800_complete.gs
+Ma_v800_part1.gs
+Ma_v800_part2.gs
+Ma_v800_part3.gs
+
+# Docs & scripts phụ
+*.txt
+*.md
+*.py
+CORE___RULES.md

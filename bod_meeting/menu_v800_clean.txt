@@ -1,0 +1,35 @@
+// =============================================================================
+// MENU V8.0 - CLEAN (thay thế onOpen cũ)
+// =============================================================================
+
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('🔧 BOD Tools')
+    .addItem('📊 Dashboard (Sheets)', 'goToDashboard')
+    .addItem('🌐 Dashboard (Web)', 'showDashboardDialog')
+    .addItem('🔄 Refresh Dashboard', 'refreshDashboard')
+    .addSeparator()
+    .addItem('📋 Tạo Lịch trình', 'generateSchedule')
+    .addItem('🖨️ Format in ấn', 'formatScheduleForPrint')
+    .addSeparator()
+    .addItem('📬 Gửi kết quả duyệt', 'sendApprovalResults')
+    .addItem('✔︎ XÁC NHẬN & GỬI LỊCH TRÌNH', 'secretaryApproveV78')
+    .addSeparator()
+    .addItem('🔄 Reset gửi email', 'resetEmailSentStatus')
+    .addItem('👥 Cập nhật Tên liên quan', 'updateAllRelatedNames')
+    .addItem('🔍 Kiểm tra Email', 'checkInvalidEmails')
+    .addToUi();
+
+  try { highlightUpcomingWeekDashboard(); } catch (e) {}
+}
+
+// =============================================================================
+// XÓA CÁC FUNCTION SAU (lỗi thời / chạy 1 lần):
+// =============================================================================
+// 1. setupColumnQ           - đã setup xong, không cần nữa
+// 2. setupNewColumns         - đã setup xong, không cần nữa
+// 3. fillDefaultChiDaoTime   - auto fill khi form submit rồi
+// 4. repairDashboardFormulas  - thay bằng refreshDashboard
+// 5. debugFormColumns         - dev tool, không cần ở production
+// 6. addRefreshDashboardToMenu - meta function vô dụng
+// 7. updateScheduleSummary    - generateSchedule đã tính sẵn

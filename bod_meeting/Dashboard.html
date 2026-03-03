@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BOD Meeting Dashboard</title>
+    <title>BTC Meeting BOD — Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,8 +41,8 @@
         --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
         --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.12);
-        --radius: 16px;
-        --radius-sm: 10px;
+        --radius: 20px;
+        --radius-sm: 14px;
 
         --c-total: #3b82f6;
         --c-approved: #10b981;
@@ -82,6 +82,7 @@
         top: 0;
         z-index: 100;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        border-radius: 0 0 24px 24px;
       }
       .header-left {
         display: flex;
@@ -90,16 +91,12 @@
         margin-right: auto;
       }
 
-      .header-logo {
-        width: 44px;
-        height: 44px;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        backdrop-filter: blur(10px);
+      .date-picker-label {
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.7;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
       }
 
       .header h1 {
@@ -121,7 +118,7 @@
         font-weight: 700;
         padding: 12px 20px;
         border: 2px solid rgba(255, 255, 255, 0.25);
-        border-radius: 12px;
+        border-radius: var(--radius-sm);
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
         cursor: pointer;
@@ -1210,7 +1207,7 @@
         width: 50px;
         padding: 6px 8px;
         border: 1.5px solid var(--border);
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
         font-size: 14px;
         font-weight: 700;
         text-align: center;
@@ -1218,26 +1215,19 @@
       }
       .approval-order:focus { border-color: #2563eb; outline: none; }
 
-      /* ============================================ */
-      /* ADMIN BUTTON                                  */
-      /* ============================================ */
-      .admin-btn {
-        padding: 10px 18px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.1);
-        color: #fff;
-        font-family: var(--font);
-        font-size: 13px;
-        font-weight: 700;
+      /* TABLE HELPER CLASSES */
+      .th-stt { width: 60px; text-align: center; }
+      .th-center { text-align: center; }
+
+      /* FOOTER GEAR */
+      .footer-gear {
+        float: right;
         cursor: pointer;
-        transition: all 0.2s;
-        backdrop-filter: blur(10px);
+        font-size: 20px;
+        opacity: 0.5;
+        transition: opacity 0.2s;
       }
-      .admin-btn:hover {
-        background: rgba(255,255,255,0.2);
-        border-color: rgba(255,255,255,0.5);
-      }
+      .footer-gear:hover { opacity: 1; }
     </style>
   </head>
 
@@ -1245,18 +1235,17 @@
     <!-- ======== HEADER ======== -->
     <header class="header">
       <div class="header-left">
-        <div class="header-logo">BOD</div>
         <div>
-          <h1>BOD Meeting Dashboard</h1>
+          <h1>BTC MEETING BOD</h1>
           <div class="header-sub">
-            ESUHAI GROUP — Hệ thống quản lý đăng ký họp BOD
+            Quản lý quy trình tiếp nhận & đăng ký nội dung báo cáo
           </div>
         </div>
       </div>
       <div class="date-picker">
-        <input type="date" id="dateInput" onchange="onDateChange()" title="Chọn ngày họp">
+        <div class="date-picker-label">Chọn ngày báo cáo</div>
+        <input type="date" id="dateInput" onchange="onDateChange()" title="Chọn ngày báo cáo">
       </div>
-      <button class="admin-btn" onclick="openAdminPage()" title="Mở trang quản trị">QUAN TRI</button>
     </header>
 
     <!-- ======== MAIN CONTENT ======== -->
@@ -1371,28 +1360,6 @@
         </div>
       </div>
 
-      <!-- APPROVAL SECTION -->
-      <div class="approval-section" id="approvalSection">
-        <div class="section-header">
-          <h2>PHE DUYET NOI DUNG</h2>
-          <div>
-            <button class="action-btn btn-green" onclick="saveApprovals()">Luu phe duyet</button>
-          </div>
-        </div>
-        <div class="btn-hint" style="padding:0 28px 8px">Chon trang thai va thu tu cho tung dang ky, sau do nhan "Luu phe duyet"</div>
-        <div style="overflow-x:auto">
-          <table class="approval-table">
-            <thead><tr>
-              <th>STT</th><th>Ho ten</th><th>Bo phan</th><th>Noi dung</th><th>TL</th><th>Trang thai</th><th>Thu tu</th>
-            </tr></thead>
-            <tbody id="approvalTableBody">
-              <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Dang tai...</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="action-msg" id="approvalMsg" style="margin:12px 20px"></div>
-      </div>
-
       <!-- DEPT STATUS -->
       <div class="dept-section" id="deptSection">
         <div class="section-header">
@@ -1431,23 +1398,26 @@
         </div>
       </div>
 
-      <!-- DATA TABLE -->
+      <!-- DATA TABLE (gộp phê duyệt) -->
       <div class="table-wrapper">
         <div class="table-header">
           <h2>DANH SACH DANG KY</h2>
-          <div id="filterBadge"></div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div id="filterBadge"></div>
+            <button class="action-btn btn-green" onclick="saveApprovals()" title="Lưu thay đổi trạng thái phê duyệt">Lưu phê duyệt</button>
+          </div>
         </div>
         <div class="table-scroll">
           <table>
             <thead>
               <tr>
-                <th style="width: 60px; text-align: center">STT</th>
+                <th class="th-stt">STT</th>
                 <th>Họ tên</th>
                 <th>Bộ phận</th>
                 <th>Nội dung báo cáo</th>
-                <th style="text-align: center">T.Lượng</th>
-                <th>Trạng thái</th>
-                <th>Email</th>
+                <th class="th-center">T.Lượng</th>
+                <th class="th-center">Phê duyệt</th>
+                <th class="th-center">Thứ tự</th>
               </tr>
             </thead>
             <tbody id="tableBody">
@@ -1462,10 +1432,12 @@
             </tbody>
           </table>
         </div>
+        <div class="action-msg" id="approvalMsg"></div>
       </div>
 
       <div class="footer">
-        BOD Registration System V8.0 — ESUHAI GROUP © 2026
+        BOD Registration System V8.2 — ESUHAI GROUP © 2026
+        <span class="footer-gear" onclick="openAdminPage()" title="Trang quản trị">⚙</span>
       </div>
     </div>
 
@@ -1908,7 +1880,6 @@
             activeFilter = "all";
             renderCards(data);
             renderTable(data.items);
-            renderApprovalTable(data.items);
             // Update cards wrapper title
             updateCardsTitle(data, displayDate);
           })
@@ -2053,8 +2024,8 @@
         // Auto scroll to relevant section
         var scrollTargets = {
           'all': 'tableBody',
-          'Duyệt': 'approvalSection',
-          'Chờ duyệt': 'approvalSection',
+          'Duyệt': 'tableBody',
+          'Chờ duyệt': 'tableBody',
           'Từ chối': 'tableBody',
           'Hoãn': 'tableBody'
         };
@@ -2076,7 +2047,7 @@
         if (!items || items.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="7"><div class="empty-state">' +
-            '<div class="empty-icon">📭</div>' +
+            '<div class="empty-icon">--</div>' +
             "<p>Không có đăng ký nào" +
             (activeFilter !== "all"
               ? ' cho trạng thái "' + activeFilter + '"'
@@ -2085,60 +2056,32 @@
           return;
         }
 
-        var statusClassMap = {
-          Duyệt: "status-approved",
-          "Từ chối": "status-rejected",
-          Hoãn: "status-postponed",
-          "Chờ duyệt": "status-pending",
-        };
-
-        var statusIconMap = {
-          Duyệt: "✅",
-          "Từ chối": "❌",
-          Hoãn: "⏸️",
-          "Chờ duyệt": "⏳",
-        };
+        var statusOptions = ['Chờ duyệt', 'Duyệt', 'Từ chối', 'Hoãn'];
 
         tbody.innerHTML = items
           .map(function (item, index) {
-            var statusClass = statusClassMap[item.status] || "status-pending";
-            var statusIcon = statusIconMap[item.status] || "⏳";
-            var emailClass = item.daGuiEmail ? "email-sent" : "email-not-sent";
-            var emailIcon = item.daGuiEmail ? "✔︎" : "○";
-            var emailText = item.daGuiEmail ? "Đã gửi" : "Chưa gửi";
+            // Build select options
+            var selectHtml = '<select class="approval-select" data-row="' + item.row + '" title="Trạng thái phê duyệt">';
+            for (var s = 0; s < statusOptions.length; s++) {
+              var selected = (item.status === statusOptions[s]) ? ' selected' : '';
+              selectHtml += '<option value="' + statusOptions[s] + '"' + selected + '>' + statusOptions[s] + '</option>';
+            }
+            selectHtml += '</select>';
+
+            // Order input
+            var orderVal = (item.thuTu && item.thuTu > 0) ? item.thuTu : '';
+            var orderHtml = '<input type="number" class="approval-order" data-row="' + item.row + '" value="' + orderVal + '" min="1" max="99" placeholder="-" title="Thứ tự trình bày">';
 
             return (
               '<tr class="row-highlight">' +
-              '<td style="font-weight:800;text-align:center;color:#94A3B8;font-size:15px">' +
-              (index + 1) +
-              "</td>" +
-              '<td style="font-weight:700">' +
-              escapeHtml(item.hoTen) +
-              "</td>" +
-              '<td><span style="font-weight:700;color:var(--c-total)">' +
-              escapeHtml(item.boPhan) +
-              "</span></td>" +
-              '<td><div class="cell-content">' +
-              escapeHtml(item.noiDung) +
-              "</div></td>" +
-              '<td style="text-align:center;font-weight:700">' +
-              escapeHtml(item.thoiLuong) +
-              "</td>" +
-              '<td><span class="status-badge ' +
-              statusClass +
-              '">' +
-              statusIcon +
-              " " +
-              item.status +
-              "</span></td>" +
-              '<td><span class="email-badge ' +
-              emailClass +
-              '">' +
-              emailIcon +
-              " " +
-              emailText +
-              "</span></td>" +
-              "</tr>"
+              '<td class="th-stt">' + (index + 1) + '</td>' +
+              '<td style="font-weight:700">' + escapeHtml(item.hoTen) + '</td>' +
+              '<td><span style="font-weight:700;color:var(--c-total)">' + escapeHtml(item.boPhan) + '</span></td>' +
+              '<td><div class="cell-content">' + escapeHtml(item.noiDung) + '</div></td>' +
+              '<td class="th-center" style="font-weight:700">' + escapeHtml(item.thoiLuong) + '</td>' +
+              '<td class="th-center">' + selectHtml + '</td>' +
+              '<td class="th-center">' + orderHtml + '</td>' +
+              '</tr>'
             );
           })
           .join("");
@@ -2205,62 +2148,37 @@
           }, 2000);
           return;
         }
-        renderApprovalTable(currentData.items);
+        // renderApprovalTable merged into renderTable — no separate table
       }
-      function renderApprovalTable(items) {
-        var tbody = document.getElementById('approvalTableBody');
-        if (!items || items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8">Khong co dang ky nao</td></tr>';
-          return;
-        }
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-          var it = items[i];
-          var statusVal = it.status || 'Cho duyet';
-          html += '<tr data-row="' + (it.row || '') + '">'
-            + '<td style="text-align:center">' + (i+1) + '</td>'
-            + '<td><strong>' + escapeHtml(it.hoTen) + '</strong></td>'
-            + '<td>' + escapeHtml(it.boPhan) + '</td>'
-            + '<td><div class="cell-content">' + escapeHtml(it.noiDung) + '</div></td>'
-            + '<td style="text-align:center">' + escapeHtml(it.thoiLuong) + '</td>'
-            + '<td><select class="approval-select" data-index="' + i + '" title="Trang thai phe duyet">'
-            + '<option value="Chờ duyệt"' + (statusVal === 'Chờ duyệt' ? ' selected' : '') + '>Cho duyet</option>'
-            + '<option value="Duyệt"' + (statusVal === 'Duyệt' ? ' selected' : '') + '>Duyet</option>'
-            + '<option value="Từ chối"' + (statusVal === 'Từ chối' ? ' selected' : '') + '>Tu choi</option>'
-            + '<option value="Hoãn"' + (statusVal === 'Hoãn' ? ' selected' : '') + '>Hoan</option>'
-            + '</select></td>'
-            + '<td><input type="number" class="approval-order" value="' + (it.thuTu || '') + '" min="1" max="99" data-index="' + i + '" placeholder="-" title="Thu tu trinh bay"></td>'
-            + '</tr>';
-        }
-        tbody.innerHTML = html;
-      }
+
       function saveApprovals() {
-        var selects = document.querySelectorAll('.approval-select');
-        var orders = document.querySelectorAll('.approval-order');
+        var selects = document.querySelectorAll('#tableBody .approval-select');
+        var orders = document.querySelectorAll('#tableBody .approval-order');
         var updates = [];
         for (var i = 0; i < selects.length; i++) {
-          var idx = parseInt(selects[i].getAttribute('data-index'));
-          var item = currentData.items[idx];
+          var rowNum = parseInt(selects[i].getAttribute('data-row'));
+          if (!rowNum) continue;
           updates.push({
-            row: item.row || (idx + 2),
+            row: rowNum,
             status: selects[i].value,
             thuTu: orders[i] ? (parseInt(orders[i].value) || 0) : 0
           });
         }
-        showMsg('approvalMsg', 'Dang luu...', '');
+        if (updates.length === 0) {
+          showMsg('approvalMsg', 'Không có dữ liệu để lưu', 'error');
+          return;
+        }
+        showMsg('approvalMsg', 'Đang lưu...', '');
         google.script.run
           .withSuccessHandler(function(r) {
-            showMsg('approvalMsg', r.msg || 'Da luu!', r.success ? 'success' : 'error');
+            showMsg('approvalMsg', r.msg || 'Đã lưu!', r.success ? 'success' : 'error');
             if (r.success) { loadData(); loadDeptStatus(); }
           })
           .withFailureHandler(function(e) {
-            showMsg('approvalMsg', 'Loi: ' + e.message, 'error');
+            showMsg('approvalMsg', 'Lỗi: ' + e.message, 'error');
           })
           .saveApprovalChanges(updates);
       }
-
-      // Re-render approval when data loads
-      var _origLoadDataSuccess = null;
 
       init();
     </script>

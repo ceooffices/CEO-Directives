@@ -1,0 +1,109 @@
+/**
+ * ========================================================================
+ * BOD REGISTRATION V8.0 — SERVER API CHO WEB DASHBOARD
+ * ========================================================================
+ * Thêm file này vào Google Apps Script project (cùng với Code_v782)
+ * Thêm Dashboard.html vào project
+ * Deploy as Web App để truy cập dashboard trên mobile
+ * ========================================================================
+ */
+
+// ===== WEB APP ENTRY POINT =====
+function doGet(e) {
+  return HtmlService.createHtmlOutputFromFile("Dashboard")
+    .setTitle("BOD Meeting Dashboard")
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+// ===== MỞ DASHBOARD TRONG SIDEBAR =====
+function showDashboardDialog() {
+  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
+    .setWidth(1000)
+    .setHeight(700);
+  SpreadsheetApp.getUi().showModelessDialog(html, "BOD Meeting Dashboard");
+}
+
+// ===== API: LẤY DANH SÁCH NGÀY HỌP =====
+function getAvailableDates() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  if (!sheet) return [];
+
+  var cols = CONFIG.COLUMN_MAP;
+  var data = sheet.getDataRange().getValues();
+  var dateMap = {};
+
+  for (var i = 1; i < data.length; i++) {
+    var ngayHop = data[i][cols.ngayHop];
+    if (ngayHop) {
+      var search = extractSearchDate(ngayHop);
+      if (search && !dateMap[search]) {
+        dateMap[search] = formatNgayHop(ngayHop);
+      }
+    }
+  }
+
+  return Object.keys(dateMap)
+    .sort()
+    .reverse()
+    .map(function (s) {
+      return { display: dateMap[s], search: s };
+    });
+}
+
+// ===== API: LẤY DỮ LIỆU DASHBOARD =====
+function getDashboardData(searchDate) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  var result = {
+    total: 0,
+    approved: 0,
+    rejected: 0,
+    pending: 0,
+    postponed: 0,
+    items: [],
+  };
+  if (!sheet) return result;
+
+  var cols = CONFIG.COLUMN_MAP;
+  var data = sheet.getDataRange().getValues();
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (searchDate && !matchNgayHop(row[cols.ngayHop], searchDate)) continue;
+
+    result.total++;
+    var status = (row[cols.status] || "").toString().trim();
+
+    switch (status) {
+      case "Duyệt":
+        result.approved++;
+        break;
+      case "Từ chối":
+        result.rejected++;
+        break;
+      case "Hoãn":
+        result.postponed++;
+        break;
+      default:
+        result.pending++;
+    }
+
+    result.items.push({
+      row: i + 1,
+      hoTen: row[cols.hoTen] || "N/A",
+      boPhan: row[cols.boPhan] || "",
+      noiDung: row[cols.noiDung] || "",
+      ngayHop: formatNgayHop(row[cols.ngayHop]),
+      thoiLuong: formatThoiLuong(row[cols.thoiLuong]),
+      status: status || "Chờ duyệt",
+      thamGia: row[cols.thamGia] || "",
+      daGuiEmail: row[cols.daGuiEmail] || "",
+    });
+  }
+  return result;
+}
+
+// ===== THÊM VÀO MENU onOpen() =====
+// Bổ sung dòng này vào menu trong Code_v782:
+//   .addItem('🌐 Mở Dashboard Web', 'showDashboardDialog')
