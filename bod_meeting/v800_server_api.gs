@@ -10,6 +10,12 @@
 
 // ===== WEB APP ENTRY POINT =====
 function doGet(e) {
+  var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
+  if (page === 'admin') {
+    return HtmlService.createHtmlOutputFromFile("AdminPage")
+      .setTitle("BOD Admin Page")
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
   return HtmlService.createTemplateFromFile("Dashboard")
     .evaluate()
     .setTitle("BOD Meeting Dashboard")

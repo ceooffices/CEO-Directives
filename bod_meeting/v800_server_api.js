@@ -10,17 +10,30 @@
 
 // ===== WEB APP ENTRY POINT =====
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile("Dashboard")
+  var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
+  if (page === 'admin') {
+    return HtmlService.createHtmlOutputFromFile("AdminPage")
+      .setTitle("BOD Admin Page")
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+  return HtmlService.createTemplateFromFile("Dashboard")
+    .evaluate()
     .setTitle("BOD Meeting Dashboard")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// ===== INCLUDE HELPER (chuẩn GAS modular pattern) =====
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
 // ===== MỞ DASHBOARD FULL SCREEN =====
 function showDashboardDialog() {
-  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
-    .setWidth(1600)
-    .setHeight(900);
-  SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard V8.0");
+  var scriptUrl = ScriptApp.getService().getUrl();
+  var html = HtmlService.createHtmlOutput(
+    '<script>window.open("' + scriptUrl + '", "_blank");google.script.host.close();</script>'
+  ).setWidth(200).setHeight(50);
+  SpreadsheetApp.getUi().showModalDialog(html, "Đang mở Dashboard...");
 }
 
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
@@ -244,7 +257,8 @@ function getProcessStatus() {
 function getDeptRegistrationStatus(searchDate) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
-  var hrSheet = ss.getSheetByName("Nhân sự bắt buộc");
+  // Load from CONFIG.SHEET_HR (now "DANH SÁCH NHÂN VIÊN")
+  var hrSheet = ss.getSheetByName(CONFIG.SHEET_HR);
   var requiredDepts = [
     "KOKA TEAM",
     "IDS",
@@ -259,18 +273,50 @@ function getDeptRegistrationStatus(searchDate) {
   var deptEmails = {};
   var deptContacts = {};
 
-  // Load email from HR sheet
+  // Column indices (CONFIG uses 1-indexed, getValues uses 0-indexed)
+  var colDept  = (CONFIG.HR_COL_DEPT || 1) - 1;   // Default: col A
+  var colName  = (CONFIG.HR_COL_NAME || 3) - 1;   // Default: col C
+  var colEmail = (CONFIG.HR_COL_EMAIL || 6) - 1;  // Default: col F
+
+  // Load email from HR sheet — take FIRST email per dept (= department head)
   if (hrSheet) {
     var hrData = hrSheet.getDataRange().getValues();
+    // Log header + first data row for diagnostic
+    if (hrData.length > 0) {
+      var headers = [];
+      for (var h = 0; h < Math.min(hrData[0].length, 10); h++) {
+        headers.push("col" + h + "=" + hrData[0][h]);
+      }
+      Logger.log("HR HEADERS: " + headers.join(" | "));
+    }
+    if (hrData.length > 1) {
+      var row1 = [];
+      for (var r = 0; r < Math.min(hrData[1].length, 10); r++) {
+        row1.push("col" + r + "=" + hrData[1][r]);
+      }
+      Logger.log("HR ROW 1: " + row1.join(" | "));
+    }
+    Logger.log("HR reading: colDept=" + colDept + " colEmail=" + colEmail + " colName=" + colName);
     for (var i = 1; i < hrData.length; i++) {
-      var bp = (hrData[i][0] || "").toString().trim().toUpperCase();
-      var email = (hrData[i][1] || "").toString().trim();
-      var name = (hrData[i][2] || "").toString().trim();
-      if (bp && email) {
+      var bp = (hrData[i][colDept] || "").toString().trim().toUpperCase();
+      var email = (hrData[i][colEmail] || "").toString().trim();
+      var name = (hrData[i][colName] || "").toString().trim();
+      if (bp && email && !deptEmails[bp]) {
+        // Only take FIRST match per dept (= dept head / representative)
         deptEmails[bp] = email;
         deptContacts[bp] = name || bp;
+        Logger.log("  Mapped: " + bp + " → " + email + " (" + name + ")");
       }
     }
+    // Log which required depts are still missing email
+    for (var j = 0; j < requiredDepts.length; j++) {
+      var key = requiredDepts[j].toUpperCase();
+      if (!deptEmails[key]) {
+        Logger.log("  MISSING email for: " + requiredDepts[j]);
+      }
+    }
+  } else {
+    Logger.log("WARNING: Sheet '" + CONFIG.SHEET_HR + "' not found! Email sending will fail.");
   }
 
   // Count registrations per dept
@@ -318,32 +364,45 @@ function getDeptRegistrationStatus(searchDate) {
 // ===== API: GUI NHAC NHO 1 BO PHAN =====
 function sendDeptReminderWeb(deptName, deptEmail, displayDate) {
   if (!deptEmail || !isValidEmail(deptEmail))
-    return { success: false, msg: "Email không hợp lệ: " + deptEmail };
+    return { success: false, msg: "Email khong hop le: " + deptEmail };
   try {
-    var subject = "[NHẮC NHỞ] Đăng ký BOD - " + displayDate;
-    var body =
-      "Kính gửi Anh/Chị (" +
-      deptName +
-      "),\n\n" +
-      "Bộ phận " +
-      deptName +
-      " CHƯA ĐĂNG KÝ báo cáo cho cuộc họp BOD.\n" +
-      "📅 Ngày họp: " +
-      displayDate +
-      "\n" +
-      "⏰ 08:30\n\n" +
-      "Vui lòng truy cập Form đăng ký và submit nội dung sớm nhất.\n\n" +
-      "Trân trọng,\nBan Thư ký Meeting BOD";
-    GmailApp.sendEmail(deptEmail, subject, body, {
-      name: "BTC Meeting BOD",
-      cc: "hoangkha@esuhai.com",
-    });
-    return {
-      success: true,
-      msg: "Đã gửi nhắc nhở đến " + deptName + " (" + deptEmail + ")",
-    };
+    var subject = "[BOD MEETING] Nhac nho dang ky bao cao - " + displayDate;
+    var plainBody = "Kinh gui " + deptName + ",\n\nBo phan " + deptName + " chua dang ky bao cao cho cuoc hop BOD ngay " + displayDate + ".\nHan dang ky: Thu Nam, 17:00\n\nTran trong,\nBTC Meeting BOD";
+
+    // Build HTML email from templates (beautiful design)
+    var htmlBody = "";
+    try { htmlBody = buildReminderEmail(deptName, "", displayDate, ""); } catch(te) { Logger.log("Template error: " + te.message); }
+
+    // Route through N8N if configured
+    if (CONFIG.EMAIL_METHOD === "n8n") {
+      var ok = sendViaWebhook({
+        to: deptEmail,
+        cc: "hoangkha@esuhai.com",
+        subject: subject,
+        body: plainBody,
+        htmlBody: htmlBody,
+        senderName: "BTC Meeting BOD",
+        senderEmail: CONFIG.EMAIL_SENDER_ADDRESS || "",
+        type: "dept_reminder",
+        deptName: deptName,
+        displayDate: displayDate,
+      });
+      if (ok) {
+        logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ')');
+        return { success: true, msg: "Da gui nhac nho den " + deptName + " (" + deptEmail + ") [N8N]" };
+      }
+      Logger.log("N8N failed for dept reminder, falling back to Gmail");
+    }
+
+    // Gmail fallback — also uses HTML template
+    var emailOpts = { name: "BTC Meeting BOD", cc: "hoangkha@esuhai.com" };
+    if (htmlBody) emailOpts.htmlBody = htmlBody;
+    if (CONFIG.EMAIL_SENDER_ADDRESS) emailOpts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    GmailApp.sendEmail(deptEmail, subject, plainBody, emailOpts);
+    logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ')');
+    return { success: true, msg: "Da gui nhac nho den " + deptName + " (" + deptEmail + ")" };
   } catch (e) {
-    return { success: false, msg: "Lỗi gửi email: " + e.message };
+    return { success: false, msg: "Loi gui email: " + e.message };
   }
 }
 
@@ -366,6 +425,7 @@ function sendBulkReminderWeb(searchDate, displayDate) {
       if (i < depts.length - 1) Utilities.sleep(500);
     }
   }
+  logEmailSend('bulk_reminder', sent, msgs.join(', '));
   return { sent: sent, failed: failed, details: msgs.join("\n") };
 }
 
@@ -374,35 +434,44 @@ function sendApprovalReminderWeb(searchDate, displayDate) {
   var btcEmails = getBTCEmails();
   var stats = getDetailedStats(searchDate);
   if (stats.pending === 0)
-    return { success: false, msg: "Không có đăng ký nào chờ duyệt!" };
+    return { success: false, msg: "Khong co dang ky nao cho duyet!" };
   try {
-    var subject = "[NHẮC NHỞ] Phê duyệt đăng ký BOD - " + displayDate;
-    var body =
-      "Kính gửi Ban Tổ Chức,\n\n" +
-      "Hiện còn " +
-      stats.pending +
-      " đăng ký CHƯA ĐƯỢC DUYỆT cho cuộc họp:\n" +
-      "📅 " +
-      displayDate +
-      "\n\n" +
-      "📊 Tổng: " +
-      stats.total +
-      " | Duyệt: " +
-      stats.approved +
-      " | Chờ: " +
-      stats.pending +
-      "\n\n" +
-      "Vui lòng mở Sheet và duyệt các nội dung.\n\n" +
-      "Trân trọng,\nHệ thống BOD Dashboard";
-    GmailApp.sendEmail(btcEmails.all.join(","), subject, body, {
-      name: "BTC Meeting BOD",
-    });
-    return {
-      success: true,
-      msg: "Đã gửi nhắc phê duyệt đến BTC (" + stats.pending + " chờ duyệt)",
-    };
+    var subject = "[BOD MEETING] Nhac phe duyet noi dung - " + displayDate;
+    var plainBody = "Kinh gui Ban To Chuc,\n\nHien con " + stats.pending + " dang ky cho phe duyet cho cuoc hop BOD ngay " + displayDate + ".\nTong: " + stats.total + " | Duyet: " + stats.approved + " | Cho: " + stats.pending + "\n\nTran trong,\nBTC Meeting BOD";
+
+    // Build HTML email from templates (beautiful design)
+    var htmlBody = "";
+    try { htmlBody = buildApprovalReminderEmail(displayDate, stats.pending); } catch(te) { Logger.log("Template error: " + te.message); }
+
+    // Route through N8N if configured
+    if (CONFIG.EMAIL_METHOD === "n8n") {
+      var ok = sendViaWebhook({
+        to: btcEmails.all.join(","),
+        subject: subject,
+        body: plainBody,
+        htmlBody: htmlBody,
+        senderName: "BTC Meeting BOD",
+        senderEmail: CONFIG.EMAIL_SENDER_ADDRESS || "",
+        type: "approval_reminder",
+        stats: { total: stats.total, approved: stats.approved, pending: stats.pending },
+        displayDate: displayDate,
+      });
+      if (ok) {
+        logEmailSend('approval_reminder', 1, stats.pending + ' cho duyet');
+        return { success: true, msg: "Da gui nhac phe duyet den BTC (" + stats.pending + " cho duyet) [N8N]" };
+      }
+      Logger.log("N8N failed for approval reminder, falling back to Gmail");
+    }
+
+    // Gmail fallback — also uses HTML template
+    var emailOpts = { name: "BTC Meeting BOD" };
+    if (htmlBody) emailOpts.htmlBody = htmlBody;
+    if (CONFIG.EMAIL_SENDER_ADDRESS) emailOpts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    GmailApp.sendEmail(btcEmails.all.join(","), subject, plainBody, emailOpts);
+    logEmailSend('approval_reminder', 1, stats.pending + ' cho duyet');
+    return { success: true, msg: "Da gui nhac phe duyet den BTC (" + stats.pending + " cho duyet)" };
   } catch (e) {
-    return { success: false, msg: "Lỗi: " + e.message };
+    return { success: false, msg: "Loi: " + e.message };
   }
 }
 
