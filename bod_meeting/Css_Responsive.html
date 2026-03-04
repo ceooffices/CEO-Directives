@@ -1,0 +1,293 @@
+﻿      /* ============================================ */
+      /* MOBILE RESPONSIVE                            */
+      /* ============================================ */
+
+      /* Tablets */
+      @media (max-width: 1024px) {
+        .cards-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-card .card-number {
+          font-size: 40px;
+        }
+      }
+
+      /* Mobile landscape / small tablets */
+      @media (max-width: 768px) {
+        body {
+          font-size: 20px;
+        }
+
+        .header {
+          padding: 20px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .date-picker {
+          width: 100%;
+        }
+
+        .date-picker select {
+          width: 100%;
+          font-size: 17px;
+          padding: 14px 16px;
+        }
+
+        .container {
+          padding: 16px;
+        }
+
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .stat-card {
+          padding: 20px 16px;
+          border-width: 2px;
+        }
+
+        .stat-card .card-number {
+          font-size: 36px;
+          letter-spacing: -1px;
+        }
+
+        .stat-card .card-label {
+          font-size: 16px;
+          letter-spacing: 0.3px;
+        }
+
+        .stat-card .card-hint {
+          display: none;
+        }
+
+        .table-wrapper {
+          border-radius: var(--radius-sm);
+        }
+
+        .table-header {
+          padding: 16px 20px;
+        }
+
+        .table-header h2 {
+          font-size: 19px;
+        }
+
+        table {
+          min-width: 750px;
+        }
+
+        tbody td {
+          font-size: 16px;
+          padding: 14px 14px;
+        }
+
+        thead th {
+          padding: 12px 14px;
+          font-size: 13px;
+        }
+
+        .action-btn {
+          font-size: 17px;
+          padding: 16px 28px;
+          min-height: 52px;
+        }
+
+        .dept-table td {
+          padding: 14px 16px;
+          font-size: 15px;
+        }
+        .dept-table th {
+          padding: 12px 16px;
+          font-size: 12px;
+        }
+        .dept-badge {
+          font-size: 14px;
+          padding: 6px 14px;
+        }
+        .dept-remind-btn {
+          font-size: 15px;
+          padding: 10px 20px;
+          min-height: 44px;
+        }
+      }
+
+      /* Mobile portrait */
+      @media (max-width: 480px) {
+        :root {
+          --font-base: 18px;
+        }
+
+        .header {
+          padding: 16px;
+        }
+        .header h1 {
+          font-size: 20px;
+        }
+        .header-logo {
+          width: 36px;
+          height: 36px;
+          font-size: 20px;
+        }
+
+        .container {
+          padding: 12px;
+        }
+
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+
+        /* 5th card spans full width on small mobile */
+        .cards-grid .stat-card:nth-child(5) {
+          grid-column: span 2;
+        }
+
+        .stat-card {
+          padding: 16px 14px;
+          border-width: 2px;
+        }
+
+        .stat-card .card-number {
+          font-size: 30px;
+        }
+
+        .stat-card .card-label {
+          font-size: 14px;
+        }
+
+        .filter-badge {
+          font-size: 14px;
+          padding: 8px 14px;
+        }
+
+        .action-btn {
+          font-size: 17px;
+          padding: 16px 24px;
+          width: 100%;
+          justify-content: center;
+          min-height: 52px;
+        }
+
+        .dept-table td {
+          padding: 12px 14px;
+          font-size: 15px;
+        }
+        .dept-badge {
+          font-size: 13px;
+          padding: 6px 12px;
+        }
+        .dept-remind-btn {
+          font-size: 15px;
+          padding: 10px 18px;
+          min-height: 44px;
+        }
+      }
+
+      /* Touch improvements for mobile */
+      @media (hover: none) {
+        .stat-card:hover {
+          transform: none;
+          box-shadow: var(--shadow);
+        }
+
+        .stat-card:active {
+          transform: scale(0.97);
+          transition: transform 0.1s;
+        }
+
+        .stat-card.active {
+          transform: none;
+          box-shadow: var(--shadow-lg);
+        }
+
+        /* Remove shimmer on touch — prevents touch event interference */
+        .action-btn::after {
+          display: none !important;
+        }
+        .action-btn:active {
+          transform: scale(0.95) !important;
+          filter: brightness(0.9);
+          transition: all 0.08s;
+        }
+      }
+
+      /* ============================================ */
+      /* TOAST NOTIFICATION                            */
+      /* ============================================ */
+      @keyframes toastIn {
+        from { transform: translateY(100px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes toastOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(100px); opacity: 0; }
+      }
+      .toast-container {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+        width: 90%;
+        max-width: 420px;
+      }
+      .toast {
+        background: #0f172a;
+        color: #fff;
+        padding: 14px 22px;
+        border-radius: 14px;
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        pointer-events: auto;
+        animation: toastIn 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+      }
+      .toast.toast-out {
+        animation: toastOut 0.3s ease-in forwards;
+      }
+      .toast-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .toast.toast-info { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+      .toast.toast-success { background: linear-gradient(135deg, #10b981, #047857); }
+      .toast.toast-error { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+      .toast.toast-loading {
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+      }
+      .toast-spinner {
+        width: 16px; height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: btn-spin 0.6s linear infinite;
+        flex-shrink: 0;
+      }
+
+      /* ============================================ */
+      /* DESKTOP BODY FONT +2                          */
+      /* ============================================ */
+      @media (min-width: 1025px) {
+        body {
+          font-size: 20px;
+        }
+      }

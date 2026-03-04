@@ -10,14 +10,21 @@
 
 // ===== WEB APP ENTRY POINT =====
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile("Dashboard")
+  return HtmlService.createTemplateFromFile("Dashboard")
+    .evaluate()
     .setTitle("BOD Meeting Dashboard")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// ===== INCLUDE HELPER (chuẩn GAS modular pattern) =====
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
 // ===== MỞ DASHBOARD FULL SCREEN =====
 function showDashboardDialog() {
-  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
+  var html = HtmlService.createTemplateFromFile("Dashboard")
+    .evaluate()
     .setWidth(1600)
     .setHeight(900);
   SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard V8.0");
@@ -510,6 +517,105 @@ function getSchedulePreview(searchDate) {
   }
   result.items = items;
   return result;
+}
+
+// ===== API: GUI KET QUA PHE DUYET TU DASHBOARD (web-compatible) =====
+function sendApprovalResultEmails() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký!" };
+
+  // Tìm thứ 2 gần nhất (giống logic Dashboard)
+  var now = new Date();
+  var day = now.getDay();
+  var diff;
+  if (day === 0) diff = -6;
+  else if (day === 1) diff = 0;
+  else diff = 1 - day;
+  var monday = new Date(now);
+  monday.setDate(now.getDate() + diff);
+  var searchDate = String(monday.getDate()).padStart(2, '0') + '/' + String(monday.getMonth() + 1).padStart(2, '0');
+
+  var cols = CONFIG.COLUMN_MAP;
+  var data = sheet.getDataRange().getValues();
+  var sent = 0, skipped = 0, alreadySent = 0, failed = 0;
+  var btcEmails = getBTCEmails();
+  var timestamp = Utilities.formatDate(now, 'Asia/Ho_Chi_Minh', 'dd/MM HH:mm');
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (!matchNgayHop(row[cols.ngayHop], searchDate)) continue;
+
+    var email = (row[cols.email] || '').toString().trim();
+    var status = (row[cols.status] || '').toString().trim();
+    var hoTen = toTitleCase(row[cols.hoTen]) || 'N/A';
+    var daGui = (row[cols.daGuiEmail] || '').toString().trim();
+
+    // Bỏ qua nếu đã gửi
+    if (daGui) { alreadySent++; continue; }
+    // Bỏ qua nếu email không hợp lệ
+    if (!email || !isValidEmail(email)) { skipped++; continue; }
+    // Bỏ qua nếu chưa duyệt
+    if (!status || status === 'Chờ duyệt') { skipped++; continue; }
+
+    var ngayHop = formatNgayHop(row[cols.ngayHop]);
+    var noiDung = (row[cols.noiDung] || '').toString();
+    var ghiChu = (row[cols.ghiChu] || '').toString();
+
+    // Build email data dùng template
+    var emailData;
+    if (status === 'Duyệt') emailData = buildEmailApproved({ hoTen: hoTen, noiDung: noiDung, ngayHop: ngayHop, boPhan: row[cols.boPhan] || '', ghiChu: ghiChu });
+    else if (status === 'Từ chối') emailData = buildEmailRejected({ hoTen: hoTen, noiDung: noiDung, ngayHop: ngayHop, boPhan: row[cols.boPhan] || '', ghiChu: ghiChu });
+    else if (status === 'Hoãn') emailData = buildEmailPostponed({ hoTen: hoTen, noiDung: noiDung, ngayHop: ngayHop, boPhan: row[cols.boPhan] || '', ghiChu: ghiChu });
+    else { skipped++; continue; }
+
+    // CC: BTC + người liên quan
+    var ccList = btcEmails.all.slice();
+    var emailLQ = row[cols.emailLienQuan];
+    if (emailLQ) {
+      var lqArr = emailLQ.toString().split(/[,;\n]+/);
+      for (var j = 0; j < lqArr.length; j++) {
+        var e = lqArr[j].trim().toLowerCase();
+        if (isValidEmail(e)) ccList.push(e);
+      }
+    }
+    // Unique CC
+    var ccUnique = [];
+    var ccSeen = {};
+    for (var j = 0; j < ccList.length; j++) {
+      var c = ccList[j].toLowerCase();
+      if (!ccSeen[c]) { ccSeen[c] = true; ccUnique.push(ccList[j]); }
+    }
+
+    if (sent > 0) Utilities.sleep(CONFIG.EMAIL_DELAY_MS || 500);
+
+    try {
+      var opts = {
+        to: email,
+        cc: ccUnique.join(','),
+        subject: emailData.subject,
+        body: emailData.body,
+        name: CONFIG.EMAIL_SENDER_NAME
+      };
+      if (emailData.htmlBody) opts.htmlBody = emailData.htmlBody;
+      MailApp.sendEmail(opts);
+      sent++;
+      sheet.getRange(i + 1, cols.daGuiEmail + 1).setValue('✔︎ ' + timestamp);
+    } catch (err) {
+      failed++;
+    }
+  }
+
+  if (sent === 0 && skipped === 0 && failed === 0 && alreadySent === 0) {
+    return { success: false, msg: 'Không tìm thấy đăng ký cho ngày ' + searchDate };
+  }
+
+  var msg = 'Gửi mới: ' + sent;
+  if (alreadySent > 0) msg += ' | Đã gửi trước: ' + alreadySent;
+  if (failed > 0) msg += ' | Lỗi: ' + failed;
+  if (skipped > 0) msg += ' | Bỏ qua: ' + skipped;
+
+  return { success: sent > 0, msg: msg };
 }
 
 // ===== API: TAO LICH TRINH TU DASHBOARD =====

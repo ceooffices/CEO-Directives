@@ -1,0 +1,463 @@
+﻿
+      // ========================================
+      // INITIALIZATION
+      // ========================================
+      function init() {
+        // Luôn load process status (thứ 2 sắp tới, ĐỘC LẬP với bộ lọc)
+        google.script.run
+          .withSuccessHandler(renderProcess)
+          .withFailureHandler(function () {})
+          .getProcessStatus();
+
+        // Mặc định chọn thứ 2 tuần này (gần nhất)
+        setDefaultDate();
+        loadData();
+        loadDeptStatus();
+        // loadApprovalTable merged into renderTable
+      }
+
+      // ========================================
+      // ADMIN PAGE NAVIGATION
+      // ========================================
+      function openAdminPage() {
+        // Khi ở web app context, mở Admin qua URL param
+        var currentUrl = window.location.href;
+        if (currentUrl.indexOf('page=admin') === -1) {
+          var separator = currentUrl.indexOf('?') === -1 ? '?' : '&';
+          window.open(currentUrl + separator + 'page=admin', '_blank');
+        }
+      }
+
+      // ========================================
+      // DATE HELPERS
+      // ========================================
+      function setDefaultDate() {
+        var now = new Date();
+        var day = now.getDay();
+        var diff;
+        // Tìm thứ 2 gần nhất (tuần này hoặc tuần trước)
+        if (day === 0)
+          diff = -6; // CN → T2 tuần trước
+        else if (day === 1)
+          diff = 0; // T2 → hôm nay
+        else diff = 1 - day; // Các ngày khác → T2 đầu tuần
+        var monday = new Date(now);
+        monday.setDate(now.getDate() + diff);
+        var val =
+          monday.getFullYear() +
+          "-" +
+          String(monday.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(monday.getDate()).padStart(2, "0");
+        document.getElementById("dateInput").value = val;
+      }
+
+      function onDateChange() {
+        loadData();
+        loadDeptStatus();
+      }
+
+      function getSearchDateFromInput() {
+        var val = document.getElementById("dateInput").value;
+        if (!val) return "";
+        var parts = val.split("-"); // YYYY-MM-DD
+        return parts[2] + "/" + parts[1]; // DD/MM
+      }
+
+      function getDisplayDateFromInput() {
+        var val = document.getElementById("dateInput").value;
+        if (!val) return "";
+        var parts = val.split("-");
+        var dayNames = [
+          "Chủ nhật",
+          "Thứ 2",
+          "Thứ 3",
+          "Thứ 4",
+          "Thứ 5",
+          "Thứ 6",
+          "Thứ 7",
+        ];
+        var d = new Date(
+          parseInt(parts[0]),
+          parseInt(parts[1]) - 1,
+          parseInt(parts[2]),
+        );
+        return (
+          dayNames[d.getDay()] +
+          ", " +
+          parts[2] +
+          "/" +
+          parts[1] +
+          "/" +
+          parts[0]
+        );
+      }
+
+
+      // ========================================
+      // LOAD DATA
+      // ========================================
+      function loadData() {
+        var searchDate = getSearchDateFromInput();
+        var displayDate = getDisplayDateFromInput();
+
+        // Show loading
+        document.getElementById("tableBody").innerHTML =
+          '<tr><td colspan="8"><div class="loading-state">' +
+          '<div class="spinner"></div>' +
+          "<p>Đang tải dữ liệu...</p></div></td></tr>";
+
+        // Update cards title immediately
+        var ct = document.getElementById("cardsTitle");
+        if (displayDate && ct) {
+          ct.textContent = "THONG KE DANG KY — " + displayDate.toUpperCase();
+        }
+
+        google.script.run
+          .withSuccessHandler(function (data) {
+            currentData = data;
+            activeFilter = "all";
+            renderCards(data);
+            renderTable(data.items);
+            // Update cards wrapper title
+            updateCardsTitle(data, displayDate);
+            // Auto-check process checklists based on real data
+            updateChecklists(data);
+          })
+          .withFailureHandler(function (err) {
+            document.getElementById("tableBody").innerHTML =
+              '<tr><td colspan="8"><div class="empty-state">' +
+              '<div class="empty-icon">--</div>' +
+              "<p>Lỗi tải dữ liệu: " +
+              (err.message || "Không xác định") +
+              "</p></div></td></tr>";
+          })
+          .getDashboardData(searchDate);
+      }
+
+      function updateCardsTitle(data, displayDate) {
+        var ct = document.getElementById("cardsTitle");
+        if (!ct) return;
+        if (displayDate) {
+          ct.innerHTML =
+            'THỐNG KÊ ĐĂNG KÝ — <span class="date-icon">&#128339;</span>' +
+            displayDate.toUpperCase();
+        } else {
+          ct.textContent = "THỐNG KÊ ĐĂNG KÝ";
+        }
+      }
+
+      // ========================================
+      // AUTO-CHECK PROCESS CHECKLISTS
+
+      // ========================================
+      // RENDER STAT CARDS
+      // ========================================
+      function renderCards(data) {
+        var grid = document.getElementById("cardsGrid");
+
+        var cards = [
+          {
+            key: "all",
+            label: "TỔNG ĐĂNG KÝ",
+            value: data.total,
+            css: "card-total",
+            hint: "",
+          },
+          {
+            key: "Duyệt",
+            label: "ĐÃ DUYỆT",
+            value: data.approved,
+            css: "card-approved",
+            hint: "",
+          },
+          {
+            key: "Chờ duyệt",
+            label: "CHỞ DUYỆT",
+            value: data.pending,
+            css: "card-pending",
+            hint: "",
+          },
+          {
+            key: "Từ chối",
+            label: "TỪ CHỐI",
+            value: data.rejected,
+            css: "card-rejected",
+            hint: "",
+          },
+          {
+            key: "Hoãn",
+            label: "TẠM HOÃN",
+            value: data.postponed,
+            css: "card-postponed",
+            hint: "Nhấn để lọc",
+          },
+        ];
+
+        grid.innerHTML = cards
+          .map(function (card) {
+            var isActive = activeFilter === card.key ? " active" : "";
+            return (
+              '<div class="stat-card ' +
+              card.css +
+              isActive +
+              '" ' +
+              "onclick=\"filterBy('" +
+              card.key +
+              "')\" " +
+              'role="button" tabindex="0" ' +
+              'aria-label="Lọc theo ' +
+              card.label +
+              '">' +
+              '<div class="card-number">' +
+              card.value +
+              "</div>" +
+              '<div class="card-label">' +
+              card.label +
+              "</div>" +
+              '<div class="card-hint">👆 ' +
+              card.hint +
+              "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      // ========================================
+      // FILTER BY STATUS
+      // ========================================
+      function filterBy(key) {
+        activeFilter = key;
+        renderCards(currentData);
+
+        var filteredItems;
+        var badgeEl = document.getElementById("filterBadge");
+
+        if (key === "all") {
+          filteredItems = currentData.items;
+          badgeEl.innerHTML = "";
+        } else {
+          filteredItems = currentData.items.filter(function (item) {
+            return item.status === key;
+          });
+
+          var colorMap = {
+            Duyệt: { bg: "#D1FAE5", text: "#065F46" },
+            "Chờ duyệt": { bg: "#FEF3C7", text: "#92400E" },
+            "Từ chối": { bg: "#FEE2E2", text: "#991B1B" },
+            Hoãn: { bg: "#EDE9FE", text: "#5B21B6" },
+          };
+          var colors = colorMap[key] || { bg: "#E2E8F0", text: "#475569" };
+
+          badgeEl.innerHTML =
+            '<span class="filter-badge" style="background:' +
+            colors.bg +
+            ";color:" +
+            colors.text +
+            '">' +
+            "🔍 " +
+            key +
+            " — " +
+            filteredItems.length +
+            " kết quả" +
+            ' <span class="clear-btn" onclick="event.stopPropagation(); filterBy(\'all\')" title="Bỏ lọc">✕</span>' +
+            "</span>";
+        }
+
+        renderTable(filteredItems);
+
+        // Auto scroll to relevant section
+        var scrollTargets = {
+          all: "tableBody",
+          Duyệt: "tableBody",
+          "Chờ duyệt": "tableBody",
+          "Từ chối": "tableBody",
+          Hoãn: "tableBody",
+        };
+        var targetId = scrollTargets[key] || "tableBody";
+        var targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          setTimeout(function () {
+            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        }
+      }
+
+      // ========================================
+      // RENDER DATA TABLE
+      // ========================================
+      function renderTable(items) {
+        var tbody = document.getElementById("tableBody");
+        // Update table title with date
+        var titleEl = document.getElementById("tableTitle");
+        var dispDate = getDisplayDateFromInput();
+        if (titleEl && dispDate) {
+          titleEl.innerHTML =
+            'ĐĂNG KÝ NỘI DUNG BÁO CÁO — <span class="process-target">' +
+            dispDate +
+            "</span>";
+        }
+
+        if (!items || items.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="8"><div class="empty-state">' +
+            '<div class="empty-icon">--</div>' +
+            "<p>Không có đăng ký nào" +
+            (activeFilter !== "all"
+              ? ' cho trạng thái "' + activeFilter + '"'
+              : "") +
+            "</p></div></td></tr>";
+          return;
+        }
+
+        var statusOptions = ["Chờ duyệt", "Duyệt", "Từ chối", "Hoãn"];
+
+        tbody.innerHTML = items
+          .map(function (item, index) {
+            var disabledAttr = isTableEditing ? "" : " disabled";
+
+            // Build select with onchange to toggle ghiChu required
+            var selectHtml =
+              '<select class="approval-select" data-row="' +
+              item.row +
+              '" title="Trạng thái phê duyệt" onchange="onStatusChange(this)"' +
+              disabledAttr +
+              ">";
+            for (var s = 0; s < statusOptions.length; s++) {
+              var selected =
+                item.status === statusOptions[s] ? " selected" : "";
+              selectHtml +=
+                '<option value="' +
+                statusOptions[s] +
+                '"' +
+                selected +
+                ">" +
+                statusOptions[s] +
+                "</option>";
+            }
+            selectHtml += "</select>";
+
+            // Order = thứ tự trình bày
+            var orderVal = item.thuTu && item.thuTu > 0 ? item.thuTu : "";
+
+            // T.Lượng — editable input
+            var tlVal = String(item.thoiLuong || "").replace(/'/g, "");
+            var tlHtml =
+              '<input type="number" class="tl-input' +
+              (isTableEditing ? " editing" : "") +
+              '" data-row="' +
+              item.row +
+              '" data-field="tl" value="' +
+              tlVal +
+              '" min="5" max="120" step="5" title="Thời lượng trình bày (phút)"' +
+              disabledAttr +
+              ">";
+
+            // CĐ dự kiến
+            var cdVal = item.tlCD || 10;
+            var cdHtml =
+              '<input type="number" class="approval-order' +
+              (isTableEditing ? " editing" : "") +
+              '" data-row="' +
+              item.row +
+              '" data-field="cd" value="' +
+              cdVal +
+              '" min="5" max="120" step="5" title="Thời lượng chỉ đạo dự kiến (phút)"' +
+              disabledAttr +
+              ">";
+
+            // Ghi chú BOD — bắt buộc khi Hoãn/Từ chối
+            var isReqNote = item.status === "Hoãn" || item.status === "Từ chối";
+            var ghiChuClass = "ghichu-input" + (isReqNote ? " required" : "");
+            var ghiChuPh = isReqNote
+              ? "Bắt buộc nhập lý do..."
+              : "Ghi chú (nếu có)...";
+            var ghiChuHtml =
+              '<textarea class="' +
+              ghiChuClass +
+              '" data-row="' +
+              item.row +
+              '" placeholder="' +
+              ghiChuPh +
+              '"' +
+              disabledAttr +
+              ">" +
+              escapeHtml(item.ghiChu || "") +
+              "</textarea>";
+
+            return (
+              '<tr class="row-highlight">' +
+              '<td class="th-stt">' +
+              orderVal +
+              "</td>" +
+              "<td>" +
+              getAvatarHtml(item.hoTen) +
+              "</td>" +
+              "<td>" +
+              getDeptTagHtml(item.boPhan) +
+              "</td>" +
+              '<td><div class="cell-content">' +
+              escapeHtml(item.noiDung) +
+              "</div></td>" +
+              '<td class="th-center">' +
+              tlHtml +
+              "</td>" +
+              '<td class="th-center">' +
+              cdHtml +
+              "</td>" +
+              '<td class="th-center">' +
+              selectHtml +
+              "</td>" +
+              '<td class="ghichu-cell">' +
+              ghiChuHtml +
+              "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+
+      // ========================================
+      // TOGGLE TABLE EDIT MODE
+      // ========================================
+      function toggleTableEdit(enabled) {
+        isTableEditing = enabled;
+        var toggle = document.getElementById("tableEditToggle");
+        if (toggle) {
+          if (enabled) toggle.classList.add("active");
+          else toggle.classList.remove("active");
+        }
+        // Toggle all editable fields
+        var table = document.getElementById("tableBody");
+        var selects = table.querySelectorAll(".approval-select");
+        var inputs = table.querySelectorAll(".approval-order, .tl-input");
+        var textareas = table.querySelectorAll(".ghichu-input");
+        for (var i = 0; i < selects.length; i++) selects[i].disabled = !enabled;
+        for (var i = 0; i < inputs.length; i++) {
+          inputs[i].disabled = !enabled;
+          if (enabled) inputs[i].classList.add("editing");
+          else inputs[i].classList.remove("editing");
+        }
+        for (var i = 0; i < textareas.length; i++)
+          textareas[i].disabled = !enabled;
+      }
+
+      // Handle status change — toggle required on ghiChu
+      function onStatusChange(selectEl) {
+        var row = selectEl.closest("tr");
+        if (!row) return;
+        var textarea = row.querySelector(".ghichu-input");
+        if (!textarea) return;
+        var val = selectEl.value;
+        if (val === "Hoãn" || val === "Từ chối") {
+          textarea.classList.add("required");
+          textarea.placeholder =
+            "Bắt buộc nhập lý do " + val.toLowerCase() + "...";
+          textarea.focus();
+        } else {
+          textarea.classList.remove("required");
+          textarea.placeholder = "Ghi chú (nếu có)...";
+        }
+      }
+

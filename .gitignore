@@ -18,3 +18,8 @@ desktop.ini
 # Sensitive
 .env
 *.key
+
+# Archive / Backup (giảm tải Language Server)
+_archive/
+*_backup*
+*_bak*

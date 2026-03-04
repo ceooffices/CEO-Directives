@@ -1,0 +1,192 @@
+﻿      // ========================================
+      // RENDER PROCESS — HORIZONTAL TIMELINE
+      // ========================================
+      var currentOpenStage = 1; // Track which stage panel is open
+
+      function renderProcess(data) {
+        if (!data) return;
+        processData = data;
+        document.getElementById("processTarget").textContent = data.targetDate;
+        var doneCount = 0;
+        for (var i = 0; i < data.steps.length; i++) {
+          var stageEl = document.getElementById("stage" + (i + 1));
+          var dotEl = stageEl ? stageEl.querySelector(".v-stage-dot") : null;
+          if (!stageEl) continue;
+          var s = data.steps[i];
+          stageEl.classList.remove("stage-done", "stage-active");
+          if (s.status === "done") {
+            stageEl.classList.add("stage-done");
+            if (dotEl) dotEl.textContent = "✓";
+            doneCount++;
+          } else if (s.status === "active") {
+            stageEl.classList.add("stage-active");
+            if (dotEl) dotEl.textContent = String(i + 1);
+          } else {
+            if (dotEl) dotEl.textContent = String(i + 1);
+          }
+        }
+        // Update timeline bar fill
+        var fillPct =
+          data.steps.length > 0 ? (doneCount / data.steps.length) * 100 : 0;
+        var barFill = document.getElementById("timelineBarFill");
+        if (barFill) barFill.style.width = fillPct + "%";
+
+        // Auto-open active stage panel
+        for (var i = 0; i < data.steps.length; i++) {
+          if (data.steps[i].status === "active") {
+            toggleStage(i + 1);
+            break;
+          }
+        }
+      }
+
+      // ========================================
+      // TOGGLE STAGE (horizontal timeline)
+      // ========================================
+      function toggleStage(num) {
+        var panel = document.getElementById("tlExpandPanel");
+        if (!panel) return;
+
+        // If same stage clicked, toggle close
+        if (currentOpenStage === num && panel.classList.contains("open")) {
+          panel.classList.remove("open", "panel-active", "panel-done");
+          // Hide all panel contents
+          for (var j = 1; j <= 4; j++) {
+            var pc = document.getElementById("panelContent" + j);
+            if (pc) pc.style.display = "none";
+            var st = document.getElementById("stage" + j);
+            if (st) st.classList.remove("open");
+          }
+          currentOpenStage = 0;
+          return;
+        }
+
+        // Hide all, show selected
+        for (var j = 1; j <= 4; j++) {
+          var pc = document.getElementById("panelContent" + j);
+          if (pc) pc.style.display = j === num ? "block" : "none";
+          var st = document.getElementById("stage" + j);
+          if (st) {
+            if (j === num) st.classList.add("open");
+            else st.classList.remove("open");
+          }
+        }
+
+        // Set panel state
+        panel.classList.remove("panel-active", "panel-done");
+        var stageEl = document.getElementById("stage" + num);
+        if (stageEl && stageEl.classList.contains("stage-active"))
+          panel.classList.add("panel-active");
+        else if (stageEl && stageEl.classList.contains("stage-done"))
+          panel.classList.add("panel-done");
+
+        panel.classList.add("open");
+        currentOpenStage = num;
+
+        // Update expand head num color
+        var headNum = panel.querySelector(
+          "#panelContent" + num + " .tl-expand-head-num",
+        );
+        if (headNum) {
+          if (stageEl && stageEl.classList.contains("stage-done"))
+            headNum.style.background = "var(--c-approved)";
+          else headNum.style.background = "var(--c-total)";
+        }
+
+        // Smooth scroll to panel on mobile so user sees expanded content
+        setTimeout(function() {
+          var stageHead = document.getElementById("stage" + num);
+          if (stageHead) {
+            stageHead.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      }
+
+
+      // AUTO-CHECK PROCESS CHECKLISTS
+      // ========================================
+      function updateChecklists(data) {
+        if (!data || !data.items) return;
+        var items = data.items;
+        var total = items.length;
+        var approved = 0,
+          pending = 0,
+          hasOrder = 0;
+
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].status === "Duyệt") approved++;
+          if (items[i].status === "Chờ duyệt") pending++;
+          if (items[i].thuTu && parseInt(items[i].thuTu) > 0) hasOrder++;
+        }
+
+        // --- STAGE 1: Tiếp nhận ---
+        setCheck("formOpen", true); // Form luôn mở trong phase này
+        setCheck("hasRegistrations", total > 0);
+
+        // Kiểm tra tất cả bộ phận bắt buộc
+        var deptRows = document.querySelectorAll("#deptTableBody tr");
+        var allDeptDone = true;
+        var deptCount = 0;
+        for (var d = 0; d < deptRows.length; d++) {
+          deptCount++;
+          var statusCell = deptRows[d].querySelector(".dept-status");
+          if (statusCell && statusCell.textContent.indexOf("Chưa") >= 0) {
+            allDeptDone = false;
+          }
+        }
+        setCheck("allDeptDone", deptCount > 0 && allDeptDone);
+
+        // --- STAGE 2: Phê duyệt ---
+        setCheck("hasPending", total > 0 && pending === 0);
+        setCheck("hasOrder", approved > 0 && hasOrder >= approved);
+        setCheck("resultSent", false); // Cần backend confirm
+
+        // --- STAGE 3: Xếp lịch ---
+        setCheck("scheduleReady", approved > 0 && hasOrder > 0);
+        setCheck("scheduleSent", false); // Cần backend confirm
+
+        // --- STAGE 4: Biên bản ---
+        setCheck("meetingDone", false); // Manual
+        setCheck("minutesSent", false); // Manual
+
+        // Update progress count trên step bar
+        updateStepProgress();
+      }
+
+      function setCheck(key, isDone) {
+        var el = document.querySelector(
+          '.check-item[data-check="' + key + '"]',
+        );
+        if (!el) return;
+        var icon = el.querySelector(".check-icon");
+        if (isDone) {
+          el.classList.add("checked");
+          if (icon) icon.textContent = "✓";
+        } else {
+          el.classList.remove("checked");
+          if (icon) icon.textContent = "○";
+        }
+      }
+
+      function updateStepProgress() {
+        for (var s = 1; s <= 4; s++) {
+          var checklist = document.getElementById("checklist" + s);
+          if (!checklist) continue;
+          var allItems = checklist.querySelectorAll(".check-item");
+          var doneItems = checklist.querySelectorAll(".check-item.checked");
+          var progEl = document.getElementById("stageProgress" + s);
+          if (progEl && allItems.length > 0) {
+            progEl.textContent = doneItems.length + "/" + allItems.length;
+          }
+          // Auto mark stage done/active
+          var stageEl = document.getElementById("stage" + s);
+          if (
+            stageEl &&
+            doneItems.length === allItems.length &&
+            allItems.length > 0
+          ) {
+            stageEl.classList.add("stage-done");
+            stageEl.classList.remove("stage-active");
+          }
+        }
+      }
