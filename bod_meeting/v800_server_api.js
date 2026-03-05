@@ -16,8 +16,7 @@ function doGet(e) {
       .setTitle("Trang Quản Trị — BOD Meeting")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
-  return HtmlService.createTemplateFromFile("Dashboard")
-    .evaluate()
+  return HtmlService.createHtmlOutputFromFile("Dashboard")
     .setTitle("BOD Meeting Dashboard")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -29,8 +28,7 @@ function include(filename) {
 
 // ===== MỞ DASHBOARD FULL SCREEN =====
 function showDashboardDialog() {
-  var html = HtmlService.createTemplateFromFile("Dashboard")
-    .evaluate()
+  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
     .setWidth(1600)
     .setHeight(900);
   SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
