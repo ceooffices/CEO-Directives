@@ -2398,8 +2398,8 @@
       <div class="header-left">
         <div>
           <h1>
-            BTC MEETING BOD 
-            <a href="#" id="fullscreenBtn" onclick="openFullscreen(); return false;" title="Mở Dashboard trong tab mới (Toàn màn hình)" style="margin-left: 12px; font-size: 14px; font-weight: normal; color: #3b82f6; text-decoration: none; padding: 4px 8px; border: 1px solid #bfdbfe; border-radius: 4px; background: #eff6ff; display: inline-flex; align-items: center; gap: 4px;">
+            BTC MEETING BOD
+            <a href="#" id="fullscreenBtn" target="_blank" title="Mở Dashboard toàn màn hình trong tab mới" style="margin-left: 12px; font-size: 14px; font-weight: normal; color: #3b82f6; text-decoration: none; padding: 4px 8px; border: 1px solid #bfdbfe; border-radius: 4px; background: #eff6ff; display: inline-flex; align-items: center; gap: 4px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
               Toàn màn hình
             </a>
@@ -2976,12 +2976,12 @@
 
       <div class="footer">
         BTC Meeting BOD v8.5 — ESUHAI GROUP
-        <span
-          class="footer-gear"
-          onclick="openAdminPage()"
+        <a href="#"
+          class="footer-gear footer-admin-link"
+          target="_blank"
           title="Trang quản trị"
-          >&#9881;</span
-        >
+          style="text-decoration: none; color: inherit;"
+          >&#9881;</a>
       </div>
     </div>
 
@@ -3183,42 +3183,53 @@
         setDefaultDate();
         loadData();
         loadDeptStatus();
-        // loadApprovalTable merged into renderTable
+
+        // Prefetch Web App URL — gán vào href ngay từ đầu để tránh popup-blocker
+        google.script.run
+          .withSuccessHandler(function(url) {
+            if (!url) return;
+            // Nút Fullscreen
+            var fsBtn = document.getElementById('fullscreenBtn');
+            if (fsBtn) {
+              fsBtn.href = url;
+              fsBtn.target = '_blank';
+              fsBtn.removeAttribute('onclick');
+            }
+            // Nút mở AdminPage (footer gear / bất kỳ phần tử nào có class footer-admin-link)
+            var adminLinks = document.querySelectorAll('.footer-admin-link');
+            adminLinks.forEach(function(el) {
+              var separator = url.indexOf('?') === -1 ? '?' : '&';
+              el.href = url + separator + 'page=admin';
+              el.target = '_blank';
+              el.removeAttribute('onclick');
+            });
+          })
+          .withFailureHandler(function() {}) // Không hiển thị lỗi — không ảnh hưởng core Dashboard
+          .getScriptAppUrl();
       }
 
       // ========================================
-      // ADMIN PAGE NAVIGATION
+      // ADMIN PAGE NAVIGATION (giữ lại để tương thích những nơi khác gọi)
       // ========================================
       function openAdminPage() {
-        var gearIcon = document.querySelector('.footer-gear');
-        if (gearIcon) gearIcon.innerHTML = '&#8987;'; // Hourglass
-        google.script.run
-          .withSuccessHandler(function(url) {
-            if (gearIcon) gearIcon.innerHTML = '&#9881;'; // Reactivate gear icon
-            var separator = url.indexOf('?') === -1 ? '?' : '&';
-            window.open(url + separator + 'page=admin', '_blank');
-          })
-          .withFailureHandler(function(err) {
-            if (gearIcon) gearIcon.innerHTML = '&#9881;';
-            showMsg('Lỗi mở trang quản trị: ' + err.message, 'error');
-          })
-          .getScriptAppUrl();
+        // Hàm này vẫn giữ cho tương thích, nhưng thực tế URL đã được gán vào href tại init()
+        // Fallback nếu href chưa được gán (hiếm gặp)
+        var adminLinks = document.querySelectorAll('.footer-admin-link');
+        adminLinks.forEach(function(el) {
+          if (el.href && el.href !== '#' && el.href !== window.location.href) {
+            window.open(el.href, '_blank');
+          }
+        });
       }
 
       function openFullscreen() {
-        var btn = document.getElementById('fullscreenBtn');
-        if (btn) btn.innerHTML = '&#8987; Đang tải...'; // Hourglass
-        google.script.run
-          .withSuccessHandler(function(url) {
-            if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Toàn màn hình';
-            window.open(url, '_blank');
-          })
-          .withFailureHandler(function(err) {
-            if (btn) btn.innerHTML = 'Lỗi!';
-            showMsg('Không lấy được link: ' + err.message, 'error');
-          })
-          .getScriptAppUrl();
+        // Fallback nếu href chưa được gán
+        var fsBtn = document.getElementById('fullscreenBtn');
+        if (fsBtn && fsBtn.href && fsBtn.href !== '#' && fsBtn.href !== window.location.href) {
+          window.open(fsBtn.href, '_blank');
+        }
       }
+
 
       // ========================================
       // DATE HELPERS

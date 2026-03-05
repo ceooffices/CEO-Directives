@@ -75,6 +75,35 @@ const CONFIG = {
   EMAIL_DELAY_MS: 500,
 };
 
+/**
+ * Nạp đè cấu hình từ Sheet 'Cấu hình' vào CONFIG.
+ * Được gọi đầu mỗi hàm gửi email để đảm bảo cài đặt mới nhất từ AdminPage được áp dụng.
+ * Format Sheet 'Cấu hình': Cột A = Key, Cột B = Value.
+ */
+function loadConfigFromSheet() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
+    if (!sheet) return; // Nếu chưa có Sheet Cấu hình, giữ nguyên giá trị mặc định
+    var data = sheet.getDataRange().getValues();
+    var mapping = {
+      'N8N_WEBHOOK_URL':    function(v) { if (v) CONFIG.N8N_WEBHOOK_URL    = v; },
+      'EMAIL_METHOD':       function(v) { if (v) CONFIG.EMAIL_METHOD       = v; },
+      'EMAIL_SENDER_NAME':  function(v) { if (v) CONFIG.EMAIL_SENDER_NAME  = v; },
+      'EMAIL_SENDER_ADDRESS': function(v) { CONFIG.EMAIL_SENDER_ADDRESS = v; }, // Cho phép xóa trắng để bỏ alias
+    };
+    for (var i = 0; i < data.length; i++) {
+      var key = (data[i][0] || '').toString().trim();
+      var val = (data[i][1] !== undefined && data[i][1] !== null) ? data[i][1].toString().trim() : '';
+      if (mapping[key]) mapping[key](val);
+    }
+  } catch(e) {
+    Logger.log('loadConfigFromSheet error: ' + e.message);
+  }
+}
+
+
+
 // =============================================================================
 // MENU V8.4 - MINIMAL (Web Dashboard handles operations)
 // =============================================================================
@@ -993,21 +1022,41 @@ function sendEmail(emailData) {
 
 function sendEmailWithAttachment(emailData, pdfBlob) {
   // Attachments always go via Gmail (N8N doesn't handle blob attachments easily)
+  // Cần load config mới nhất từ AdminPage trước khi gửi
+  loadConfigFromSheet();
   try {
     var opts = {
       to: emailData.to,
-      cc: emailData.cc || "",
+      cc: emailData.cc || '',
       subject: emailData.subject,
       body: emailData.body,
       attachments: [pdfBlob],
       name: CONFIG.EMAIL_SENDER_NAME,
     };
-    if (CONFIG.EMAIL_SENDER_ADDRESS) opts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    // Chỉ thêm 'from' nếu EMAIL_SENDER_ADDRESS được cấu hình (không trống)
+    if (CONFIG.EMAIL_SENDER_ADDRESS && CONFIG.EMAIL_SENDER_ADDRESS.length > 0) {
+      opts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    }
     MailApp.sendEmail(opts);
     return true;
   } catch (e) {
-    Logger.log("Email attachment error: " + e.message);
-    return false;
+    Logger.log('Email with attachment (attempt 1 with alias) failed: ' + e.message);
+    // Fallback: thử lại không có alias — luôn có quyền gửi bằng tài khoản chủ
+    try {
+      MailApp.sendEmail({
+        to: emailData.to,
+        cc: emailData.cc || '',
+        subject: emailData.subject,
+        body: emailData.body,
+        attachments: [pdfBlob],
+        name: CONFIG.EMAIL_SENDER_NAME,
+      });
+      Logger.log('Email with attachment sent successfully (fallback, no alias).');
+      return true;
+    } catch (e2) {
+      Logger.log('Email with attachment (fallback) also failed: ' + e2.message);
+      return false;
+    }
   }
 }
 // =============================================================================
