@@ -695,3 +695,39 @@ function saveSystemConfig(jsonConfig) {
     return { success: false, msg: "Lỗi saveSystemConfig: " + e.message };
   }
 }
+
+// ========================================================================
+// HÀM 1 LẦN: ĐIỀN SẴN CẤU HÌNH VÀO SHEET SETTINGS
+// Chạy xong có thể xóa.
+// ========================================================================
+function prefillSettings() {
+  var sheet = getOrCreateSheet_("Settings", ["Key", "Value"]);
+  var defaults = [
+    ["sys_emailMethod",   "gmail"],
+    ["sys_webhookUrl",    "https://esuhai.app.n8n.cloud/webhook/bod-send-email"],
+    ["sys_senderName",    "BTC MEETING BOD - ESUHAIGROUP"],
+    ["sys_senderEmail",   ""],
+    ["sys_sheetUrl",      "https://docs.google.com/spreadsheets/d/1yPDED_EHdaOBjF_lj8vF-DHeRsdXciouJk0uxW_OJxg/edit"],
+    ["sys_formUrl",       "https://forms.gle/6Te8MWGqB54drPUp6"],
+    ["sys_smtpServer",    "smtp.office365.com"],
+    ["sys_smtpPort",      "587"],
+    ["sys_smtpEncrypt",   "STARTTLS"],
+    ["sys_smtpAccount",   "ceo.offices@esuhai.com"],
+  ];
+
+  var data = sheet.getDataRange().getValues();
+  var existingKeys = {};
+  for (var i = 1; i < data.length; i++) {
+    existingKeys[(data[i][0] || "").toString().trim()] = true;
+  }
+
+  var count = 0;
+  for (var j = 0; j < defaults.length; j++) {
+    if (!existingKeys[defaults[j][0]]) {
+      sheet.appendRow(defaults[j]);
+      count++;
+    }
+  }
+
+  SpreadsheetApp.getUi().alert("Đã điền " + count + " cấu hình mặc định vào Sheet Settings.");
+}

@@ -76,23 +76,23 @@ const CONFIG = {
 };
 
 /**
- * Nạp đè cấu hình từ Sheet 'Cấu hình' vào CONFIG.
+ * Nạp đè cấu hình từ Sheet 'Settings' (do AdminPage quản lý) vào CONFIG.
  * Được gọi đầu mỗi hàm gửi email để đảm bảo cài đặt mới nhất từ AdminPage được áp dụng.
- * Format Sheet 'Cấu hình': Cột A = Key, Cột B = Value.
+ * Format Sheet 'Settings': Cột A = Key (sys_*), Cột B = Value.
  */
 function loadConfigFromSheet() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
-    if (!sheet) return; // Nếu chưa có Sheet Cấu hình, giữ nguyên giá trị mặc định
+    var sheet = ss.getSheetByName("Settings");
+    if (!sheet) return; // Nếu chưa có Sheet Settings, giữ nguyên giá trị mặc định
     var data = sheet.getDataRange().getValues();
     var mapping = {
-      'N8N_WEBHOOK_URL':    function(v) { if (v) CONFIG.N8N_WEBHOOK_URL    = v; },
-      'EMAIL_METHOD':       function(v) { if (v) CONFIG.EMAIL_METHOD       = v; },
-      'EMAIL_SENDER_NAME':  function(v) { if (v) CONFIG.EMAIL_SENDER_NAME  = v; },
-      'EMAIL_SENDER_ADDRESS': function(v) { CONFIG.EMAIL_SENDER_ADDRESS = v; }, // Cho phép xóa trắng để bỏ alias
+      'sys_webhookUrl':    function(v) { if (v) CONFIG.N8N_WEBHOOK_URL    = v; },
+      'sys_emailMethod':   function(v) { if (v) CONFIG.EMAIL_METHOD       = v; },
+      'sys_senderName':    function(v) { if (v) CONFIG.EMAIL_SENDER_NAME  = v; },
+      'sys_senderEmail':   function(v) { CONFIG.EMAIL_SENDER_ADDRESS = v; }, // Cho phép xóa trắng để bỏ alias
     };
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 1; i < data.length; i++) {
       var key = (data[i][0] || '').toString().trim();
       var val = (data[i][1] !== undefined && data[i][1] !== null) ? data[i][1].toString().trim() : '';
       if (mapping[key]) mapping[key](val);
