@@ -13,7 +13,7 @@ function doGet(e) {
   var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   if (page === 'admin') {
     return HtmlService.createHtmlOutputFromFile("AdminPage")
-      .setTitle("Trang Quản Trị — BOD Meeting")
+      .setTitle("BOD Admin Page")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
   return HtmlService.createHtmlOutputFromFile("Dashboard")
@@ -21,25 +21,13 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// ===== INCLUDE HELPER (chuẩn GAS modular pattern) =====
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
-}
-
 // ===== MỞ DASHBOARD FULL SCREEN =====
 function showDashboardDialog() {
-  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
-    .setWidth(1600)
-    .setHeight(900);
-  SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
-}
-
-// ===== MỞ ADMIN PAGE TỪ MENU =====
-function showAdminPageDialog() {
-  var html = HtmlService.createHtmlOutputFromFile("AdminPage")
-    .setWidth(1200)
-    .setHeight(900);
-  SpreadsheetApp.getUi().showModalDialog(html, "Trang Quản Trị — BOD Meeting");
+  var scriptUrl = ScriptApp.getService().getUrl();
+  var html = HtmlService.createHtmlOutput(
+    '<script>window.open("' + scriptUrl + '", "_blank");google.script.host.close();</script>'
+  ).setWidth(200).setHeight(50);
+  SpreadsheetApp.getUi().showModalDialog(html, "Đang mở Dashboard...");
 }
 
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
@@ -587,9 +575,4 @@ function sendScheduleFromDashboard() {
   } catch (e) {
     return { success: false, msg: "Lỗi: " + e.message };
   }
-}
-
-// ===== HELPER CỦA DASHBOARD =====
-function getScriptAppUrl() {
-  return ScriptApp.getService().getUrl();
 }

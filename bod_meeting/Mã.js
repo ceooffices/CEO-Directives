@@ -41,8 +41,8 @@ const CONFIG = {
   BOD_HOSTING_DEFAULT: "letuan@esuhai.com",
   N8N_WEBHOOK_URL: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
   EMAIL_SENDER_NAME: "BTC MEETING BOD - ESUHAIGROUP",
-  EMAIL_SENDER_ADDRESS: "ceo.offices@esuhai.com",
-  EMAIL_METHOD: "n8n",  // 'n8n' = gửi qua webhook (anti-spam), 'gmail' = gửi trực tiếp
+  EMAIL_SENDER_ADDRESS: "",  // Để trống = gửi từ tài khoản chủ Script. Khi N8N sẵn sàng sẽ dùng ceo.offices@esuhai.com
+  EMAIL_METHOD: "gmail",  // 'gmail' vì N8N chưa thiết lập. Đổi sang 'n8n' khi webhook sẵn sàng
   COLUMN_MAP: {
     timestamp: 0,
     noiDung: 1,
@@ -105,12 +105,13 @@ function loadConfigFromSheet() {
 
 
 // =============================================================================
-// MENU V8.4 - MINIMAL (Web Dashboard handles operations)
+// MENU V8.5 - MINIMAL (Web Dashboard handles operations)
 // =============================================================================
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu("🔧 BOD Tools")
     .addItem("🌐 Mở Dashboard", "showDashboardDialog")
+    .addItem("⚙️ Mở Trang Quản trị", "showAdminPageDialog")
     .addItem("🔄 Refresh dữ liệu", "refreshDashboard")
     .addSeparator()
     .addItem("🔄 Reset gửi email", "resetEmailSentStatus")
