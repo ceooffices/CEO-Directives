@@ -66,17 +66,25 @@ HtmlService.createTemplateFromFile("AdminPage").evaluate()
 
 ---
 
-## 3. QUY TẮC DEPLOY
+## 3. QUY TRÌNH DEPLOY VÀ PHÂN LUỒNG MÔI TRƯỜNG
 
-### clasp push
-- Chỉ đẩy code lên HEAD version trên GAS cloud
-- **KHÔNG tự động cập nhật** Web App deployment
-- Để cập nhật Web App public: vào Apps Script → Deploy → Manage deployments → chọn version mới
+Để kiểm soát chặt chẽ, không bắt người dùng phải deploy nhiều lần, áp dụng cơ chế 2 môi trường:
 
-### Kiểm tra sau khi push
-1. `clasp push` thành công (24 files)
-2. Mở Sheet → menu BOD Tools → 🌐 Mở Dashboard → Dashboard hiển thị
-3. Dashboard → icon ⚙ chân trang → AdminPage hiển thị
+### Môi trường DEV (Test nội bộ)
+- **URL sử dụng:** Link đuôi `/dev` (Click "Thử nghiệm bộ triển khai" / "Test deployments")
+- **Đặc điểm:** Luôn chạy code mới nhất từ trạng thái HEAD (code vừa được `clasp push`).
+- **Quy tắc:** MỌI tính năng mới, fix bug đều **PHẢI TEST TRÊN LINK /dev**. Người dùng không cần tạo Deploy mới. Antigravity tự push và tự test trên link /dev.
+
+### Môi trường PRODUCTION (Sử dụng chính thức)
+- **URL sử dụng:** Link đuôi `/exec`
+- **Đặc điểm:** Cố định ở một phiên bản (Version) cụ thể. Chỉ thay đổi khi có lệnh Deploy mới.
+- **Quy tắc:** Chỉ tạo Deploy mới khi **toàn bộ tính năng ở môi trường DEV đã được test hoàn hảo**.
+
+### Chu trình 4 bước chuẩn
+1. **Code & Push:** Antigravity sửa code và chạy `npx clasp push`
+2. **Test DEV:** Antigravity/Owner kiểm tra mọi chức năng qua menu Sheets (pop-up) hoặc link Web App đuôi `/dev`
+3. **Gom nhóm & Chốt (Freeze):** Gom tất cả các tính năng cần thiết thành một cụm phát hành (Release cụm).
+4. **Deploy PRODUCTION (Duy nhất 1 lần):** Owner vào "Manage Deployments" -> chọn Version MỚI -> Deploy.
 
 ---
 
