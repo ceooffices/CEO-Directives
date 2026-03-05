@@ -29,11 +29,19 @@ function include(filename) {
 
 // ===== MỞ DASHBOARD FULL SCREEN =====
 function showDashboardDialog() {
-  var scriptUrl = ScriptApp.getService().getUrl();
-  var html = HtmlService.createHtmlOutput(
-    '<script>window.open("' + scriptUrl + '", "_blank");google.script.host.close();</script>'
-  ).setWidth(200).setHeight(50);
-  SpreadsheetApp.getUi().showModalDialog(html, "Đang mở Dashboard...");
+  var html = HtmlService.createTemplateFromFile("Dashboard")
+    .evaluate()
+    .setWidth(1600)
+    .setHeight(900);
+  SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
+}
+
+// ===== MỞ ADMIN PAGE TỪ MENU =====
+function showAdminPageDialog() {
+  var html = HtmlService.createHtmlOutputFromFile("AdminPage")
+    .setWidth(1200)
+    .setHeight(900);
+  SpreadsheetApp.getUi().showModalDialog(html, "Trang Quản Trị — BOD Meeting");
 }
 
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
