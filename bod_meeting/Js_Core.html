@@ -35,6 +35,21 @@
           .getScriptAppUrl();
       }
 
+      function openFullscreen() {
+        var btn = document.getElementById('fullscreenBtn');
+        if (btn) btn.innerHTML = '&#8987; Đang tải...'; // Hourglass
+        google.script.run
+          .withSuccessHandler(function(url) {
+            if (btn) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> Toàn màn hình';
+            window.open(url, '_blank');
+          })
+          .withFailureHandler(function(err) {
+            if (btn) btn.innerHTML = 'Lỗi!';
+            showMsg('Không lấy được link: ' + err.message, 'error');
+          })
+          .getScriptAppUrl();
+      }
+
       // ========================================
       // DATE HELPERS
       // ========================================
