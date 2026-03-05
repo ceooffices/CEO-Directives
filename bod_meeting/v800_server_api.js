@@ -12,8 +12,7 @@
 function doGet(e) {
   var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   if (page === 'admin') {
-    return HtmlService.createTemplateFromFile("AdminPage")
-      .evaluate()
+    return HtmlService.createHtmlOutputFromFile("AdminPage")
       .setTitle("Trang Quản Trị — BOD Meeting")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }

@@ -12,8 +12,7 @@
 function doGet(e) {
   var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   if (page === 'admin') {
-    return HtmlService.createTemplateFromFile("AdminPage")
-      .evaluate()
+    return HtmlService.createHtmlOutputFromFile("AdminPage")
       .setTitle("Trang Quản Trị — BOD Meeting")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
@@ -29,6 +28,13 @@ function include(filename) {
 }
 
 // ===== MỞ DASHBOARD FULL SCREEN =====
+function showAdminPageDialog() {
+  var html = HtmlService.createHtmlOutputFromFile("AdminPage")
+    .setWidth(1200)
+    .setHeight(900);
+  SpreadsheetApp.getUi().showModalDialog(html, "Trang Quản Trị — BOD Meeting");
+}
+
 function showDashboardDialog() {
   var html = HtmlService.createTemplateFromFile("Dashboard")
     .evaluate()

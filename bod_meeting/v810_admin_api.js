@@ -357,8 +357,7 @@ function saveAdminSettings(jsonSettings) {
 
 // ===== MỞ ADMIN PAGE TỪ MENU (hỗ trợ điều hướng) =====
 function showAdminPageDialog() {
-  var html = HtmlService.createTemplateFromFile("AdminPage")
-    .evaluate()
+  var html = HtmlService.createHtmlOutputFromFile("AdminPage")
     .setWidth(1200)
     .setHeight(900);
   SpreadsheetApp.getUi().showModalDialog(html, "Trang Quản Trị — BOD Meeting");
