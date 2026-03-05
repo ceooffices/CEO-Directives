@@ -68,7 +68,7 @@ function buildReminderEmail(deptName, contactName, reportDate, formUrl) {
     + '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif;">' + (contactName || deptName) + ' 様</p>'
 
     + '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif;">'
-    + '<p style="margin:0 0 10px;">Bộ phận <strong>' + deptName + '</strong> chưa gửi đăng ký báo cáo cho cuộc họp BOD sắp tới.</p>'
+    + '<p style="margin:0 0 10px;">Bộ phận <strong>' + deptName + '</strong> chưa gửi đăng ký báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
     + '<p style="margin:0 0 10px;">Kính mời Anh/Chị hoàn tất đăng ký trước <strong>17:00 Thứ Năm</strong> để BTC kịp tổng hợp lịch trình.</p>'
     + '</div>'
 
@@ -165,7 +165,7 @@ function buildApprovalResultEmail(recipientName, reportDate, status, content, gh
     + '</div></div>'
 
     + '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif;">'
-    + '<p style="margin:0 0 10px;">BTC Meeting BOD đã xem xét và cập nhật kết quả phê duyệt đăng ký báo cáo của Anh/Chị.</p>'
+    + '<p style="margin:0 0 10px;">BTC Meeting BOD xin thông báo kết quả phê duyệt nội dung đăng ký báo cáo của Anh/Chị cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
     + '</div>'
 
     + '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' + s.color + ';font-family:Arial,sans-serif;">'
@@ -186,7 +186,7 @@ function buildApprovalResultEmail(recipientName, reportDate, status, content, gh
 }
 
 // ========================================================================
-// 4. LỊCH TRÌNH LÀM VIỆC
+// 4. LỊCH TRÌNH CUỘC HỌP
 // ========================================================================
 /**
  * @param {string} reportDate    - Ngày họp hiển thị
@@ -194,7 +194,7 @@ function buildApprovalResultEmail(recipientName, reportDate, status, content, gh
  * @returns {string} HTML string
  */
 function buildScheduleEmail(reportDate, scheduleItems) {
-  var header = _eHdr_('BOD MEETING — LỊCH TRÌNH LÀM VIỆC', 'BOD会議 — 議事スケジュール');
+  var header = _eHdr_('BOD MEETING — LỊCH TRÌNH CUỘC HỌP', 'BOD会議 — 議事スケジュール');
   var items = scheduleItems || [];
 
   var rows = '';
@@ -219,7 +219,7 @@ function buildScheduleEmail(reportDate, scheduleItems) {
     + '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif;">BODメンバー各位</p>'
 
     + '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif;">'
-    + '<p style="margin:0 0 10px;">BTC Meeting BOD trân trọng gửi lịch trình làm việc chính thức. Kính mời Anh/Chị chuẩn bị theo đúng thứ tự và thời lượng đã phân bổ.</p>'
+    + '<p style="margin:0 0 10px;">BTC Meeting BOD trân trọng gửi lịch trình cuộc họp chính thức. Kính mời Anh/Chị chuẩn bị nội dung theo đúng thứ tự và thời lượng đã phân bổ.</p>'
     + '</div>'
 
     + '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6;font-family:Arial,sans-serif;">'

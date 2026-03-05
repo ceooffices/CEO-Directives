@@ -383,3 +383,315 @@ function saveApprovalChanges(updates) {
 function showAdminPage() {
   return showAdminPageDialog();
 }
+
+// ========================================================================
+// BOD HOSTING MANAGEMENT
+// ========================================================================
+var BOD_HOSTING_SHEET = "BOD Hosting";
+var BOD_HOSTING_HEADERS = ["Họ tên", "Email", "Từ ngày", "Đến ngày", "Trạng thái", "Ngày cập nhật"];
+
+/**
+ * Lấy thông tin BOD Hosting hiện tại + lịch sử
+ * @returns {object} {name, email, from, to, history: [{name, email, from, to, status}]}
+ */
+function getBodHosting() {
+  var sheet = getOrCreateSheet_(BOD_HOSTING_SHEET, BOD_HOSTING_HEADERS);
+  var data = sheet.getDataRange().getValues();
+  
+  var current = null;
+  var history = [];
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Skip header row
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var name = (row[0] || "").toString().trim();
+    var email = (row[1] || "").toString().trim();
+    var fromDate = row[2] ? formatDateToISO_(row[2]) : "";
+    var toDate = row[3] ? formatDateToISO_(row[3]) : "";
+    var status = (row[4] || "").toString().trim().toLowerCase();
+    
+    if (!name && !email) continue;
+    
+    // Determine actual status based on date
+    var endDate = toDate ? new Date(toDate) : null;
+    var isActive = status === "active" || (endDate && endDate >= today);
+    
+    if (isActive && !current) {
+      current = {name: name, email: email, from: fromDate, to: toDate};
+    }
+    
+    history.push({
+      name: name,
+      email: email,
+      from: fromDate,
+      to: toDate,
+      status: isActive ? "active" : "expired"
+    });
+  }
+  
+  // If no current host found, return config default
+  if (!current) {
+    current = {
+      name: "Lê Tuấn",
+      email: CONFIG.BOD_HOSTING_DEFAULT || "letuan@esuhai.com",
+      from: "",
+      to: ""
+    };
+  }
+  
+  current.history = history;
+  return current;
+}
+
+/**
+ * Lưu thông tin BOD Hosting mới
+ * Auto-archive host cũ (set expired) khi thêm host mới
+ * @param {string} jsonData - JSON: {name, email, from, to}
+ * @returns {object} {success, msg}
+ */
+function saveBodHosting(jsonData) {
+  try {
+    var data = JSON.parse(jsonData);
+    if (!data.name || !data.email) {
+      return {success: false, msg: "Thiếu họ tên hoặc email"};
+    }
+    
+    var sheet = getOrCreateSheet_(BOD_HOSTING_SHEET, BOD_HOSTING_HEADERS);
+    var allData = sheet.getDataRange().getValues();
+    
+    // Mark all existing entries as "expired"
+    for (var i = 1; i < allData.length; i++) {
+      sheet.getRange(i + 1, 5).setValue("expired"); // Column E = status
+    }
+    
+    // Append new hosting entry
+    var now = new Date();
+    sheet.appendRow([
+      data.name,
+      data.email,
+      data.from || Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd"),
+      data.to || "",
+      "active",
+      Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm")
+    ]);
+    
+    // Also update the config sheet BOD Hosting row
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var configSheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
+    if (configSheet) {
+      var configData = configSheet.getDataRange().getValues();
+      var found = false;
+      for (var j = 0; j < configData.length; j++) {
+        var c1 = (configData[j][0] || "").toString().trim().toLowerCase();
+        if (c1.includes("bod hosting")) {
+          configSheet.getRange(j + 1, 2).setValue(data.email);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // Add BOD Hosting row to config
+        configSheet.appendRow(["BOD Hosting", data.email]);
+      }
+    }
+    
+    return {success: true, msg: "Đã lưu BOD Hosting: " + data.name + " (" + data.email + ")"};
+  } catch (e) {
+    return {success: false, msg: "Lỗi: " + e.message};
+  }
+}
+
+/**
+ * Helper: Convert date value to ISO string (yyyy-MM-dd)
+ */
+function formatDateToISO_(dateVal) {
+  if (!dateVal) return "";
+  if (dateVal instanceof Date) {
+    var y = dateVal.getFullYear();
+    var m = ("0" + (dateVal.getMonth() + 1)).slice(-2);
+    var d = ("0" + dateVal.getDate()).slice(-2);
+    return y + "-" + m + "-" + d;
+  }
+  // Already a string
+  return dateVal.toString().trim();
+}
+
+// ========================================================================
+// EMAIL SEND TRACKING — CHỐNG GỬI TRÙNG
+// ========================================================================
+var EMAIL_LOG_SHEET = "Email Log";
+var EMAIL_LOG_HEADERS = ["Thời gian", "Loại email", "Người gửi", "Số lượng", "Chi tiết"];
+
+/**
+ * Ghi log khi gửi email thành công
+ * @param {string} type - Loại email: reminder, approval_reminder, approval_result, schedule
+ * @param {number} count - Số email đã gửi
+ * @param {string} detail - Chi tiết (danh sách bộ phận, etc.)
+ */
+function logEmailSend(type, count, detail) {
+  try {
+    var sheet = getOrCreateSheet_(EMAIL_LOG_SHEET, EMAIL_LOG_HEADERS);
+    var now = new Date();
+    var sender = Session.getActiveUser().getEmail() || "system";
+    var timeStr = Utilities.formatDate(now, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+    
+    var typeLabels = {
+      'reminder': 'Nhắc đăng ký',
+      'bulk_reminder': 'Nhắc hàng loạt',
+      'approval_reminder': 'Nhắc phê duyệt',
+      'approval_result': 'Kết quả phê duyệt',
+      'schedule': 'Gửi lịch trình'
+    };
+    
+    sheet.appendRow([
+      timeStr,
+      typeLabels[type] || type,
+      sender,
+      count || 0,
+      detail || ""
+    ]);
+    
+    return true;
+  } catch(e) {
+    Logger.log("Log email send error: " + e.message);
+    return false;
+  }
+}
+
+/**
+ * Lấy log gửi email gần đây (để Dashboard hiển thị)
+ * @param {string} searchDate - Ngày cần kiểm tra (dd/mm format)
+ * @returns {Array} [{time, type, sender, count, detail}]
+ */
+function getEmailSendLog(searchDate) {
+  try {
+    var sheet = getOrCreateSheet_(EMAIL_LOG_SHEET, EMAIL_LOG_HEADERS);
+    var data = sheet.getDataRange().getValues();
+    var logs = [];
+    
+    // Get logs from last 7 days
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 7);
+    
+    for (var i = data.length - 1; i >= 1; i--) {
+      var row = data[i];
+      var timeStr = (row[0] || "").toString();
+      
+      // Parse dd/MM/yyyy HH:mm:ss
+      var parts = timeStr.split(" ");
+      if (parts.length < 1) continue;
+      var dateParts = parts[0].split("/");
+      if (dateParts.length !== 3) continue;
+      
+      var logDate = new Date(dateParts[2], dateParts[1]-1, dateParts[0]);
+      if (logDate < cutoff) break; // Stop at old entries
+      
+      logs.push({
+        time: timeStr,
+        type: (row[1] || "").toString(),
+        sender: (row[2] || "").toString(),
+        count: row[3] || 0,
+        detail: (row[4] || "").toString()
+      });
+      
+      if (logs.length >= 20) break; // Max 20 recent logs
+    }
+    
+    return logs;
+  } catch(e) {
+    return [];
+  }
+}
+
+// ========================================================================
+// HÀM 9: LẤY CẤU HÌNH HỆ THỐNG EMAIL (Phương thức gửi, Webhook, Tên gửi)
+// ========================================================================
+/**
+ * Lấy cấu hình hệ thống email từ sheet Settings (key sys_*)
+ * @returns {object} {emailMethod, webhookUrl, senderName, senderEmail}
+ */
+function getSystemConfig() {
+  try {
+    var sheet = getOrCreateSheet_("Settings", ["Key", "Value"]);
+    var data = sheet.getDataRange().getValues();
+
+    // Giá trị mặc định (lấy từ CONFIG trong Mã.js)
+    var defaults = {
+      emailMethod: "n8n",
+      webhookUrl: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
+      senderName: "BTC MEETING BOD - ESUHAIGROUP",
+      senderEmail: "ceo.offices@esuhai.com"
+    };
+
+    var keyMap = {
+      "sys_emailMethod": "emailMethod",
+      "sys_webhookUrl": "webhookUrl",
+      "sys_senderName": "senderName",
+      "sys_senderEmail": "senderEmail"
+    };
+
+    var result = {};
+    for (var k in defaults) result[k] = defaults[k];
+
+    for (var i = 1; i < data.length; i++) {
+      var rowKey = (data[i][0] || "").toString().trim();
+      if (rowKey.indexOf("sys_") === 0 && keyMap[rowKey] !== undefined) {
+        var val = (data[i][1] || "").toString().trim();
+        if (val) result[keyMap[rowKey]] = val;
+      }
+    }
+
+    return result;
+  } catch (e) {
+    return { error: "Lỗi getSystemConfig: " + e.message };
+  }
+}
+
+// ========================================================================
+// HÀM 10: LƯU CẤU HÌNH HỆ THỐNG EMAIL
+// ========================================================================
+/**
+ * Lưu cấu hình hệ thống email vào sheet Settings (key sys_*)
+ * @param {string} jsonConfig - JSON: {emailMethod, webhookUrl, senderName, senderEmail}
+ * @returns {object} {success, msg}
+ */
+function saveSystemConfig(jsonConfig) {
+  try {
+    var config = JSON.parse(jsonConfig);
+    var sheet = getOrCreateSheet_("Settings", ["Key", "Value"]);
+
+    var fieldToKey = {
+      emailMethod: "sys_emailMethod",
+      webhookUrl: "sys_webhookUrl",
+      senderName: "sys_senderName",
+      senderEmail: "sys_senderEmail"
+    };
+
+    for (var field in config) {
+      if (!fieldToKey[field]) continue;
+
+      var sysKey = fieldToKey[field];
+      var value = (config[field] || "").toString();
+
+      var data = sheet.getDataRange().getValues();
+      var found = false;
+      for (var i = 1; i < data.length; i++) {
+        if (data[i][0].toString().trim() === sysKey) {
+          sheet.getRange(i + 1, 2).setValue(value);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        sheet.appendRow([sysKey, value]);
+      }
+    }
+
+    return { success: true, msg: "Đã lưu cấu hình hệ thống" };
+  } catch (e) {
+    return { success: false, msg: "Lỗi saveSystemConfig: " + e.message };
+  }
+}

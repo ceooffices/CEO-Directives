@@ -12,8 +12,9 @@
 function doGet(e) {
   var page = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   if (page === 'admin') {
-    return HtmlService.createHtmlOutputFromFile("AdminPage")
-      .setTitle("BOD Admin Page")
+    return HtmlService.createTemplateFromFile("AdminPage")
+      .evaluate()
+      .setTitle("Trang Quản Trị — BOD Meeting")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
   return HtmlService.createTemplateFromFile("Dashboard")
@@ -581,4 +582,9 @@ function sendScheduleFromDashboard() {
   } catch (e) {
     return { success: false, msg: "Lỗi: " + e.message };
   }
+}
+
+// ===== HELPER CỦA DASHBOARD =====
+function getScriptAppUrl() {
+  return ScriptApp.getService().getUrl();
 }

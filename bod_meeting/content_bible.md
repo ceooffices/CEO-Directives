@@ -1,6 +1,7 @@
-# CONTENT BIBLE — BTC MEETING BOD DASHBOARD
-> Phiên bản: v8.3 | Cập nhật: 2026-03-03
+# CONTENT BIBLE — BTC MEETING BOD
+> Phiên bản: v8.4 | Cập nhật: 2026-03-04
 > Quy tắc: 100% tiếng Việt có dấu · Không emoji · Header IN HOA · Hint in nghiêng nhỏ
+> Phạm vi: Dashboard + Admin Page + Email Templates
 
 ---
 
@@ -105,7 +106,7 @@
 
 ---
 
-## 5. BLOCK LỊCH TRÌNH LÀM VIỆC
+## 5. BLOCK LỊCH TRÌNH CUỘC HỌP
 
 | Vị trí | Key | Nội dung |
 |--------|-----|----------|
@@ -148,7 +149,7 @@
 
 | Vị trí | Key | Nội dung |
 |--------|-----|----------|
-| Tiêu đề modal | `modal-title` | XEM TRƯỚC EMAIL TRƯỚC KHI GỬI |
+| Tiêu đề modal | `modal-title` | XEM TRƯỚC NỘI DUNG EMAIL |
 | Label Người nhận | `modal-to` | Người nhận |
 | Label Tiêu đề | `modal-subject` | Tiêu đề |
 | Label Nội dung | `modal-body` | Nội dung |
@@ -161,7 +162,129 @@
 
 | Vị trí | Key | Nội dung |
 |--------|-----|----------|
-| Copyright | `footer-copy` | ESUHAI GROUP — Hệ thống quản lý họp BOD nội bộ |
+| Footer Dashboard | `footer-dashboard` | BTC Meeting BOD v8.2 — ESUHAI GROUP |
+| Footer Admin | `footer-admin` | BTC Meeting BOD Admin v8.2 |
+
+---
+
+## 9. ADMIN PAGE (3 Tabs)
+
+### Tab 1 — MẪU EMAIL
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Tiêu đề panel | `admin-tpl-title` | QUẢN LÝ MẪU EMAIL |
+| Dropdown label | `admin-tpl-select` | Chọn loại email |
+| Option 1 | `admin-tpl-opt1` | Nhắc nhở đăng ký (1 bộ phận) |
+| Option 2 | `admin-tpl-opt2` | Nhắc nhở đăng ký (tất cả) |
+| Option 3 | `admin-tpl-opt3` | Nhắc nhở phê duyệt |
+| Option 4 | `admin-tpl-opt4` | Kết quả phê duyệt |
+| Option 5 | `admin-tpl-opt5` | Gửi lịch trình |
+| Label tiêu đề | `admin-tpl-subj` | TIÊU ĐỀ EMAIL |
+| Label biến | `admin-tpl-vars` | BIẾN KHẢ DỤNG |
+| Label nội dung | `admin-tpl-body` | NỘI DUNG EMAIL |
+| Hint | `admin-tpl-hint` | *Dùng các biến bên trên để chèn dữ liệu tự động vào email* |
+| Nút lưu | `admin-tpl-save` | Lưu mẫu |
+| Nút xem trước | `admin-tpl-preview` | Xem trước |
+| Nút khôi phục | `admin-tpl-reset` | Khôi phục mặc định |
+
+### Tab 2 — PHÂN QUYỀN
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Tiêu đề panel | `admin-acl-title` | PHÂN QUYỀN TRUY CẬP |
+| Hint | `admin-acl-hint` | *Quản lý quyền truy cập hệ thống cho từng thành viên* |
+| Cột Họ tên | `admin-acl-name` | Họ tên |
+| Cột Email | `admin-acl-email` | Email |
+| Cột Vai trò | `admin-acl-role` | Vai trò |
+| Cột Trạng thái | `admin-acl-status` | Trạng thái |
+| Cột Hành động | `admin-acl-action` | Hành động |
+| Badge đã duyệt | `admin-acl-approved` | Đã duyệt |
+| Badge chờ duyệt | `admin-acl-pending` | Chờ duyệt |
+| Badge bị khóa | `admin-acl-blocked` | Bị khóa |
+| Nút duyệt | `admin-acl-btn-approve` | Duyệt |
+| Nút từ chối | `admin-acl-btn-reject` | Từ chối |
+| Nút khóa | `admin-acl-btn-lock` | Khóa |
+| Nút mở khóa | `admin-acl-btn-unlock` | Mở khóa |
+| Form thêm user | `admin-acl-add` | THÊM THÀNH VIÊN MỚI |
+| Form label email | `admin-acl-add-email` | Email |
+| Form label vai trò | `admin-acl-add-role` | Vai trò |
+| Nút thêm | `admin-acl-add-btn` | Thêm thành viên |
+
+### Tab 3 — THIẾT LẬP
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Tiêu đề panel | `admin-set-title` | THIẾT LẬP HỆ THỐNG |
+| Hint | `admin-set-hint` | *Cấu hình các thông số mặc định cho hệ thống BTC Meeting BOD* |
+| Label giờ bắt đầu | `admin-set-start` | Giờ bắt đầu họp |
+| Label hạn đăng ký | `admin-set-reg` | Hạn đăng ký |
+| Label hạn phê duyệt | `admin-set-appr` | Hạn phê duyệt |
+| Label gửi lịch | `admin-set-sched` | Gửi lịch trình |
+| Label thời lượng max | `admin-set-maxpres` | Thời lượng tối đa (phút) |
+| Label CD mặc định | `admin-set-defcd` | Chỉ đạo mặc định (phút) |
+| Label CC email | `admin-set-cc` | CC Email mặc định |
+| Hint CC | `admin-set-cc-hint` | *Địa chỉ email luôn nhận CC khi gửi thông báo* |
+| Label email BTC | `admin-set-btc` | Email BTC (nhận nhắc phê duyệt) |
+| Label link form | `admin-set-form` | Link Form đăng ký |
+| Label link sheet | `admin-set-sheet` | Link Google Sheet |
+| Nút lưu | `admin-set-save` | Lưu thiết lập |
+| Thông tin hệ thống | `admin-set-info` | THÔNG TIN HỆ THỐNG |
+
+---
+
+## 10. EMAIL TEMPLATES (Song ngữ Việt–Nhật)
+
+> File: `v820_email_templates.gs` · Inline CSS · Max 640px · Gmail/Outlook safe
+
+### Email 1 — Nhắc nhở đăng ký báo cáo
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Header VN | `email1-header` | BOD MEETING — NHẮC NHỞ ĐĂNG KÝ BÁO CÁO |
+| Header JP | `email1-header-jp` | BOD会議 — 報告登録リマインダー |
+| Lời mở | `email1-greeting` | Kính gửi {name} — {dept}, |
+| Nội dung chính | `email1-body` | Bộ phận {dept} chưa gửi đăng ký báo cáo cho cuộc họp BOD ngày {date}. |
+| Hành động | `email1-cta` | Kính mời Anh/Chị hoàn tất đăng ký trước 17:00 Thứ Năm. |
+| Nút | `email1-btn` | Đăng ký ngay |
+
+### Email 2 — Nhắc phê duyệt nội dung
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Header VN | `email2-header` | BOD MEETING — NHẮC PHÊ DUYỆT NỘI DUNG |
+| Header JP | `email2-header-jp` | BOD会議 — 承認リマインダー |
+| Lời mở | `email2-greeting` | Kính gửi Ban Tổ Chức, |
+| Nội dung chính | `email2-body` | Hiện có {n} đăng ký báo cáo đang chờ phê duyệt. |
+| Hành động | `email2-cta` | Kính mời Anh/Chị xem xét và hoàn tất phê duyệt trước 17:00 Thứ Sáu. |
+
+### Email 3 — Kết quả phê duyệt
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Header VN | `email3-header` | BOD MEETING — KẾT QUẢ PHÊ DUYỆT |
+| Header JP | `email3-header-jp` | BOD会議 — 承認結果通知 |
+| Lời mở | `email3-greeting` | Kính gửi {name}, |
+| Nội dung chính | `email3-body` | BTC Meeting BOD xin thông báo kết quả phê duyệt nội dung đăng ký báo cáo. |
+| Status badges | `email3-status` | ĐÃ DUYỆT / TỪ CHỐI / HOÃN LẠI |
+
+### Email 4 — Lịch trình cuộc họp
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Header VN | `email4-header` | BOD MEETING — LỊCH TRÌNH CUỘC HỌP |
+| Header JP | `email4-header-jp` | BOD会議 — 議事スケジュール |
+| Lời mở | `email4-greeting` | Kính gửi toàn thể thành viên BOD, |
+| Nội dung chính | `email4-body` | BTC Meeting BOD trân trọng gửi lịch trình cuộc họp chính thức. |
+| Hành động | `email4-cta` | Kính mời Anh/Chị chuẩn bị nội dung theo đúng thứ tự và thời lượng đã phân bổ. |
+
+### Footer chung (tất cả email)
+
+| Vị trí | Key | Nội dung |
+|--------|-----|----------|
+| Dòng 1 VN | `email-footer-vn` | Email tự động từ BTC Meeting BOD — ESUHAI GROUP |
+| Dòng 2 JP | `email-footer-jp` | 自動送信メール — BOD会議運営委員会 |
+| Dòng 3 | `email-footer-noreply` | Vui lòng không trả lời email này / このメールに返信しないでください |
 
 ---
 

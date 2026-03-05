@@ -470,3 +470,82 @@ function saveApprovalChanges(updates) {
 function showAdminPage() {
   return showAdminPageDialog();
 }
+
+// ========================================================================
+// HÀM 9: LẤY CẤU HÌNH HỆ THỐNG EMAIL
+// ========================================================================
+function getSystemConfig() {
+  try {
+    var sheet = getOrCreateSheet_("Settings", ["Key", "Value"]);
+    var data = sheet.getDataRange().getValues();
+
+    var defaults = {
+      emailMethod: "n8n",
+      webhookUrl: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
+      senderName: "BTC MEETING BOD - ESUHAIGROUP",
+      senderEmail: "ceo.offices@esuhai.com"
+    };
+
+    var keyMap = {
+      "sys_emailMethod": "emailMethod",
+      "sys_webhookUrl": "webhookUrl",
+      "sys_senderName": "senderName",
+      "sys_senderEmail": "senderEmail"
+    };
+
+    var result = {};
+    for (var k in defaults) result[k] = defaults[k];
+
+    for (var i = 1; i < data.length; i++) {
+      var rowKey = (data[i][0] || "").toString().trim();
+      if (rowKey.indexOf("sys_") === 0 && keyMap[rowKey] !== undefined) {
+        var val = (data[i][1] || "").toString().trim();
+        if (val) result[keyMap[rowKey]] = val;
+      }
+    }
+
+    return result;
+  } catch (e) {
+    return { error: "Lỗi getSystemConfig: " + e.message };
+  }
+}
+
+// ========================================================================
+// HÀM 10: LƯU CẤU HÌNH HỆ THỐNG EMAIL
+// ========================================================================
+function saveSystemConfig(jsonConfig) {
+  try {
+    var config = JSON.parse(jsonConfig);
+    var sheet = getOrCreateSheet_("Settings", ["Key", "Value"]);
+
+    var fieldToKey = {
+      emailMethod: "sys_emailMethod",
+      webhookUrl: "sys_webhookUrl",
+      senderName: "sys_senderName",
+      senderEmail: "sys_senderEmail"
+    };
+
+    for (var field in config) {
+      if (!fieldToKey[field]) continue;
+      var sysKey = fieldToKey[field];
+      var value = (config[field] || "").toString();
+
+      var data = sheet.getDataRange().getValues();
+      var found = false;
+      for (var i = 1; i < data.length; i++) {
+        if (data[i][0].toString().trim() === sysKey) {
+          sheet.getRange(i + 1, 2).setValue(value);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        sheet.appendRow([sysKey, value]);
+      }
+    }
+
+    return { success: true, msg: "Đã lưu cấu hình hệ thống" };
+  } catch (e) {
+    return { success: false, msg: "Lỗi saveSystemConfig: " + e.message };
+  }
+}

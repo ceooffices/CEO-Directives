@@ -20,12 +20,19 @@
       // ADMIN PAGE NAVIGATION
       // ========================================
       function openAdminPage() {
-        // Khi ở web app context, mở Admin qua URL param
-        var currentUrl = window.location.href;
-        if (currentUrl.indexOf('page=admin') === -1) {
-          var separator = currentUrl.indexOf('?') === -1 ? '?' : '&';
-          window.open(currentUrl + separator + 'page=admin', '_blank');
-        }
+        var gearIcon = document.querySelector('.footer-gear');
+        if (gearIcon) gearIcon.innerHTML = '&#8987;'; // Hourglass
+        google.script.run
+          .withSuccessHandler(function(url) {
+            if (gearIcon) gearIcon.innerHTML = '&#9881;'; // Reactivate gear icon
+            var separator = url.indexOf('?') === -1 ? '?' : '&';
+            window.open(url + separator + 'page=admin', '_blank');
+          })
+          .withFailureHandler(function(err) {
+            if (gearIcon) gearIcon.innerHTML = '&#9881;';
+            showMsg('Lỗi mở trang quản trị: ' + err.message, 'error');
+          })
+          .getScriptAppUrl();
       }
 
       // ========================================

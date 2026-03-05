@@ -29,19 +29,20 @@ const CONFIG = {
   SHEET_DIM_DEPT: "Dim bộ phận",
   SHEET_CONFIG: "Cấu hình",
   SHEET_HR: "Nhân sự bắt buộc",
-  HR_COL_EMAIL: 6,
-  HR_COL_NAME: 3,
+  HR_COL_DEPT: 1,    // Cột A = Bộ phận (1-indexed)
+  HR_COL_EMAIL: 6,   // Cột F = Email (1-indexed)
+  HR_COL_NAME: 3,    // Cột C = Tên (1-indexed)
   BTC_FIXED: [
     "vynnl@esuhai.com",
     "minhhieu@esuhai.com",
     "dungntt@esuhai.com",
     "hoangkha@esuhai.com",
   ],
-  BOD_HOSTING_DEFAULT: "trucly@esuhai.com",
+  BOD_HOSTING_DEFAULT: "letuan@esuhai.com",
   N8N_WEBHOOK_URL: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
   EMAIL_SENDER_NAME: "BTC MEETING BOD - ESUHAIGROUP",
   EMAIL_SENDER_ADDRESS: "ceo.offices@esuhai.com",
-  EMAIL_METHOD: "gmail",
+  EMAIL_METHOD: "n8n",  // 'n8n' = gửi qua webhook (anti-spam), 'gmail' = gửi trực tiếp
   COLUMN_MAP: {
     timestamp: 0,
     noiDung: 1,
@@ -75,28 +76,18 @@ const CONFIG = {
 };
 
 // =============================================================================
-// MENU V8.0 - CLEAN
+// MENU V8.4 - MINIMAL (Web Dashboard handles operations)
 // =============================================================================
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu("🔧 BOD Tools")
-    .addItem("📊 Dashboard (Sheets)", "goToDashboard")
-    .addItem("🌐 Dashboard (Web)", "showDashboardDialog")
-    .addItem("🔄 Refresh Dashboard", "refreshDashboard")
-    .addSeparator()
-    .addItem("📋 Tạo Lịch trình", "generateSchedule")
-    .addItem("🖨️ Format in ấn", "formatScheduleForPrint")
-    .addSeparator()
-    .addItem("📬 Gửi kết quả duyệt", "sendApprovalResults")
-    .addItem("✔︎ XÁC NHẬN & GỬI LỊCH TRÌNH", "secretaryApproveV78")
+    .addItem("🌐 Mở Dashboard", "showDashboardDialog")
+    .addItem("🔄 Refresh dữ liệu", "refreshDashboard")
     .addSeparator()
     .addItem("🔄 Reset gửi email", "resetEmailSentStatus")
     .addItem("👥 Cập nhật Tên liên quan", "updateAllRelatedNames")
     .addItem("🔍 Kiểm tra Email", "checkInvalidEmails")
     .addToUi();
-  try {
-    highlightUpcomingWeekDashboard();
-  } catch (e) {}
 }
 
 function goToDashboard() {
@@ -905,34 +896,114 @@ function buildEmailSchedule(data) {
   };
 }
 
-function sendEmail(emailData) {
+// =============================================================================
+// EMAIL ROUTER — TỰ ĐỘNG CHỌN METHOD (N8N hoặc Gmail)
+// Pattern từ script Cam Kết 2026: gửi qua webhook → N8N xử lý
+// =============================================================================
+
+/**
+ * Gửi email qua N8N Webhook (anti-spam, không giới hạn quota)
+ * N8N workflow sẽ nhận payload và gửi email qua Microsoft Graph / SMTP
+ * @param {object} payload - {to, cc, subject, body, htmlBody, senderName, type}
+ * @returns {boolean}
+ */
+function sendViaWebhook(payload) {
   try {
-    if (!emailData.to || !isValidEmail(emailData.to.split(",")[0]))
+    var webhookUrl = CONFIG.N8N_WEBHOOK_URL;
+    if (!webhookUrl) {
+      Logger.log("N8N webhook URL not configured, falling back to Gmail");
       return false;
-    MailApp.sendEmail({
+    }
+    var response = UrlFetchApp.fetch(webhookUrl, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true,
+    });
+    var code = response.getResponseCode();
+    if (code >= 200 && code < 300) {
+      Logger.log("N8N webhook OK: " + code + " - " + payload.to);
+      return true;
+    } else {
+      Logger.log("N8N webhook error " + code + ": " + response.getContentText());
+      return false;
+    }
+  } catch (e) {
+    Logger.log("N8N webhook exception: " + e.message);
+    return false;
+  }
+}
+
+/**
+ * Gửi email qua Gmail trực tiếp (fallback)
+ */
+function sendViaGmail(emailData) {
+  try {
+    var opts = {
       to: emailData.to,
       cc: emailData.cc || "",
       subject: emailData.subject,
       body: emailData.body,
       name: CONFIG.EMAIL_SENDER_NAME,
-    });
+    };
+    if (emailData.htmlBody) opts.htmlBody = emailData.htmlBody;
+    if (CONFIG.EMAIL_SENDER_ADDRESS) opts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    MailApp.sendEmail(opts);
     return true;
   } catch (e) {
-    Logger.log("Email error: " + e.message);
-    return false;
+    // Retry without 'from'
+    try {
+      MailApp.sendEmail({
+        to: emailData.to,
+        cc: emailData.cc || "",
+        subject: emailData.subject,
+        body: emailData.body,
+        name: CONFIG.EMAIL_SENDER_NAME,
+      });
+      return true;
+    } catch (e2) {
+      Logger.log("Gmail send error: " + e2.message);
+      return false;
+    }
   }
 }
 
+function sendEmail(emailData) {
+  if (!emailData.to || !isValidEmail(emailData.to.split(",")[0])) return false;
+
+  // Route based on EMAIL_METHOD config
+  if (CONFIG.EMAIL_METHOD === "n8n") {
+    var payload = {
+      to: emailData.to,
+      cc: emailData.cc || "",
+      subject: emailData.subject,
+      body: emailData.body,
+      htmlBody: emailData.htmlBody || "",
+      senderName: CONFIG.EMAIL_SENDER_NAME,
+      senderEmail: CONFIG.EMAIL_SENDER_ADDRESS || "",
+      type: "bod_notification",
+    };
+    var ok = sendViaWebhook(payload);
+    if (ok) return true;
+    // Fallback to Gmail if N8N fails
+    Logger.log("N8N failed, falling back to Gmail for: " + emailData.to);
+  }
+  return sendViaGmail(emailData);
+}
+
 function sendEmailWithAttachment(emailData, pdfBlob) {
+  // Attachments always go via Gmail (N8N doesn't handle blob attachments easily)
   try {
-    MailApp.sendEmail({
+    var opts = {
       to: emailData.to,
       cc: emailData.cc || "",
       subject: emailData.subject,
       body: emailData.body,
       attachments: [pdfBlob],
       name: CONFIG.EMAIL_SENDER_NAME,
-    });
+    };
+    if (CONFIG.EMAIL_SENDER_ADDRESS) opts.from = CONFIG.EMAIL_SENDER_ADDRESS;
+    MailApp.sendEmail(opts);
     return true;
   } catch (e) {
     Logger.log("Email attachment error: " + e.message);
@@ -1312,6 +1383,7 @@ function sendReminderToMissingDepts(missingDepts, ngayHopDisplay) {
         GmailApp.sendEmail(email, subject, body, {
           name: "BTC Meeting BOD",
           cc: "hoangkha@esuhai.com",
+          from: CONFIG.EMAIL_SENDER_ADDRESS || undefined,
         });
         sentCount++;
       } catch (e) {}
