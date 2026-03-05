@@ -49,6 +49,14 @@
               btnHtml =
                 '<span style="font-size:11px;color:#94a3b8">Chưa có email</span>';
           }
+          // Nút sửa email — luôn hiển thị
+          var editEmailBtn =
+            '<button class="dept-edit-email-btn" onclick="editDeptEmail(\'' +
+            d.name.replace(/'/g, "\\'") +
+            "','" +
+            (d.email || "").replace(/'/g, "\\'") +
+            '\')" title="Cập nhật email đại diện">✏️</button>';
+
           html +=
             "<tr>" +
             "<td><strong>" +
@@ -69,8 +77,10 @@
             "<td>" +
             badge +
             "</td>" +
-            "<td>" +
+            '<td style="white-space:nowrap">' +
             btnHtml +
+            " " +
+            editEmailBtn +
             "</td>" +
             "</tr>";
         }
@@ -84,6 +94,36 @@
           } else
             bulkBtn.textContent = "Nhắc tất cả (" + missingCount + " bộ phận)";
         }
+      }
+
+      // ========================================
+      // EDIT DEPT EMAIL
+      // ========================================
+      function editDeptEmail(deptName, currentEmail) {
+        var newEmail = prompt(
+          "Cập nhật email đại diện cho " + deptName + ":",
+          currentEmail
+        );
+        if (newEmail === null) return; // Hủy
+        newEmail = newEmail.trim();
+        if (newEmail && !newEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+          alert("Email không hợp lệ!");
+          return;
+        }
+        showMsg("deptMsg", "Đang cập nhật email " + deptName + "...", "");
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showMsg("deptMsg", "✅ Đã cập nhật email " + deptName, "success");
+              loadDeptStatus(); // Reload bảng
+            } else {
+              showMsg("deptMsg", "❌ " + (r.msg || "Lỗi"), "error");
+            }
+          })
+          .withFailureHandler(function(e) {
+            showMsg("deptMsg", "❌ Lỗi: " + e.message, "error");
+          })
+          .updateDeptEmail(deptName, newEmail);
       }
 
       // ========================================

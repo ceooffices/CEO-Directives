@@ -14,17 +14,10 @@
         loadData();
         loadDeptStatus();
 
-        // Prefetch Web App URL — gán vào href ngay từ đầu để tránh popup-blocker
+        // Prefetch Web App URL — gán vào href cho AdminPage link
         google.script.run
           .withSuccessHandler(function(url) {
             if (!url) return;
-            // Nút Fullscreen
-            var fsBtn = document.getElementById('fullscreenBtn');
-            if (fsBtn) {
-              fsBtn.href = url;
-              fsBtn.target = '_blank';
-              fsBtn.removeAttribute('onclick');
-            }
             // Nút mở AdminPage (footer gear / bất kỳ phần tử nào có class footer-admin-link)
             var adminLinks = document.querySelectorAll('.footer-admin-link');
             adminLinks.forEach(function(el) {
@@ -34,7 +27,7 @@
               el.removeAttribute('onclick');
             });
           })
-          .withFailureHandler(function() {}) // Không hiển thị lỗi — không ảnh hưởng core Dashboard
+          .withFailureHandler(function() {})
           .getScriptAppUrl();
       }
 
@@ -52,13 +45,7 @@
         });
       }
 
-      function openFullscreen() {
-        // Fallback nếu href chưa được gán
-        var fsBtn = document.getElementById('fullscreenBtn');
-        if (fsBtn && fsBtn.href && fsBtn.href !== '#' && fsBtn.href !== window.location.href) {
-          window.open(fsBtn.href, '_blank');
-        }
-      }
+
 
 
       // ========================================
@@ -173,8 +160,9 @@
         if (!ct) return;
         if (displayDate) {
           ct.innerHTML =
-            'THỐNG KÊ ĐĂNG KÝ — <span class="date-icon">&#128339;</span>' +
-            displayDate.toUpperCase();
+            'THỐNG KÊ ĐĂNG KÝ — <span class="process-target">' +
+            displayDate +
+            '</span>';
         } else {
           ct.textContent = "THỐNG KÊ ĐĂNG KÝ";
         }

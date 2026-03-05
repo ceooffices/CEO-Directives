@@ -24,8 +24,8 @@ function doGet(e) {
 // ===== MỞ DASHBOARD TRONG POPUP =====
 function showDashboardDialog() {
   var html = HtmlService.createHtmlOutputFromFile("Dashboard")
-    .setWidth(1300)
-    .setHeight(900);
+    .setWidth(1600)
+    .setHeight(1000);
   SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
 }
 
@@ -572,6 +572,42 @@ function sendScheduleFromDashboard() {
     var count = sendScheduleEmail();
     return { success: true, msg: "Đã gửi lịch trình đến " + count + " người!" };
   } catch (e) {
+    return { success: false, msg: "Lỗi: " + e.message };
+  }
+}
+
+// ===== API: CẬP NHẬT EMAIL ĐẠI DIỆN BỘ PHẬN =====
+function updateDeptEmail(deptName, newEmail) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var hrSheet = ss.getSheetByName(CONFIG.SHEET_HR);
+    if (!hrSheet) {
+      return { success: false, msg: "Không tìm thấy sheet " + CONFIG.SHEET_HR };
+    }
+
+    var colDept  = (CONFIG.HR_COL_DEPT || 1) - 1;
+    var colEmail = (CONFIG.HR_COL_EMAIL || 6);  // 1-indexed cho setCell
+    var data = hrSheet.getDataRange().getValues();
+    var found = false;
+
+    for (var i = 1; i < data.length; i++) {
+      var bp = (data[i][colDept] || "").toString().trim().toUpperCase();
+      if (bp === deptName.toUpperCase()) {
+        // Cập nhật email ở dòng đầu tiên khớp (dòng đại diện)
+        hrSheet.getRange(i + 1, colEmail).setValue(newEmail);
+        found = true;
+        Logger.log("Updated email for " + deptName + " → " + newEmail + " (row " + (i + 1) + ")");
+        break;
+      }
+    }
+
+    if (!found) {
+      return { success: false, msg: "Không tìm thấy bộ phận: " + deptName };
+    }
+
+    return { success: true, msg: "Đã cập nhật email " + deptName + " → " + newEmail };
+  } catch (e) {
+    Logger.log("updateDeptEmail error: " + e.message);
     return { success: false, msg: "Lỗi: " + e.message };
   }
 }

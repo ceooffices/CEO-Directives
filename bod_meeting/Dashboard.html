@@ -546,300 +546,6 @@
       }
 
       /* ============================================ */
-      /* MOBILE RESPONSIVE                            */
-      /* ============================================ */
-
-      /* Tablets */
-      @media (max-width: 1024px) {
-        .cards-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-
-        .stat-card .card-number {
-          font-size: 40px;
-        }
-      }
-
-      /* Mobile landscape / small tablets */
-      @media (max-width: 768px) {
-        body {
-          font-size: 20px;
-        }
-
-        .header {
-          padding: 20px;
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .header h1 {
-          font-size: 22px;
-        }
-
-        .date-picker {
-          width: 100%;
-        }
-
-        .date-picker select {
-          width: 100%;
-          font-size: 17px;
-          padding: 14px 16px;
-        }
-
-        .container {
-          padding: 16px;
-        }
-
-        .cards-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-          margin-bottom: 24px;
-        }
-
-        .stat-card {
-          padding: 20px 16px;
-          border-width: 2px;
-        }
-
-        .stat-card .card-number {
-          font-size: 36px;
-          letter-spacing: -1px;
-        }
-
-        .stat-card .card-label {
-          font-size: 16px;
-          letter-spacing: 0.3px;
-        }
-
-        .stat-card .card-hint {
-          display: none;
-        }
-
-        .table-wrapper {
-          border-radius: var(--radius-sm);
-        }
-
-        .table-header {
-          padding: 16px 20px;
-        }
-
-        .table-header h2 {
-          font-size: 19px;
-        }
-
-        table {
-          min-width: 750px;
-        }
-
-        tbody td {
-          font-size: 16px;
-          padding: 14px 14px;
-        }
-
-        thead th {
-          padding: 12px 14px;
-          font-size: 13px;
-        }
-
-        .action-btn {
-          font-size: 17px;
-          padding: 16px 28px;
-          min-height: 52px;
-        }
-
-        .dept-table td {
-          padding: 14px 16px;
-          font-size: 15px;
-        }
-        .dept-table th {
-          padding: 12px 16px;
-          font-size: 12px;
-        }
-        .dept-badge {
-          font-size: 14px;
-          padding: 6px 14px;
-        }
-        .dept-remind-btn {
-          font-size: 15px;
-          padding: 10px 20px;
-          min-height: 44px;
-        }
-      }
-
-      /* Mobile portrait */
-      @media (max-width: 480px) {
-        :root {
-          --font-base: 18px;
-        }
-
-        .header {
-          padding: 16px;
-        }
-        .header h1 {
-          font-size: 20px;
-        }
-        .header-logo {
-          width: 36px;
-          height: 36px;
-          font-size: 20px;
-        }
-
-        .container {
-          padding: 12px;
-        }
-
-        .cards-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
-        }
-
-        /* 5th card spans full width on small mobile */
-        .cards-grid .stat-card:nth-child(5) {
-          grid-column: span 2;
-        }
-
-        .stat-card {
-          padding: 16px 14px;
-          border-width: 2px;
-        }
-
-        .stat-card .card-number {
-          font-size: 30px;
-        }
-
-        .stat-card .card-label {
-          font-size: 14px;
-        }
-
-        .filter-badge {
-          font-size: 14px;
-          padding: 8px 14px;
-        }
-
-        .action-btn {
-          font-size: 17px;
-          padding: 16px 24px;
-          width: 100%;
-          justify-content: center;
-          min-height: 52px;
-        }
-
-        .dept-table td {
-          padding: 12px 14px;
-          font-size: 15px;
-        }
-        .dept-badge {
-          font-size: 13px;
-          padding: 6px 12px;
-        }
-        .dept-remind-btn {
-          font-size: 15px;
-          padding: 10px 18px;
-          min-height: 44px;
-        }
-      }
-
-      /* Touch improvements for mobile */
-      @media (hover: none) {
-        .stat-card:hover {
-          transform: none;
-          box-shadow: var(--shadow);
-        }
-
-        .stat-card:active {
-          transform: scale(0.97);
-          transition: transform 0.1s;
-        }
-
-        .stat-card.active {
-          transform: none;
-          box-shadow: var(--shadow-lg);
-        }
-
-        /* Remove shimmer on touch — prevents touch event interference */
-        .action-btn::after {
-          display: none !important;
-        }
-        .action-btn:active {
-          transform: scale(0.95) !important;
-          filter: brightness(0.9);
-          transition: all 0.08s;
-        }
-      }
-
-      /* ============================================ */
-      /* TOAST NOTIFICATION                            */
-      /* ============================================ */
-      @keyframes toastIn {
-        from { transform: translateY(100px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      @keyframes toastOut {
-        from { transform: translateY(0); opacity: 1; }
-        to { transform: translateY(100px); opacity: 0; }
-      }
-      .toast-container {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        pointer-events: none;
-        width: 90%;
-        max-width: 420px;
-      }
-      .toast {
-        background: #0f172a;
-        color: #fff;
-        padding: 14px 22px;
-        border-radius: 14px;
-        font-family: var(--font);
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        pointer-events: auto;
-        animation: toastIn 0.3s ease-out;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-      }
-      .toast.toast-out {
-        animation: toastOut 0.3s ease-in forwards;
-      }
-      .toast-icon {
-        font-size: 18px;
-        flex-shrink: 0;
-      }
-      .toast.toast-info { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-      .toast.toast-success { background: linear-gradient(135deg, #10b981, #047857); }
-      .toast.toast-error { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-      .toast.toast-loading {
-        background: linear-gradient(135deg, #6366f1, #4338ca);
-      }
-      .toast-spinner {
-        width: 16px; height: 16px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: btn-spin 0.6s linear infinite;
-        flex-shrink: 0;
-      }
-
-      /* ============================================ */
-      /* DESKTOP BODY FONT +2                          */
-      /* ============================================ */
-      @media (min-width: 1025px) {
-        body {
-          font-size: 20px;
-        }
-      }
-
-      /* ============================================ */
       /* PROCESS — HORIZONTAL TIMELINE (DESKTOP)       */
       /* ============================================ */
       .process-section {
@@ -1209,372 +915,6 @@
       }
 
 
-      /* ============================================ */
-      /* EMAIL PREVIEW MODAL                          */
-      /* ============================================ */
-      .email-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        transition:
-          opacity 0.3s,
-          visibility 0.3s;
-      }
-      .email-modal-overlay.show {
-        opacity: 1;
-        visibility: visible;
-      }
-      .email-modal {
-        background: #fff;
-        border-radius: var(--radius);
-        width: 90%;
-        max-width: 720px;
-        max-height: 85vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        transform: translateY(20px);
-        transition: transform 0.3s;
-      }
-      .email-modal-overlay.show .email-modal {
-        transform: translateY(0);
-      }
-      /* Mobile: email modal full screen */
-      @media (max-width: 768px) {
-        .email-modal {
-          width: 100%;
-          max-width: 100%;
-          max-height: 100vh;
-          height: 100vh;
-          border-radius: 0;
-          margin: 0;
-        }
-        .email-modal-body {
-          flex: 1;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-        .email-modal-foot {
-          position: sticky;
-          bottom: 0;
-          background: #fff;
-          border-top: 2px solid var(--border);
-          padding: 16px !important;
-          flex-direction: column;
-          gap: 12px !important;
-        }
-        .email-modal-foot .action-btn {
-          width: 100%;
-          justify-content: center;
-        }
-      }
-      .email-modal-head {
-        padding: 20px 24px;
-        border-bottom: 2px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .email-modal-head h3 {
-        font-size: 17px;
-        font-weight: 800;
-      }
-      .email-modal-body {
-        padding: 24px;
-        overflow-y: auto;
-        flex: 1;
-      }
-      .email-field {
-        margin-bottom: 16px;
-      }
-      .email-field label {
-        display: block;
-        font-size: 12px;
-        font-weight: 800;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 6px;
-      }
-      .email-field-value {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-        padding: 10px 14px;
-        background: #f8fafc;
-        border-radius: var(--radius-sm);
-        border: 1.5px solid var(--border);
-        min-height: 20px;
-      }
-      .email-field-value[contenteditable="true"] {
-        border-color: var(--c-total);
-        background: #fff;
-        outline: none;
-      }
-      .email-preview-html {
-        padding: 16px;
-        background: #fff;
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-sm);
-        min-height: 200px;
-        font-size: 14px;
-        line-height: 1.6;
-      }
-      .email-preview-html[contenteditable="true"] {
-        border-color: var(--c-total);
-      }
-      .email-modal-foot {
-        padding: 16px 24px;
-        border-top: 2px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-      }
-      .edit-toggle {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #64748b;
-        cursor: pointer;
-      }
-      .edit-toggle input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        accent-color: var(--c-total);
-      }
-
-      /* ============================================ */
-      /* STEP DETAILS (EXPANDABLE)                    */
-      /* ============================================ */
-      .step-details {
-        max-height: 0;
-        overflow: hidden;
-        transition:
-          max-height 0.4s ease,
-          padding 0.3s;
-        background: #f8fafc;
-        border-radius: 0 0 var(--radius) var(--radius);
-        margin-top: 0;
-      }
-      .step-details.open {
-        max-height: 600px;
-        padding: 20px 24px;
-        border-top: 2px solid var(--border);
-      }
-      .step-details h3 {
-        font-size: 15px;
-        font-weight: 800;
-        margin-bottom: 10px;
-        color: var(--text);
-      }
-      .step-details ul {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 14px;
-      }
-      .step-details li {
-        font-size: 13px;
-        font-weight: 600;
-        padding: 4px 0;
-        color: var(--text-secondary);
-      }
-      .step-details li::before {
-        content: "→ ";
-        color: var(--c-total);
-        font-weight: 800;
-      }
-      /* SHIMMER KEYFRAMES */
-      @keyframes btn-shimmer {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
-      }
-      @keyframes btn-pulse {
-        0%,
-        100% {
-          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-        }
-        50% {
-          box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
-        }
-      }
-
-      .action-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 12px;
-        font-family: var(--font);
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        margin: 4px 6px 4px 0;
-        position: relative;
-        overflow: hidden;
-        letter-spacing: 0.3px;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-      }
-      /* Shimmer sweep on hover */
-      .action-btn::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent 0%,
-          rgba(255, 255, 255, 0.25) 50%,
-          transparent 100%
-        );
-        transition: none;
-        pointer-events: none;
-      }
-      .action-btn:hover::after {
-        animation: btn-shimmer 0.6s ease-out;
-      }
-      .action-btn:hover {
-        transform: translateY(-2px) scale(1.03);
-        filter: brightness(1.1);
-      }
-      .action-btn:active {
-        transform: translateY(0) scale(0.97);
-        filter: brightness(0.95);
-        transition: all 0.1s;
-      }
-      .action-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
-        filter: grayscale(0.5);
-      }
-      .action-btn:disabled::after { display: none; }
-
-      /* Loading state for buttons */
-      @keyframes btn-spin {
-        to { transform: rotate(360deg); }
-      }
-      .btn-loading {
-        pointer-events: none;
-        opacity: 0.7;
-      }
-      .btn-loading::before {
-        content: '';
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255,255,255,0.4);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: btn-spin 0.6s linear infinite;
-        margin-right: 6px;
-        vertical-align: middle;
-      }
-
-      .btn-blue {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
-      }
-      .btn-blue:hover {
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
-      }
-      .btn-green {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-      }
-      .btn-green:hover {
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
-      }
-      .btn-amber {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
-      }
-      .btn-amber:hover {
-        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
-      }
-      .btn-red {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
-      }
-      .btn-red:hover {
-        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
-      }
-      .btn-outline {
-        background: transparent;
-        color: var(--c-total);
-        border: 2px solid var(--c-total);
-        box-shadow: none;
-        text-shadow: none;
-      }
-      .btn-outline:hover {
-        background: rgba(59, 130, 246, 0.08);
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.2);
-      }
-      .action-msg {
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 8px;
-        padding: 8px 12px;
-        border-radius: 8px;
-        display: none;
-      }
-      .action-msg.show {
-        display: block;
-      }
-      .action-msg.success {
-        background: #d1fae5;
-        color: #065f46;
-      }
-      .action-msg.error {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .btn-hint {
-        font-size: 11px;
-        font-weight: 500;
-        font-style: italic;
-        color: #94a3b8;
-        margin: 4px 0 8px;
-        padding: 0;
-        background: none;
-        border-radius: 0;
-        border-left: none;
-        line-height: 1.5;
-      }
-      .warning-note {
-        color: #d97706 !important;
-        background: #fffbeb;
-        padding: 6px 10px !important;
-        border-radius: 6px;
-        font-weight: 700 !important;
-        margin-top: 4px;
-      }
-      .warning-note::before {
-
         content: "" !important;
       }
 
@@ -1799,6 +1139,20 @@
       .dept-remind-btn:disabled {
         opacity: 0.4;
         cursor: not-allowed;
+      }
+      .dept-edit-email-btn {
+        padding: 6px 10px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        background: #f8fafc;
+        transition: all 0.2s;
+        vertical-align: middle;
+      }
+      .dept-edit-email-btn:hover {
+        background: #dbeafe;
+        border-color: #3b82f6;
       }
 
       /* ============================================ */
@@ -2389,6 +1743,666 @@
         background: #fff;
       }
 
+      /* ============================================ */
+      /* EMAIL PREVIEW MODAL                          */
+      /* ============================================ */
+      .email-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.3s,
+          visibility 0.3s;
+      }
+      .email-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .email-modal {
+        background: #fff;
+        border-radius: var(--radius);
+        width: 90%;
+        max-width: 720px;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        transform: translateY(20px);
+        transition: transform 0.3s;
+      }
+      .email-modal-overlay.show .email-modal {
+        transform: translateY(0);
+      }
+      /* Mobile: email modal full screen */
+      @media (max-width: 768px) {
+        .email-modal {
+          width: 100%;
+          max-width: 100%;
+          max-height: 100vh;
+          height: 100vh;
+          border-radius: 0;
+          margin: 0;
+        }
+        .email-modal-body {
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .email-modal-foot {
+          position: sticky;
+          bottom: 0;
+          background: #fff;
+          border-top: 2px solid var(--border);
+          padding: 16px !important;
+          flex-direction: column;
+          gap: 12px !important;
+        }
+        .email-modal-foot .action-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+      .email-modal-head {
+        padding: 20px 24px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .email-modal-head h3 {
+        font-size: 17px;
+        font-weight: 800;
+      }
+      .email-modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .email-field {
+        margin-bottom: 16px;
+      }
+      .email-field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      .email-field-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        padding: 10px 14px;
+        background: #f8fafc;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+        min-height: 20px;
+      }
+      .email-field-value[contenteditable="true"] {
+        border-color: var(--c-total);
+        background: #fff;
+        outline: none;
+      }
+      .email-preview-html {
+        padding: 16px;
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        min-height: 200px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .email-preview-html[contenteditable="true"] {
+        border-color: var(--c-total);
+      }
+      .email-modal-foot {
+        padding: 16px 24px;
+        border-top: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .edit-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+      }
+      .edit-toggle input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--c-total);
+      }
+
+      /* ============================================ */
+      /* STEP DETAILS (EXPANDABLE)                    */
+      /* ============================================ */
+      .step-details {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.4s ease,
+          padding 0.3s;
+        background: #f8fafc;
+        border-radius: 0 0 var(--radius) var(--radius);
+        margin-top: 0;
+      }
+      .step-details.open {
+        max-height: 600px;
+        padding: 20px 24px;
+        border-top: 2px solid var(--border);
+      }
+      .step-details h3 {
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: var(--text);
+      }
+      .step-details ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 14px;
+      }
+      .step-details li {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 4px 0;
+        color: var(--text-secondary);
+      }
+      .step-details li::before {
+        content: "→ ";
+        color: var(--c-total);
+        font-weight: 800;
+      }
+      /* SHIMMER KEYFRAMES */
+      @keyframes btn-shimmer {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+      @keyframes btn-pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+        }
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        margin: 4px 6px 4px 0;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.3px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      }
+      /* Shimmer sweep on hover */
+      .action-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.25) 50%,
+          transparent 100%
+        );
+        transition: none;
+        pointer-events: none;
+      }
+      .action-btn:hover::after {
+        animation: btn-shimmer 0.6s ease-out;
+      }
+      .action-btn:hover {
+        transform: translateY(-2px) scale(1.03);
+        filter: brightness(1.1);
+      }
+      .action-btn:active {
+        transform: translateY(0) scale(0.97);
+        filter: brightness(0.95);
+        transition: all 0.1s;
+      }
+      .action-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+        filter: grayscale(0.5);
+      }
+      .action-btn:disabled::after { display: none; }
+
+      /* Loading state for buttons */
+      @keyframes btn-spin {
+        to { transform: rotate(360deg); }
+      }
+      .btn-loading {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+      .btn-loading::before {
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: btn-spin 0.6s linear infinite;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .btn-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+      }
+      .btn-blue:hover {
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+      }
+      .btn-green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      }
+      .btn-green:hover {
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      }
+      .btn-amber {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+      }
+      .btn-amber:hover {
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+      }
+      .btn-red {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+      }
+      .btn-red:hover {
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--c-total);
+        border: 2px solid var(--c-total);
+        box-shadow: none;
+        text-shadow: none;
+      }
+      .btn-outline:hover {
+        background: rgba(59, 130, 246, 0.08);
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.2);
+      }
+      .action-msg {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 8px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        display: none;
+      }
+      .action-msg.show {
+        display: block;
+      }
+      .action-msg.success {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .action-msg.error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .btn-hint {
+        font-size: 11px;
+        font-weight: 500;
+        font-style: italic;
+        color: #94a3b8;
+        margin: 4px 0 8px;
+        padding: 0;
+        background: none;
+        border-radius: 0;
+        border-left: none;
+        line-height: 1.5;
+      }
+      .warning-note {
+        color: #d97706 !important;
+        background: #fffbeb;
+        padding: 6px 10px !important;
+        border-radius: 6px;
+        font-weight: 700 !important;
+        margin-top: 4px;
+      }
+      .warning-note::before {
+
+      /* ============================================ */
+      /* MOBILE RESPONSIVE                            */
+      /* ============================================ */
+
+      /* Tablets */
+      @media (max-width: 1024px) {
+        .cards-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-card .card-number {
+          font-size: 40px;
+        }
+      }
+
+      /* Mobile landscape / small tablets */
+      @media (max-width: 768px) {
+        body {
+          font-size: 20px;
+        }
+
+        .header {
+          padding: 20px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .date-picker {
+          width: 100%;
+        }
+
+        .date-picker select {
+          width: 100%;
+          font-size: 17px;
+          padding: 14px 16px;
+        }
+
+        .container {
+          padding: 16px;
+        }
+
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .stat-card {
+          padding: 20px 16px;
+          border-width: 2px;
+        }
+
+        .stat-card .card-number {
+          font-size: 36px;
+          letter-spacing: -1px;
+        }
+
+        .stat-card .card-label {
+          font-size: 16px;
+          letter-spacing: 0.3px;
+        }
+
+        .stat-card .card-hint {
+          display: none;
+        }
+
+        .table-wrapper {
+          border-radius: var(--radius-sm);
+        }
+
+        .table-header {
+          padding: 16px 20px;
+        }
+
+        .table-header h2 {
+          font-size: 19px;
+        }
+
+        table {
+          min-width: 750px;
+        }
+
+        tbody td {
+          font-size: 16px;
+          padding: 14px 14px;
+        }
+
+        thead th {
+          padding: 12px 14px;
+          font-size: 13px;
+        }
+
+        .action-btn {
+          font-size: 17px;
+          padding: 16px 28px;
+          min-height: 52px;
+        }
+
+        .dept-table td {
+          padding: 14px 16px;
+          font-size: 15px;
+        }
+        .dept-table th {
+          padding: 12px 16px;
+          font-size: 12px;
+        }
+        .dept-badge {
+          font-size: 14px;
+          padding: 6px 14px;
+        }
+        .dept-remind-btn {
+          font-size: 15px;
+          padding: 10px 20px;
+          min-height: 44px;
+        }
+      }
+
+      /* Mobile portrait */
+      @media (max-width: 480px) {
+        :root {
+          --font-base: 18px;
+        }
+
+        .header {
+          padding: 16px;
+        }
+        .header h1 {
+          font-size: 20px;
+        }
+        .header-logo {
+          width: 36px;
+          height: 36px;
+          font-size: 20px;
+        }
+
+        .container {
+          padding: 12px;
+        }
+
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+
+        /* 5th card spans full width on small mobile */
+        .cards-grid .stat-card:nth-child(5) {
+          grid-column: span 2;
+        }
+
+        .stat-card {
+          padding: 16px 14px;
+          border-width: 2px;
+        }
+
+        .stat-card .card-number {
+          font-size: 30px;
+        }
+
+        .stat-card .card-label {
+          font-size: 14px;
+        }
+
+        .filter-badge {
+          font-size: 14px;
+          padding: 8px 14px;
+        }
+
+        .action-btn {
+          font-size: 17px;
+          padding: 16px 24px;
+          width: 100%;
+          justify-content: center;
+          min-height: 52px;
+        }
+
+        .dept-table td {
+          padding: 12px 14px;
+          font-size: 15px;
+        }
+        .dept-badge {
+          font-size: 13px;
+          padding: 6px 12px;
+        }
+        .dept-remind-btn {
+          font-size: 15px;
+          padding: 10px 18px;
+          min-height: 44px;
+        }
+      }
+
+      /* Touch improvements for mobile */
+      @media (hover: none) {
+        .stat-card:hover {
+          transform: none;
+          box-shadow: var(--shadow);
+        }
+
+        .stat-card:active {
+          transform: scale(0.97);
+          transition: transform 0.1s;
+        }
+
+        .stat-card.active {
+          transform: none;
+          box-shadow: var(--shadow-lg);
+        }
+
+        /* Remove shimmer on touch — prevents touch event interference */
+        .action-btn::after {
+          display: none !important;
+        }
+        .action-btn:active {
+          transform: scale(0.95) !important;
+          filter: brightness(0.9);
+          transition: all 0.08s;
+        }
+      }
+
+      /* ============================================ */
+      /* TOAST NOTIFICATION                            */
+      /* ============================================ */
+      @keyframes toastIn {
+        from { transform: translateY(100px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes toastOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(100px); opacity: 0; }
+      }
+      .toast-container {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+        width: 90%;
+        max-width: 420px;
+      }
+      .toast {
+        background: #0f172a;
+        color: #fff;
+        padding: 14px 22px;
+        border-radius: 14px;
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        pointer-events: auto;
+        animation: toastIn 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+      }
+      .toast.toast-out {
+        animation: toastOut 0.3s ease-in forwards;
+      }
+      .toast-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .toast.toast-info { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+      .toast.toast-success { background: linear-gradient(135deg, #10b981, #047857); }
+      .toast.toast-error { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+      .toast.toast-loading {
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+      }
+      .toast-spinner {
+        width: 16px; height: 16px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: btn-spin 0.6s linear infinite;
+        flex-shrink: 0;
+      }
+
+      /* ============================================ */
+      /* DESKTOP BODY FONT +2                          */
+      /* ============================================ */
+      @media (min-width: 1025px) {
+        body {
+          font-size: 20px;
+        }
+      }
+
 
     </style>
   </head>
@@ -2399,10 +2413,6 @@
         <div>
           <h1>
             BTC MEETING BOD
-            <a href="#" id="fullscreenBtn" target="_blank" title="Mở Dashboard toàn màn hình trong tab mới" style="margin-left: 12px; font-size: 14px; font-weight: normal; color: #3b82f6; text-decoration: none; padding: 4px 8px; border: 1px solid #bfdbfe; border-radius: 4px; background: #eff6ff; display: inline-flex; align-items: center; gap: 4px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              Toàn màn hình
-            </a>
           </h1>
           <div class="header-sub">
             Hệ thống quản lý đăng ký báo cáo — Cuộc họp BOD hàng tuần
@@ -2788,7 +2798,7 @@
                 <th>Số đăng ký</th>
                 <th>Duyệt</th>
                 <th>Trạng thái</th>
-                <th></th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody id="deptTableBody">
@@ -3016,156 +3026,6 @@
     </div>
 
     <script>
-      // ========================================
-      // STATE
-      // ========================================
-      var currentData = null;
-      var activeFilter = "all";
-      var pendingModalCallback = null;
-      var currentEmailType = null;
-      var isTableEditing = false;
-
-      // ========================================
-      // STITCH-INSPIRED HELPERS
-      // ========================================
-      var AVATAR_COLORS = [
-        "av-blue",
-        "av-green",
-        "av-amber",
-        "av-red",
-        "av-purple",
-        "av-teal",
-        "av-pink",
-        "av-slate",
-      ];
-
-      function getInitials(name) {
-        if (!name) return "?";
-        var parts = String(name).trim().split(/\s+/);
-        if (parts.length >= 2)
-          return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-        return parts[0].substring(0, 2).toUpperCase();
-      }
-
-      function getAvatarColor(name) {
-        var hash = 0;
-        var s = String(name || "");
-        for (var i = 0; i < s.length; i++)
-          hash = s.charCodeAt(i) + ((hash << 5) - hash);
-        return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-      }
-
-      function getAvatarHtml(name) {
-        var initials = getInitials(name);
-        var color = getAvatarColor(name);
-        return (
-          '<div class="avatar-cell">' +
-          '<div class="avatar-circle ' +
-          color +
-          '">' +
-          initials +
-          "</div>" +
-          '<span class="avatar-name">' +
-          escapeHtml(name) +
-          "</span>" +
-          "</div>"
-        );
-      }
-
-      var DEPT_TAG_MAP = {
-        "nhân sự": "tag-nhansu",
-        "nhan su": "tag-nhansu",
-        hr: "tag-nhansu",
-        "kinh doanh": "tag-kinhdoanh",
-        kinhdoanh: "tag-kinhdoanh",
-        sales: "tag-kinhdoanh",
-        cntt: "tag-cntt",
-        it: "tag-cntt",
-        "công nghệ": "tag-cntt",
-        "đào tạo": "tag-daotao",
-        "dao tao": "tag-daotao",
-        training: "tag-daotao",
-        "kế toán": "tag-ketoan",
-        "ke toan": "tag-ketoan",
-        "tài chính": "tag-ketoan",
-        "ban gđ": "tag-bangd",
-        "ban giám đốc": "tag-bangd",
-        bod: "tag-bangd",
-        "ban gd": "tag-bangd",
-      };
-
-      function getDeptTagClass(dept) {
-        var key = String(dept || "")
-          .toLowerCase()
-          .trim();
-        for (var k in DEPT_TAG_MAP) {
-          if (key.indexOf(k) !== -1) return DEPT_TAG_MAP[k];
-        }
-        return "tag-default";
-      }
-
-      function getDeptTagHtml(dept) {
-        var tagClass = getDeptTagClass(dept);
-        return (
-          '<span class="dept-tag ' +
-          tagClass +
-          '">' +
-          '<span class="dept-tag-dot"></span>' +
-          escapeHtml(dept) +
-          "</span>"
-        );
-      }
-
-      function getCountdownBadge(targetDateStr) {
-        if (!targetDateStr) return "";
-        var now = new Date();
-        now.setHours(0, 0, 0, 0);
-        var target = new Date(targetDateStr);
-        target.setHours(0, 0, 0, 0);
-        var diff = Math.round((target - now) / (1000 * 60 * 60 * 24));
-        var cls, text;
-        if (diff > 0) {
-          cls = "countdown-future";
-          text = "Còn " + diff + " ngày";
-        } else if (diff === 0) {
-          cls = "countdown-today";
-          text = "Hôm nay";
-        } else {
-          cls = "countdown-past";
-          text = "Đã qua " + Math.abs(diff) + " ngày";
-        }
-        return '<span class="countdown-badge ' + cls + '">' + text + "</span>";
-      }
-
-      function updateScheduleSummary() {
-        var count = scheduleItems.length;
-        var total = 0;
-        for (var i = 0; i < count; i++) {
-          total +=
-            (parseInt(String(scheduleItems[i].tlTB).replace(/'/g, "")) || 0) +
-            (parseInt(String(scheduleItems[i].tlCD).replace(/'/g, "")) || 0);
-        }
-        var el1 = document.getElementById("sumPresenter");
-        var el2 = document.getElementById("sumReport");
-        var el3 = document.getElementById("sumDuration");
-        if (el1) el1.textContent = count + " người";
-        if (el2) el2.textContent = count + " nội dung";
-        if (el3) el3.textContent = total + " phút";
-      }
-
-      // ========================================
-      // UTILITY: SHOW MSG
-      // ========================================
-      function showMsg(id, text, type) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.textContent = text;
-        el.className =
-          "action-msg" + (text ? " show" : "") + (type ? " " + type : "");
-      }
-
-      var processData = null;
-
 
       // ========================================
       // INITIALIZATION
@@ -3182,17 +3042,10 @@
         loadData();
         loadDeptStatus();
 
-        // Prefetch Web App URL — gán vào href ngay từ đầu để tránh popup-blocker
+        // Prefetch Web App URL — gán vào href cho AdminPage link
         google.script.run
           .withSuccessHandler(function(url) {
             if (!url) return;
-            // Nút Fullscreen
-            var fsBtn = document.getElementById('fullscreenBtn');
-            if (fsBtn) {
-              fsBtn.href = url;
-              fsBtn.target = '_blank';
-              fsBtn.removeAttribute('onclick');
-            }
             // Nút mở AdminPage (footer gear / bất kỳ phần tử nào có class footer-admin-link)
             var adminLinks = document.querySelectorAll('.footer-admin-link');
             adminLinks.forEach(function(el) {
@@ -3202,7 +3055,7 @@
               el.removeAttribute('onclick');
             });
           })
-          .withFailureHandler(function() {}) // Không hiển thị lỗi — không ảnh hưởng core Dashboard
+          .withFailureHandler(function() {})
           .getScriptAppUrl();
       }
 
@@ -3220,13 +3073,7 @@
         });
       }
 
-      function openFullscreen() {
-        // Fallback nếu href chưa được gán
-        var fsBtn = document.getElementById('fullscreenBtn');
-        if (fsBtn && fsBtn.href && fsBtn.href !== '#' && fsBtn.href !== window.location.href) {
-          window.open(fsBtn.href, '_blank');
-        }
-      }
+
 
 
       // ========================================
@@ -3341,8 +3188,9 @@
         if (!ct) return;
         if (displayDate) {
           ct.innerHTML =
-            'THỐNG KÊ ĐĂNG KÝ — <span class="date-icon">&#128339;</span>' +
-            displayDate.toUpperCase();
+            'THỐNG KÊ ĐĂNG KÝ — <span class="process-target">' +
+            displayDate +
+            '</span>';
         } else {
           ct.textContent = "THỐNG KÊ ĐĂNG KÝ";
         }
@@ -3768,47 +3616,71 @@
       }
 
 
-      // AUTO-CHECK PROCESS CHECKLISTS
+      // ========================================
+      // AUTO-CHECK PROCESS CHECKLISTS (LOGIC CHÍNH XÁC)
       // ========================================
       function updateChecklists(data) {
-        if (!data || !data.items) return;
+        if (!data || !data.items) {
+          // Không có dữ liệu → tất cả checklist chưa hoàn thành
+          resetAllChecklists();
+          updateStepProgress();
+          return;
+        }
         var items = data.items;
         var total = items.length;
         var approved = 0,
           pending = 0,
+          rejected = 0,
           hasOrder = 0;
 
         for (var i = 0; i < items.length; i++) {
           if (items[i].status === "Duyệt") approved++;
           if (items[i].status === "Chờ duyệt") pending++;
+          if (items[i].status === "Từ chối") rejected++;
           if (items[i].thuTu && parseInt(items[i].thuTu) > 0) hasOrder++;
         }
 
-        // --- STAGE 1: Tiếp nhận ---
-        setCheck("formOpen", true); // Form luôn mở trong phase này
+        // --- STAGE 1: Tiếp nhận đăng ký ---
+        // formOpen: chỉ true khi form thực sự đang mở (kiểm tra qua có đăng ký nào không)
+        setCheck("formOpen", total > 0); // Có ít nhất 1 đăng ký → form đang hoạt động
         setCheck("hasRegistrations", total > 0);
 
-        // Kiểm tra tất cả bộ phận bắt buộc
+        // Kiểm tra tất cả bộ phận bắt buộc đã đăng ký
         var deptRows = document.querySelectorAll("#deptTableBody tr");
         var allDeptDone = true;
         var deptCount = 0;
+        var anyDeptExists = false;
         for (var d = 0; d < deptRows.length; d++) {
+          var statusCell = deptRows[d].querySelector(".dept-badge");
+          if (!statusCell) continue;
+          anyDeptExists = true;
           deptCount++;
-          var statusCell = deptRows[d].querySelector(".dept-status");
-          if (statusCell && statusCell.textContent.indexOf("Chưa") >= 0) {
+          // "Chưa đăng ký" = chưa hoàn thành
+          if (statusCell.classList.contains("dept-missing")) {
             allDeptDone = false;
           }
         }
-        setCheck("allDeptDone", deptCount > 0 && allDeptDone);
+        // allDeptDone chỉ true khi: có bộ phận trong danh sách VÀ tất cả đều đã đăng ký
+        setCheck("allDeptDone", anyDeptExists && deptCount > 0 && allDeptDone);
 
         // --- STAGE 2: Phê duyệt ---
+        // hasPending: true khi có đăng ký VÀ không còn chờ duyệt nào
         setCheck("hasPending", total > 0 && pending === 0);
+        // hasOrder: true khi có nội dung được duyệt VÀ tất cả đã được xếp thứ tự
         setCheck("hasOrder", approved > 0 && hasOrder >= approved);
-        setCheck("resultSent", false); // Cần backend confirm
+        // resultSent: cần backend xác nhận (kiểm tra cột emailSent)
+        var allResultSent = approved > 0;
+        for (var i = 0; i < items.length; i++) {
+          if ((items[i].status === "Duyệt" || items[i].status === "Từ chối" || items[i].status === "Hoãn") && !items[i].emailSent) {
+            allResultSent = false;
+            break;
+          }
+        }
+        setCheck("resultSent", allResultSent);
 
         // --- STAGE 3: Xếp lịch ---
-        setCheck("scheduleReady", approved > 0 && hasOrder > 0);
-        setCheck("scheduleSent", false); // Cần backend confirm
+        setCheck("scheduleReady", approved > 0 && hasOrder >= approved);
+        setCheck("scheduleSent", false); // Manual: cần backend confirm
 
         // --- STAGE 4: Biên bản ---
         setCheck("meetingDone", false); // Manual
@@ -3816,6 +3688,15 @@
 
         // Update progress count trên step bar
         updateStepProgress();
+      }
+
+      function resetAllChecklists() {
+        var allItems = document.querySelectorAll('.check-item');
+        for (var i = 0; i < allItems.length; i++) {
+          allItems[i].classList.remove('checked');
+          var icon = allItems[i].querySelector('.check-icon');
+          if (icon) icon.textContent = '○';
+        }
       }
 
       function setCheck(key, isDone) {
@@ -3907,6 +3788,14 @@
               btnHtml =
                 '<span style="font-size:11px;color:#94a3b8">Chưa có email</span>';
           }
+          // Nút sửa email — luôn hiển thị
+          var editEmailBtn =
+            '<button class="dept-edit-email-btn" onclick="editDeptEmail(\'' +
+            d.name.replace(/'/g, "\\'") +
+            "','" +
+            (d.email || "").replace(/'/g, "\\'") +
+            '\')" title="Cập nhật email đại diện">✏️</button>';
+
           html +=
             "<tr>" +
             "<td><strong>" +
@@ -3927,8 +3816,10 @@
             "<td>" +
             badge +
             "</td>" +
-            "<td>" +
+            '<td style="white-space:nowrap">' +
             btnHtml +
+            " " +
+            editEmailBtn +
             "</td>" +
             "</tr>";
         }
@@ -3942,6 +3833,36 @@
           } else
             bulkBtn.textContent = "Nhắc tất cả (" + missingCount + " bộ phận)";
         }
+      }
+
+      // ========================================
+      // EDIT DEPT EMAIL
+      // ========================================
+      function editDeptEmail(deptName, currentEmail) {
+        var newEmail = prompt(
+          "Cập nhật email đại diện cho " + deptName + ":",
+          currentEmail
+        );
+        if (newEmail === null) return; // Hủy
+        newEmail = newEmail.trim();
+        if (newEmail && !newEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+          alert("Email không hợp lệ!");
+          return;
+        }
+        showMsg("deptMsg", "Đang cập nhật email " + deptName + "...", "");
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (r.success) {
+              showMsg("deptMsg", "✅ Đã cập nhật email " + deptName, "success");
+              loadDeptStatus(); // Reload bảng
+            } else {
+              showMsg("deptMsg", "❌ " + (r.msg || "Lỗi"), "error");
+            }
+          })
+          .withFailureHandler(function(e) {
+            showMsg("deptMsg", "❌ Lỗi: " + e.message, "error");
+          })
+          .updateDeptEmail(deptName, newEmail);
       }
 
       // ========================================
@@ -4264,130 +4185,154 @@
       }
 
       // ========================================
-      // UTILITY
+      // STATE
       // ========================================
-      function escapeHtml(str) {
-        if (!str) return "";
-        var div = document.createElement("div");
-        div.textContent = str;
-        return div.innerHTML;
+      var currentData = null;
+      var activeFilter = "all";
+      var pendingModalCallback = null;
+      var currentEmailType = null;
+      var isTableEditing = false;
+
+      // ========================================
+      // STITCH-INSPIRED HELPERS
+      // ========================================
+      var AVATAR_COLORS = [
+        "av-blue",
+        "av-green",
+        "av-amber",
+        "av-red",
+        "av-purple",
+        "av-teal",
+        "av-pink",
+        "av-slate",
+      ];
+
+      function getInitials(name) {
+        if (!name) return "?";
+        var parts = String(name).trim().split(/\s+/);
+        if (parts.length >= 2)
+          return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        return parts[0].substring(0, 2).toUpperCase();
       }
 
-      // Keyboard support for cards
-      document.addEventListener("keydown", function (e) {
-        if (
-          e.target.classList &&
-          e.target.classList.contains("stat-card") &&
-          (e.key === "Enter" || e.key === " ")
-        ) {
-          e.preventDefault();
-          e.target.click();
+      function getAvatarColor(name) {
+        var hash = 0;
+        var s = String(name || "");
+        for (var i = 0; i < s.length; i++)
+          hash = s.charCodeAt(i) + ((hash << 5) - hash);
+        return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+      }
+
+      function getAvatarHtml(name) {
+        var initials = getInitials(name);
+        var color = getAvatarColor(name);
+        return (
+          '<div class="avatar-cell">' +
+          '<div class="avatar-circle ' +
+          color +
+          '">' +
+          initials +
+          "</div>" +
+          '<span class="avatar-name">' +
+          escapeHtml(name) +
+          "</span>" +
+          "</div>"
+        );
+      }
+
+      var DEPT_TAG_MAP = {
+        "nhân sự": "tag-nhansu",
+        "nhan su": "tag-nhansu",
+        hr: "tag-nhansu",
+        "kinh doanh": "tag-kinhdoanh",
+        kinhdoanh: "tag-kinhdoanh",
+        sales: "tag-kinhdoanh",
+        cntt: "tag-cntt",
+        it: "tag-cntt",
+        "công nghệ": "tag-cntt",
+        "đào tạo": "tag-daotao",
+        "dao tao": "tag-daotao",
+        training: "tag-daotao",
+        "kế toán": "tag-ketoan",
+        "ke toan": "tag-ketoan",
+        "tài chính": "tag-ketoan",
+        "ban gđ": "tag-bangd",
+        "ban giám đốc": "tag-bangd",
+        bod: "tag-bangd",
+        "ban gd": "tag-bangd",
+      };
+
+      function getDeptTagClass(dept) {
+        var key = String(dept || "")
+          .toLowerCase()
+          .trim();
+        for (var k in DEPT_TAG_MAP) {
+          if (key.indexOf(k) !== -1) return DEPT_TAG_MAP[k];
         }
-      });
-
-      // ========================================
-      // START
-      // ========================================
-      // ========================================
-      // MODAL PREVIEW FUNCTIONS
-      // ========================================
-      function openPreviewModal(opts) {
-        document.getElementById("modalTitle").textContent =
-          opts.title || "XEM TRƯỚC NỘI DUNG EMAIL";
-        document.getElementById("modalTo").value = opts.to || "";
-        document.getElementById("modalSubject").value = opts.subject || "";
-        document.getElementById("modalBody").value = opts.body || "";
-        pendingModalCallback = opts.onSend || null;
-        document.getElementById("previewModal").classList.add("show");
-      }
-      function closeModal() {
-        document.getElementById("previewModal").classList.remove("show");
-        pendingModalCallback = null;
-      }
-      function modalConfirmSend() {
-        var editedData = {
-          to: document.getElementById("modalTo").value,
-          subject: document.getElementById("modalSubject").value,
-          body: document.getElementById("modalBody").value,
-        };
-        closeModal();
-        if (pendingModalCallback) pendingModalCallback(editedData);
+        return "tag-default";
       }
 
-      // ========================================
-      // APPROVAL FUNCTIONS
-      // ========================================
-      function saveApprovals() {
-        var rows = document.querySelectorAll("#tableBody tr.row-highlight");
-        var updates = [];
-        var missingNotes = [];
-        for (var i = 0; i < rows.length; i++) {
-          var selectEl = rows[i].querySelector(".approval-select");
-          var cdInput = rows[i].querySelector(
-            '.approval-order[data-field="cd"]',
-          );
-          var ghiChuEl = rows[i].querySelector(".ghichu-input");
-          if (!selectEl) continue;
-          var rowNum = parseInt(selectEl.getAttribute("data-row"));
-          if (!rowNum) continue;
-          var status = selectEl.value;
-          var ghiChu = ghiChuEl ? ghiChuEl.value.trim() : "";
-          var cdVal = cdInput ? parseInt(cdInput.value) || 10 : 10;
+      function getDeptTagHtml(dept) {
+        var tagClass = getDeptTagClass(dept);
+        return (
+          '<span class="dept-tag ' +
+          tagClass +
+          '">' +
+          '<span class="dept-tag-dot"></span>' +
+          escapeHtml(dept) +
+          "</span>"
+        );
+      }
 
-          // Client-side validate: Hoãn/Từ chối bắt buộc ghi chú
-          if ((status === "Hoãn" || status === "Từ chối") && !ghiChu) {
-            missingNotes.push(
-              rows[i].querySelector("td:nth-child(2)").textContent.trim() +
-                " (" +
-                status +
-                ")",
-            );
-            if (ghiChuEl) {
-              ghiChuEl.classList.add("required");
-              ghiChuEl.focus();
-            }
-          }
-
-          updates.push({
-            row: rowNum,
-            status: status,
-            thuTu: 0,
-            tlCD: cdVal,
-            ghiChu: ghiChu,
-          });
+      function getCountdownBadge(targetDateStr) {
+        if (!targetDateStr) return "";
+        var now = new Date();
+        now.setHours(0, 0, 0, 0);
+        var target = new Date(targetDateStr);
+        target.setHours(0, 0, 0, 0);
+        var diff = Math.round((target - now) / (1000 * 60 * 60 * 24));
+        var cls, text;
+        if (diff > 0) {
+          cls = "countdown-future";
+          text = "Còn " + diff + " ngày";
+        } else if (diff === 0) {
+          cls = "countdown-today";
+          text = "Hôm nay";
+        } else {
+          cls = "countdown-past";
+          text = "Đã qua " + Math.abs(diff) + " ngày";
         }
-        if (missingNotes.length > 0) {
-          showMsg(
-            "approvalMsg",
-            "Chưa nhập lý do cho: " +
-              missingNotes.join(", ") +
-              ". Vui lòng bổ sung lý do Hoãn/Từ chối.",
-            "error",
-          );
-          return;
-        }
-        if (updates.length === 0) {
-          showMsg("approvalMsg", "Không có dữ liệu để lưu", "error");
-          return;
-        }
-        showMsg("approvalMsg", "Đang lưu...", "");
-        google.script.run
-          .withSuccessHandler(function (r) {
-            showMsg(
-              "approvalMsg",
-              r.msg || "Đã lưu!",
-              r.success ? "success" : "error",
-            );
-            if (r.success) {
-              loadData();
-              loadDeptStatus();
-            }
-          })
-          .withFailureHandler(function (e) {
-            showMsg("approvalMsg", "Lỗi: " + e.message, "error");
-          })
-          .saveApprovalChanges(updates);
+        return '<span class="countdown-badge ' + cls + '">' + text + "</span>";
       }
+
+      function updateScheduleSummary() {
+        var count = scheduleItems.length;
+        var total = 0;
+        for (var i = 0; i < count; i++) {
+          total +=
+            (parseInt(String(scheduleItems[i].tlTB).replace(/'/g, "")) || 0) +
+            (parseInt(String(scheduleItems[i].tlCD).replace(/'/g, "")) || 0);
+        }
+        var el1 = document.getElementById("sumPresenter");
+        var el2 = document.getElementById("sumReport");
+        var el3 = document.getElementById("sumDuration");
+        if (el1) el1.textContent = count + " người";
+        if (el2) el2.textContent = count + " nội dung";
+        if (el3) el3.textContent = total + " phút";
+      }
+
+      // ========================================
+      // UTILITY: SHOW MSG
+      // ========================================
+      function showMsg(id, text, type) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+        el.className =
+          "action-msg" + (text ? " show" : "") + (type ? " " + type : "");
+      }
+
+      var processData = null;
 
 
       // ========================================
@@ -4784,11 +4729,6 @@
       }
 
 
-
-      init();
-    </script>
-    <div class="toast-container" id="toastContainer"></div>
-    <script>
       // ========================================
       // TOAST NOTIFICATION SYSTEM
       // ========================================
@@ -4903,6 +4843,133 @@
           showToast(msg, 'error', 5000);
         }
       };
+
+      // ========================================
+      // UTILITY
+      // ========================================
+      function escapeHtml(str) {
+        if (!str) return "";
+        var div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // Keyboard support for cards
+      document.addEventListener("keydown", function (e) {
+        if (
+          e.target.classList &&
+          e.target.classList.contains("stat-card") &&
+          (e.key === "Enter" || e.key === " ")
+        ) {
+          e.preventDefault();
+          e.target.click();
+        }
+      });
+
+      // ========================================
+      // START
+      // ========================================
+      // ========================================
+      // MODAL PREVIEW FUNCTIONS
+      // ========================================
+      function openPreviewModal(opts) {
+        document.getElementById("modalTitle").textContent =
+          opts.title || "XEM TRƯỚC NỘI DUNG EMAIL";
+        document.getElementById("modalTo").value = opts.to || "";
+        document.getElementById("modalSubject").value = opts.subject || "";
+        document.getElementById("modalBody").value = opts.body || "";
+        pendingModalCallback = opts.onSend || null;
+        document.getElementById("previewModal").classList.add("show");
+      }
+      function closeModal() {
+        document.getElementById("previewModal").classList.remove("show");
+        pendingModalCallback = null;
+      }
+      function modalConfirmSend() {
+        var editedData = {
+          to: document.getElementById("modalTo").value,
+          subject: document.getElementById("modalSubject").value,
+          body: document.getElementById("modalBody").value,
+        };
+        closeModal();
+        if (pendingModalCallback) pendingModalCallback(editedData);
+      }
+
+      // ========================================
+      // APPROVAL FUNCTIONS
+      // ========================================
+      function saveApprovals() {
+        var rows = document.querySelectorAll("#tableBody tr.row-highlight");
+        var updates = [];
+        var missingNotes = [];
+        for (var i = 0; i < rows.length; i++) {
+          var selectEl = rows[i].querySelector(".approval-select");
+          var cdInput = rows[i].querySelector(
+            '.approval-order[data-field="cd"]',
+          );
+          var ghiChuEl = rows[i].querySelector(".ghichu-input");
+          if (!selectEl) continue;
+          var rowNum = parseInt(selectEl.getAttribute("data-row"));
+          if (!rowNum) continue;
+          var status = selectEl.value;
+          var ghiChu = ghiChuEl ? ghiChuEl.value.trim() : "";
+          var cdVal = cdInput ? parseInt(cdInput.value) || 10 : 10;
+
+          // Client-side validate: Hoãn/Từ chối bắt buộc ghi chú
+          if ((status === "Hoãn" || status === "Từ chối") && !ghiChu) {
+            missingNotes.push(
+              rows[i].querySelector("td:nth-child(2)").textContent.trim() +
+                " (" +
+                status +
+                ")",
+            );
+            if (ghiChuEl) {
+              ghiChuEl.classList.add("required");
+              ghiChuEl.focus();
+            }
+          }
+
+          updates.push({
+            row: rowNum,
+            status: status,
+            thuTu: 0,
+            tlCD: cdVal,
+            ghiChu: ghiChu,
+          });
+        }
+        if (missingNotes.length > 0) {
+          showMsg(
+            "approvalMsg",
+            "Chưa nhập lý do cho: " +
+              missingNotes.join(", ") +
+              ". Vui lòng bổ sung lý do Hoãn/Từ chối.",
+            "error",
+          );
+          return;
+        }
+        if (updates.length === 0) {
+          showMsg("approvalMsg", "Không có dữ liệu để lưu", "error");
+          return;
+        }
+        showMsg("approvalMsg", "Đang lưu...", "");
+        google.script.run
+          .withSuccessHandler(function (r) {
+            showMsg(
+              "approvalMsg",
+              r.msg || "Đã lưu!",
+              r.success ? "success" : "error",
+            );
+            if (r.success) {
+              loadData();
+              loadDeptStatus();
+            }
+          })
+          .withFailureHandler(function (e) {
+            showMsg("approvalMsg", "Lỗi: " + e.message, "error");
+          })
+          .saveApprovalChanges(updates);
+      }
+
 
     </script>
   </body>

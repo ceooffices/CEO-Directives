@@ -103,47 +103,71 @@
       }
 
 
-      // AUTO-CHECK PROCESS CHECKLISTS
+      // ========================================
+      // AUTO-CHECK PROCESS CHECKLISTS (LOGIC CHÍNH XÁC)
       // ========================================
       function updateChecklists(data) {
-        if (!data || !data.items) return;
+        if (!data || !data.items) {
+          // Không có dữ liệu → tất cả checklist chưa hoàn thành
+          resetAllChecklists();
+          updateStepProgress();
+          return;
+        }
         var items = data.items;
         var total = items.length;
         var approved = 0,
           pending = 0,
+          rejected = 0,
           hasOrder = 0;
 
         for (var i = 0; i < items.length; i++) {
           if (items[i].status === "Duyệt") approved++;
           if (items[i].status === "Chờ duyệt") pending++;
+          if (items[i].status === "Từ chối") rejected++;
           if (items[i].thuTu && parseInt(items[i].thuTu) > 0) hasOrder++;
         }
 
-        // --- STAGE 1: Tiếp nhận ---
-        setCheck("formOpen", true); // Form luôn mở trong phase này
+        // --- STAGE 1: Tiếp nhận đăng ký ---
+        // formOpen: chỉ true khi form thực sự đang mở (kiểm tra qua có đăng ký nào không)
+        setCheck("formOpen", total > 0); // Có ít nhất 1 đăng ký → form đang hoạt động
         setCheck("hasRegistrations", total > 0);
 
-        // Kiểm tra tất cả bộ phận bắt buộc
+        // Kiểm tra tất cả bộ phận bắt buộc đã đăng ký
         var deptRows = document.querySelectorAll("#deptTableBody tr");
         var allDeptDone = true;
         var deptCount = 0;
+        var anyDeptExists = false;
         for (var d = 0; d < deptRows.length; d++) {
+          var statusCell = deptRows[d].querySelector(".dept-badge");
+          if (!statusCell) continue;
+          anyDeptExists = true;
           deptCount++;
-          var statusCell = deptRows[d].querySelector(".dept-status");
-          if (statusCell && statusCell.textContent.indexOf("Chưa") >= 0) {
+          // "Chưa đăng ký" = chưa hoàn thành
+          if (statusCell.classList.contains("dept-missing")) {
             allDeptDone = false;
           }
         }
-        setCheck("allDeptDone", deptCount > 0 && allDeptDone);
+        // allDeptDone chỉ true khi: có bộ phận trong danh sách VÀ tất cả đều đã đăng ký
+        setCheck("allDeptDone", anyDeptExists && deptCount > 0 && allDeptDone);
 
         // --- STAGE 2: Phê duyệt ---
+        // hasPending: true khi có đăng ký VÀ không còn chờ duyệt nào
         setCheck("hasPending", total > 0 && pending === 0);
+        // hasOrder: true khi có nội dung được duyệt VÀ tất cả đã được xếp thứ tự
         setCheck("hasOrder", approved > 0 && hasOrder >= approved);
-        setCheck("resultSent", false); // Cần backend confirm
+        // resultSent: cần backend xác nhận (kiểm tra cột emailSent)
+        var allResultSent = approved > 0;
+        for (var i = 0; i < items.length; i++) {
+          if ((items[i].status === "Duyệt" || items[i].status === "Từ chối" || items[i].status === "Hoãn") && !items[i].emailSent) {
+            allResultSent = false;
+            break;
+          }
+        }
+        setCheck("resultSent", allResultSent);
 
         // --- STAGE 3: Xếp lịch ---
-        setCheck("scheduleReady", approved > 0 && hasOrder > 0);
-        setCheck("scheduleSent", false); // Cần backend confirm
+        setCheck("scheduleReady", approved > 0 && hasOrder >= approved);
+        setCheck("scheduleSent", false); // Manual: cần backend confirm
 
         // --- STAGE 4: Biên bản ---
         setCheck("meetingDone", false); // Manual
@@ -151,6 +175,15 @@
 
         // Update progress count trên step bar
         updateStepProgress();
+      }
+
+      function resetAllChecklists() {
+        var allItems = document.querySelectorAll('.check-item');
+        for (var i = 0; i < allItems.length; i++) {
+          allItems[i].classList.remove('checked');
+          var icon = allItems[i].querySelector('.check-icon');
+          if (icon) icon.textContent = '○';
+        }
       }
 
       function setCheck(key, isDone) {
