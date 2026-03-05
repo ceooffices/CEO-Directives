@@ -21,13 +21,12 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// ===== MỞ DASHBOARD FULL SCREEN =====
+// ===== MỞ DASHBOARD TRONG POPUP =====
 function showDashboardDialog() {
-  var scriptUrl = ScriptApp.getService().getUrl();
-  var html = HtmlService.createHtmlOutput(
-    '<script>window.open("' + scriptUrl + '", "_blank");google.script.host.close();</script>'
-  ).setWidth(200).setHeight(50);
-  SpreadsheetApp.getUi().showModalDialog(html, "Đang mở Dashboard...");
+  var html = HtmlService.createHtmlOutputFromFile("Dashboard")
+    .setWidth(1300)
+    .setHeight(900);
+  SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
 }
 
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
