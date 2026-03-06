@@ -48,6 +48,44 @@
           modal.classList.add("show");
           var modalBody = document.querySelector(".email-modal-body");
           if (modalBody) modalBody.scrollTop = 0;
+
+          // Async load dept history data thật cho placeholder
+          var placeholders = modal.querySelectorAll('[data-dept]');
+          for (var pi = 0; pi < placeholders.length; pi++) {
+            (function(el) {
+              var dept = el.getAttribute('data-dept');
+              if (!dept) return;
+              google.script.run
+                .withSuccessHandler(function(hist) {
+                  if (!hist || !hist.weeks) return;
+                  var rows = '';
+                  for (var w = 0; w < hist.weeks.length; w++) {
+                    var wk = hist.weeks[w];
+                    var arrow = wk.isCurrentWeek ? '► ' : '';
+                    var wLabel = wk.isCurrentWeek ? 'Tuần này' : 'Tuần';
+                    var stVN = wk.status === 'registered' ? '✓ Đã đăng ký' : '✗ Chưa đăng ký';
+                    var stColor = wk.status === 'registered' ? '#10b981' : '#ef4444';
+                    rows += '<tr><td style="padding:6px 10px;font-size:13px;color:#334155;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif">'
+                      + arrow + wLabel + ' ' + wk.label + (wk.isCurrentWeek ? ' (今週)' : '') + '</td>'
+                      + '<td style="padding:6px 10px;font-size:13px;color:'+stColor+';font-weight:600;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif">'
+                      + stVN + '</td></tr>';
+                  }
+                  var summaryColor = hist.registered >= hist.total ? '#10b981' : hist.registered >= 2 ? '#f59e0b' : '#ef4444';
+                  el.innerHTML = '<div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0">'
+                    + '<span style="font-size:12px;font-weight:700;color:#334155;font-family:Arial,sans-serif">TÌNH HÌNH ĐĂNG KÝ — ' + escapeHtml(dept) + '</span>'
+                    + '<span style="font-size:10px;color:#94a3b8;margin-left:8px;font-family:Arial,sans-serif">登録状況</span></div>'
+                    + '<table style="border-collapse:collapse;width:100%">' + rows
+                    + '<tr><td colspan="2" style="padding:8px 10px;font-size:13px;font-weight:700;color:'+summaryColor+';background:#f8fafc;font-family:Arial,sans-serif">'
+                    + 'Kết quả: ' + hist.registered + '/' + hist.total + ' tuần đã đăng ký trong tháng ' + hist.month
+                    + ' <span style="font-size:11px;color:#94a3b8;font-weight:400">(' + hist.month + ' ' + hist.registered + '/' + hist.total + '週 登録済み)</span></td></tr>'
+                    + '</table>';
+                })
+                .withFailureHandler(function() {
+                  el.innerHTML = '<div style="padding:12px;text-align:center;color:#ef4444;font-size:13px;font-family:Arial,sans-serif">Không tải được dữ liệu</div>';
+                })
+                .getDeptRegistrationHistory(dept);
+            })(placeholders[pi]);
+          }
         } catch(e) {
           // HIỆN LỖI CỤ THỂ cho debug
           alert('showEmailPreview LỖI: ' + e.message);
@@ -251,44 +289,12 @@
           '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif">Kính gửi ' + escapeHtml(greeting) + ' — ' + escapeHtml(deptName) + ',</p>' +
           '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">' + escapeHtml(greeting) + ' 様</p>' +
           '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif">' + bodyVN + '</div>' +
-          // Bảng thống kê 4 tuần (demo data cho preview)
-          (function() {
-            var now = new Date();
-            var weeks = [];
-            var d = new Date(now); d.setHours(0,0,0,0);
-            var dow = d.getDay(); var diff = dow === 0 ? 6 : dow - 1;
-            d.setDate(d.getDate() - diff);
-            for (var i = 3; i >= 0; i--) {
-              var mon = new Date(d); mon.setDate(mon.getDate() - (i * 7));
-              var dd = (mon.getDate() < 10 ? '0' : '') + mon.getDate();
-              var mm = ((mon.getMonth()+1) < 10 ? '0' : '') + (mon.getMonth()+1);
-              weeks.push({ label: dd+'/'+mm, isCurrent: i===0,
-                status: i === 0 ? 'missed' : i === 1 ? 'registered' : i === 2 ? 'missed' : 'registered' });
-            }
-            var rows = '';
-            for (var w = 0; w < weeks.length; w++) {
-              var wk = weeks[w];
-              var arrow = wk.isCurrent ? '► ' : '';
-              var wLabel = wk.isCurrent ? 'Tuần này' : 'Tuần';
-              var stVN = wk.status === 'registered' ? '✓ Đã đăng ký' : '✗ Chưa đăng ký';
-              var stColor = wk.status === 'registered' ? '#10b981' : '#ef4444';
-              rows += '<tr><td style="padding:6px 10px;font-size:13px;color:#334155;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif">'
-                + arrow + wLabel + ' ' + wk.label + (wk.isCurrent ? ' (今週)' : '') + '</td>'
-                + '<td style="padding:6px 10px;font-size:13px;color:'+stColor+';font-weight:600;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif">'
-                + stVN + '</td></tr>';
-            }
-            var mon = now.getMonth()+1; var yr = now.getFullYear();
-            var mLabel = (mon<10?'0':'')+mon+'/'+yr;
-            return '<div style="margin:16px 0;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0">'
-              + '<div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0">'
-              + '<span style="font-size:12px;font-weight:700;color:#334155;font-family:Arial,sans-serif">TÌNH HÌNH ĐĂNG KÝ — ' + escapeHtml(deptName) + '</span>'
-              + '<span style="font-size:10px;color:#94a3b8;margin-left:8px;font-family:Arial,sans-serif">登録状況</span></div>'
-              + '<table style="border-collapse:collapse;width:100%">' + rows
-              + '<tr><td colspan="2" style="padding:8px 10px;font-size:13px;font-weight:700;color:#f59e0b;background:#f8fafc;font-family:Arial,sans-serif">'
-              + 'Kết quả: 2/4 tuần đã đăng ký trong tháng ' + mLabel
-              + ' <span style="font-size:11px;color:#94a3b8;font-weight:400">('+mLabel+' 2/4週 登録済み)</span></td></tr>'
-              + '</table></div>';
-          })() +
+          // Bảng thống kê 4 tuần — placeholder, data thật sẽ load async
+          '<div id="deptHistoryPlaceholder_' + escapeHtml(deptName) + '" data-dept="' + escapeHtml(deptName) + '" style="margin:16px 0;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0">' +
+          '<div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0">' +
+          '<span style="font-size:12px;font-weight:700;color:#334155;font-family:Arial,sans-serif">TÌNH HÌNH ĐĂNG KÝ — ' + escapeHtml(deptName) + '</span>' +
+          '<span style="font-size:10px;color:#94a3b8;margin-left:8px;font-family:Arial,sans-serif">登録状況</span></div>' +
+          '<div style="padding:12px;text-align:center;color:#94a3b8;font-size:13px;font-family:Arial,sans-serif">⏳ Đang tải dữ liệu thật...</div></div>' +
           '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' + badgeColor + ';font-family:Arial,sans-serif">' + bodyJP + '</div>' +
           '<div style="background:#eff6ff;border-radius:10px;padding:14px 18px;margin:0 0 22px">' +
           '<p style="font-size:11px;font-weight:700;color:#1e40af;margin:0 0 8px;font-family:Arial,sans-serif">THÔNG TIN CUỘC HỌP / 会議情報</p>' +

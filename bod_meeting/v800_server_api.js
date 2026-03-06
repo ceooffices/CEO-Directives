@@ -29,6 +29,15 @@ function showDashboardDialog() {
   SpreadsheetApp.getUi().showModalDialog(html, "BOD Meeting Dashboard");
 }
 
+// ===== API: LỊCH SỬ ĐĂNG KÝ 4 TUẦN CỦA 1 BỘ PHẬN (cho preview) =====
+function getDeptRegistrationHistory(deptName) {
+  try {
+    return _getDeptHistory_(deptName);
+  } catch(e) {
+    return { weeks: [], missedWeeks: 0, registered: 0, total: 4, month: '' };
+  }
+}
+
 // ===== API: LẤY DANH SÁCH NGÀY HỌP =====
 function getAvailableDates() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
