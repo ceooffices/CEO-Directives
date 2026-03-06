@@ -856,8 +856,8 @@ function buildEmailNewRegistration(data) {
   
   var htmlBody = 
     '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-    // Header gradient
-    '<div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%);padding:28px 32px">' +
+    // Header
+    '<div style="background-color:#0f172a;padding:28px 32px">' +
     '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">ĐĂNG KÝ BÁO CÁO BOD MỚI</h1>' +
     '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD報告の新規登録 — New Registration</p></div>' +
     // Badge
@@ -888,7 +888,7 @@ function buildEmailNewRegistration(data) {
     '</table></div>' +
     // CTA Button
     '<div style="text-align:center;margin:24px 0">' +
-    '<a href="' + dashboardUrl + '" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:.3px">MỞ DASHBOARD XEM XÉT / ダッシュボードを開く</a>' +
+    '<a href="' + dashboardUrl + '" style="display:inline-block;padding:14px 32px;background-color:#2563eb;color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:.3px">MỞ DASHBOARD XEM XÉT / ダッシュボードを開く</a>' +
     '</div>' +
     '<p style="font-size:11px;color:#94a3b8;text-align:center;margin:0 0 4px;font-family:Arial,sans-serif">⚠ Link dành riêng cho BTC có quyền truy cập</p>' +
     '</div>' +

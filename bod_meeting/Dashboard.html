@@ -5598,20 +5598,32 @@
       // SEND FUNCTIONS (giữ nguyên logic gửi)
       // ========================================
       function sendBulkReminderDirect() {
+        var searchDate = getSelectedDate();
+        var displayDate = getDisplayDate();
+        console.log('[sendBulkReminder] searchDate=' + searchDate + ', displayDate=' + displayDate);
+        if (!searchDate) {
+          showToast('Lỗi: Không xác định được ngày họp. Vui lòng chọn ngày.', 'error', 5000);
+          return;
+        }
         showMsg("deptMsg", "Đang gửi hàng loạt...", "");
         showMsg("msg1", "Đang gửi...", "");
         google.script.run
           .withSuccessHandler(function (r) {
+            console.log('[sendBulkReminder] result:', JSON.stringify(r));
             var msg = "Đã gửi: " + r.sent + " | Lỗi: " + r.failed;
+            if (r.sent === 0 && r.failed === 0) {
+              msg = "Không có bộ phận nào cần nhắc — tất cả đã đăng ký hoặc thiếu email";
+            }
             showMsg("deptMsg", msg, r.sent > 0 ? "success" : "error");
             showMsg("msg1", msg, r.sent > 0 ? "success" : "error");
             loadDeptStatus();
           })
           .withFailureHandler(function (e) {
+            console.error('[sendBulkReminder] ERROR:', e.message);
             showMsg("deptMsg", "Lỗi: " + e.message, "error");
             showMsg("msg1", "Lỗi: " + e.message, "error");
           })
-          .sendBulkReminderWeb(getSelectedDate(), getDisplayDate());
+          .sendBulkReminderWeb(searchDate, displayDate);
       }
 
       function sendApprovalReminderDirect() {
@@ -5627,9 +5639,11 @@
       }
 
       function sendApprovalResultsDirect() {
+        console.log('[sendApprovalResults] Starting...');
         showMsg("msg2", "Đang gửi kết quả duyệt...", "");
         google.script.run
           .withSuccessHandler(function (r) {
+            console.log('[sendApprovalResults] result:', JSON.stringify(r));
             if (r && r.msg) {
               showMsg("msg2", r.msg, r.success ? "success" : "error");
             } else {
@@ -5637,7 +5651,8 @@
             }
           })
           .withFailureHandler(function (e) {
-            showMsg("msg2", "Lỗi: " + e.message, "error");
+            console.error('[sendApprovalResults] ERROR:', e.message);
+            showMsg("msg2", "Lỗi server: " + e.message, "error");
           })
           .sendApprovalResultEmails();
       }
