@@ -242,24 +242,24 @@
         // Escalation color scheme
         var headerBg, headerTitle, headerSub, urgencyBadge, ctaColor, ctaText;
         if (count <= 1) {
-          headerBg = "linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%)";
+          headerBg = "#0f172a";
           headerTitle = "BOD MEETING — NHẮC NHỞ ĐĂNG KÝ BÁO CÁO";
           headerSub = "BOD会議 — 報告登録リマインダー";
           urgencyBadge = "";
           ctaColor = "#2563eb"; ctaText = "ĐĂNG KÝ NGAY / 今すぐ登録";
         } else if (count === 2) {
-          headerBg = "linear-gradient(135deg,#92400e 0%,#b45309 60%,#f59e0b 100%)";
+          headerBg = "#92400e";
           headerTitle = "BOD MEETING — NHẮC NHỞ LẦN 2";
           headerSub = "BOD会議 — 第2回リマインダー";
-          urgencyBadge = '<div style="text-align:center;padding:10px;background:#fef9c3;border-bottom:2px solid #f59e0b">' +
-            '<span style="display:inline-block;padding:6px 16px;background:#f59e0b;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">NHẮC NHỞ LẦN 2 / 第2回リマインダー</span></div>';
+          urgencyBadge = '<div style="text-align:center;padding:10px;background-color:#fef9c3;border-bottom:2px solid #f59e0b">' +
+            '<span style="display:inline-block;padding:6px 16px;background-color:#f59e0b;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">NHẮC NHỞ LẦN 2 / 第2回リマインダー</span></div>';
           ctaColor = "#f59e0b"; ctaText = "ĐĂNG KÝ NGAY — HẠN CUỐI HÔM NAY / 本日中に登録";
         } else {
-          headerBg = "linear-gradient(135deg,#7f1d1d 0%,#991b1b 60%,#ef4444 100%)";
+          headerBg = "#7f1d1d";
           headerTitle = "BOD MEETING — NHẮC KHẨN LẦN " + count;
           headerSub = "BOD会議 — 緊急リマインダー第" + count + "回";
-          urgencyBadge = '<div style="text-align:center;padding:10px;background:#fef2f2;border-bottom:2px solid #dc2626">' +
-            '<span style="display:inline-block;padding:6px 16px;background:#dc2626;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">NHẮC KHẨN LẦN ' + count + ' / 緊急リマインダー第' + count + '回</span></div>';
+          urgencyBadge = '<div style="text-align:center;padding:10px;background-color:#fef2f2;border-bottom:2px solid #dc2626">' +
+            '<span style="display:inline-block;padding:6px 16px;background-color:#dc2626;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">NHẮC KHẨN LẦN ' + count + ' / 緊急リマインダー第' + count + '回</span></div>';
           ctaColor = "#dc2626"; ctaText = "ĐĂNG KÝ NGAY — KHẨN CẤP / 至急登録";
         }
         var badgeColor = count <= 1 ? '#3b82f6' : count === 2 ? '#f59e0b' : '#dc2626';
@@ -310,7 +310,7 @@
 
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;background:' + headerBg + ';padding:28px 32px">' +
+          '<div style="background-color:' + headerBg + ';padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">' + headerTitle + '</h1>' +
           '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">' + headerSub + '</p></div>' +
           urgencyBadge +
@@ -333,7 +333,7 @@
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn đăng ký:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Sáu, 17:00</td></tr>' +
           (count > 1 ? '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Lần nhắc:</td><td style="color:' + badgeColor + ';font-weight:600;font-size:13px;font-family:Arial,sans-serif">Lần ' + count + ' / 第' + count + '回</td></tr>' : '') +
           '</table></div>' +
-          '<div style="text-align:center;margin-bottom:20px"><a href="#" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,' + ctaColor + ',' + (count >= 3 ? '#991b1b' : count === 2 ? '#d97706' : '#1d4ed8') + ');color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2)">📝 ' + ctaText + '</a></div>' +
+          '<div style="text-align:center;margin-bottom:20px"><a href="#" style="display:inline-block;padding:14px 36px;background-color:' + ctaColor + ';color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif">📝 ' + ctaText + '</a></div>' +
           (count >= 3 ? '<div style="text-align:center;margin-bottom:16px"><a href="mailto:vynnl@esuhai.com?subject=Khong%20bao%20cao%20-%20' + encodeURIComponent(deptName) + '" style="color:#64748b;font-size:13px;font-family:Arial,sans-serif">Không có nội dung báo cáo → phản hồi tại đây / 報告なし</a></div>' : '') +
           '</div>' +
           '<div style="padding:14px 32px;background:#f1f5f9;border-top:1px solid #e2e8f0">' +
@@ -361,7 +361,7 @@
         }).length;
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%);padding:28px 32px">' +
+          '<div style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — NHẮC PHÊ DUYỆT NỘI DUNG</h1>' +
           '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認リマインダー</p></div>' +
           '<div style="padding:28px 32px;background:#fff">' +
@@ -384,7 +384,7 @@
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Chờ phê duyệt:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">' + pending + ' mục</td></tr>' +
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn phê duyệt:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Bảy, 17:00</td></tr>' +
           '</table></div>' +
-          '<div style="text-align:center;margin:20px 0"><a href="#" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.15)">📋 MỞ DASHBOARD PHÊ DUYỆT</a></div></div>' +
+          '<div style="text-align:center;margin:20px 0"><a href="#" style="display:inline-block;padding:14px 36px;background-color:#f59e0b;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif">📋 MỞ DASHBOARD PHÊ DUYỆT</a></div></div>' +
           '<div style="padding:14px 32px;background:#f1f5f9;border-top:1px solid #e2e8f0">' +
           '<p style="font-size:12px;color:#475569;margin:0 0 6px;font-family:Arial,sans-serif">📞 Liên hệ: <strong>BTC Meeting BOD</strong> — Ms. Vy (vynnl@esuhai.com)</p>' +
           '<p style="font-size:11px;color:#94a3b8;margin:0;line-height:1.7;font-family:Arial,sans-serif">Email tự động từ <strong>BTC Meeting BOD — ESUHAI GROUP</strong><br>自動送信メール — BOD会議運営委員会</p></div></div>'
@@ -397,7 +397,7 @@
       function generateApprovalResultHtml(date) {
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%);padding:28px 32px">' +
+          '<div style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — KẾT QUẢ PHÊ DUYỆT</h1>' +
           '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認結果通知</p></div>' +
           '<div style="padding:28px 32px;background:#fff">' +
@@ -476,7 +476,7 @@
         var numItems = scheduleItems ? scheduleItems.length : 0;
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%);padding:28px 32px">' +
+          '<div style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — LỊCH TRÌNH CUỘC HỌP</h1>' +
           '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 議事スケジュール</p></div>' +
           '<div style="padding:28px 32px;background:#fff">' +
