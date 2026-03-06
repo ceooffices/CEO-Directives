@@ -516,6 +516,115 @@ function sendBulkReminderWeb(searchDate, displayDate) {
   return { sent: sent, failed: failed, details: msgs.join("\n") };
 }
 
+// ===== API: GỬI KẾT QUẢ PHÊ DUYỆT TỪ DASHBOARD =====
+// Same logic as sendApprovalResults() nhưng không dùng ui.prompt
+// Chống gửi trùng bằng cột daGuiEmail
+function sendApprovalResultEmails() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+    if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký" };
+    
+    var cols = CONFIG.COLUMN_MAP;
+    var data = sheet.getDataRange().getValues();
+    var sent = 0, skipped = 0, alreadySent = 0, failed = 0;
+    var btcEmails = getBTCEmails();
+    var now = new Date();
+    var timestamp = Utilities.formatDate(now, "Asia/Ho_Chi_Minh", "dd/MM HH:mm");
+    var details = [];
+
+    // Tìm ngày họp gần nhất có đăng ký
+    var targetDate = null;
+    for (var i = data.length - 1; i >= 1; i--) {
+      var d = data[i][cols.ngayHop];
+      if (d) { targetDate = d; break; }
+    }
+    if (!targetDate) return { success: false, msg: "Không tìm thấy đăng ký nào" };
+
+    // Tạo search key từ targetDate
+    var searchKey = '';
+    if (targetDate instanceof Date) {
+      searchKey = (targetDate.getDate() < 10 ? '0' : '') + targetDate.getDate() + '/' + 
+                  ((targetDate.getMonth()+1) < 10 ? '0' : '') + (targetDate.getMonth()+1);
+    } else {
+      searchKey = targetDate.toString().trim();
+    }
+
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!matchNgayHop(row[cols.ngayHop], searchKey)) continue;
+
+      var email = (row[cols.email] || "").toString().trim();
+      var status = (row[cols.status] || "").toString().trim();
+      var hoTen = toTitleCase(row[cols.hoTen]) || "N/A";
+      var daGui = (row[cols.daGuiEmail] || "").toString().trim();
+
+      // CHỐNG GỬI TRÙNG: skip nếu đã gửi
+      if (daGui) {
+        alreadySent++;
+        details.push("⏭️ " + hoTen + " — đã gửi trước đó");
+        continue;
+      }
+      if (!email || !isValidEmail(email)) { skipped++; continue; }
+      if (!status || status === "Chờ duyệt") { skipped++; continue; }
+
+      var emailInput = {
+        hoTen: hoTen,
+        noiDung: row[cols.noiDung] || "",
+        ngayHop: formatNgayHop(row[cols.ngayHop]),
+        boPhan: row[cols.boPhan] || "",
+        ghiChu: row[cols.ghiChu] || ""
+      };
+
+      var emailData;
+      if (status === "Duyệt") emailData = buildEmailApproved(emailInput);
+      else if (status === "Từ chối") emailData = buildEmailRejected(emailInput);
+      else if (status === "Hoãn") emailData = buildEmailPostponed(emailInput);
+      else { skipped++; continue; }
+
+      var ccList = btcEmails.all.slice();
+      var emailLQ = row[cols.emailLienQuan];
+      if (emailLQ) {
+        emailLQ.toString().split(/[,;\n]+/).forEach(function(e) {
+          e = e.trim().toLowerCase();
+          if (isValidEmail(e)) ccList.push(e);
+        });
+      }
+
+      if (sent > 0) Utilities.sleep(CONFIG.EMAIL_DELAY_MS);
+
+      if (sendEmail({
+        to: email,
+        cc: ccList.filter(function(v, idx, arr) { return arr.indexOf(v) === idx; }).join(","),
+        subject: emailData.subject,
+        body: emailData.body,
+        htmlBody: emailData.htmlBody || ""
+      })) {
+        sent++;
+        details.push("✔︎ " + hoTen + " (" + status + ") → " + email);
+        sheet.getRange(i + 1, cols.daGuiEmail + 1).setValue("✔︎ " + timestamp);
+      } else {
+        failed++;
+        details.push("❌ " + hoTen + " → gửi thất bại");
+      }
+    }
+
+    if (sent === 0 && skipped === 0 && failed === 0 && alreadySent === 0) {
+      return { success: false, msg: "Không tìm thấy đăng ký nào cho ngày " + searchKey };
+    }
+
+    var msg = "✔︎ Gửi mới: " + sent;
+    if (alreadySent > 0) msg += " | ⏭️ Đã gửi trước: " + alreadySent;
+    if (failed > 0) msg += " | ❌ Lỗi: " + failed;
+    if (skipped > 0) msg += " | Bỏ qua: " + skipped;
+    
+    logEmailSend('approval_result', sent, msg);
+    return { success: sent > 0 || alreadySent > 0, msg: msg, details: details };
+  } catch (e) {
+    return { success: false, msg: "Lỗi: " + e.message };
+  }
+}
+
 // ===== API: GUI NHAC PHE DUYET =====
 function sendApprovalReminderWeb(searchDate, displayDate) {
   var btcEmails = getBTCEmails();

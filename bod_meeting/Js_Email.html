@@ -552,7 +552,11 @@
         showMsg("msg2", "Đang gửi kết quả duyệt...", "");
         google.script.run
           .withSuccessHandler(function (r) {
-            showMsg("msg2", r || "Đã gửi!", "success");
+            if (r && r.msg) {
+              showMsg("msg2", r.msg, r.success ? "success" : "error");
+            } else {
+              showMsg("msg2", r || "Đã gửi!", "success");
+            }
           })
           .withFailureHandler(function (e) {
             showMsg("msg2", "Lỗi: " + e.message, "error");
