@@ -113,19 +113,26 @@
         // Load BOD Hosting đương nhiệm
         google.script.run
           .withSuccessHandler(function(data) {
-            if (!data) return;
             var nameEl = document.getElementById('hostingNameDisplay');
             var periodEl = document.getElementById('hostingPeriodDisplay');
-            if (nameEl) nameEl.textContent = data.name || '—';
-            if (periodEl && data.from) {
-              var from = formatDateVN_(data.from);
-              var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
-              periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+            if (!data || !data.name) {
+              if (nameEl) nameEl.textContent = 'Chưa thiết lập';
+              return;
+            }
+            if (nameEl) nameEl.textContent = data.name;
+            if (periodEl) {
+              if (data.from) {
+                var from = formatDateVN_(data.from);
+                var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
+                periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+              } else {
+                periodEl.textContent = '';
+              }
             }
           })
           .withFailureHandler(function() {
             var nameEl = document.getElementById('hostingNameDisplay');
-            if (nameEl) nameEl.textContent = '—';
+            if (nameEl) nameEl.textContent = 'Không tải được';
           })
           .getBodHosting();
       }

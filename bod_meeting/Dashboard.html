@@ -684,6 +684,22 @@
         padding: 4px 12px;
         border-radius: 20px;
         white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .hosting-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+        animation: dotPulse 2s ease-in-out infinite;
+      }
+      @keyframes dotPulse {
+        0%, 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); }
+        50% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.8); }
       }
       .hosting-name {
         font-size: 18px;
@@ -2859,7 +2875,7 @@
 
       <!-- BOD HOSTING BANNER -->
       <div class="hosting-banner" id="hostingBanner">
-        <span class="hosting-badge">👤 BOD HOSTING ĐƯƠNG NHIỆM</span>
+        <span class="hosting-badge"><span class="hosting-dot"></span> BOD HOSTING ĐƯƠNG NHIỆM</span>
         <span class="hosting-name" id="hostingNameDisplay">Đang tải...</span>
         <span class="hosting-period" id="hostingPeriodDisplay"></span>
       </div>
@@ -4021,19 +4037,26 @@
         // Load BOD Hosting đương nhiệm
         google.script.run
           .withSuccessHandler(function(data) {
-            if (!data) return;
             var nameEl = document.getElementById('hostingNameDisplay');
             var periodEl = document.getElementById('hostingPeriodDisplay');
-            if (nameEl) nameEl.textContent = data.name || '—';
-            if (periodEl && data.from) {
-              var from = formatDateVN_(data.from);
-              var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
-              periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+            if (!data || !data.name) {
+              if (nameEl) nameEl.textContent = 'Chưa thiết lập';
+              return;
+            }
+            if (nameEl) nameEl.textContent = data.name;
+            if (periodEl) {
+              if (data.from) {
+                var from = formatDateVN_(data.from);
+                var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
+                periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+              } else {
+                periodEl.textContent = '';
+              }
             }
           })
           .withFailureHandler(function() {
             var nameEl = document.getElementById('hostingNameDisplay');
-            if (nameEl) nameEl.textContent = '—';
+            if (nameEl) nameEl.textContent = 'Không tải được';
           })
           .getBodHosting();
       }
