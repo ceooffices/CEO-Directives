@@ -661,6 +661,52 @@
       }
 
       /* ============================================ */
+      /* BOD HOSTING BANNER                           */
+      /* ============================================ */
+      .hosting-banner {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #2563eb 100%);
+        color: #fff;
+        padding: 14px 24px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+      }
+      .hosting-badge {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: rgba(255,255,255,0.15);
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .hosting-name {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+      }
+      .hosting-period {
+        font-size: 13px;
+        font-weight: 500;
+        opacity: 0.75;
+        margin-left: auto;
+      }
+      @media (max-width: 768px) {
+        .hosting-banner {
+          padding: 12px 16px;
+          gap: 8px;
+        }
+        .hosting-badge { font-size: 10px; }
+        .hosting-name { font-size: 16px; }
+        .hosting-period { font-size: 12px; margin-left: 0; width: 100%; }
+      }
+
+      /* ============================================ */
       /* ADMIN SUB-TABS (inside Quản trị tab)        */
       /* ============================================ */
       .admin-sub-tabs {
@@ -2811,6 +2857,13 @@
         </button>
       </div>
 
+      <!-- BOD HOSTING BANNER -->
+      <div class="hosting-banner" id="hostingBanner">
+        <span class="hosting-badge">👤 BOD HOSTING ĐƯƠNG NHIỆM</span>
+        <span class="hosting-name" id="hostingNameDisplay">Đang tải...</span>
+        <span class="hosting-period" id="hostingPeriodDisplay"></span>
+      </div>
+
       <!-- ======== TAB 1: ĐĂNG KÝ BÁO CÁO ======== -->
       <div class="tab-panel active" id="tab-dangky">
         <!-- STAT CARDS -->
@@ -3964,6 +4017,32 @@
           })
           .withFailureHandler(function() {})
           .getScriptAppUrl();
+
+        // Load BOD Hosting đương nhiệm
+        google.script.run
+          .withSuccessHandler(function(data) {
+            if (!data) return;
+            var nameEl = document.getElementById('hostingNameDisplay');
+            var periodEl = document.getElementById('hostingPeriodDisplay');
+            if (nameEl) nameEl.textContent = data.name || '—';
+            if (periodEl && data.from) {
+              var from = formatDateVN_(data.from);
+              var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
+              periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+            }
+          })
+          .withFailureHandler(function() {
+            var nameEl = document.getElementById('hostingNameDisplay');
+            if (nameEl) nameEl.textContent = '—';
+          })
+          .getBodHosting();
+      }
+
+      function formatDateVN_(dateStr) {
+        if (!dateStr) return '';
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
       }
 
       // ========================================

@@ -109,6 +109,32 @@
           })
           .withFailureHandler(function() {})
           .getScriptAppUrl();
+
+        // Load BOD Hosting đương nhiệm
+        google.script.run
+          .withSuccessHandler(function(data) {
+            if (!data) return;
+            var nameEl = document.getElementById('hostingNameDisplay');
+            var periodEl = document.getElementById('hostingPeriodDisplay');
+            if (nameEl) nameEl.textContent = data.name || '—';
+            if (periodEl && data.from) {
+              var from = formatDateVN_(data.from);
+              var to = data.to ? formatDateVN_(data.to) : 'hiện tại';
+              periodEl.textContent = 'Từ ' + from + ' đến ' + to;
+            }
+          })
+          .withFailureHandler(function() {
+            var nameEl = document.getElementById('hostingNameDisplay');
+            if (nameEl) nameEl.textContent = '—';
+          })
+          .getBodHosting();
+      }
+
+      function formatDateVN_(dateStr) {
+        if (!dateStr) return '';
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
       }
 
       // ========================================
