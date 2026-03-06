@@ -825,3 +825,46 @@
         border-color: var(--c-total);
         background: #fff;
       }
+
+      /* ===== GAMIFICATION QUEST HINTS ===== */
+      .stage-quest-hint {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-bottom: 12px;
+        border-left: 4px solid #94a3b8;
+        background: #f8fafc;
+        color: #475569;
+        line-height: 1.5;
+      }
+      .stage-quest-hint.hint-active {
+        border-left-color: var(--c-total);
+        background: #eff6ff;
+        color: #1e40af;
+        animation: hintPulse 2s infinite;
+      }
+      .stage-quest-hint.hint-done {
+        border-left-color: var(--c-approved);
+        background: #f0fdf4;
+        color: #166534;
+      }
+      .stage-quest-hint.hint-pending {
+        border-left-color: #cbd5e1;
+        background: #f8fafc;
+        color: #94a3b8;
+      }
+
+      @keyframes hintPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.85; }
+      }
+
+      /* Stage glow for active */
+      .v-stage-item.stage-active .v-stage-dot {
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+        animation: stageDotPulse 1.5s infinite;
+      }
+      @keyframes stageDotPulse {
+        0%, 100% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25); }
+        50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.1); }
+      }

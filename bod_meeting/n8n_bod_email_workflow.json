@@ -1,0 +1,121 @@
+{
+  "name": "BOD Meeting - Email Router",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bod-send-email",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wh-bod-01",
+      "name": "Webhook BOD Email",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 340],
+      "webhookId": "bod-send-email"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-to",
+              "name": "toEmail",
+              "value": "={{ $json.body.to || $json.to || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "set-cc",
+              "name": "ccEmail",
+              "value": "={{ $json.body.cc || $json.cc || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "set-subject",
+              "name": "subject",
+              "value": "={{ $json.body.subject || $json.subject || 'BOD Meeting' }}",
+              "type": "string"
+            },
+            {
+              "id": "set-html",
+              "name": "htmlBody",
+              "value": "={{ $json.body.htmlBody || $json.htmlBody || '<pre>' + ($json.body.body || $json.body || '') + '</pre>' }}",
+              "type": "string"
+            },
+            {
+              "id": "set-sender",
+              "name": "senderName",
+              "value": "={{ $json.body.senderName || $json.senderName || 'BTC MEETING BOD - ESUHAIGROUP' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-prepare-01",
+      "name": "Prepare Email Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [500, 340]
+    },
+    {
+      "parameters": {
+        "fromEmail": "ceo.offices@esuhai.com",
+        "toEmail": "={{ $json.toEmail }}",
+        "ccEmail": "={{ $json.ccEmail }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "html": "={{ $json.htmlBody }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "smtp-send-01",
+      "name": "Send Email (SMTP)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [760, 340],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID",
+          "name": "Office365 SMTP"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Webhook BOD Email": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Data": {
+      "main": [
+        [
+          {
+            "node": "Send Email (SMTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "BOD Meeting"
+    }
+  ]
+}

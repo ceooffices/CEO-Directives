@@ -21,33 +21,23 @@
       });
 
       // ========================================
-      // START
+      // BACKWARD COMPATIBLE: delegate to emailModal
+      // (giữ lại để tránh lỗi nếu hàm cũ được gọi từ đâu đó)
       // ========================================
-      // ========================================
-      // MODAL PREVIEW FUNCTIONS
-      // ========================================
+      var pendingModalCallback = null;
       function openPreviewModal(opts) {
-        document.getElementById("modalTitle").textContent =
-          opts.title || "XEM TRƯỚC NỘI DUNG EMAIL";
-        document.getElementById("modalTo").value = opts.to || "";
-        document.getElementById("modalSubject").value = opts.subject || "";
-        document.getElementById("modalBody").value = opts.body || "";
-        pendingModalCallback = opts.onSend || null;
-        document.getElementById("previewModal").classList.add("show");
+        // Delegate to unified showEmailPreview
+        showEmailPreview({
+          type: opts.type || "custom",
+          title: opts.title || "XEM TRƯỚC NỘI DUNG EMAIL",
+          to: opts.to || "",
+          subject: opts.subject || "",
+          body: opts.body || "",
+          onSend: opts.onSend || null,
+        });
       }
-      function closeModal() {
-        document.getElementById("previewModal").classList.remove("show");
-        pendingModalCallback = null;
-      }
-      function modalConfirmSend() {
-        var editedData = {
-          to: document.getElementById("modalTo").value,
-          subject: document.getElementById("modalSubject").value,
-          body: document.getElementById("modalBody").value,
-        };
-        closeModal();
-        if (pendingModalCallback) pendingModalCallback(editedData);
-      }
+      function closeModal() { closeEmailModal(); }
+      function modalConfirmSend() { confirmSendEmail(); }
 
       // ========================================
       // APPROVAL FUNCTIONS

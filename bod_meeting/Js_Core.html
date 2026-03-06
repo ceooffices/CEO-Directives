@@ -1,13 +1,93 @@
 ﻿
       // ========================================
+      // TAB NAVIGATION
+      // ========================================
+      function switchTab(tabId, btnEl) {
+        // Hide all panels
+        var panels = document.querySelectorAll('.tab-panel');
+        for (var i = 0; i < panels.length; i++) {
+          panels[i].classList.remove('active');
+        }
+        // Deactivate all buttons
+        var btns = document.querySelectorAll('.tab-btn');
+        for (var j = 0; j < btns.length; j++) {
+          btns[j].classList.remove('active');
+        }
+        // Show target panel
+        var target = document.getElementById(tabId);
+        if (target) target.classList.add('active');
+        // Activate clicked button
+        if (btnEl) btnEl.classList.add('active');
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Auto-load data for specific tabs
+        if (tabId === 'tab-lichtrinh') {
+          loadSchedulePreview();
+        }
+      }
+
+      // ========================================
+      // BUTTON FEEDBACK (Loading + Result)
+      // ========================================
+      function btnWithFeedback(btn, actionFn) {
+        if (!btn || btn.classList.contains('btn-loading')) return;
+        var origText = btn.textContent;
+        btn.classList.add('btn-loading');
+        btn.textContent = origText + ' ...';
+        try {
+          actionFn();
+          // Action completed (modal opened or sync action done)
+          setTimeout(function() {
+            btn.classList.remove('btn-loading');
+            btn.textContent = origText;
+          }, 800);
+        } catch(e) {
+          btn.classList.remove('btn-loading');
+          btn.classList.add('btn-error');
+          btn.textContent = '❌ Lỗi';
+          setTimeout(function() {
+            btn.classList.remove('btn-error');
+            btn.textContent = origText;
+          }, 2000);
+        }
+      }
+
+      // Show result message in action-msg containers
+      function showMsg(msgId, text, type) {
+        var el = document.getElementById(msgId);
+        if (!el) return;
+        el.className = 'action-msg msg-' + (type || 'info');
+        el.textContent = text;
+        setTimeout(function() { el.textContent = ''; el.className = 'action-msg'; }, 5000);
+      }
+
+      // ========================================
       // INITIALIZATION
       // ========================================
       function init() {
         // Luôn load process status (thứ 2 sắp tới, ĐỘC LẬP với bộ lọc)
+        var processLoaded = false;
         google.script.run
-          .withSuccessHandler(renderProcess)
-          .withFailureHandler(function () {})
+          .withSuccessHandler(function(data) {
+            processLoaded = true;
+            renderProcess(data);
+            updateLastRefreshTime();
+          })
+          .withFailureHandler(function (e) {
+            processLoaded = true;
+            var pt = document.getElementById('processTarget');
+            if (pt) pt.textContent = 'Lỗi tải quy trình';
+          })
           .getProcessStatus();
+        // Timeout fallback: 10s
+        setTimeout(function() {
+          if (!processLoaded) {
+            var pt = document.getElementById('processTarget');
+            if (pt && pt.textContent === 'Đang tải...') {
+              pt.textContent = 'Chưa kết nối server — thử tải lại';
+            }
+          }
+        }, 10000);
 
         // Mặc định chọn thứ 2 tuần này (gần nhất)
         setDefaultDate();
@@ -143,6 +223,7 @@
             updateCardsTitle(data, displayDate);
             // Auto-check process checklists based on real data
             updateChecklists(data);
+            updateLastRefreshTime();
           })
           .withFailureHandler(function (err) {
             document.getElementById("tableBody").innerHTML =

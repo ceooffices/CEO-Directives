@@ -3,7 +3,8 @@
     "allow": [
       "Bash(clasp pull:*)",
       "Bash(clasp push:*)",
-      "Bash(clasp login:*)"
+      "Bash(clasp login:*)",
+      "Bash(mv:*)"
     ]
   }
 }

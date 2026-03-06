@@ -99,7 +99,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: #fff;
+        background: var(--bg, #f1f5f9);
         border: 3px solid #cbd5e1;
         display: flex;
         align-items: center;
@@ -128,6 +128,19 @@
         color: #fff;
         box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.18);
         animation: stepPulse 2s infinite;
+      }
+      /* Highlight stage được click (selected) */
+      .v-stage.stage-selected .v-stage-dot {
+        transform: scale(1.18);
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.22), 0 4px 16px rgba(0,0,0,0.15);
+      }
+      .v-stage.stage-selected:not(.stage-done):not(.stage-active) .v-stage-dot {
+        border-color: var(--c-total);
+        color: var(--c-total);
+        background: rgba(59, 130, 246, 0.08);
+      }
+      .v-stage.stage-selected .v-stage-title {
+        color: var(--c-total);
       }
 
       /* Stage label + timeline chip under dot */

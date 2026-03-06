@@ -16,17 +16,38 @@
       /* Mobile landscape / small tablets */
       @media (max-width: 768px) {
         body {
-          font-size: 20px;
+          font-size: 23px;
         }
 
         .header {
-          padding: 20px;
-          flex-direction: column;
-          align-items: flex-start;
+          padding: 16px 20px;
+          flex-direction: row;
+          align-items: center;
+          flex-wrap: nowrap;
+          gap: 12px;
         }
 
         .header h1 {
-          font-size: 22px;
+          font-size: 20px;
+          white-space: nowrap;
+        }
+
+        .header-sub {
+          display: none;
+        }
+
+        .date-picker-label {
+          display: none;
+        }
+
+        .date-picker {
+          flex-shrink: 0;
+        }
+
+        .date-picker input[type="date"] {
+          font-size: 14px;
+          padding: 8px 12px;
+          min-width: 140px;
         }
 
         .date-picker {
@@ -35,7 +56,7 @@
 
         .date-picker select {
           width: 100%;
-          font-size: 17px;
+          font-size: 20px;
           padding: 14px 16px;
         }
 
@@ -55,12 +76,12 @@
         }
 
         .stat-card .card-number {
-          font-size: 36px;
+          font-size: 39px;
           letter-spacing: -1px;
         }
 
         .stat-card .card-label {
-          font-size: 16px;
+          font-size: 19px;
           letter-spacing: 0.3px;
         }
 
@@ -77,7 +98,7 @@
         }
 
         .table-header h2 {
-          font-size: 19px;
+          font-size: 22px;
         }
 
         table {
@@ -85,56 +106,94 @@
         }
 
         tbody td {
-          font-size: 16px;
+          font-size: 19px;
           padding: 14px 14px;
         }
 
         thead th {
           padding: 12px 14px;
-          font-size: 13px;
+          font-size: 16px;
         }
 
         .action-btn {
-          font-size: 17px;
+          font-size: 20px;
           padding: 16px 28px;
           min-height: 52px;
         }
 
         .dept-table td {
           padding: 14px 16px;
-          font-size: 15px;
+          font-size: 18px;
         }
         .dept-table th {
           padding: 12px 16px;
-          font-size: 12px;
+          font-size: 15px;
         }
         .dept-badge {
-          font-size: 14px;
+          font-size: 17px;
           padding: 6px 14px;
         }
         .dept-remind-btn {
-          font-size: 15px;
+          font-size: 18px;
           padding: 10px 20px;
           min-height: 44px;
+        }
+
+        .guide-intro,
+        .guide-label,
+        .guide-steps li,
+        .check-text,
+        .btn-hint {
+          font-size: 18px;
+        }
+
+        .section-header h2 {
+          font-size: 21px;
+        }
+
+        .v-stage-title {
+          font-size: 17px;
+        }
+
+        .tl-expand-head-title {
+          font-size: 19px;
+        }
+
+        .process-target {
+          font-size: 17px;
+        }
+
+        .tab-label {
+          font-size: 17px;
+        }
+
+
+
+        .summary-card-value {
+          font-size: 22px;
+        }
+
+        .summary-card-label {
+          font-size: 16px;
         }
       }
 
       /* Mobile portrait */
       @media (max-width: 480px) {
         :root {
-          --font-base: 18px;
+          --font-base: 21px;
         }
 
         .header {
           padding: 16px;
         }
         .header h1 {
-          font-size: 20px;
+          font-size: 23px;
         }
         .header-logo {
           width: 36px;
           height: 36px;
-          font-size: 20px;
+          font-size: 23px;
         }
 
         .container {
@@ -157,20 +216,20 @@
         }
 
         .stat-card .card-number {
-          font-size: 30px;
+          font-size: 33px;
         }
 
         .stat-card .card-label {
-          font-size: 14px;
+          font-size: 17px;
         }
 
         .filter-badge {
-          font-size: 14px;
+          font-size: 17px;
           padding: 8px 14px;
         }
 
         .action-btn {
-          font-size: 17px;
+          font-size: 20px;
           padding: 16px 24px;
           width: 100%;
           justify-content: center;
@@ -179,16 +238,48 @@
 
         .dept-table td {
           padding: 12px 14px;
-          font-size: 15px;
+          font-size: 18px;
         }
         .dept-badge {
-          font-size: 13px;
+          font-size: 16px;
           padding: 6px 12px;
         }
         .dept-remind-btn {
-          font-size: 15px;
+          font-size: 18px;
           padding: 10px 18px;
           min-height: 44px;
+        }
+
+        .guide-intro,
+        .guide-label,
+        .guide-steps li,
+        .check-text,
+        .btn-hint {
+          font-size: 17px;
+        }
+
+        .section-header h2 {
+          font-size: 20px;
+        }
+
+        .v-stage-title {
+          font-size: 16px;
+        }
+
+        .tl-expand-head-title {
+          font-size: 18px;
+        }
+
+        .tab-label {
+          font-size: 16px;
+        }
+
+        .summary-card-value {
+          font-size: 21px;
+        }
+
+        .summary-card-label {
+          font-size: 15px;
         }
       }
 

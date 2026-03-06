@@ -23,12 +23,13 @@ function _eHdr_(titleVN, titleJP) {
     + '</div>';
 }
 
-function _eFtr_() {
+function _eFtr_(isJp) {
   return '<div style="padding:18px 32px;background:#f1f5f9;border-top:1px solid #e2e8f0;">'
     + '<p style="font-size:11px;color:#94a3b8;margin:0;line-height:1.7;font-family:Arial,sans-serif;">'
     + 'Email tự động từ <strong>BTC Meeting BOD — ESUHAI GROUP</strong><br>'
-    + '自動送信メール — BOD会議運営委員会<br>'
-    + 'Vui lòng không trả lời email này / このメールに返信しないでください'
+    + (isJp ? '自動送信メール — BOD会議運営委員会<br>' : '')
+    + 'Vui lòng không trả lời email này'
+    + (isJp ? ' / このメールに返信しないでください' : '')
     + '</p></div>';
 }
 
@@ -49,6 +50,137 @@ function _eRow_(label, value, valueColor) {
     + '</tr>';
 }
 
+// =====================================================================
+// PRIVATE: Lịch sử đăng ký 4 tuần gần nhất của 1 bộ phận
+// Content Bible v9.0 — Section 11.3
+// =====================================================================
+/**
+ * @param {string} deptName - Tên bộ phận (VD: "KOKA TEAM")
+ * @returns {Object} { weeks: [{date,label,status}], missedWeeks, registered, total, month }
+ */
+function _getDeptHistory_(deptName) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  var result = { weeks: [], missedWeeks: 0, registered: 0, total: 0, month: '' };
+  if (!sheet) return result;
+
+  // Tính 4 thứ Hai gần nhất (tính ngược từ hôm nay)
+  var today = new Date();
+  var mondays = [];
+  // Tìm thứ Hai tuần này
+  var d = new Date(today);
+  d.setHours(0, 0, 0, 0);
+  var dayOfWeek = d.getDay();
+  var diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Nếu CN thì lùi 6, còn lại lùi (day-1)
+  d.setDate(d.getDate() - diff);
+  for (var i = 0; i < 4; i++) {
+    var mon = new Date(d);
+    mon.setDate(mon.getDate() - (i * 7));
+    mondays.push(mon);
+  }
+  mondays.reverse(); // tuần xa nhất trước
+
+  // Lấy tháng hiện tại
+  var m = today.getMonth() + 1;
+  var y = today.getFullYear();
+  result.month = (m < 10 ? '0' : '') + m + '/' + y;
+
+  // Đọc data từ sheet
+  var data = sheet.getDataRange().getValues();
+  var colBP = CONFIG.COLUMN_MAP.boPhan;    // 10 = cột K
+  var colDate = CONFIG.COLUMN_MAP.ngayHop;  // 7 = cột H
+
+  // Tạo set ngày đã đăng ký cho bộ phận này
+  var registeredDates = {};
+  for (var r = 1; r < data.length; r++) {
+    var rowDept = (data[r][colBP] || '').toString().trim().toUpperCase();
+    if (rowDept !== deptName.toUpperCase()) continue;
+    var rowDate = data[r][colDate];
+    if (rowDate instanceof Date) {
+      var key = rowDate.getFullYear() + '-' + (rowDate.getMonth() + 1) + '-' + rowDate.getDate();
+      registeredDates[key] = true;
+    } else if (typeof rowDate === 'string' && rowDate) {
+      // Thử parse string date
+      var parts = rowDate.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (parts) {
+        var key2 = parseInt(parts[3]) + '-' + parseInt(parts[2]) + '-' + parseInt(parts[1]);
+        registeredDates[key2] = true;
+      }
+    }
+  }
+
+  // Check từng tuần
+  var missed = 0;
+  var reg = 0;
+  for (var w = 0; w < mondays.length; w++) {
+    var mon = mondays[w];
+    var key = mon.getFullYear() + '-' + (mon.getMonth() + 1) + '-' + mon.getDate();
+    var dd = (mon.getDate() < 10 ? '0' : '') + mon.getDate();
+    var mm = ((mon.getMonth() + 1) < 10 ? '0' : '') + (mon.getMonth() + 1);
+    var label = dd + '/' + mm;
+    var isCurrentWeek = (w === mondays.length - 1);
+
+    if (registeredDates[key]) {
+      result.weeks.push({ date: mon, label: label, status: 'registered', isCurrentWeek: isCurrentWeek });
+      reg++;
+    } else {
+      result.weeks.push({ date: mon, label: label, status: 'missed', isCurrentWeek: isCurrentWeek });
+      missed++;
+    }
+  }
+
+  result.missedWeeks = missed;
+  result.registered = reg;
+  result.total = mondays.length;
+  return result;
+}
+
+/**
+ * Render HTML bảng thống kê 4 tuần — inline CSS, email-safe
+ * @param {string} deptName
+ * @param {Object} history - output từ _getDeptHistory_
+ * @returns {string} HTML string (rỗng nếu không cần hiện)
+ */
+function _buildHistoryTable_(deptName, history) {
+  if (!history || history.missedWeeks < 1) return '';
+
+  var rows = '';
+  for (var i = 0; i < history.weeks.length; i++) {
+    var w = history.weeks[i];
+    var arrow = w.isCurrentWeek ? '► ' : '';
+    var weekLabel = w.isCurrentWeek ? 'Tuần này' : 'Tuần';
+    var weekLabelJP = w.isCurrentWeek ? '今週' : '';
+
+    var statusVN, statusJP, statusColor;
+    if (w.status === 'registered') {
+      statusVN = '✓ Đã đăng ký'; statusJP = '登録済み'; statusColor = '#10b981';
+    } else {
+      statusVN = '✗ Chưa đăng ký'; statusJP = '未登録'; statusColor = '#ef4444';
+    }
+
+    rows += '<tr>'
+      + '<td style="padding:6px 10px;font-size:13px;color:#334155;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif;">'
+      + arrow + weekLabel + ' ' + w.label + (weekLabelJP ? ' (' + weekLabelJP + ')' : '') + '</td>'
+      + '<td style="padding:6px 10px;font-size:13px;color:' + statusColor + ';font-weight:600;border-bottom:1px solid #e2e8f0;font-family:Arial,sans-serif;">'
+      + statusVN + '</td></tr>';
+  }
+
+  // Dòng tổng kết — màu theo tỷ lệ
+  var pct = history.total > 0 ? (history.registered / history.total * 100) : 0;
+  var summaryColor = pct >= 75 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+
+  return '<div style="margin:16px 0;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;">'
+    + '<div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0;">'
+    + '<span style="font-size:12px;font-weight:700;color:#334155;font-family:Arial,sans-serif;">TÌNH HÌNH ĐĂNG KÝ — ' + deptName + '</span>'
+    + '<span style="font-size:10px;color:#94a3b8;margin-left:8px;font-family:Arial,sans-serif;">登録状況</span></div>'
+    + '<table style="border-collapse:collapse;width:100%;">' + rows
+    + '<tr><td colspan="2" style="padding:8px 10px;font-size:13px;font-weight:700;color:' + summaryColor + ';background:#f8fafc;font-family:Arial,sans-serif;">'
+    + 'Kết quả: ' + history.registered + '/' + history.total + ' tuần đã đăng ký trong tháng ' + history.month
+    + ' <span style="font-size:11px;color:#94a3b8;font-weight:400;">(' + history.month + ' ' + history.registered + '/' + history.total + '週 登録済み)</span>'
+    + '</td></tr>'
+    + '</table></div>';
+}
+
 // ========================================================================
 // 1. NHẮC NHỞ ĐĂNG KÝ BÁO CÁO
 // ========================================================================
@@ -57,39 +189,121 @@ function _eRow_(label, value, valueColor) {
  * @param {string} contactName  - Tên người nhận (VD: "Nguyễn Văn A")
  * @param {string} reportDate   - Ngày họp hiển thị (VD: "Thứ 2, 10/03/2026")
  * @param {string} formUrl      - URL form đăng ký (bỏ trống nếu không có)
+ * @param {boolean} isJp        - Cờ xác định có phải người Nhật không (để hiện song ngữ)
  * @returns {string} HTML string
  */
-function buildReminderEmail(deptName, contactName, reportDate, formUrl) {
-  var header = _eHdr_('BOD MEETING — NHẮC NHỞ ĐĂNG KÝ BÁO CÁO', 'BOD会議 — 報告登録リマインダー');
+function buildReminderEmail(deptName, contactName, reportDate, formUrl, isJp, reminderCount) {
+  var count = parseInt(reminderCount) || 1;
   var name = contactName || 'Anh/Chị';
 
-  var body = '<div style="padding:28px 32px;background:#fff;">'
+  // Header leo thang
+  var headerVN, headerJP;
+  if (count <= 1) {
+    headerVN = 'BOD MEETING — NHẮC NHỞ ĐĂNG KÝ BÁO CÁO';
+    headerJP = 'BOD会議 — 報告登録リマインダー';
+  } else if (count === 2) {
+    headerVN = 'BOD MEETING — NHẮC NHỞ LẦN 2 ⚠️';
+    headerJP = 'BOD会議 — 第2回リマインダー ⚠️';
+  } else {
+    headerVN = 'BOD MEETING — NHẮC NHỞ KHẨN LẦN ' + count + ' 🔴';
+    headerJP = 'BOD会議 — 緊急リマインダー第' + count + '回 🔴';
+  }
+  var header = _eHdr_(headerVN, headerJP);
+
+  // Lấy form URL từ Settings sheet
+  var fUrl = formUrl;
+  if (!fUrl) {
+    try {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var settingsSheet = ss.getSheetByName("Settings");
+      if (settingsSheet) {
+        var sData = settingsSheet.getDataRange().getValues();
+        for (var i = 0; i < sData.length; i++) {
+          var k = (sData[i][0] || "").toString().trim();
+          if (k === "cfg_formLink" || k === "sys_formUrl") {
+            var v = (sData[i][1] || "").toString().trim();
+            if (v) { fUrl = v; break; }
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Badge lần nhắc
+  var badgeColor = count <= 1 ? '#3b82f6' : count === 2 ? '#f59e0b' : '#dc2626';
+  var badgeBg = count <= 1 ? '#eff6ff' : count === 2 ? '#fef9c3' : '#fef2f2';
+  var badgeHtml = count > 1 
+    ? '<div style="text-align:center;padding:10px;background:' + badgeBg + ';border-bottom:2px solid ' + badgeColor + ';">'
+      + '<span style="display:inline-block;padding:6px 16px;background:' + badgeColor + ';color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif;">'
+      + 'NHẮC NHỞ LẦN ' + count + ' / 第' + count + '回リマインダー</span></div>'
+    : '';
+
+  // Nội dung leo thang
+  var bodyVN, bodyJP;
+  if (count <= 1) {
+    bodyVN = '<p style="margin:0 0 10px;">Bộ phận <strong>' + deptName + '</strong> chưa gửi đăng ký báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
+      + '<p style="margin:0 0 10px;">Nội dung đăng ký bao gồm: <strong>Chủ đề báo cáo, Thời lượng trình bày, Quyết định cần CEO phê duyệt</strong> (nếu có).</p>'
+      + '<p style="margin:0 0 10px;">Kính mời Anh/Chị hoàn tất đăng ký trước <strong style="color:#dc2626;">17:00 Thứ Năm</strong> để BTC kịp tổng hợp lịch trình và gửi tài liệu cho CEO.</p>';
+    bodyJP = deptName + 'より、次回BOD会議 (' + reportDate + ') への報告登録がまだ送信されていません。<br>木曜日17:00までに登録をお願いいたします。';
+  } else if (count === 2) {
+    bodyVN = '<p style="margin:0 0 10px;">Đây là <strong style="color:#f59e0b;">lần nhắc nhở thứ 2</strong> gửi đến bộ phận <strong>' + deptName + '</strong>.</p>'
+      + '<p style="margin:0 0 10px;">Bộ phận hiện vẫn chưa đăng ký nội dung báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
+      + '<p style="margin:0 0 10px;">BTC rất mong nhận được phản hồi của Anh/Chị <strong style="color:#dc2626;">trong hôm nay</strong> để kịp hoàn thiện lịch trình họp.  Việc đăng ký đúng hạn giúp cuộc họp diễn ra hiệu quả và tiết kiệm thời gian cho toàn bộ Ban Giám Đốc.</p>';
+    bodyJP = deptName + '部門への<strong>2回目のリマインダー</strong>です。<br>BOD会議 (' + reportDate + ') への報告登録がまだ確認できておりません。<br><strong>本日中</strong>にご登録いただけますよう、お願いいたします。';
+  } else {
+    bodyVN = '<p style="margin:0 0 10px;">Đây là <strong style="color:#dc2626;">lần nhắc nhở thứ ' + count + '</strong> gửi đến bộ phận <strong>' + deptName + '</strong>.</p>'
+      + '<p style="margin:0 0 10px;">BTC hiểu rằng Anh/Chị có thể đang rất bận rộn với công việc hàng ngày. Tuy nhiên, cuộc họp BOD ngày <strong>' + reportDate + '</strong> cần sự đóng góp của <strong>tất cả bộ phận</strong> để Ban Giám Đốc nắm bắt tình hình và đưa ra quyết định kịp thời.</p>'
+      + '<p style="margin:0 0 10px;">Nếu bộ phận không có nội dung báo cáo tuần này, xin vui lòng <strong>phản hồi email này</strong> để BTC ghi nhận. Sự phối hợp của Anh/Chị giúp cuộc họp diễn ra trọn vẹn và tôn trọng thời gian của mọi người.</p>'
+      + '<p style="margin:0 0 10px;color:#dc2626;font-weight:700;">⚠ Email này đã được CC cho Ban Tổ Chức và Ban Giám Đốc.</p>';
+    bodyJP = deptName + '部門への<strong style="color:#dc2626;">第' + count + '回リマインダー</strong>です。<br>'
+      + 'BOD会議 (' + reportDate + ') への報告登録につきまして、ご多忙中恐れ入りますが、至急ご対応をお願いいたします。<br>'
+      + '報告内容がない場合は、このメールにご返信ください。<br>'
+      + '<strong>このメールはBTC及び経営陣にCCされています。</strong>';
+  }
+
+  var body = badgeHtml
+    + '<div style="padding:28px 32px;background:#fff;">'
     + '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif;">Kính gửi ' + name + ' — ' + deptName + ',</p>'
     + '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif;">' + (contactName || deptName) + ' 様</p>'
 
     + '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif;">'
-    + '<p style="margin:0 0 10px;">Bộ phận <strong>' + deptName + '</strong> chưa gửi đăng ký báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
-    + '<p style="margin:0 0 10px;">Kính mời Anh/Chị hoàn tất đăng ký trước <strong>17:00 Thứ Năm</strong> để BTC kịp tổng hợp lịch trình.</p>'
-    + '</div>'
+    + bodyVN
+    + '</div>';
 
-    + '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6;font-family:Arial,sans-serif;">'
-    + deptName + 'より、次回BOD会議への発表登録がまだ送信されていません。木曜日17:00までにご登録ください。'
+  // Bảng thống kê đăng ký theo tháng (Content Bible 11.3)
+  // Điều kiện: missedWeeks >= 1 (bất kể lần nhắc nào)
+  try {
+    var history = _getDeptHistory_(deptName);
+    body += _buildHistoryTable_(deptName, history);
+  } catch(e) {
+    // Nếu không lấy được data (sheet lỗi), bỏ qua — email vẫn gửi được
+  }
+
+  body += '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' + badgeColor + ';font-family:Arial,sans-serif;">'
+    + bodyJP
     + '</div>'
 
     + '<div style="background:#eff6ff;border-radius:10px;padding:14px 18px;margin:0 0 22px;">'
-    + '<p style="font-size:11px;font-weight:700;color:#1e40af;margin:0 0 8px;font-family:Arial,sans-serif;">THÔNG TIN CUỘC HỌP</p>'
+    + '<p style="font-size:11px;font-weight:700;color:#1e40af;margin:0 0 8px;font-family:Arial,sans-serif;">THÔNG TIN CUỘC HỌP / 会議情報</p>'
     + '<table style="border-collapse:collapse;width:100%;">'
-    + _eRow_('Ngày họp:', reportDate)
-    + _eRow_('Giờ bắt đầu:', '08:30')
-    + _eRow_('Hạn đăng ký:', 'Thứ Năm, 17:00', '#dc2626')
+    + _eRow_('Ngày họp / 会議日:', reportDate)
+    + _eRow_('Giờ bắt đầu / 開始時間:', '08:30')
+    + _eRow_('Hạn đăng ký / 登録期限:', 'Thứ Năm, 17:00 / 木曜日 17:00', '#dc2626')
+    + (count > 1 ? _eRow_('Lần nhắc / リマインダー:', 'Lần ' + count + ' / 第' + count + '回', badgeColor) : '')
     + '</table></div>'
 
-    + (formUrl ? '<div style="text-align:center;margin-bottom:4px;">'
-      + '<a href="' + formUrl + '" style="display:inline-block;padding:12px 30px;background:#2563eb;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;font-family:Arial,sans-serif;">Đăng ký ngay</a>'
+    + (fUrl ? '<div style="text-align:center;margin-bottom:20px;">'
+      + '<a href="' + fUrl + '" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,' + badgeColor + ',' + (count >= 3 ? '#991b1b' : count === 2 ? '#d97706' : '#1d4ed8') + ');color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2);">📝 ĐĂNG KÝ NGAY / 今すぐ登録</a>'
+      + '<p style="font-size:11px;color:#94a3b8;margin:8px 0 0;font-family:Arial,sans-serif;">Nhấn nút trên hoặc copy link / 上のボタンをクリック:</p>'
+      + '<p style="font-size:11px;color:#3b82f6;margin:2px 0 0;font-family:Arial,sans-serif;word-break:break-all;">' + fUrl + '</p>'
       + '</div>' : '')
+
+    + '<div style="background:#f1f5f9;border-radius:8px;padding:12px 18px;margin-bottom:4px;">'
+    + '<p style="font-size:12px;color:#475569;margin:0;font-family:Arial,sans-serif;">📞 Liên hệ / お問い合わせ: <strong>BTC Meeting BOD</strong> — Ms. Vy (vynnl@esuhai.com)</p>'
+    + '</div>'
     + '</div>';
 
-  return _eWrap_(header + body + _eFtr_());
+  return _eWrap_(header + body + _eFtr_(true));
 }
 
 // ========================================================================
@@ -179,8 +393,41 @@ function buildApprovalResultEmail(recipientName, reportDate, status, content, gh
     + _eRow_('Nội dung:', (content || ''))
     + _eRow_('Kết quả:', s.labelVN, s.color)
     + (ghiChu ? _eRow_('Ghi chú BOD:', ghiChu) : '')
-    + '</table></div>'
-    + '</div>';
+    + '</table></div>';
+
+  // BƯỚC TIẾP THEO — chỉ hiện khi Duyệt
+  if (status === 'Duyệt') {
+    body += '<div style="margin-top:20px;font-size:14px;line-height:1.75;color:#334155;font-family:Arial,sans-serif;">'
+      + '<p style="margin:0 0 10px;font-weight:700;color:#0f172a;">BƯỚC TIẾP THEO — để phần trình bày đạt hiệu quả cao nhất:</p>'
+      + '<p style="margin:0 0 8px;">&#9312; Chuẩn bị slide hoặc tài liệu trình bày</p>'
+      + '<p style="margin:0 0 4px;">&#9313; <strong>GỬI TÀI LIỆU TRƯỚC CHO BTC</strong> (quan trọng)</p>'
+      + '<div style="margin:0 0 12px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:13px;line-height:1.7;">'
+      + 'Cuộc họp BOD có hệ thống <strong>A.I phiên dịch trực tuyến Việt–Nhật</strong> hoạt động xuyên suốt. '
+      + 'Để hệ thống hoạt động chính xác nhất, BTC đề nghị:<br>'
+      + '✦ Gửi file slide (.pptx/.pdf) hoặc tài liệu trình bày <strong>trước Thứ Hai</strong> qua:<br>'
+      + '&nbsp;&nbsp;&nbsp;→ <a href="mailto:minhhieu@esuhai.com" style="color:#2563eb;">minhhieu@esuhai.com</a> và '
+      + '<a href="mailto:dungntt@esuhai.com" style="color:#2563eb;">dungntt@esuhai.com</a><br>'
+      + '✦ Việc gửi trước giúp A.I phiên dịch nhận diện thuật ngữ chuyên ngành, tên riêng — phiên dịch chính xác hơn cho người Nhật tham dự.'
+      + '</div>'
+      + '<p style="margin:0 0 8px;">&#9314; Lịch trình chính thức sẽ được gửi trước 20:00 Chủ Nhật</p>'
+      + '<p style="margin:0 0 12px;">&#9315; Trình bày trong thời lượng đã đăng ký để đảm bảo tiến độ</p>'
+      + '<p style="margin:0 0 10px;color:#64748b;font-style:italic;">Nếu cần điều chỉnh nội dung hoặc thời lượng, vui lòng liên hệ BTC trước Thứ Bảy.</p>'
+      + '</div>';
+
+    // JP block
+    body += '<div style="margin-top:16px;font-size:12px;line-height:1.65;color:#64748b;padding:12px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' + s.color + ';font-family:Arial,sans-serif;">'
+      + '<p style="margin:0 0 6px;font-weight:700;">次のステップ：</p>'
+      + '① 発表資料のご準備をお願いいたします<br>'
+      + '② 【重要】発表資料の事前送付のお願い<br>'
+      + '&nbsp;&nbsp;BOD会議ではAI通訳システム（ベトナム語⇔日本語）が稼働しています。<br>'
+      + '&nbsp;&nbsp;スライド等の資料がある方は、月曜日の会議前までに下記へお送りください：<br>'
+      + '&nbsp;&nbsp;→ minhhieu@esuhai.com / dungntt@esuhai.com<br>'
+      + '③ 公式スケジュールは日曜日20:00までに配信いたします<br>'
+      + '④ 登録された時間内での発表をお願いいたします'
+      + '</div>';
+  }
+
+  body += '</div>';
 
   return _eWrap_(header + body + _eFtr_());
 }

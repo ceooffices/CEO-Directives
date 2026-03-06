@@ -147,3 +147,17 @@
       }
 
       var processData = null;
+
+      // ========================================
+      // LAST REFRESH TIMESTAMP
+      // ========================================
+      function updateLastRefreshTime() {
+        var now = new Date();
+        var hh = String(now.getHours()).padStart(2, '0');
+        var mm = String(now.getMinutes()).padStart(2, '0');
+        var dd = String(now.getDate()).padStart(2, '0');
+        var mo = String(now.getMonth() + 1).padStart(2, '0');
+        var text = 'Cập nhật: ' + hh + ':' + mm + ' ' + dd + '/' + mo;
+        var el = document.getElementById('lastRefreshTime');
+        if (el) el.textContent = text;
+      }

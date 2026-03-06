@@ -29,7 +29,7 @@ const CONFIG = {
   SHEET_DIM_DEPT: "Dim bộ phận",
   SHEET_CONFIG: "Cấu hình",
   SHEET_HR: "Nhân sự bắt buộc",
-  HR_COL_DEPT: 1,    // Cột A = Bộ phận (1-indexed)
+  HR_COL_DEPT: 4,    // Cột D = Phòng ban (1-indexed) — Sheet thực tế: A=STT, B=Mã NV, C=Tên, D=Phòng ban
   HR_COL_EMAIL: 6,   // Cột F = Email (1-indexed)
   HR_COL_NAME: 3,    // Cột C = Tên (1-indexed)
   BTC_FIXED: [
@@ -42,7 +42,7 @@ const CONFIG = {
   N8N_WEBHOOK_URL: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
   EMAIL_SENDER_NAME: "BTC MEETING BOD - ESUHAIGROUP",
   EMAIL_SENDER_ADDRESS: "",  // Để trống = gửi từ tài khoản chủ Script. Khi N8N sẵn sàng sẽ dùng ceo.offices@esuhai.com
-  EMAIL_METHOD: "gmail",  // 'gmail' vì N8N chưa thiết lập. Đổi sang 'n8n' khi webhook sẵn sàng
+  EMAIL_METHOD: "n8n",  // Gửi email qua N8N webhook. Fallback MailApp nếu N8N fail
   COLUMN_MAP: {
     timestamp: 0,
     noiDung: 1,
@@ -73,6 +73,22 @@ const CONFIG = {
   AGENDA_DATE_CELL: "A8",
   DASHBOARD_TIMESTAMP_ROW: 36,
   EMAIL_DELAY_MS: 500,
+
+  // ===== DANH SÁCH ĐẠI DIỆN BỘ PHẬN (SSOT — nguồn duy nhất) =====
+  // Cập nhật bởi anh Kha 06/03/2026
+  DEPT_CONTACTS: {
+    "KOKA TEAM":  { email: "utsumi@esuhai.com",           contact: "Utsumi" },
+    "IDS":        { email: "letuan@esuhai.com",            contact: "Lê Tuấn" },
+    "MSA":        { email: "dungdt@esuhai.com",            contact: "Đặng Tiến Dũng" },
+    "JPC":        { email: "xuanlanh@esuhai.com",          contact: "Xuân Lành" },
+    "KAIZEN":     { email: "ngochan@kaizen.edu.vn",        contact: "Ngọc Hân",
+                    cc: "anhthu@kaizen.edu.vn,thinhien@kaizen.edu.vn" },
+    "ESUTECH":    { email: "satomura@esuhai.com",          contact: "Satomura",
+                    cc: "masuda@esutech.vn" },
+    "ESUWORKS":   { email: "viethm@esuhai.com",            contact: "Hoàng Minh Việt" },
+    "PROSKILLS":  { email: "dangkhoa@proskills.ac.vn",      contact: "Đăng Khoa" },
+    "ALESU":      { email: "thientin@esuhai.com",           contact: "Thiện Tín" },
+  },
 };
 
 /**
@@ -117,6 +133,8 @@ function onOpen() {
     .addItem("🔄 Reset gửi email", "resetEmailSentStatus")
     .addItem("👥 Cập nhật Tên liên quan", "updateAllRelatedNames")
     .addItem("🔍 Kiểm tra Email", "checkInvalidEmails")
+    .addSeparator()
+    .addItem("🧪 Test toàn bộ CTA", "testBODDashboard")
     .addToUi();
 }
 
@@ -1674,4 +1692,92 @@ function refreshDeptStats(dashboard, searchStr) {
       .getRange(r, 6)
       .setFormula("=B" + r + "-C" + r + "-D" + r + "-E" + r);
   }
+}
+
+// =============================================================================
+// TEST FUNCTION — Chạy từ menu "BOD Tools > Test toàn bộ CTA"
+// Hoặc chạy trực tiếp: chọn hàm testBODDashboard() > Run
+// =============================================================================
+function testBODDashboard() {
+  var log = [];
+  var pass = 0, fail = 0;
+
+  function ok(name, detail) { pass++; log.push("\u2705 " + name + (detail ? ": " + detail : "")); }
+  function ng(name, detail) { fail++; log.push("\u274C " + name + ": " + detail); }
+
+  // === TEST 1: Đọc sheet Dim bộ phận ===
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var dimSheet = ss.getSheetByName(CONFIG.SHEET_DIM_DEPT);
+    if (!dimSheet) throw new Error("Không tìm thấy sheet '" + CONFIG.SHEET_DIM_DEPT + "'");
+    var dimData = dimSheet.getDataRange().getValues();
+    var batBuoc = 0;
+    for (var i = 0; i < dimData.length; i++) {
+      if ((dimData[i][1] || "").toString().trim() === "Bắt buộc") batBuoc++;
+    }
+    if (batBuoc >= 9) ok("Dim bộ phận", batBuoc + " bộ phận bắt buộc");
+    else ng("Dim bộ phận", "Chỉ có " + batBuoc + " bắt buộc (cần >= 9)");
+  } catch (e) { ng("Dim bộ phận", e.message); }
+
+  // === TEST 2: getDeptRegistrationStatus ===
+  try {
+    var depts = getDeptRegistrationStatus("09/03");
+    if (!depts || depts.length === 0) throw new Error("Trả về rỗng");
+    var hasEmail = 0, hasContact = 0;
+    var details = [];
+    for (var i = 0; i < depts.length; i++) {
+      var d = depts[i];
+      if (d.email) hasEmail++;
+      if (d.contact) hasContact++;
+      details.push(d.name + "=" + (d.email || "(trống)") + "|" + (d.contact || "(trống)"));
+    }
+    if (hasEmail >= 9) ok("getDeptStatus", depts.length + " BP, " + hasEmail + " có email, " + hasContact + " có contact");
+    else ng("getDeptStatus", "Chỉ " + hasEmail + "/" + depts.length + " có email. Chi tiết: " + details.join("; "));
+  } catch (e) { ng("getDeptStatus", e.message); }
+
+  // === TEST 3: isJapanesePerson ===
+  try {
+    var t1 = isJapanesePerson("Satomura", "satomura@esuhai.com", "");
+    var t2 = isJapanesePerson("Shimizu Hiroko", "shimizu@esuhai.com", "");
+    var t3 = isJapanesePerson("Nguyễn Văn A", "nguyen@esuhai.com", "");
+    if (t1 && t2 && !t3) ok("isJapanesePerson", "Satomura=true, Shimizu=true, Nguyễn=false");
+    else ng("isJapanesePerson", "Satomura=" + t1 + " Shimizu=" + t2 + " Nguyễn=" + t3);
+  } catch (e) { ng("isJapanesePerson", e.message); }
+
+  // === TEST 4: buildReminderEmail ===
+  try {
+    var html = buildReminderEmail("MSA", "Đặng Tiến Dũng", "10/03/2026", "", false);
+    if (html && html.length > 500 && html.indexOf("BOD") >= 0 && html.indexOf("MSA") >= 0) {
+      ok("buildReminderEmail", html.length + " chars, có BOD + MSA");
+    } else {
+      ng("buildReminderEmail", "HTML quá ngắn hoặc thiếu nội dung: " + (html ? html.length : 0) + " chars");
+    }
+  } catch (e) { ng("buildReminderEmail", e.message); }
+
+  // === TEST 5: Gửi email thật (tới anh Kha) ===
+  try {
+    var result = sendDeptReminderWeb("TEST-BOD", "hoangkha@esuhai.com", "10/03/2026", "Anh Kha (Test)", "");
+    if (result && result.success) ok("sendDeptReminderWeb", result.msg);
+    else ng("sendDeptReminderWeb", (result && result.msg) || "Không có response");
+  } catch (e) { ng("sendDeptReminderWeb", e.message); }
+
+  // === TEST 6: MailApp quota check ===
+  try {
+    var remain = MailApp.getRemainingDailyQuota();
+    if (remain > 0) ok("MailApp quota", remain + " email còn lại hôm nay");
+    else ng("MailApp quota", "Hết quota! Không gửi được email");
+  } catch (e) { ng("MailApp quota", e.message); }
+
+  // === KẾT QUẢ ===
+  var summary = "\n" + "=".repeat(40) + "\n";
+  summary += "TEST BOD DASHBOARD — " + new Date().toLocaleString("vi-VN") + "\n";
+  summary += "=".repeat(40) + "\n";
+  summary += log.join("\n") + "\n";
+  summary += "-".repeat(40) + "\n";
+  summary += "Kết quả: " + pass + " PASS / " + fail + " FAIL (tổng " + (pass + fail) + ")\n";
+  if (fail === 0) summary += "\u2705 TẤT CẢ ĐỀU PASS!\n";
+  else summary += "\u274C CÓ " + fail + " LỖI CẦN SỬA!\n";
+
+  Logger.log(summary);
+  SpreadsheetApp.getUi().alert(summary);
 }

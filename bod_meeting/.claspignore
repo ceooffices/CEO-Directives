@@ -1,17 +1,34 @@
-# Archive folder — backup files đã di chuyển vào đây
+# Archive — all old/backup files
 _archive/**
 
-# Backup / reference files — không push lên cloud
-v800_server_api.gs
-v810_admin_api.gs
+# Backup patterns
 *_backup*
 *_bak*
 
-# Docs & scripts phụ
+# Component files — only build output (Dashboard.html) is pushed
+Css_Base.html
+Css_Components.html
+Css_Extras.html
+Css_Modal.html
+Css_Responsive.html
+Css_Timeline.html
+Html_Body.html
+Js_Helpers.html
+Js_Process.html
+Js_Core.html
+Js_Approval.html
+Js_DeptSchedule.html
+Js_Email.html
+Js_Toast.html
+
+# Docs, scripts, non-GAS files
 *.txt
 *.md
 *.py
-CORE___RULES.md
+*.ps1
+*.pdf
+*.json
+!appsscript.json
 
 # IDE settings
 .vscode/

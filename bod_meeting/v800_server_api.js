@@ -236,11 +236,11 @@ function getProcessStatus() {
   }
 
   // Step 4: Họp BOD
-  if (day === 1 && hour >= 8 && result.steps[2].status === "done") {
+  if (day === 1 && hour >= 12 && result.steps[2].status === "done") {
+    result.steps[3].status = "done";
+  } else if (day === 1 && hour >= 8 && result.steps[2].status === "done") {
     result.steps[3].status = "active";
     result.currentStep = 4;
-  } else if (day === 1 && hour >= 12 && result.steps[2].status === "done") {
-    result.steps[3].status = "done";
   }
 
   return result;
@@ -250,66 +250,39 @@ function getProcessStatus() {
 function getDeptRegistrationStatus(searchDate) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
-  // Load from CONFIG.SHEET_HR (now "DANH SÁCH NHÂN VIÊN")
-  var hrSheet = ss.getSheetByName(CONFIG.SHEET_HR);
-  var requiredDepts = [
-    "KOKA TEAM",
-    "IDS",
-    "MSA",
-    "JPC",
-    "KAIZEN",
-    "ALESU",
-    "PROSKILLS",
-    "ESUTECH",
-    "ESUWORKS",
-  ];
+
+  // ĐỌC TỪ SHEET "Dim bộ phận"
+  var dimSheet = ss.getSheetByName(CONFIG.SHEET_DIM_DEPT);
+  var requiredDepts = [];
   var deptEmails = {};
   var deptContacts = {};
+  var deptCc = {};
 
-  // Column indices (CONFIG uses 1-indexed, getValues uses 0-indexed)
-  var colDept  = (CONFIG.HR_COL_DEPT || 1) - 1;   // Default: col A
-  var colName  = (CONFIG.HR_COL_NAME || 3) - 1;   // Default: col C
-  var colEmail = (CONFIG.HR_COL_EMAIL || 6) - 1;  // Default: col F
+  if (dimSheet && dimSheet.getLastRow() > 0) {
+    var dimData = dimSheet.getDataRange().getValues();
+    for (var i = 0; i < dimData.length; i++) {
+      var deptName = (dimData[i][0] || "").toString().trim();
+      var batBuoc = (dimData[i][1] || "").toString().trim();
+      if (!deptName || batBuoc !== "Bắt buộc") continue;
+      var key = deptName.toUpperCase();
+      requiredDepts.push(deptName);
+      if (dimData[i].length > 2) deptEmails[key] = (dimData[i][2] || "").toString().trim();
+      if (dimData[i].length > 3) deptContacts[key] = (dimData[i][3] || "").toString().trim();
+      if (dimData[i].length > 4) deptCc[key] = (dimData[i][4] || "").toString().trim();
+    }
+  }
 
-  // Load email from HR sheet — take FIRST email per dept (= department head)
-  if (hrSheet) {
-    var hrData = hrSheet.getDataRange().getValues();
-    // Log header + first data row for diagnostic
-    if (hrData.length > 0) {
-      var headers = [];
-      for (var h = 0; h < Math.min(hrData[0].length, 10); h++) {
-        headers.push("col" + h + "=" + hrData[0][h]);
-      }
-      Logger.log("HR HEADERS: " + headers.join(" | "));
-    }
-    if (hrData.length > 1) {
-      var row1 = [];
-      for (var r = 0; r < Math.min(hrData[1].length, 10); r++) {
-        row1.push("col" + r + "=" + hrData[1][r]);
-      }
-      Logger.log("HR ROW 1: " + row1.join(" | "));
-    }
-    Logger.log("HR reading: colDept=" + colDept + " colEmail=" + colEmail + " colName=" + colName);
-    for (var i = 1; i < hrData.length; i++) {
-      var bp = (hrData[i][colDept] || "").toString().trim().toUpperCase();
-      var email = (hrData[i][colEmail] || "").toString().trim();
-      var name = (hrData[i][colName] || "").toString().trim();
-      if (bp && email && !deptEmails[bp]) {
-        // Only take FIRST match per dept (= dept head / representative)
-        deptEmails[bp] = email;
-        deptContacts[bp] = name || bp;
-        Logger.log("  Mapped: " + bp + " → " + email + " (" + name + ")");
+  // BỔ SUNG từ CONFIG.DEPT_CONTACTS
+  if (CONFIG.DEPT_CONTACTS) {
+    for (var i = 0; i < requiredDepts.length; i++) {
+      var key = requiredDepts[i].toUpperCase();
+      var cfg = CONFIG.DEPT_CONTACTS[key];
+      if (cfg) {
+        if (!deptEmails[key]) deptEmails[key] = cfg.email || "";
+        if (!deptContacts[key]) deptContacts[key] = cfg.contact || "";
+        if (!deptCc[key] && cfg.cc) deptCc[key] = cfg.cc;
       }
     }
-    // Log which required depts are still missing email
-    for (var j = 0; j < requiredDepts.length; j++) {
-      var key = requiredDepts[j].toUpperCase();
-      if (!deptEmails[key]) {
-        Logger.log("  MISSING email for: " + requiredDepts[j]);
-      }
-    }
-  } else {
-    Logger.log("WARNING: Sheet '" + CONFIG.SHEET_HR + "' not found! Email sending will fail.");
   }
 
   // Count registrations per dept
@@ -330,84 +303,196 @@ function getDeptRegistrationStatus(searchDate) {
     }
   }
 
+  // ĐẾM SỐ LẦN GỬI NHẮC NHỞ từ Email Log — CHỈ TRONG TUẦN CỦA searchDate
+  var reminderCounts = {};
+  var lastSentTimes = {};
+  try {
+    // Tính Monday-Sunday window cho searchDate
+    var sDate = new Date(searchDate);
+    // Nếu searchDate là string dd/MM/yyyy
+    if (isNaN(sDate.getTime())) {
+      var sp = searchDate.split("/");
+      if (sp.length === 3) sDate = new Date(sp[2], parseInt(sp[1])-1, parseInt(sp[0]));
+    }
+    var dayOfWeek = sDate.getDay(); // 0=Sun..6=Sat
+    var diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    var weekMonday = new Date(sDate);
+    weekMonday.setDate(sDate.getDate() + diffToMon);
+    weekMonday.setHours(0, 0, 0, 0);
+    var weekSunday = new Date(weekMonday);
+    weekSunday.setDate(weekMonday.getDate() + 6);
+    weekSunday.setHours(23, 59, 59, 999);
+
+    var logSheet = ss.getSheetByName("Email Log");
+    if (logSheet && logSheet.getLastRow() > 1) {
+      var logData = logSheet.getDataRange().getValues();
+      for (var i = 1; i < logData.length; i++) {
+        var logType = (logData[i][1] || "").toString();
+        var logDetail = (logData[i][4] || "").toString();
+        var logTimeRaw = logData[i][0];
+        if (logType.indexOf("Nhắc") === -1 && logType.indexOf("reminder") === -1) continue;
+
+        // Filter theo tuần
+        var logDate = null;
+        if (logTimeRaw instanceof Date) {
+          logDate = logTimeRaw;
+        } else {
+          logDate = new Date(logTimeRaw);
+          if (isNaN(logDate.getTime())) {
+            var lsp = logTimeRaw.toString().split(/[\s/]+/);
+            if (lsp.length >= 3) logDate = new Date(lsp[2], parseInt(lsp[1])-1, parseInt(lsp[0]));
+          }
+        }
+        if (!logDate || logDate < weekMonday || logDate > weekSunday) continue;
+
+        // Chỉ đếm khi detail BẮT ĐẦU bằng tên bộ phận
+        for (var j = 0; j < requiredDepts.length; j++) {
+          var dk = requiredDepts[j].toUpperCase();
+          var detailUpper = logDetail.toUpperCase();
+          if (detailUpper.indexOf(dk + " (") === 0 || detailUpper === dk) {
+            reminderCounts[dk] = (reminderCounts[dk] || 0) + 1;
+            var ts = "";
+            if (logTimeRaw instanceof Date) {
+              var hh = ("0" + logTimeRaw.getHours()).slice(-2);
+              var mm = ("0" + logTimeRaw.getMinutes()).slice(-2);
+              var dd = ("0" + logTimeRaw.getDate()).slice(-2);
+              var mo = ("0" + (logTimeRaw.getMonth()+1)).slice(-2);
+              ts = hh + ":" + mm + " " + dd + "/" + mo;
+            } else {
+              var str = logTimeRaw.toString();
+              var parts = str.split(" ");
+              if (parts.length >= 2) {
+                var dp = parts[0].split("/");
+                var tp = parts[1].split(":");
+                ts = (tp[0]||"") + ":" + (tp[1]||"") + " " + (dp[0]||"") + "/" + (dp[1]||"");
+              } else {
+                ts = str.substring(0, 16);
+              }
+            }
+            lastSentTimes[dk] = ts;
+          }
+        }
+      }
+    }
+  } catch(e) { Logger.log("Log read error: " + e.message); }
+
   var result = [];
   for (var i = 0; i < requiredDepts.length; i++) {
     var d = requiredDepts[i];
     var key = d.toUpperCase();
-    var stats = deptStats[key] || {
-      total: 0,
-      approved: 0,
-      pending: 0,
-      rejected: 0,
-    };
+    var stats = deptStats[key] || { total: 0, approved: 0, pending: 0, rejected: 0 };
     result.push({
       name: d,
       email: deptEmails[key] || "",
       contact: deptContacts[key] || "",
+      cc: deptCc[key] || "",
       total: stats.total,
       approved: stats.approved,
       pending: stats.pending,
-      status:
-        stats.total === 0 ? "missing" : stats.pending > 0 ? "partial" : "ok",
+      status: stats.total === 0 ? "missing" : stats.pending > 0 ? "partial" : "ok",
+      reminderCount: reminderCounts[key] || 0,
+      lastSent: lastSentTimes[key] || ""
     });
   }
   return result;
 }
 
-// ===== API: GUI NHAC NHO 1 BO PHAN =====
-function sendDeptReminderWeb(deptName, deptEmail, displayDate) {
+// Helper phân loại người Nhật
+function isJapanesePerson(name, email, dept) {
+  var e = (email || "").toLowerCase();
+  var n = (name || "").toLowerCase();
+  if (e.indexOf(".jp@esuhai.com") !== -1) return true;
+  var jpNames = ["mishima","oishi","onda","kuriyama","honda","nakamura","sato",
+                "suzuki","takahashi","ito","watanabe","yamamoto","saito",
+                "kobayashi","tsurumi","matsumoto","kondo","yamaguchi","kato",
+                "shimizu","satomura","masuda","utsumi"];
+  for (var i = 0; i < jpNames.length; i++) {
+    if (n.indexOf(jpNames[i]) !== -1) return true;
+  }
+  return false;
+}
+
+// ===== API: GỬI NHẮC NHỞ 1 BỘ PHẬN (có leo thang) =====
+function sendDeptReminderWeb(deptName, deptEmail, displayDate, contactName, deptCc, reminderCount) {
   if (!deptEmail || !isValidEmail(deptEmail))
-    return { success: false, msg: "Email khong hop le: " + deptEmail };
+    return { success: false, msg: "Email không hợp lệ: " + deptEmail };
   try {
-    var subject = "[BOD MEETING] Nhac nho dang ky bao cao - " + displayDate;
-    var plainBody = "Kinh gui " + deptName + ",\n\nBo phan " + deptName + " chua dang ky bao cao cho cuoc hop BOD ngay " + displayDate + ".\nHan dang ky: Thu Nam, 17:00\n\nTran trong,\nBTC Meeting BOD";
+    var count = parseInt(reminderCount) || 1;
+    
+    // Subject leo thang
+    var subject;
+    if (count <= 1) subject = "[BOD MEETING] Nhắc nhở đăng ký báo cáo — " + displayDate;
+    else if (count === 2) subject = "[BOD MEETING] ⚠️ Nhắc nhở lần 2 — " + deptName + " chưa đăng ký — " + displayDate;
+    else subject = "[BOD MEETING] 🔴 Nhắc nhở KHẨN lần " + count + " — " + deptName + " — " + displayDate;
 
-    // Build HTML email from templates (beautiful design)
+    var plainBody = "Kinh gui " + (contactName || deptName) + ",\n\n"
+      + "Bo phan " + deptName + " chua dang ky bao cao cho cuoc hop BOD ngay " + displayDate + ".\n"
+      + "Day la lan nhac nho thu " + count + ".\n"
+      + "Han dang ky: Thu Nam, 17:00\n\nTran trong,\nBTC Meeting BOD";
+
+    // Build HTML email — LUÔN song ngữ
     var htmlBody = "";
-    try { htmlBody = buildReminderEmail(deptName, "", displayDate, ""); } catch(te) { Logger.log("Template error: " + te.message); }
+    try {
+      htmlBody = buildReminderEmail(deptName, contactName || "", displayDate, "", true, count);
+    } catch(te) { Logger.log("Template error: " + te.message); }
 
-    // Route through N8N if configured
+    // CC: luôn CC BTC, lần 3+ thêm thêm nếu cần
+    var ccList = CONFIG.BTC_FIXED ? CONFIG.BTC_FIXED.join(",") : "";
+    if (deptCc) {
+      var extras = deptCc.split(/[,;]+/);
+      for (var x = 0; x < extras.length; x++) {
+        var e = extras[x].trim();
+        if (e && ccList.indexOf(e) === -1) ccList += "," + e;
+      }
+    }
+    if (count >= 3 && CONFIG.BTC_FIXED) {
+      // Đã có BTC trong ccList rồi, không cần thêm
+      // Nhưng đảm bảo BOD hosting cũng được CC
+      var hosting = CONFIG.BOD_HOSTING_DEFAULT || "";
+      if (hosting && ccList.indexOf(hosting) === -1) ccList += "," + hosting;
+    }
+
+    // Route through N8N
     if (CONFIG.EMAIL_METHOD === "n8n") {
       var ok = sendViaWebhook({
         to: deptEmail,
-        cc: "hoangkha@esuhai.com",
+        cc: ccList,
         subject: subject,
         body: plainBody,
         htmlBody: htmlBody,
-        senderName: "BTC Meeting BOD",
+        senderName: CONFIG.EMAIL_SENDER_NAME || "BTC Meeting BOD",
         senderEmail: CONFIG.EMAIL_SENDER_ADDRESS || "",
         type: "dept_reminder",
         deptName: deptName,
         displayDate: displayDate,
+        reminderCount: count
       });
       if (ok) {
-        logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ')');
-        return { success: true, msg: "Da gui nhac nho den " + deptName + " (" + deptEmail + ") [N8N]" };
+        logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ') [Lần ' + count + ']');
+        return { success: true, msg: "Đã gửi nhắc nhở lần " + count + " đến " + deptName + " (" + deptEmail + ") [N8N]" };
       }
-      Logger.log("N8N failed for dept reminder, falling back to Gmail");
+      Logger.log("N8N failed, falling back to MailApp");
     }
 
-    // Gmail fallback — also uses HTML template
-    var emailOpts = { name: "BTC Meeting BOD", cc: "hoangkha@esuhai.com" };
+    // MailApp fallback
+    var emailOpts = { name: CONFIG.EMAIL_SENDER_NAME || "BTC Meeting BOD", cc: ccList };
     if (htmlBody) emailOpts.htmlBody = htmlBody;
-    if (CONFIG.EMAIL_SENDER_ADDRESS) emailOpts.from = CONFIG.EMAIL_SENDER_ADDRESS;
-    GmailApp.sendEmail(deptEmail, subject, plainBody, emailOpts);
-    logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ')');
-    return { success: true, msg: "Da gui nhac nho den " + deptName + " (" + deptEmail + ")" };
+    MailApp.sendEmail(deptEmail, subject, plainBody, emailOpts);
+    logEmailSend('reminder', 1, deptName + ' (' + deptEmail + ') [Lần ' + count + ']');
+    return { success: true, msg: "Đã gửi nhắc nhở lần " + count + " đến " + deptName + " (" + deptEmail + ")" };
   } catch (e) {
-    return { success: false, msg: "Loi gui email: " + e.message };
+    Logger.log("sendDeptReminderWeb error: " + e.message);
+    return { success: false, msg: "Lỗi gửi email: " + e.message };
   }
 }
 
 // ===== API: GUI NHAC NHO TAT CA BO PHAN CHUA DANG KY =====
 function sendBulkReminderWeb(searchDate, displayDate) {
   var depts = getDeptRegistrationStatus(searchDate);
-  var sent = 0,
-    failed = 0,
-    msgs = [];
+  var sent = 0, failed = 0, msgs = [];
   for (var i = 0; i < depts.length; i++) {
     if (depts[i].status === "missing" && depts[i].email) {
-      var r = sendDeptReminderWeb(depts[i].name, depts[i].email, displayDate);
+      var r = sendDeptReminderWeb(depts[i].name, depts[i].email, displayDate, depts[i].contact, depts[i].cc);
       if (r.success) {
         sent++;
         msgs.push("✔ " + depts[i].name);
@@ -432,7 +517,7 @@ function sendApprovalReminderWeb(searchDate, displayDate) {
     var subject = "[BOD MEETING] Nhac phe duyet noi dung - " + displayDate;
     var plainBody = "Kinh gui Ban To Chuc,\n\nHien con " + stats.pending + " dang ky cho phe duyet cho cuoc hop BOD ngay " + displayDate + ".\nTong: " + stats.total + " | Duyet: " + stats.approved + " | Cho: " + stats.pending + "\n\nTran trong,\nBTC Meeting BOD";
 
-    // Build HTML email from templates (beautiful design)
+    // Build HTML email from templates
     var htmlBody = "";
     try { htmlBody = buildApprovalReminderEmail(displayDate, stats.pending); } catch(te) { Logger.log("Template error: " + te.message); }
 
@@ -453,17 +538,17 @@ function sendApprovalReminderWeb(searchDate, displayDate) {
         logEmailSend('approval_reminder', 1, stats.pending + ' cho duyet');
         return { success: true, msg: "Da gui nhac phe duyet den BTC (" + stats.pending + " cho duyet) [N8N]" };
       }
-      Logger.log("N8N failed for approval reminder, falling back to Gmail");
+      Logger.log("N8N failed, falling back to MailApp");
     }
 
-    // Gmail fallback — also uses HTML template
+    // MailApp fallback
     var emailOpts = { name: "BTC Meeting BOD" };
     if (htmlBody) emailOpts.htmlBody = htmlBody;
-    if (CONFIG.EMAIL_SENDER_ADDRESS) emailOpts.from = CONFIG.EMAIL_SENDER_ADDRESS;
-    GmailApp.sendEmail(btcEmails.all.join(","), subject, plainBody, emailOpts);
+    MailApp.sendEmail(btcEmails.all.join(","), subject, plainBody, emailOpts);
     logEmailSend('approval_reminder', 1, stats.pending + ' cho duyet');
     return { success: true, msg: "Da gui nhac phe duyet den BTC (" + stats.pending + " cho duyet)" };
   } catch (e) {
+    Logger.log("sendApprovalReminderWeb error: " + e.message);
     return { success: false, msg: "Loi: " + e.message };
   }
 }
@@ -547,10 +632,13 @@ function getSchedulePreview(searchDate) {
       String(Math.floor(t / 60)).padStart(2, "0") +
       ":" +
       String(t % 60).padStart(2, "0");
-    result.totalMinutes += items[i].tlTB + items[i].tlCD;
-    items[i].tlTB = items[i].tlTB + "'";
-    items[i].tlCD = items[i].tlCD + "'";
-    t += parseInt(items[i].tlTB) + parseInt(items[i].tlCD);
+    // Tính toán trước khi convert sang string (fix Bug 3)
+    var numTB = items[i].tlTB;
+    var numCD = items[i].tlCD;
+    result.totalMinutes += numTB + numCD;
+    t += numTB + numCD;
+    items[i].tlTB = numTB + "'";
+    items[i].tlCD = numCD + "'";
   }
   result.items = items;
   return result;
@@ -580,12 +668,13 @@ function sendScheduleFromDashboard() {
 function updateDeptEmail(deptName, newEmail) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var hrSheet = ss.getSheetByName(CONFIG.SHEET_HR);
+    var hrSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_HR) ? CONFIG.SHEET_HR : "Nhân sự bắt buộc";
+    var hrSheet = ss.getSheetByName(hrSheetName) || ss.getSheetByName("DANH SÁCH NHÂN VIÊN");
     if (!hrSheet) {
-      return { success: false, msg: "Không tìm thấy sheet " + CONFIG.SHEET_HR };
+      return { success: false, msg: "Không tìm thấy sheet cấu hình nhân sự" };
     }
 
-    var colDept  = (CONFIG.HR_COL_DEPT || 1) - 1;
+    var colDept  = (CONFIG.HR_COL_DEPT || 4) - 1;
     var colEmail = (CONFIG.HR_COL_EMAIL || 6);  // 1-indexed cho setCell
     var data = hrSheet.getDataRange().getValues();
     var found = false;
@@ -608,6 +697,73 @@ function updateDeptEmail(deptName, newEmail) {
     return { success: true, msg: "Đã cập nhật email " + deptName + " → " + newEmail };
   } catch (e) {
     Logger.log("updateDeptEmail error: " + e.message);
+    return { success: false, msg: "Lỗi: " + e.message };
+  }
+}
+
+// ===== API: LẤY URL FORM ĐĂNG KÝ TỪ CẤU HÌNH =====
+function getFormUrl() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var configSheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
+    if (!configSheet) return "";
+    var data = configSheet.getDataRange().getValues();
+    for (var i = 0; i < data.length; i++) {
+      var key = (data[i][0] || "").toString().trim().toLowerCase();
+      var val = (data[i][1] || "").toString().trim();
+      if (key.indexOf("form") >= 0 && key.indexOf("url") >= 0 && val) {
+        return val;
+      }
+      if (key.indexOf("form đăng ký") >= 0 && val) {
+        return val;
+      }
+    }
+    return "";
+  } catch (e) {
+    Logger.log("getFormUrl error: " + e.message);
+    return "";
+  }
+}
+
+// ===== API: RESET SỐ LẦN NHẮC NHỞ (XÓA LOG TRONG TUẦN) =====
+function resetReminderCountsWeb() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var logSheet = ss.getSheetByName("Email Log");
+    if (!logSheet || logSheet.getLastRow() <= 1)
+      return { success: true, msg: "Không có log nhắc nhở để xóa" };
+
+    // Tính Monday-Sunday cho tuần hiện tại
+    var now = new Date();
+    var dayOfWeek = now.getDay();
+    var diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    var weekMonday = new Date(now);
+    weekMonday.setDate(now.getDate() + diffToMon);
+    weekMonday.setHours(0, 0, 0, 0);
+    var weekSunday = new Date(weekMonday);
+    weekSunday.setDate(weekMonday.getDate() + 6);
+    weekSunday.setHours(23, 59, 59, 999);
+
+    var logData = logSheet.getDataRange().getValues();
+    var rowsToDelete = [];
+    for (var i = 1; i < logData.length; i++) {
+      var logType = (logData[i][1] || "").toString();
+      if (logType.indexOf("Nhắc") === -1 && logType.indexOf("reminder") === -1) continue;
+      var logTime = logData[i][0];
+      var logDate = (logTime instanceof Date) ? logTime : new Date(logTime);
+      if (logDate >= weekMonday && logDate <= weekSunday) {
+        rowsToDelete.push(i + 1); // Sheet row (1-indexed, +1 for header)
+      }
+    }
+
+    // Xóa từ dưới lên để không bị lệch index
+    for (var r = rowsToDelete.length - 1; r >= 0; r--) {
+      logSheet.deleteRow(rowsToDelete[r]);
+    }
+
+    return { success: true, msg: "Đã reset " + rowsToDelete.length + " lần nhắc nhở trong tuần" };
+  } catch (e) {
+    Logger.log("resetReminderCounts error: " + e.message);
     return { success: false, msg: "Lỗi: " + e.message };
   }
 }

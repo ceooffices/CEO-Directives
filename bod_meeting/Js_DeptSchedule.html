@@ -2,6 +2,7 @@
       // ========================================
       // DEPT STATUS
       // ========================================
+      var _deptData = []; // Lưu danh sách dept để truy xuất contact/cc
       function loadDeptStatus() {
         var searchDate = getSelectedDate();
         if (!searchDate) return;
@@ -9,26 +10,27 @@
           .withSuccessHandler(renderDeptTable)
           .withFailureHandler(function (e) {
             document.getElementById("deptTableBody").innerHTML =
-              '<tr><td colspan="7" style="text-align:center;color:#ef4444">Lỗi tải dữ liệu</td></tr>';
+              '<tr><td colspan="8" style="text-align:center;color:#ef4444">Lỗi tải dữ liệu</td></tr>';
           })
           .getDeptRegistrationStatus(searchDate);
       }
 
       function renderDeptTable(depts) {
+        _deptData = depts || [];
         if (!depts || depts.length === 0) {
           document.getElementById("deptTableBody").innerHTML =
-            '<tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8">Không có dữ liệu</td></tr>';
+            '<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8">Không có dữ liệu</td></tr>';
           return;
         }
-        // Update date label in dept section
         var dateLabel = document.getElementById("deptDateLabel");
         if (dateLabel) dateLabel.textContent = getDisplayDateFromInput() || "";
         var html = "";
         var missingCount = 0;
         for (var i = 0; i < depts.length; i++) {
           var d = depts[i];
-          var badge = "",
-            btnHtml = "";
+          var badge = "", btnHtml = "";
+          var rc = d.reminderCount || 0;
+
           if (d.status === "ok")
             badge = '<span class="dept-badge dept-ok">Đã đăng ký</span>';
           else if (d.status === "partial")
@@ -36,56 +38,46 @@
           else {
             badge = '<span class="dept-badge dept-missing">Chưa đăng ký</span>';
             missingCount++;
-            if (d.email)
-              btnHtml =
-                '<button class="dept-remind-btn" onclick="sendDeptReminder(\'' +
-                d.name.replace(/'/g, "\\'") +
-                "','" +
-                d.email +
-                '\')" id="remindBtn_' +
-                i +
-                '">Nhắc</button>';
-            else
-              btnHtml =
-                '<span style="font-size:11px;color:#94a3b8">Chưa có email</span>';
+            if (d.email) {
+              var nextCount = rc + 1;
+              var btnColor = nextCount <= 1 ? '#3b82f6' : nextCount === 2 ? '#f59e0b' : '#dc2626';
+              var btnLabel = nextCount <= 1 ? 'Nhắc' : 'Nhắc lần ' + nextCount;
+              btnHtml = '<button class="dept-remind-btn" style="background:' + btnColor + '" onclick="sendDeptReminder(' + i + ')" id="remindBtn_' + i + '">' + btnLabel + '</button>';
+            } else {
+              btnHtml = '<span style="font-size:11px;color:#94a3b8">Chưa có email</span>';
+            }
           }
-          // Nút sửa email — luôn hiển thị
+
+          // Badge lần nhắc
+          var rcBadge = "";
+          if (rc > 0) {
+            var rcColor = rc === 1 ? '#3b82f6' : rc === 2 ? '#f59e0b' : '#dc2626';
+            rcBadge = '<span style="display:inline-block;padding:2px 8px;background:' + rcColor + ';color:#fff;border-radius:10px;font-size:11px;font-weight:700;">' + rc + ' lần</span>';
+            if (d.lastSent) rcBadge += '<br><span style="font-size:10px;color:#94a3b8;">' + d.lastSent + '</span>';
+          } else {
+            rcBadge = '<span style="font-size:11px;color:#94a3b8">—</span>';
+          }
+
+          // Nút sửa email
           var editEmailBtn =
             '<button class="dept-edit-email-btn" onclick="editDeptEmail(\'' +
-            d.name.replace(/'/g, "\\'") +
-            "','" +
+            d.name.replace(/'/g, "\\'") + "','" +
             (d.email || "").replace(/'/g, "\\'") +
             '\')" title="Cập nhật email đại diện">✏️</button>';
 
           html +=
             "<tr>" +
-            "<td><strong>" +
-            d.name +
-            "</strong></td>" +
-            "<td>" +
-            (d.contact || "—") +
-            "</td>" +
-            '<td style="font-size:12px;color:#64748b">' +
-            (d.email || "—") +
-            "</td>" +
-            '<td style="text-align:center">' +
-            d.total +
-            "</td>" +
-            '<td style="text-align:center">' +
-            d.approved +
-            "</td>" +
-            "<td>" +
-            badge +
-            "</td>" +
-            '<td style="white-space:nowrap">' +
-            btnHtml +
-            " " +
-            editEmailBtn +
-            "</td>" +
+            "<td><strong>" + d.name + "</strong></td>" +
+            "<td>" + (d.contact || "—") + "</td>" +
+            '<td style="font-size:12px;color:#64748b">' + (d.email || "—") + "</td>" +
+            '<td style="text-align:center">' + d.total + "</td>" +
+            '<td style="text-align:center">' + d.approved + "</td>" +
+            "<td>" + badge + "</td>" +
+            '<td style="text-align:center">' + rcBadge + "</td>" +
+            '<td style="white-space:nowrap">' + btnHtml + " " + editEmailBtn + "</td>" +
             "</tr>";
         }
         document.getElementById("deptTableBody").innerHTML = html;
-        // Update bulk button
         var bulkBtn = document.getElementById("bulkRemindBtn");
         if (bulkBtn) {
           if (missingCount === 0) {
@@ -93,6 +85,21 @@
             bulkBtn.textContent = "Tất cả đã đăng ký";
           } else
             bulkBtn.textContent = "Nhắc tất cả (" + missingCount + " bộ phận)";
+        }
+        // Show/hide reset button
+        var resetBtn = document.getElementById("resetReminderBtn");
+        if (!resetBtn) {
+          // Tạo nút reset nếu chưa có
+          var bulkBtnEl = document.getElementById("bulkRemindBtn");
+          if (bulkBtnEl && bulkBtnEl.parentNode) {
+            resetBtn = document.createElement("button");
+            resetBtn.id = "resetReminderBtn";
+            resetBtn.className = "action-btn btn-outline";
+            resetBtn.style.cssText = "margin-left:8px;font-size:12px;padding:6px 12px;";
+            resetBtn.textContent = "🔄 Reset đếm";
+            resetBtn.onclick = resetReminderCounts;
+            bulkBtnEl.parentNode.insertBefore(resetBtn, bulkBtnEl.nextSibling);
+          }
         }
       }
 
@@ -104,7 +111,7 @@
           "Cập nhật email đại diện cho " + deptName + ":",
           currentEmail
         );
-        if (newEmail === null) return; // Hủy
+        if (newEmail === null) return;
         newEmail = newEmail.trim();
         if (newEmail && !newEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
           alert("Email không hợp lệ!");
@@ -115,7 +122,7 @@
           .withSuccessHandler(function(r) {
             if (r.success) {
               showMsg("deptMsg", "✅ Đã cập nhật email " + deptName, "success");
-              loadDeptStatus(); // Reload bảng
+              loadDeptStatus();
             } else {
               showMsg("deptMsg", "❌ " + (r.msg || "Lỗi"), "error");
             }
@@ -124,6 +131,23 @@
             showMsg("deptMsg", "❌ Lỗi: " + e.message, "error");
           })
           .updateDeptEmail(deptName, newEmail);
+      }
+
+      // ========================================
+      // RESET REMINDER COUNTS (manual)
+      // ========================================
+      function resetReminderCounts() {
+        if (!confirm("Bạn có chắc muốn reset đếm lần nhắc nhở trong tuần này?")) return;
+        showMsg("deptMsg", "Đang reset...", "");
+        google.script.run
+          .withSuccessHandler(function(r) {
+            showMsg("deptMsg", r.msg, r.success ? "success" : "error");
+            if (r.success) loadDeptStatus();
+          })
+          .withFailureHandler(function(e) {
+            showMsg("deptMsg", "Lỗi: " + e.message, "error");
+          })
+          .resetReminderCountsWeb();
       }
 
       // ========================================
@@ -139,19 +163,25 @@
         return getDisplayDateFromInput() || "";
       }
 
-      function sendDeptReminder(name, email) {
-        openPreviewModal({
-          title: "XEM TRƯỚC EMAIL NHẮC NHỞ",
-          to: email,
-          subject: "[BOD Meeting] Nhắc nhở đăng ký báo cáo — " + name,
-          body:
-            "Kính gửi " +
-            name +
-            ",\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày " +
-            getDisplayDate() +
-            ".\n\nVui lòng truy cập Google Form và hoàn tất trước 17:00 Thứ Năm.\n\nTrân trọng,\nBan Tổ Chức",
-          onSend: function (editedData) {
-            showMsg("deptMsg", "Đang gửi...", "");
+      function sendDeptReminder(idx) {
+        var d = _deptData[idx];
+        if (!d) return;
+        var name = d.name, email = d.email, contact = d.contact || "", cc = d.cc || "";
+        var nextCount = (d.reminderCount || 0) + 1;
+        var displayDate = getDisplayDate();
+
+        showEmailPreview({
+          type: "singleReminder",
+          title: "XEM TRƯỚC EMAIL NHẮC NHỞ — LẦN " + nextCount,
+          to: email + (nextCount >= 3 ? " (CC: BTC + BGĐ)" : ""),
+          subject: nextCount <= 1
+            ? "[BOD Meeting] Nhắc nhở đăng ký — " + name + " / 登録リマインダー"
+            : nextCount === 2
+              ? "[BOD Meeting] ⚠️ Nhắc lần 2 — " + name + " / 第2回リマインダー"
+              : "[BOD Meeting] 🔴 Nhắc KHẨN lần " + nextCount + " — " + name + " / 緊急リマインダー",
+          body: generateSingleReminderHtml(displayDate, name, contact, nextCount),
+          onSend: function () {
+            showMsg("deptMsg", "Đang gửi lần " + nextCount + " đến " + name + "...", "");
             google.script.run
               .withSuccessHandler(function (r) {
                 showMsg("deptMsg", r.msg, r.success ? "success" : "error");
@@ -160,87 +190,21 @@
               .withFailureHandler(function (e) {
                 showMsg("deptMsg", "Lỗi: " + e.message, "error");
               })
-              .sendDeptReminderWeb(name, email, getDisplayDate());
+              .sendDeptReminderWeb(name, email, displayDate, contact, cc, nextCount);
           },
         });
       }
 
       function sendBulkReminder() {
-        openPreviewModal({
-          title: "XEM TRƯỚC EMAIL NHẮC NHỞ HÀNG LOẠT",
-          to: "Tất cả bộ phận chưa đăng ký",
-          subject:
-            "[BOD Meeting] Nhắc nhở đăng ký báo cáo — " + getDisplayDate(),
-          body:
-            "Kính gửi Trưởng bộ phận,\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày " +
-            getDisplayDate() +
-            ".\n\nVui lòng truy cập Google Form và hoàn tất trước 17:00 Thứ Năm.\n\nEmail này gửi tự động, CC Ban Tổ Chức.\n\nTrân trọng,\nBan Tổ Chức",
-          onSend: function (editedData) {
-            showMsg("deptMsg", "Đang gửi hàng loạt...", "");
-            showMsg("msg1", "Đang gửi...", "");
-            google.script.run
-              .withSuccessHandler(function (r) {
-                var msg = "Đã gửi: " + r.sent + " | Lỗi: " + r.failed;
-                if (r.details) msg += "\n" + r.details;
-                showMsg("deptMsg", msg, r.sent > 0 ? "success" : "error");
-                showMsg("msg1", msg, r.sent > 0 ? "success" : "error");
-                loadDeptStatus();
-              })
-              .withFailureHandler(function (e) {
-                showMsg("deptMsg", "Lỗi: " + e.message, "error");
-                showMsg("msg1", "Lỗi: " + e.message, "error");
-              })
-              .sendBulkReminderWeb(getSelectedDate(), getDisplayDate());
-          },
-        });
+        showEmailPreview("reminder");
       }
 
       function sendApprovalReminder() {
-        openPreviewModal({
-          title: "XEM TRƯỚC EMAIL NHẮC PHÊ DUYỆT",
-          to: "Ban Tổ Chức (BTC)",
-          subject:
-            "[BOD Meeting] Nhắc phê duyệt nội dung — " + getDisplayDate(),
-          body:
-            "Kính gửi Ban Tổ Chức,\n\nHiện có đăng ký báo cáo đang chờ phê duyệt cho ngày " +
-            getDisplayDate() +
-            ".\n\nVui lòng truy cập Dashboard để xử lý.\n\nTrân trọng,\nHệ thống BTC Meeting BOD",
-          onSend: function (editedData) {
-            showMsg("msg2", "Đang gửi...", "");
-            google.script.run
-              .withSuccessHandler(function (r) {
-                showMsg("msg2", r.msg, r.success ? "success" : "error");
-              })
-              .withFailureHandler(function (e) {
-                showMsg("msg2", "Lỗi: " + e.message, "error");
-              })
-              .sendApprovalReminderWeb(getSelectedDate(), getDisplayDate());
-          },
-        });
+        showEmailPreview("approvalReminder");
       }
 
       function sendApprovalResults() {
-        openPreviewModal({
-          title: "XEM TRƯỚC EMAIL KẾT QUẢ PHÊ DUYỆT",
-          to: "Tất cả người đăng ký",
-          subject:
-            "[BOD Meeting] Kết quả phê duyệt báo cáo — " + getDisplayDate(),
-          body:
-            "Kính gửi Anh/Chị,\n\nBTC Meeting BOD thông báo kết quả phê duyệt nội dung đăng ký cho ngày " +
-            getDisplayDate() +
-            ".\n\nKết quả: Duyệt / Từ chối / Hoãn (xem chi tiết trong email HTML).\n\nNgười đã nhận trước đó sẽ không bị gửi lại.\n\nTrân trọng,\nBan Tổ Chức",
-          onSend: function (editedData) {
-            showMsg("msg2", "Đang gửi kết quả duyệt...", "");
-            google.script.run
-              .withSuccessHandler(function (r) {
-                showMsg("msg2", r || "Đã gửi!", "success");
-              })
-              .withFailureHandler(function (e) {
-                showMsg("msg2", "Lỗi: " + e.message, "error");
-              })
-              .sendApprovalResultEmails();
-          },
-        });
+        showEmailPreview("approvalResult");
       }
 
       // ========================================

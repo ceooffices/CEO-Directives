@@ -3,17 +3,44 @@
       // ========================================
       var currentOpenStage = 1; // Track which stage panel is open
 
+      // Stage guidance — gamification-inspired quest hints
+      var STAGE_HINTS = {
+        1: {
+          active: '🎯 Nhiệm vụ: Thu thập đăng ký từ các bộ phận. Nhắc nhở ai chưa nộp!',
+          done: '✅ Hoàn thành! Tất cả đăng ký đã được tiếp nhận.',
+          pending: '⏳ Chưa đến giai đoạn tiếp nhận đăng ký.'
+        },
+        2: {
+          active: '🔍 Nhiệm vụ: Xem xét và phê duyệt từng nội dung. Xếp thứ tự trình bày!',
+          done: '✅ Hoàn thành! Tất cả nội dung đã được phê duyệt.',
+          pending: '⏳ Hoàn thành giai đoạn 1 trước để mở khóa.'
+        },
+        3: {
+          active: '📋 Nhiệm vụ: Kiểm tra lịch trình, điều chỉnh thời lượng, rồi gửi cho toàn bộ!',
+          done: '✅ Hoàn thành! Lịch trình đã gửi cho tất cả thành viên.',
+          pending: '⏳ Hoàn thành giai đoạn 2 trước để mở khóa.'
+        },
+        4: {
+          active: '📝 Nhiệm vụ: Cuộc họp đang/sắp diễn ra. Chuẩn bị ghi biên bản!',
+          done: '✅ Hoàn thành! Biên bản đã gửi. Quy trình kết thúc.',
+          pending: '⏳ Hoàn thành giai đoạn 3 trước để mở khóa.'
+        }
+      };
+
       function renderProcess(data) {
         if (!data) return;
         processData = data;
-        document.getElementById("processTarget").textContent = data.targetDate;
+        // Fix #3: Fallback nếu targetDate undefined
+        var pt = document.getElementById("processTarget");
+        if (pt) pt.textContent = data.targetDate || 'Chưa xác định';
         var doneCount = 0;
+        var activeStage = 0;
         for (var i = 0; i < data.steps.length; i++) {
           var stageEl = document.getElementById("stage" + (i + 1));
           var dotEl = stageEl ? stageEl.querySelector(".v-stage-dot") : null;
           if (!stageEl) continue;
           var s = data.steps[i];
-          stageEl.classList.remove("stage-done", "stage-active");
+          stageEl.classList.remove("stage-done", "stage-active", "stage-selected");
           if (s.status === "done") {
             stageEl.classList.add("stage-done");
             if (dotEl) dotEl.textContent = "✓";
@@ -21,6 +48,7 @@
           } else if (s.status === "active") {
             stageEl.classList.add("stage-active");
             if (dotEl) dotEl.textContent = String(i + 1);
+            activeStage = i + 1;
           } else {
             if (dotEl) dotEl.textContent = String(i + 1);
           }
@@ -31,11 +59,39 @@
         var barFill = document.getElementById("timelineBarFill");
         if (barFill) barFill.style.width = fillPct + "%";
 
-        // Auto-open active stage panel
+        // Update stage hints
+        updateStageHints(data);
+
+        // Auto-open active stage panel (hoặc stage 1 nếu không có active)
+        var openTarget = activeStage || 1;
+        toggleStage(openTarget);
+      }
+
+      // ========================================
+      // STAGE HINTS — gamification quest-style
+      // ========================================
+      function updateStageHints(data) {
+        if (!data || !data.steps) return;
         for (var i = 0; i < data.steps.length; i++) {
-          if (data.steps[i].status === "active") {
-            toggleStage(i + 1);
-            break;
+          var num = i + 1;
+          var s = data.steps[i];
+          var hintEl = document.getElementById('stageHint' + num);
+          if (!hintEl) {
+            // Tạo hint element nếu chưa có
+            var panel = document.getElementById('panelContent' + num);
+            if (panel) {
+              var hintDiv = document.createElement('div');
+              hintDiv.id = 'stageHint' + num;
+              hintDiv.className = 'stage-quest-hint';
+              var firstChild = panel.querySelector('.v-stage-content');
+              if (firstChild) firstChild.insertBefore(hintDiv, firstChild.firstChild);
+              hintEl = hintDiv;
+            }
+          }
+          if (hintEl && STAGE_HINTS[num]) {
+            var hint = STAGE_HINTS[num][s.status] || STAGE_HINTS[num].pending;
+            hintEl.textContent = hint;
+            hintEl.className = 'stage-quest-hint hint-' + s.status;
           }
         }
       }
@@ -50,35 +106,38 @@
         // If same stage clicked, toggle close
         if (currentOpenStage === num && panel.classList.contains("open")) {
           panel.classList.remove("open", "panel-active", "panel-done");
-          // Hide all panel contents
           for (var j = 1; j <= 4; j++) {
             var pc = document.getElementById("panelContent" + j);
             if (pc) pc.style.display = "none";
             var st = document.getElementById("stage" + j);
-            if (st) st.classList.remove("open");
+            if (st) st.classList.remove("open", "stage-selected");
           }
           currentOpenStage = 0;
           return;
         }
 
-        // Hide all, show selected
+        // Fix #1: Highlight chính xác stage được click
         for (var j = 1; j <= 4; j++) {
           var pc = document.getElementById("panelContent" + j);
           if (pc) pc.style.display = j === num ? "block" : "none";
           var st = document.getElementById("stage" + j);
           if (st) {
-            if (j === num) st.classList.add("open");
-            else st.classList.remove("open");
+            st.classList.remove("stage-selected");
+            if (j === num) {
+              st.classList.add("open", "stage-selected");
+            } else {
+              st.classList.remove("open");
+            }
           }
         }
 
         // Set panel state
         panel.classList.remove("panel-active", "panel-done");
         var stageEl = document.getElementById("stage" + num);
-        if (stageEl && stageEl.classList.contains("stage-active"))
-          panel.classList.add("panel-active");
-        else if (stageEl && stageEl.classList.contains("stage-done"))
+        if (stageEl && stageEl.classList.contains("stage-done"))
           panel.classList.add("panel-done");
+        else
+          panel.classList.add("panel-active");
 
         panel.classList.add("open");
         currentOpenStage = num;
@@ -93,7 +152,7 @@
           else headNum.style.background = "var(--c-total)";
         }
 
-        // Smooth scroll to panel on mobile so user sees expanded content
+        // Smooth scroll to panel on mobile
         setTimeout(function() {
           var stageHead = document.getElementById("stage" + num);
           if (stageHead) {
@@ -102,6 +161,25 @@
         }, 150);
       }
 
+
+      // ========================================
+      // COPY FORM URL
+      // ========================================
+      // Fix #2: Mở form trực tiếp thay vì copy
+      function openFormUrl() {
+        google.script.run
+          .withSuccessHandler(function(url) {
+            if (!url) {
+              alert('Chưa cấu hình URL Form đăng ký! Vào sheet Cấu hình, thêm dòng Form URL.');
+              return;
+            }
+            window.open(url, '_blank');
+          })
+          .withFailureHandler(function(e) {
+            alert('Lỗi lấy URL Form: ' + e.message);
+          })
+          .getFormUrl();
+      }
 
       // ========================================
       // AUTO-CHECK PROCESS CHECKLISTS (LOGIC CHÍNH XÁC)
@@ -128,34 +206,39 @@
         }
 
         // --- STAGE 1: Tiếp nhận đăng ký ---
-        // formOpen: chỉ true khi form thực sự đang mở (kiểm tra qua có đăng ký nào không)
-        setCheck("formOpen", total > 0); // Có ít nhất 1 đăng ký → form đang hoạt động
+        // formOpen: check qua backend (auto-check khi có data)
+        setCheck("formOpen", total > 0); // Proxy: có data = form đang hoạt động
         setCheck("hasRegistrations", total > 0);
 
         // Kiểm tra tất cả bộ phận bắt buộc đã đăng ký
         var deptRows = document.querySelectorAll("#deptTableBody tr");
         var allDeptDone = true;
         var deptCount = 0;
+        var deptRegistered = 0;
         var anyDeptExists = false;
         for (var d = 0; d < deptRows.length; d++) {
           var statusCell = deptRows[d].querySelector(".dept-badge");
           if (!statusCell) continue;
           anyDeptExists = true;
           deptCount++;
-          // "Chưa đăng ký" = chưa hoàn thành
           if (statusCell.classList.contains("dept-missing")) {
             allDeptDone = false;
+          } else {
+            deptRegistered++;
           }
         }
-        // allDeptDone chỉ true khi: có bộ phận trong danh sách VÀ tất cả đều đã đăng ký
         setCheck("allDeptDone", anyDeptExists && deptCount > 0 && allDeptDone);
 
+        // Cập nhật badge X/Y bộ phận
+        var dpEl = document.getElementById('deptProgress');
+        if (dpEl && deptCount > 0) {
+          dpEl.textContent = deptRegistered + '/' + deptCount + ' bộ phận';
+          dpEl.className = 'countdown-badge ' + (allDeptDone ? 'countdown-today' : 'countdown-future');
+        }
+
         // --- STAGE 2: Phê duyệt ---
-        // hasPending: true khi có đăng ký VÀ không còn chờ duyệt nào
         setCheck("hasPending", total > 0 && pending === 0);
-        // hasOrder: true khi có nội dung được duyệt VÀ tất cả đã được xếp thứ tự
         setCheck("hasOrder", approved > 0 && hasOrder >= approved);
-        // resultSent: cần backend xác nhận (kiểm tra cột emailSent)
         var allResultSent = approved > 0;
         for (var i = 0; i < items.length; i++) {
           if ((items[i].status === "Duyệt" || items[i].status === "Từ chối" || items[i].status === "Hoãn") && !items[i].emailSent) {

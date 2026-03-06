@@ -402,3 +402,221 @@
         font-weight: 600;
         color: #94a3b8;
       }
+
+      /* ============================================ */
+      /* BUTTON LOADING & FEEDBACK                     */
+      /* ============================================ */
+      .action-btn.btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+      }
+      .action-btn.btn-loading::after {
+        content: '';
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        margin-top: -8px;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+      .action-btn.btn-success {
+        background: var(--c-approved) !important;
+        border-color: var(--c-approved) !important;
+      }
+      .action-btn.btn-error {
+        background: var(--c-rejected) !important;
+        border-color: var(--c-rejected) !important;
+      }
+      .action-msg {
+        padding: 8px 0;
+        font-size: 13px;
+        font-weight: 700;
+        min-height: 24px;
+      }
+      .action-msg.msg-success { color: var(--c-approved); }
+      .action-msg.msg-error { color: var(--c-rejected); }
+      .action-msg.msg-info { color: var(--c-total); }
+      .btn-hint {
+        font-size: 11px;
+        color: #94a3b8;
+        font-style: italic;
+        margin: 4px 0 12px 0;
+        line-height: 1.4;
+      }
+      .action-btn.btn-amber {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: #fff;
+      }
+      .action-btn.btn-amber:hover {
+        background: #d97706;
+      }
+
+      /* ============================================ */
+      /* TAB NAVIGATION                               */
+      /* ============================================ */
+      .tab-nav {
+        display: flex;
+        gap: 6px;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 6px;
+        margin-bottom: 24px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .tab-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 20px;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        background: transparent;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        background: rgba(59, 130, 246, 0.06);
+        color: var(--c-total);
+      }
+      .tab-btn.active {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        border-color: var(--c-total);
+        color: var(--c-total);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12);
+      }
+      .tab-icon {
+        font-size: 18px;
+      }
+      .tab-label {
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+        animation: tabFadeIn 0.3s ease;
+      }
+      @keyframes tabFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ============================================ */
+      /* ADMIN SUB-TABS (inside Quản trị tab)        */
+      /* ============================================ */
+      .admin-sub-tabs {
+        display: flex;
+        gap: 4px;
+        border-bottom: 2px solid var(--border);
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+      .admin-sub-tab {
+        padding: 10px 18px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .admin-sub-tab:hover { color: var(--text); background: #f8fafc; }
+      .admin-sub-tab.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+
+      /* Admin panels */
+      .admin-panel { display: none; }
+      .admin-panel.active {
+        display: block;
+        animation: tabFadeIn 0.3s ease;
+      }
+
+      /* Section card — reuse from admin */
+      .section-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+        overflow: hidden;
+      }
+      .section-card-header {
+        padding: 18px 24px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .section-card-header h2 { font-size: 17px; font-weight: 800; }
+      .section-card-body { padding: 24px; }
+
+      /* Form elements for admin */
+      .form-group { margin-bottom: 18px; }
+      .form-group label {
+        display: block; font-size: 13px; font-weight: 700;
+        text-transform: uppercase; color: var(--text-secondary);
+        margin-bottom: 6px; letter-spacing: 0.5px;
+      }
+      .form-input {
+        width: 100%; padding: 10px 14px;
+        border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+        font-size: 14px; font-weight: 500; font-family: var(--font);
+        transition: border-color 0.2s; background: #fff;
+      }
+      .form-input:focus { border-color: #3b82f6; outline: none; background: #eff6ff; }
+      textarea.form-input { min-height: 100px; resize: vertical; line-height: 1.6; }
+      select.form-input { cursor: pointer; }
+
+      /* Admin hints */
+      .hint { font-size: 12px; font-style: italic; color: #94a3b8; margin-top: 4px; }
+
+      /* Status messages */
+      .status-msg { padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; margin-top: 12px; display: none; }
+      .status-msg.show { display: block; }
+      .status-msg.success { background: #d1fae5; color: #065f46; }
+      .status-msg.error { background: #fee2e2; color: #991b1b; }
+
+      /* Variable tags (email templates) */
+      .var-tag {
+        display: inline-block; padding: 2px 8px; background: #dbeafe;
+        color: #1e40af; border-radius: 4px; font-size: 11px; font-weight: 800;
+        font-family: monospace; cursor: pointer; margin: 2px 4px 2px 0;
+      }
+      .var-tag:hover { background: #bfdbfe; }
+
+      /* Template preview */
+      .template-preview {
+        background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+        padding: 16px; font-size: 13px; line-height: 1.7; color: var(--text-secondary);
+        white-space: pre-wrap; margin-top: 8px;
+      }
+
+      /* Badge styles for admin */
+      .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+      .badge-green { background: #d1fae5; color: #065f46; }
+      .badge-red { background: #fee2e2; color: #991b1b; }
+      .badge-amber { background: #fef3c7; color: #92400e; }
+      .badge-blue { background: #dbeafe; color: #1e40af; }

@@ -7,11 +7,12 @@
           </h1>
           <div class="header-sub">
             Hệ thống quản lý đăng ký báo cáo — Cuộc họp BOD hàng tuần
+            <span id="lastRefreshTime" class="countdown-badge countdown-future" style="margin-left:12px;font-size:11px"></span>
           </div>
         </div>
       </div>
       <div class="date-picker">
-        <div class="date-picker-label">Chọn ngày họp</div>
+        <div class="date-picker-label">Xem lịch họp ngày</div>
         <input
           type="date"
           id="dateInput"
@@ -23,505 +24,523 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <div class="container">
-      <!-- STAT CARDS -->
-      <div class="cards-wrapper">
-        <div class="cards-wrapper-title" id="cardsTitle">THONG KE DANG KY</div>
-        <div class="cards-grid" id="cardsGrid">
-          <div class="stat-card card-total">
-            <div class="card-number">—</div>
-            <div class="card-label">TỔNG ĐĂNG KÝ</div>
-          </div>
-          <div class="stat-card card-approved">
-            <div class="card-number">—</div>
-            <div class="card-label">ĐÃ DUYỆT</div>
-          </div>
-          <div class="stat-card card-pending">
-            <div class="card-number">—</div>
-            <div class="card-label">CHỜ DUYỆT</div>
-          </div>
-          <div class="stat-card card-rejected">
-            <div class="card-number">—</div>
-            <div class="card-label">TỪ CHỐI</div>
-          </div>
-          <div class="stat-card card-postponed">
-            <div class="card-number">—</div>
-            <div class="card-label">TẠM HOÃN</div>
-          </div>
-        </div>
+      <!-- TAB NAVIGATION -->
+      <div class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="tab-dangky" onclick="switchTab('tab-dangky', this)">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">Đăng ký</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-quytrinh" onclick="switchTab('tab-quytrinh', this)">
+          <span class="tab-icon">🔄</span>
+          <span class="tab-label">Quy trình</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-lichtrinh" onclick="switchTab('tab-lichtrinh', this)">
+          <span class="tab-icon">📅</span>
+          <span class="tab-label">Lịch trình</span>
+        </button>
       </div>
 
-      <!-- QUY TRÌNH CHUẨN BỊ — HORIZONTAL TIMELINE -->
-      <div class="process-section" id="processSection">
-        <div class="process-header">
-          <h2>QUY TRÌNH CHUẨN BỊ CUỘC HỌP</h2>
-          <span class="process-target" id="processTarget">Đang tải...</span>
-        </div>
-
-        <!-- Timeline range labels -->
-        <div class="tl-range">
-          <span class="tl-range-label">&#9664; Thứ 2 tuần trước</span>
-          <span class="tl-range-label">Thứ 2 tuần tới &#9654;</span>
-        </div>
-
-        <!-- Horizontal timeline -->
-        <div class="h-timeline" id="processTimeline">
-          <div class="h-timeline-bar">
-            <div class="h-timeline-bar-fill" id="timelineBarFill"></div>
-          </div>
-
-          <!-- STAGE 1 -->
-          <div class="v-stage open" data-num="1" id="stage1">
-            <div class="v-stage-head" onclick="toggleStage(1)">
-              <div class="v-stage-dot">1</div>
-              <div class="v-stage-title">
-                TIẾP NHẬN ĐĂNG KÝ
-                <span class="stage-timeline">T3 → T5</span>
-              </div>
-              <div class="v-stage-meta">
-                <span class="v-stage-progress" id="stageProgress1">0/3</span>
-                <span class="v-stage-arrow">▼</span>
-              </div>
+      <!-- ======== TAB 1: ĐĂNG KÝ BÁO CÁO ======== -->
+      <div class="tab-panel active" id="tab-dangky">
+        <!-- STAT CARDS -->
+        <div class="cards-wrapper">
+          <div class="cards-wrapper-title" id="cardsTitle">TỔNG QUAN ĐĂNG KÝ</div>
+          <div class="cards-grid" id="cardsGrid">
+            <div class="stat-card card-total">
+              <div class="card-number">—</div>
+              <div class="card-label">Tổng đăng ký</div>
             </div>
-          </div>
-
-          <!-- STAGE 2 -->
-          <div class="v-stage" data-num="2" id="stage2">
-            <div class="v-stage-head" onclick="toggleStage(2)">
-              <div class="v-stage-dot">2</div>
-              <div class="v-stage-title">
-                PHÊ DUYỆT NỘI DUNG
-                <span class="stage-timeline">T5 → T6</span>
-              </div>
-              <div class="v-stage-meta">
-                <span class="v-stage-progress" id="stageProgress2">0/3</span>
-                <span class="v-stage-arrow">▼</span>
-              </div>
+            <div class="stat-card card-approved">
+              <div class="card-number">—</div>
+              <div class="card-label">Đã duyệt</div>
             </div>
-          </div>
-
-          <!-- STAGE 3 -->
-          <div class="v-stage" data-num="3" id="stage3">
-            <div class="v-stage-head" onclick="toggleStage(3)">
-              <div class="v-stage-dot">3</div>
-              <div class="v-stage-title">
-                XẾP LỊCH TRÌNH HỌP
-                <span class="stage-timeline">CN 20:00</span>
-              </div>
-              <div class="v-stage-meta">
-                <span class="v-stage-progress" id="stageProgress3">0/2</span>
-                <span class="v-stage-arrow">▼</span>
-              </div>
+            <div class="stat-card card-pending">
+              <div class="card-number">—</div>
+              <div class="card-label">Chờ duyệt</div>
             </div>
-          </div>
-
-          <!-- STAGE 4 -->
-          <div class="v-stage" data-num="4" id="stage4">
-            <div class="v-stage-head" onclick="toggleStage(4)">
-              <div class="v-stage-dot">4</div>
-              <div class="v-stage-title">
-                BIÊN BẢN SAU HỌP
-                <span class="stage-timeline">Thứ 2</span>
-              </div>
-              <div class="v-stage-meta">
-                <span class="v-stage-progress" id="stageProgress4">0/2</span>
-                <span class="v-stage-arrow">▼</span>
-              </div>
+            <div class="stat-card card-rejected">
+              <div class="card-number">—</div>
+              <div class="card-label">Từ chối</div>
+            </div>
+            <div class="stat-card card-postponed">
+              <div class="card-number">—</div>
+              <div class="card-label">Hoãn lại</div>
             </div>
           </div>
         </div>
 
-        <!-- EXPAND PANEL (shared, below timeline) -->
-        <div class="tl-expand-panel" id="tlExpandPanel">
-          <!-- Stage 1 content -->
-          <div
-            class="tl-panel-content"
-            id="panelContent1"
-            style="display: none"
-          >
-            <div class="tl-expand-head">
-              <div class="tl-expand-head-num">1</div>
-              <div class="tl-expand-head-title">TIẾP NHẬN ĐĂNG KÝ</div>
-            </div>
-            <div class="v-stage-content">
-              <p class="guide-intro">
-                Các bộ phận bắt buộc gửi nội dung báo cáo qua Google Form. BTC
-                theo dõi tiến độ tại bảng bên dưới.
-              </p>
-              <div class="checklist" id="checklist1">
-                <div class="check-item" data-check="formOpen">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Form đăng ký đang mở nhận nội dung</span
-                  >
-                </div>
-                <div class="check-item" data-check="hasRegistrations">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Có ít nhất 1 đăng ký được ghi nhận</span
-                  >
-                </div>
-                <div class="check-item" data-check="allDeptDone">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Tất cả bộ phận bắt buộc đã đăng ký</span
-                  >
-                </div>
-              </div>
-              <div class="guide-actions">
-                <p class="guide-label">Nếu còn bộ phận chưa đăng ký:</p>
-                <button
-                  class="action-btn btn-red"
-                  onclick="showEmailPreview('reminder')"
-                >
-                  Gửi nhắc tất cả bộ phận chưa đăng ký
-                </button>
-                <div class="btn-hint">
-                  Kết quả dự kiến: Gửi email nhắc nhở đến đại diện các bộ phận
-                  chưa submit form. CC Ban Tổ Chức.
-                </div>
-                <div class="action-msg" id="msg1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stage 2 content -->
-          <div
-            class="tl-panel-content"
-            id="panelContent2"
-            style="display: none"
-          >
-            <div class="tl-expand-head">
-              <div class="tl-expand-head-num">2</div>
-              <div class="tl-expand-head-title">PHÊ DUYỆT NỘI DUNG</div>
-            </div>
-            <div class="v-stage-content">
-              <p class="guide-intro">
-                BOD Hosting xem xét từng nội dung tại bảng bên dưới. Chọn trạng
-                thái phê duyệt và thứ tự trình bày, rồi bấm "Lưu phê duyệt".
-              </p>
-              <div class="checklist" id="checklist2">
-                <div class="check-item" data-check="hasPending">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Đã xem xét tất cả đăng ký (không còn "Chờ duyệt")</span
-                  >
-                </div>
-                <div class="check-item" data-check="hasOrder">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Đã xếp thứ tự trình bày cho nội dung được duyệt</span
-                  >
-                </div>
-                <div class="check-item" data-check="resultSent">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Đã gửi kết quả phê duyệt đến người đăng ký</span
-                  >
-                </div>
-              </div>
-              <div class="guide-actions">
-                <p class="guide-label">Hướng dẫn thao tác:</p>
-                <ol class="guide-steps">
-                  <li>Cuộn xuống bảng "CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ"</li>
-                  <li>Cột "Phê duyệt" → chọn: Duyệt / Từ chối / Hoãn</li>
-                  <li>Cột "Thứ tự" → nhập số thứ tự trình bày (1, 2, 3...)</li>
-                  <li>Bấm nút "Lưu phê duyệt" để ghi nhận</li>
-                </ol>
-                <button
-                  class="action-btn btn-amber"
-                  onclick="showEmailPreview('approvalReminder')"
-                >
-                  Gửi nhắc phê duyệt
-                </button>
-                <div class="btn-hint">
-                  Kết quả dự kiến: Gửi email nhắc Ban Tổ Chức duyệt nội dung còn
-                  chờ. Không thay đổi dữ liệu.
-                </div>
-                <button
-                  class="action-btn btn-blue"
-                  onclick="showEmailPreview('approvalResult')"
-                >
-                  Gửi kết quả phê duyệt
-                </button>
-                <div class="btn-hint">
-                  Kết quả dự kiến: Gửi email thông báo kết quả đến từng người
-                  đăng ký. Người đã nhận rồi sẽ không gửi lại.
-                </div>
-                <div class="action-msg" id="msg2"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stage 3 content -->
-          <div
-            class="tl-panel-content"
-            id="panelContent3"
-            style="display: none"
-          >
-            <div class="tl-expand-head">
-              <div class="tl-expand-head-num">3</div>
-              <div class="tl-expand-head-title">XẾP LỊCH TRÌNH HỌP</div>
-            </div>
-            <div class="v-stage-content">
-              <p class="guide-intro">
-                Hệ thống tự động tạo lịch trình từ các nội dung đã duyệt. BTC
-                xem trước, điều chỉnh thời lượng chỉ đạo nếu cần, rồi gửi cho
-                toàn bộ thành viên.
-              </p>
-              <div class="checklist" id="checklist3">
-                <div class="check-item" data-check="scheduleReady">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Lịch trình đã được tạo từ nội dung duyệt</span
-                  >
-                </div>
-                <div class="check-item" data-check="scheduleSent">
-                  <span class="check-icon">○</span>
-                  <span class="check-text"
-                    >Lịch trình đã gửi cho tất cả thành viên</span
-                  >
-                </div>
-              </div>
-              <div class="guide-actions">
-                <p class="guide-label">Hướng dẫn thao tác:</p>
-                <ol class="guide-steps">
-                  <li>Bấm "Xem trước lịch trình" để kiểm tra</li>
-                  <li>Điều chỉnh cột "CĐ" (Thời lượng chỉ đạo) nếu cần</li>
-                  <li>
-                    Khi sẵn sàng → bấm "Gửi lịch trình" để thông báo toàn bộ
-                  </li>
-                </ol>
-                <div class="guide-note">
-                  Lưu ý: Thời lượng chỉ đạo mặc định 10 phút. Nếu bộ phận cần
-                  nhiều hơn, chỉnh trực tiếp trong bảng lịch trình bên dưới
-                  trước khi gửi.
-                </div>
-                <button
-                  class="action-btn btn-green"
-                  onclick="loadSchedulePreview()"
-                >
-                  Xem trước lịch trình
-                </button>
-                <div class="btn-hint">
-                  Kết quả dự kiến: Hiển thị lịch trình dự kiến phía dưới. Không
-                  gửi email.
-                </div>
-                <button
-                  class="action-btn btn-blue"
-                  onclick="showEmailPreview('schedule')"
-                >
-                  Gửi lịch trình
-                </button>
-                <div class="btn-hint">
-                  Kết quả dự kiến: Gửi email lịch trình đến toàn bộ thành viên
-                  BOD.
-                </div>
-                <div class="action-msg" id="msg3"></div>
-                <div id="schedulePreviewArea"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stage 4 content -->
-          <div
-            class="tl-panel-content"
-            id="panelContent4"
-            style="display: none"
-          >
-            <div class="tl-expand-head">
-              <div class="tl-expand-head-num">4</div>
-              <div class="tl-expand-head-title">BIÊN BẢN SAU CUỘC HỌP</div>
-            </div>
-            <div class="v-stage-content">
-              <p class="guide-intro">
-                Cuộc họp diễn ra Thứ 2 hàng tuần lúc 08:30. Sau họp, Thư ký ghi
-                biên bản và gửi cho toàn bộ thành viên.
-              </p>
-              <div class="checklist" id="checklist4">
-                <div class="check-item" data-check="meetingDone">
-                  <span class="check-icon">○</span>
-                  <span class="check-text">Cuộc họp đã diễn ra</span>
-                </div>
-                <div class="check-item" data-check="minutesSent">
-                  <span class="check-icon">○</span>
-                  <span class="check-text">Biên bản đã gửi cho thành viên</span>
-                </div>
-              </div>
-              <div class="guide-actions">
-                <p class="guide-label">Quy trình sau họp:</p>
-                <ol class="guide-steps">
-                  <li>Thư ký ghi biên bản trong vòng 1-2 giờ sau họp</li>
-                  <li>Dịch song ngữ Việt-Nhật (nếu có thành viên Nhật)</li>
-                  <li>Gửi biên bản qua email cho toàn bộ danh sách</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BỘ PHẬN BẮT BUỘC BÁO CÁO (kèm ngày) -->
-      <div class="dept-section" id="deptSection">
-        <div class="section-header">
-          <h2>
-            BỘ PHẬN BẮT BUỘC BÁO CÁO —
-            <span id="deptDateLabel" class="process-target"></span>
-          </h2>
-          <button
-            class="action-btn btn-red"
-            onclick="showEmailPreview('reminder')"
-            id="bulkRemindBtn"
-          >
-            Nhắc tất cả
-          </button>
-        </div>
-        <div class="btn-hint" style="padding: 0 20px 8px">
-          Kết quả dự kiến: Gửi email nhắc nhở đến bộ phận chưa đăng ký. CC Ban
-          Tổ Chức.
-        </div>
-        <div style="overflow-x: auto">
-          <table class="dept-table">
-            <thead>
-              <tr>
-                <th>Bộ phận</th>
-                <th>Đại diện</th>
-                <th>Email</th>
-                <th>Số đăng ký</th>
-                <th>Duyệt</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="deptTableBody">
-              <tr>
-                <td
-                  colspan="7"
-                  style="text-align: center; padding: 24px; color: #94a3b8"
-                >
-                  Đang tải...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="action-msg" id="deptMsg" style="margin: 12px 20px"></div>
-      </div>
-
-      <!-- SCHEDULE PREVIEW -->
-      <div class="schedule-section" id="scheduleSection" style="display: none">
-        <div class="section-header">
-          <h2 id="scheduleTitle">LỊCH TRÌNH LÀM VIỆC BOD THỨ HAI</h2>
-          <div style="display: flex; gap: 10px; align-items: center">
-            <label
-              class="block-edit-toggle"
-              id="schedEditToggle"
-              title="Bật/tắt chế độ chỉnh sửa"
-            >
-              <input type="checkbox" onchange="toggleSchedEdit(this.checked)" />
-              Chỉnh sửa
-            </label>
+        <!-- BỘ PHẬN BẮT BUỘC BÁO CÁO -->
+        <div class="dept-section" id="deptSection">
+          <div class="section-header">
+            <h2>
+              BỘ PHẬN BẮT BUỘC BÁO CÁO —
+              <span id="deptDateLabel" class="process-target"></span>
+            </h2>
             <button
-              class="action-btn btn-green"
-              onclick="showEmailPreview('schedule')"
-              id="sendScheduleBtn"
+              class="action-btn btn-red"
+              onclick="showEmailPreview('reminder')"
+              id="bulkRemindBtn"
             >
-              Gửi lịch trình
+              Nhắc tất cả
             </button>
           </div>
+          <div class="btn-hint" style="padding: 0 20px 8px">
+            Kết quả dự kiến: Gửi email nhắc nhở đến bộ phận chưa đăng ký. CC Ban
+            Tổ Chức.
+          </div>
+          <div style="overflow-x: auto">
+            <table class="dept-table">
+              <thead>
+                <tr>
+                  <th>Bộ phận</th>
+                  <th>Đại diện</th>
+                  <th>Email</th>
+                  <th>Số đăng ký</th>
+                  <th>Duyệt</th>
+                  <th>Trạng thái</th>
+                  <th>Lần nhắc</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="deptTableBody">
+                <tr>
+                  <td
+                    colspan="8"
+                    style="text-align: center; padding: 24px; color: #94a3b8"
+                  >
+                    Đang tải...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="action-msg" id="deptMsg" style="margin: 12px 20px"></div>
         </div>
-        <div style="overflow-x: auto">
-          <table class="schedule-table" id="scheduleTable">
-            <thead>
-              <tr>
-                <th style="width: 40px">STT</th>
-                <th style="width: 50px">Giờ</th>
-                <th>Nội dung</th>
-                <th>Người trình bày</th>
-                <th>Email</th>
-                <th style="width: 45px">TB</th>
-                <th style="width: 45px">CĐ</th>
-                <th>Liên quan</th>
-              </tr>
-            </thead>
-            <tbody id="scheduleTableBody"></tbody>
-          </table>
-        </div>
-        <!-- STITCH-INSPIRED: Summary Cards -->
-        <div class="summary-cards" id="scheduleSummary">
-          <div class="summary-card">
-            <div class="summary-card-icon sc-blue">👥</div>
-            <div class="summary-card-info">
-              <div class="summary-card-value" id="sumPresenter">—</div>
-              <div class="summary-card-label">Người trình bày</div>
+
+        <!-- CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO -->
+        <div class="table-wrapper">
+          <div class="table-header">
+            <h2 id="tableTitle">DANH SÁCH ĐĂNG KÝ BÁO CÁO</h2>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <div id="filterBadge"></div>
+              <label
+                class="block-edit-toggle"
+                id="tableEditToggle"
+                title="Bật/tắt chế độ chỉnh sửa"
+              >
+                <input type="checkbox" onchange="toggleTableEdit(this.checked)" />
+                Chỉnh sửa
+              </label>
+              <button
+                class="action-btn btn-green"
+                onclick="saveApprovals()"
+                title="Lưu thay đổi trạng thái phê duyệt"
+              >
+                Lưu phê duyệt
+              </button>
             </div>
           </div>
-          <div class="summary-card">
-            <div class="summary-card-icon sc-green">📋</div>
-            <div class="summary-card-info">
-              <div class="summary-card-value" id="sumReport">—</div>
-              <div class="summary-card-label">Nội dung báo cáo</div>
-            </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th class="th-stt">Thứ tự</th>
+                  <th>Họ tên</th>
+                  <th>Bộ phận</th>
+                  <th>Nội dung báo cáo</th>
+                  <th class="th-center">T.Lượng (phút)</th>
+                  <th class="th-center">CĐ dự kiến (phút)</th>
+                  <th class="th-center">Phê duyệt</th>
+                  <th class="ghichu-cell">Ghi chú BOD</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr>
+                  <td colspan="8">
+                    <div class="loading-state">
+                      <div class="spinner"></div>
+                      <p>Đang tải dữ liệu...</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="summary-card">
-            <div class="summary-card-icon sc-amber">⏱</div>
-            <div class="summary-card-info">
-              <div class="summary-card-value" id="sumDuration">—</div>
-              <div class="summary-card-label">Tổng thời lượng</div>
-            </div>
-          </div>
+          <div class="action-msg" id="approvalMsg"></div>
         </div>
       </div>
 
-      <!-- CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO -->
-      <div class="table-wrapper">
-        <div class="table-header">
-          <h2 id="tableTitle">CÁC HẠNG MỤC NỘI DUNG ĐĂNG KÝ BÁO CÁO</h2>
-          <div style="display: flex; gap: 10px; align-items: center">
-            <div id="filterBadge"></div>
-            <label
-              class="block-edit-toggle"
-              id="tableEditToggle"
-              title="Bật/tắt chế độ chỉnh sửa"
-            >
-              <input type="checkbox" onchange="toggleTableEdit(this.checked)" />
-              Chỉnh sửa
-            </label>
-            <button
-              class="action-btn btn-green"
-              onclick="saveApprovals()"
-              title="Lưu thay đổi trạng thái phê duyệt"
-            >
-              Lưu phê duyệt
-            </button>
+      <!-- ======== TAB 2: QUY TRÌNH TỔ CHỨC ======== -->
+      <div class="tab-panel" id="tab-quytrinh">
+        <!-- QUY TRÌNH CHUẨN BỊ — HORIZONTAL TIMELINE -->
+        <div class="process-section" id="processSection">
+          <div class="process-header">
+            <h2>QUY TRÌNH CHUẨN BỊ CUỘC HỌP BOD</h2>
+            <span class="process-target" id="processTarget">Đang tải...</span>
           </div>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th class="th-stt">Thứ tự</th>
-                <th>Họ tên</th>
-                <th>Bộ phận</th>
-                <th>Nội dung báo cáo</th>
-                <th class="th-center">T.Lượng (phút)</th>
-                <th class="th-center">CĐ dự kiến (phút)</th>
-                <th class="th-center">Phê duyệt</th>
-                <th class="ghichu-cell">Ghi chú BOD</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <tr>
-                <td colspan="8">
-                  <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Đang tải dữ liệu...</p>
+
+          <!-- Timeline range labels -->
+          <div class="tl-range">
+            <span class="tl-range-label">&#9664; Thứ 2 tuần trước</span>
+            <span class="tl-range-label">Thứ 2 tuần tới &#9654;</span>
+          </div>
+
+          <!-- Horizontal timeline -->
+          <div class="h-timeline" id="processTimeline">
+            <div class="h-timeline-bar">
+              <div class="h-timeline-bar-fill" id="timelineBarFill"></div>
+            </div>
+
+            <!-- STAGE 1 -->
+            <div class="v-stage open" data-num="1" id="stage1">
+              <div class="v-stage-head" onclick="toggleStage(1)">
+                <div class="v-stage-dot">1</div>
+                <div class="v-stage-title">
+                  TIẾP NHẬN ĐĂNG KÝ
+                  <span class="stage-timeline">T3 → T5</span>
+                </div>
+                <div class="v-stage-meta">
+                  <span class="v-stage-progress" id="stageProgress1">0/3</span>
+                  <span class="v-stage-arrow">▼</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 2 -->
+            <div class="v-stage" data-num="2" id="stage2">
+              <div class="v-stage-head" onclick="toggleStage(2)">
+                <div class="v-stage-dot">2</div>
+                <div class="v-stage-title">
+                  PHÊ DUYỆT NỘI DUNG
+                  <span class="stage-timeline">T5 → T6</span>
+                </div>
+                <div class="v-stage-meta">
+                  <span class="v-stage-progress" id="stageProgress2">0/3</span>
+                  <span class="v-stage-arrow">▼</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 3 -->
+            <div class="v-stage" data-num="3" id="stage3">
+              <div class="v-stage-head" onclick="toggleStage(3)">
+                <div class="v-stage-dot">3</div>
+                <div class="v-stage-title">
+                  XẾP LỊCH TRÌNH
+                  <span class="stage-timeline">CN 20:00</span>
+                </div>
+                <div class="v-stage-meta">
+                  <span class="v-stage-progress" id="stageProgress3">0/2</span>
+                  <span class="v-stage-arrow">▼</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 4 -->
+            <div class="v-stage" data-num="4" id="stage4">
+              <div class="v-stage-head" onclick="toggleStage(4)">
+                <div class="v-stage-dot">4</div>
+                <div class="v-stage-title">
+                  BIÊN BẢN HỌP
+                  <span class="stage-timeline">Thứ 2</span>
+                </div>
+                <div class="v-stage-meta">
+                  <span class="v-stage-progress" id="stageProgress4">0/2</span>
+                  <span class="v-stage-arrow">▼</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXPAND PANEL (shared, below timeline) -->
+          <div class="tl-expand-panel" id="tlExpandPanel">
+            <!-- Stage 1 content -->
+            <div
+              class="tl-panel-content"
+              id="panelContent1"
+              style="display: none"
+            >
+              <div class="tl-expand-head">
+                <div class="tl-expand-head-num">1</div>
+                <div class="tl-expand-head-title">TIẾP NHẬN ĐĂNG KÝ</div>
+              </div>
+              <div class="v-stage-content">
+                <p class="guide-intro">
+                  Nhân viên các bộ phận đăng ký nội dung trình bày qua Google
+                  Form. BTC tiếp nhận và kiểm tra tính đầy đủ.
+                  <br><strong>Hạn đăng ký: Thứ Năm hàng tuần, 17:00.</strong>
+                </p>
+                <div class="checklist" id="checklist1">
+                  <div class="check-item" data-check="formOpen">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Form đăng ký đang mở nhận nội dung</span
+                    >
+                    <button class="dept-edit-email-btn" onclick="openFormUrl()" title="Mở Google Form đăng ký">📝 MỞ FORM ĐĂNG KÝ</button>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  <div class="check-item" data-check="hasRegistrations">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Có ít nhất 1 đăng ký được ghi nhận</span
+                    >
+                  </div>
+                  <div class="check-item" data-check="allDeptDone">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Tất cả bộ phận bắt buộc đã đăng ký</span
+                    >
+                    <span class="dept-badge" id="deptBadge"></span>
+                  </div>
+                </div>
+                <div class="guide-actions">
+                  <p class="guide-label">Nếu còn bộ phận chưa đăng ký:</p>
+                  <button
+                    class="action-btn btn-red"
+                    onclick="btnWithFeedback(this, function(){ showEmailPreview('reminder'); })"
+                  >
+                    Gửi nhắc tất cả bộ phận chưa đăng ký
+                  </button>
+                  <div class="btn-hint">
+                    Kết quả dự kiến: Gửi email nhắc nhở đến đại diện các bộ phận
+                    chưa submit form. CC Ban Tổ Chức.
+                  </div>
+                  <div class="action-msg" id="msg1"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 2 content -->
+            <div
+              class="tl-panel-content"
+              id="panelContent2"
+              style="display: none"
+            >
+              <div class="tl-expand-head">
+                <div class="tl-expand-head-num">2</div>
+                <div class="tl-expand-head-title">PHÊ DUYỆT NỘI DUNG</div>
+              </div>
+              <div class="v-stage-content">
+                <p class="guide-intro">
+                  BOD Hosting xem xét từng nội dung đăng ký. Phê duyệt, từ chối
+                  hoặc hoãn lại. Sắp xếp thứ tự trình bày cho cuộc họp.
+                  <br><strong>Hạn phê duyệt: Thứ Sáu hàng tuần, 17:00.</strong>
+                </p>
+                <div class="checklist" id="checklist2">
+                  <div class="check-item" data-check="allReviewed">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Tất cả nội dung đã được xem xét</span
+                    >
+                  </div>
+                  <div class="check-item" data-check="hasApproved">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Có ít nhất 1 nội dung được duyệt</span
+                    >
+                  </div>
+                  <div class="check-item" data-check="orderSet">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Thứ tự trình bày đã được sắp xếp</span
+                    >
+                  </div>
+                </div>
+                <div class="guide-actions">
+                  <p class="guide-label">Hướng dẫn thao tác:</p>
+                  <ol class="guide-steps">
+                    <li>Cuộn xuống bảng "DANH SÁCH ĐĂNG KÝ BÁO CÁO"</li>
+                    <li>Cột "Phê duyệt" → chọn: Duyệt / Từ chối / Hoãn</li>
+                    <li>Cột "Thứ tự" → nhập số thứ tự trình bày (1, 2, 3...)</li>
+                    <li>Bấm nút "Lưu phê duyệt" để ghi nhận</li>
+                  </ol>
+                  <button
+                    class="action-btn btn-amber"
+                    onclick="btnWithFeedback(this, function(){ showEmailPreview('approvalReminder'); })"
+                  >
+                    Gửi nhắc phê duyệt
+                  </button>
+                  <div class="btn-hint">
+                    Kết quả dự kiến: Gửi email nhắc Ban Tổ Chức duyệt nội dung còn chờ.
+                  </div>
+                  <button
+                    class="action-btn btn-blue"
+                    onclick="btnWithFeedback(this, function(){ showEmailPreview('approvalResult'); })"
+                  >
+                    Gửi kết quả phê duyệt
+                  </button>
+                  <div class="btn-hint">
+                    Kết quả dự kiến: Gửi email thông báo kết quả đến từng người đăng ký.
+                  </div>
+                  <div class="action-msg" id="msg2"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 3 content -->
+            <div
+              class="tl-panel-content"
+              id="panelContent3"
+              style="display: none"
+            >
+              <div class="tl-expand-head">
+                <div class="tl-expand-head-num">3</div>
+                <div class="tl-expand-head-title">XẾP LỊCH TRÌNH</div>
+              </div>
+              <div class="v-stage-content">
+                <p class="guide-intro">
+                  Sau khi phê duyệt, BTC tạo lịch trình cuộc họp với thời gian
+                  cụ thể. Gửi lịch cho toàn bộ thành viên BOD.
+                  <br><strong>Gửi lịch trình: Chủ Nhật trước 20:00.</strong>
+                </p>
+                <div class="checklist" id="checklist3">
+                  <div class="check-item" data-check="scheduleCreated">
+                    <span class="check-icon">○</span>
+                    <span class="check-text">Lịch trình đã tạo xong</span>
+                  </div>
+                  <div class="check-item" data-check="scheduleSent">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Lịch trình đã gửi cho thành viên</span
+                    >
+                  </div>
+                </div>
+                <div class="guide-actions">
+                  <p class="guide-label">Hướng dẫn thao tác:</p>
+                  <ol class="guide-steps">
+                    <li>Bấm "Xem trước lịch trình" để kiểm tra</li>
+                    <li>Điều chỉnh cột "CĐ" (Thời lượng chỉ đạo) nếu cần</li>
+                    <li>Khi sẵn sàng → bấm "Gửi lịch trình" để thông báo toàn bộ</li>
+                  </ol>
+                  <button
+                    class="action-btn btn-green"
+                    onclick="btnWithFeedback(this, function(){ loadSchedulePreview(); switchTab('tab-lichtrinh', document.querySelector('[data-tab=tab-lichtrinh]')); })"
+                  >
+                    Xem trước lịch trình
+                  </button>
+                  <div class="btn-hint">
+                    Kết quả dự kiến: Hiển thị lịch trình dự kiến. Không gửi email.
+                  </div>
+                  <button
+                    class="action-btn btn-blue"
+                    onclick="btnWithFeedback(this, function(){ switchTab('tab-lichtrinh', document.querySelector('[data-tab=tab-lichtrinh]')); showEmailPreview('schedule'); })"
+                  >
+                    Gửi lịch trình
+                  </button>
+                  <div class="btn-hint">
+                    Kết quả dự kiến: Gửi email lịch trình đến toàn bộ thành viên BOD.
+                  </div>
+                  <div class="action-msg" id="msg3"></div>
+                  <div id="schedulePreviewArea"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 4 content -->
+            <div
+              class="tl-panel-content"
+              id="panelContent4"
+              style="display: none"
+            >
+              <div class="tl-expand-head">
+                <div class="tl-expand-head-num">4</div>
+                <div class="tl-expand-head-title">BIÊN BẢN HỌP</div>
+              </div>
+              <div class="v-stage-content">
+                <p class="guide-intro">
+                  Cuộc họp định kỳ Thứ Hai hàng tuần lúc 08:30. Sau họp, Thư ký
+                  ghi biên bản và gửi cho toàn bộ thành viên.
+                  <br><strong>Hoàn thành: Trong ngày họp hoặc ngay sau.</strong>
+                </p>
+                <div class="checklist" id="checklist4">
+                  <div class="check-item" data-check="meetingDone">
+                    <span class="check-icon">○</span>
+                    <span class="check-text">Cuộc họp đã diễn ra</span>
+                  </div>
+                  <div class="check-item" data-check="minutesSent">
+                    <span class="check-icon">○</span>
+                    <span class="check-text">Biên bản đã gửi cho thành viên</span>
+                  </div>
+                </div>
+                <div class="guide-actions">
+                  <p class="guide-label">Quy trình sau họp:</p>
+                  <ol class="guide-steps">
+                    <li>Thư ký ghi biên bản trong vòng 1-2 giờ sau họp</li>
+                    <li>Dịch song ngữ Việt-Nhật (nếu có thành viên Nhật)</li>
+                    <li>Gửi biên bản qua email cho toàn bộ danh sách</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="action-msg" id="approvalMsg"></div>
+      </div>
+
+      <!-- ======== TAB 3: LỊCH TRÌNH LÀM VIỆC ======== -->
+      <div class="tab-panel" id="tab-lichtrinh">
+        <!-- SCHEDULE PREVIEW -->
+        <div class="schedule-section" id="scheduleSection">
+          <div class="section-header">
+            <h2 id="scheduleTitle">LỊCH TRÌNH CUỘC HỌP BOD</h2>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <label
+                class="block-edit-toggle"
+                id="schedEditToggle"
+                title="Bật/tắt chế độ chỉnh sửa"
+              >
+                <input type="checkbox" onchange="toggleSchedEdit(this.checked)" />
+                Chỉnh sửa
+              </label>
+              <button
+                class="action-btn btn-green"
+                onclick="showEmailPreview('schedule')"
+                id="sendScheduleBtn"
+              >
+                Gửi lịch trình
+              </button>
+            </div>
+          </div>
+          <div style="overflow-x: auto">
+            <table class="schedule-table" id="scheduleTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px">STT</th>
+                  <th style="width: 50px">Giờ</th>
+                  <th>Nội dung</th>
+                  <th>Người trình bày</th>
+                  <th>Email</th>
+                  <th style="width: 45px">TB</th>
+                  <th style="width: 45px">CĐ</th>
+                  <th>Liên quan</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody"></tbody>
+            </table>
+          </div>
+          <!-- STITCH-INSPIRED: Summary Cards -->
+          <div class="summary-cards" id="scheduleSummary">
+            <div class="summary-card">
+              <div class="summary-card-icon sc-blue">👥</div>
+              <div class="summary-card-info">
+                <div class="summary-card-value" id="sumPresenter">—</div>
+                <div class="summary-card-label">Người trình bày</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon sc-green">📋</div>
+              <div class="summary-card-info">
+                <div class="summary-card-value" id="sumReport">—</div>
+                <div class="summary-card-label">Nội dung báo cáo</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon sc-amber">⏱</div>
+              <div class="summary-card-info">
+                <div class="summary-card-value" id="sumDuration">—</div>
+                <div class="summary-card-label">Tổng thời lượng</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- EMAIL PREVIEW MODAL -->
@@ -586,32 +605,5 @@
       </div>
     </div>
 
-    <!-- ======== PREVIEW MODAL ======== -->
-    <div class="modal-overlay" id="previewModal">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h3 id="modalTitle">XEM TRƯỚC NỘI DUNG EMAIL</h3>
-          <button class="modal-close" onclick="closeModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-          <label>Người nhận</label>
-          <input type="text" class="preview-field" id="modalTo" readonly />
-          <label>Tiêu đề</label>
-          <input type="text" class="preview-field" id="modalSubject" />
-          <label>Nội dung email</label>
-          <textarea class="preview-field" id="modalBody"></textarea>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-modal btn-cancel" onclick="closeModal()">
-            Hủy
-          </button>
-          <button
-            class="btn-modal btn-send"
-            id="modalSendBtn"
-            onclick="modalConfirmSend()"
-          >
-            Gửi ngay
-          </button>
-        </div>
-      </div>
-    </div>
+
+

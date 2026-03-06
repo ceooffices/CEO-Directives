@@ -47,17 +47,21 @@
 
       // ========================================
       // WRAP showEmailPreview with toast
+      // (Hỗ trợ cả string type LẪN object opts)
       // ========================================
       var _origShowEmailPreview = showEmailPreview;
-      showEmailPreview = function(type) {
+      showEmailPreview = function(opts) {
         var labels = {
           reminder: 'Đang mở email nhắc đăng ký...',
           approvalReminder: 'Đang mở email nhắc phê duyệt...',
           approvalResult: 'Đang mở kết quả phê duyệt...',
-          schedule: 'Đang mở email lịch trình...'
+          schedule: 'Đang mở email lịch trình...',
+          singleReminder: 'Đang mở email nhắc từng bộ phận...'
         };
-        showToast(labels[type] || 'Đang mở xem trước email...', 'info', 2000);
-        _origShowEmailPreview(type);
+        // opts có thể là string hoặc object
+        var toastKey = (typeof opts === 'string') ? opts : (opts.type || 'custom');
+        showToast(labels[toastKey] || 'Đang mở xem trước email...', 'info', 2000);
+        _origShowEmailPreview(opts);
       };
 
       // Wrap loadSchedulePreview with toast

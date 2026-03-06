@@ -1,21 +1,25 @@
 // ========================================
-// TAB SWITCHING
+// ADMIN TAB SWITCHING (namespaced)
 // ========================================
-function switchTab(tabId) {
-  var tabs = document.querySelectorAll('.tab');
+window._adminLoaded = window._adminLoaded || false;
+
+function switchAdminTab(tabId, el) {
+  var tabs = document.querySelectorAll('.admin-sub-tab');
   for (var i = 0; i < tabs.length; i++) {
-    tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);
+    tabs[i].classList.toggle('active', tabs[i].getAttribute('data-panel') === 'panel-' + tabId);
   }
-  var panels = document.querySelectorAll('.panel');
+  var panels = document.querySelectorAll('.admin-panel');
   for (var i = 0; i < panels.length; i++) {
     panels[i].classList.toggle('active', panels[i].id === 'panel-' + tabId);
   }
+  // Lazy load admin data on first tab open
+  if (!window._adminLoaded) { window._adminLoaded = true; initAdmin(); }
 }
 
 // ========================================
-// UTILITY
+// ADMIN UTILITY
 // ========================================
-function showStatus(id, msg, type) {
+function showAdminStatus(id, msg, type) {
   var el = document.getElementById(id);
   if (!el) return;
   el.textContent = msg;
@@ -24,6 +28,7 @@ function showStatus(id, msg, type) {
 }
 
 function formatDateISO(date) {
+  if (typeof date === 'string') return date;
   var y = date.getFullYear();
   var m = ('0' + (date.getMonth() + 1)).slice(-2);
   var d = ('0' + date.getDate()).slice(-2);
@@ -35,23 +40,6 @@ function formatDateVN(dateStr) {
   var parts = dateStr.split('-');
   if (parts.length !== 3) return dateStr;
   return parts[2] + '/' + parts[1] + '/' + parts[0];
-}
-
-function goToDashboard() {
-  try {
-    google.script.run
-      .withSuccessHandler(function(url) {
-        if (url) window.open(url, '_self');
-      })
-      .withFailureHandler(function() {
-        var baseUrl = window.location.href.split('?')[0];
-        window.location.href = baseUrl;
-      })
-      .getScriptAppUrl();
-  } catch(e) {
-    var baseUrl = window.location.href.split('?')[0];
-    window.location.href = baseUrl;
-  }
 }
 
 // ========================================
@@ -99,15 +87,15 @@ function saveTemplate() {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('tplMsg', 'Đã lưu mẫu "' + key + '" thành công!', 'success');
+        showAdminStatus('tplMsg', 'Đã lưu mẫu "' + key + '" thành công!', 'success');
       })
       .withFailureHandler(function(e) {
-        showStatus('tplMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('tplMsg', 'Lỗi: ' + e.message, 'error');
       })
       .saveEmailTemplate(key, JSON.stringify(currentTemplates[key]));
   } catch(e) {
     localStorage.setItem('bodTpl_' + key, JSON.stringify(currentTemplates[key]));
-    showStatus('tplMsg', 'Đã lưu (cục bộ). Lưu ý: Sẽ mất khi xóa cache.', 'success');
+    showAdminStatus('tplMsg', 'Đã lưu (cục bộ). Lưu ý: Sẽ mất khi xóa cache.', 'success');
   }
 }
 
@@ -116,7 +104,7 @@ function resetTemplate() {
   if (!confirm('Bạn muốn khôi phục mẫu "' + key + '" về nội dung mặc định?')) return;
   currentTemplates[key] = JSON.parse(JSON.stringify(defaultTemplates[key]));
   loadTemplate();
-  showStatus('tplMsg', 'Đã khôi phục về mặc định.', 'success');
+  showAdminStatus('tplMsg', 'Đã khôi phục về mặc định.', 'success');
 }
 
 function previewTemplate() {
@@ -214,14 +202,14 @@ function updateAccess(index, newStatus) {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('accessMsg', 'Đã cập nhật: ' + accessUsers[index].name + ' → ' + newStatus, 'success');
+        showAdminStatus('accessMsg', 'Đã cập nhật: ' + accessUsers[index].name + ' → ' + newStatus, 'success');
       })
       .withFailureHandler(function(e) {
-        showStatus('accessMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('accessMsg', 'Lỗi: ' + e.message, 'error');
       })
       .updateUserAccess(accessUsers[index].email, newStatus);
   } catch(e) {
-    showStatus('accessMsg', 'Đã cập nhật (cục bộ).', 'success');
+    showAdminStatus('accessMsg', 'Đã cập nhật (cục bộ).', 'success');
   }
 }
 
@@ -245,14 +233,14 @@ function saveNewUser() {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('addUserMsg', 'Đã thêm: ' + name, 'success');
+        showAdminStatus('addUserMsg', 'Đã thêm: ' + name, 'success');
       })
       .withFailureHandler(function(e) {
-        showStatus('addUserMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('addUserMsg', 'Lỗi: ' + e.message, 'error');
       })
       .addUserAccess(JSON.stringify(newUser));
   } catch(e) {
-    showStatus('addUserMsg', 'Đã thêm (cục bộ).', 'success');
+    showAdminStatus('addUserMsg', 'Đã thêm (cục bộ).', 'success');
   }
   document.getElementById('newUserEmail').value = '';
   document.getElementById('newUserName').value = '';
@@ -299,16 +287,16 @@ function saveSettings() {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('settingsMsg', 'Đã lưu thiết lập thành công!', 'success');
-        showStatus('systemLinksMsg', 'Đã lưu!', 'success');
+        showAdminStatus('settingsMsg', 'Đã lưu thiết lập thành công!', 'success');
+        showAdminStatus('systemLinksMsg', 'Đã lưu!', 'success');
       })
       .withFailureHandler(function(e) {
-        showStatus('settingsMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('settingsMsg', 'Lỗi: ' + e.message, 'error');
       })
       .saveAdminSettings(JSON.stringify(settings));
   } catch(e) {
     localStorage.setItem('bodSettings', JSON.stringify(settings));
-    showStatus('settingsMsg', 'Đã lưu (cục bộ).', 'success');
+    showAdminStatus('settingsMsg', 'Đã lưu (cục bộ).', 'success');
   }
 }
 
@@ -346,15 +334,15 @@ function saveSystemConfig() {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('systemEmailMsg', 'Đã lưu cấu hình Email thành công!', 'success');
+        showAdminStatus('systemEmailMsg', 'Đã lưu cấu hình Email thành công!', 'success');
       })
       .withFailureHandler(function(e) {
-        showStatus('systemEmailMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('systemEmailMsg', 'Lỗi: ' + e.message, 'error');
       })
       .saveSystemConfig(JSON.stringify(config));
   } catch(e) {
     localStorage.setItem('bodSystemConfig', JSON.stringify(config));
-    showStatus('systemEmailMsg', 'Đã lưu (cục bộ).', 'success');
+    showAdminStatus('systemEmailMsg', 'Đã lưu (cục bộ).', 'success');
   }
 }
 
@@ -449,16 +437,16 @@ function saveBodHosting() {
   try {
     google.script.run
       .withSuccessHandler(function(r) {
-        showStatus('hostingMsg', 'Đã lưu thông tin người chủ trì thành công!', 'success');
+        showAdminStatus('hostingMsg', 'Đã lưu thông tin người chủ trì thành công!', 'success');
         updateHostingStatus(data.to);
       })
       .withFailureHandler(function(e) {
-        showStatus('hostingMsg', 'Lỗi: ' + e.message, 'error');
+        showAdminStatus('hostingMsg', 'Lỗi: ' + e.message, 'error');
       })
       .saveBodHosting(JSON.stringify(data));
   } catch(e) {
     localStorage.setItem('bodHosting', JSON.stringify(data));
-    showStatus('hostingMsg', 'Đã lưu (cục bộ). Server chưa kết nối.', 'success');
+    showAdminStatus('hostingMsg', 'Đã lưu (cục bộ). Server chưa kết nối.', 'success');
     updateHostingStatus(data.to);
   }
 }
@@ -475,14 +463,12 @@ function autoSetNextMonth() {
 }
 
 // ========================================
-// INIT — Khởi chạy khi trang tải xong
+// INIT ADMIN — Lazy load khi mở tab Quản trị
 // ========================================
-function init() {
+function initAdmin() {
   loadTemplate();
   loadAccessUsers();
   loadSettings();
   loadBodHosting();
   loadSystemConfig();
 }
-
-init();
