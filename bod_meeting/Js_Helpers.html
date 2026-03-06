@@ -8,6 +8,16 @@
       var isTableEditing = false;
 
       // ========================================
+      // UTILITY: escapeHtml (MUST be in block 1)
+      // ========================================
+      function escapeHtml(str) {
+        if (!str) return "";
+        var div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // ========================================
       // STITCH-INSPIRED HELPERS
       // ========================================
       var AVATAR_COLORS = [
