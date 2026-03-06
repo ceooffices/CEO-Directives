@@ -243,8 +243,8 @@ function buildReminderEmail(deptName, contactName, reportDate, formUrl, isJp, re
   if (count <= 1) {
     bodyVN = '<p style="margin:0 0 10px;">Bộ phận <strong>' + deptName + '</strong> chưa gửi đăng ký báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
       + '<p style="margin:0 0 10px;">Nội dung đăng ký bao gồm: <strong>Chủ đề báo cáo, Thời lượng trình bày, Quyết định cần CEO phê duyệt</strong> (nếu có).</p>'
-      + '<p style="margin:0 0 10px;">Kính mời Anh/Chị hoàn tất đăng ký trước <strong style="color:#dc2626;">17:00 Thứ Năm</strong> để BTC kịp tổng hợp lịch trình và gửi tài liệu cho CEO.</p>';
-    bodyJP = deptName + 'より、次回BOD会議 (' + reportDate + ') への報告登録がまだ送信されていません。<br>木曜日17:00までに登録をお願いいたします。';
+      + '<p style="margin:0 0 10px;">Kính mời Anh/Chị hoàn tất đăng ký trước <strong style="color:#dc2626;">17:00 Thứ Sáu</strong> để BTC kịp tổng hợp lịch trình và gửi tài liệu cho CEO.</p>';
+    bodyJP = deptName + 'より、次回BOD会議 (' + reportDate + ') への報告登録がまだ送信されていません。<br>金曜日17:00までに登録をお願いいたします。';
   } else if (count === 2) {
     bodyVN = '<p style="margin:0 0 10px;">Đây là <strong style="color:#f59e0b;">lần nhắc nhở thứ 2</strong> gửi đến bộ phận <strong>' + deptName + '</strong>.</p>'
       + '<p style="margin:0 0 10px;">Bộ phận hiện vẫn chưa đăng ký nội dung báo cáo cho cuộc họp BOD ngày <strong>' + reportDate + '</strong>.</p>'
@@ -288,7 +288,7 @@ function buildReminderEmail(deptName, contactName, reportDate, formUrl, isJp, re
     + '<table style="border-collapse:collapse;width:100%;">'
     + _eRow_('Ngày họp / 会議日:', reportDate)
     + _eRow_('Giờ bắt đầu / 開始時間:', '08:30')
-    + _eRow_('Hạn đăng ký / 登録期限:', 'Thứ Năm, 17:00 / 木曜日 17:00', '#dc2626')
+    + _eRow_('Hạn đăng ký / 登録期限:', 'Thứ Sáu, 17:00 / 金曜日 17:00', '#dc2626')
     + (count > 1 ? _eRow_('Lần nhắc / リマインダー:', 'Lần ' + count + ' / 第' + count + '回', badgeColor) : '')
     + '</table></div>'
 
@@ -323,11 +323,11 @@ function buildApprovalReminderEmail(reportDate, pendingCount) {
 
     + '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif;">'
     + '<p style="margin:0 0 10px;">Hiện có <strong style="color:#dc2626;font-size:16px;">' + pendingCount + ' đăng ký</strong> báo cáo đang chờ phê duyệt.</p>'
-    + '<p style="margin:0 0 10px;">Kính mời Anh/Chị xem xét và hoàn tất phê duyệt trước <strong>17:00 Thứ Sáu</strong>.</p>'
+    + '<p style="margin:0 0 10px;">Kính mời Anh/Chị xem xét và hoàn tất phê duyệt trước <strong>17:00 Thứ Bảy</strong>.</p>'
     + '</div>'
 
     + '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #f59e0b;font-family:Arial,sans-serif;">'
-    + '次のBOD会議に向けて' + pendingCount + '件の発表登録が承認待ちです。金曜日17:00までに承認をお願いします。'
+    + '次のBOD会議に向けて' + pendingCount + '件の発表登録が承認待ちです。土曜日17:00までに承認をお願いします。'
     + '</div>'
 
     + '<div style="background:#fefce8;border-radius:10px;padding:14px 18px;border:1px solid #fde68a;">'
@@ -335,7 +335,7 @@ function buildApprovalReminderEmail(reportDate, pendingCount) {
     + '<table style="border-collapse:collapse;width:100%;">'
     + _eRow_('Ngày họp:', reportDate)
     + _eRow_('Chờ phê duyệt:', pendingCount + ' mục', '#dc2626')
-    + _eRow_('Hạn phê duyệt:', 'Thứ Sáu, 17:00', '#dc2626')
+    + _eRow_('Hạn phê duyệt:', 'Thứ Bảy, 17:00', '#dc2626')
     + '</table></div>'
     + '</div>';
 

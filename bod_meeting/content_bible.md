@@ -65,7 +65,7 @@
 | Vị trí | Key | Nội dung |
 |--------|-----|----------|
 | Tên | `stage1-title` | GIAI ĐOẠN 1 — TIẾP NHẬN ĐĂNG KÝ |
-| Deadline | `stage1-deadline` | Hạn đăng ký: Thứ Năm hàng tuần |
+| Deadline | `stage1-deadline` | Hạn đăng ký: Thứ Sáu hàng tuần |
 | Checklist 1 | `stage1-task1` | Form đăng ký đang mở nhận nội dung |
 | Checklist 2 | `stage1-task2` | Có đăng ký từ bộ phận |
 | Checklist 3 | `stage1-task3` | Tất cả bộ phận bắt buộc đã đăng ký |
@@ -77,7 +77,7 @@
 | Vị trí | Key | Nội dung |
 |--------|-----|----------|
 | Tên | `stage2-title` | GIAI ĐOẠN 2 — PHÊ DUYỆT NỘI DUNG |
-| Deadline | `stage2-deadline` | Hạn phê duyệt: Thứ Sáu hàng tuần |
+| Deadline | `stage2-deadline` | Hạn phê duyệt: Thứ Bảy hàng tuần |
 | Checklist 1 | `stage2-task1` | Xem xét nội dung từng đăng ký |
 | Checklist 2 | `stage2-task2` | Phê duyệt, từ chối hoặc hoãn từng mục |
 | Checklist 3 | `stage2-task3` | Tất cả đăng ký đã được xử lý |
@@ -361,7 +361,7 @@ BTC kính mời Anh/Chị đăng ký nội dung báo cáo, bao gồm:
   • Thời lượng trình bày dự kiến
   • Quyết định cần CEO phê duyệt (nếu có)
 
-Hạn đăng ký: 17:00 Thứ Năm tuần này.
+Hạn đăng ký: 17:00 Thứ Sáu tuần này.
 
 Nếu tuần này bộ phận không có nội dung cần báo cáo, Anh/Chị
 chỉ cần phản hồi ngắn email này để BTC ghi nhận — không cần
@@ -387,7 +387,7 @@ Ban Tổ Chức Meeting BOD
   • 発表時間（目安）
   • CEO承認が必要な事項（該当する場合）
 
-登録期限：今週木曜日 17:00
+登録期限：今週金曜日 17:00
 
 今週報告内容がない場合は、このメールにご返信いただくだけで
 結構です。
@@ -405,7 +405,7 @@ BOD会議運営委員会
 THÔNG TIN CUỘC HỌP / 会議情報
   Ngày họp / 会議日:      {reportDate}
   Giờ bắt đầu / 開始時間:  08:30
-  Hạn đăng ký / 登録期限:  Thứ Năm, 17:00 / 木曜日 17:00
+  Hạn đăng ký / 登録期限:  Thứ Sáu, 17:00 / 金曜日 17:00
 ```
 
 **LIÊN HỆ:**
@@ -658,7 +658,7 @@ BOD会議運営システム
 TÌNH TRẠNG PHÊ DUYỆT / 承認状況
   Ngày họp / 会議日:       {reportDate}
   Chờ phê duyệt / 承認待ち: {pendingCount} mục / {pendingCount}件
-  Hạn phê duyệt / 承認期限: Thứ Sáu, 17:00 / 金曜日 17:00
+  Hạn phê duyệt / 承認期限: Thứ Bảy, 17:00 / 土曜日 17:00
 ```
 
 **NÚT CTA:** `MỞ DASHBOARD PHÊ DUYỆT / ダッシュボードを開く` → link Dashboard
@@ -1065,8 +1065,8 @@ Phản hồi email này sẽ được gửi đến BTC và Ban Giám Đốc.
 |---------|---------|
 | Tên tổ chức | BOD, BTC, ESUHAI (giữ nguyên, không dịch) |
 | Quy trình | ĐĂNG KÝ → PHÊ DUYỆT → LỊCH TRÌNH → HỌP → CHỈ ĐẠO → TRACKING |
-| Hạn đăng ký | Thứ Năm 17:00 hàng tuần |
-| Hạn phê duyệt | Thứ Sáu 17:00 hàng tuần |
+| Hạn đăng ký | Thứ Sáu 17:00 hàng tuần |
+| Hạn phê duyệt | Thứ Bảy 17:00 hàng tuần |
 | Gửi lịch trình | Chủ Nhật 20:00 |
 | Giờ họp | Thứ Hai 08:30 |
 | Người phê duyệt | BOD Hosting (luân phiên) |

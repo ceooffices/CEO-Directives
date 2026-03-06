@@ -206,7 +206,7 @@
             '<li>Chủ đề báo cáo của bộ phận</li>' +
             '<li>Thời lượng trình bày dự kiến</li>' +
             '<li>Quyết định cần CEO phê duyệt (nếu có)</li></ul>' +
-            '<p style="margin:0 0 10px">Để BTC kịp tổng hợp lịch trình và gửi tài liệu cho CEO, kính mời Anh/Chị hoàn tất đăng ký trước <strong style="color:#dc2626">17:00 Thứ Năm</strong>.</p>' +
+            '<p style="margin:0 0 10px">Để BTC kịp tổng hợp lịch trình và gửi tài liệu cho CEO, kính mời Anh/Chị hoàn tất đăng ký trước <strong style="color:#dc2626">17:00 Thứ Sáu</strong>.</p>' +
             '<p style="margin:0 0 10px;color:#64748b;font-style:italic">Nếu bộ phận không có nội dung báo cáo tuần này, chỉ cần phản hồi ngắn email này để BTC ghi nhận — không cần điền form.</p>';
         } else if (count === 2) {
           bodyVN = '<p style="margin:0 0 10px">Đây là <strong style="color:#f59e0b">lần nhắc nhở thứ 2</strong> gửi đến bộ phận <strong>' + escapeHtml(deptName) + '</strong>.</p>' +
@@ -234,7 +234,7 @@
         // Body JP
         var bodyJP;
         if (count <= 1) {
-          bodyJP = escapeHtml(deptName) + 'より、次回BOD会議（' + date + '）への報告登録がまだ届いておりません。<br>木曜日17:00までにご登録をお願いいたします。<br>報告内容がない場合は、このメールにご返信いただければ結構です。';
+          bodyJP = escapeHtml(deptName) + 'より、次回BOD会議（' + date + '）への報告登録がまだ届いておりません。<br>金曜日17:00までにご登録をお願いいたします。<br>報告内容がない場合は、このメールにご返信いただければ結構です。';
         } else if (count === 2) {
           bodyJP = escapeHtml(deptName) + '部門への2回目のリマインダーです。<br>BOD会議（' + date + '）への報告登録を本日中にお願いいたします。<br>ご不明な点がございましたら、運営委員会までお問い合わせください。';
         } else {
@@ -295,7 +295,7 @@
           '<table style="border-collapse:collapse;width:100%">' +
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Ngày họp / 会議日:</td><td style="color:#0f172a;font-weight:600;font-size:13px;font-family:Arial,sans-serif">' + date + '</td></tr>' +
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Giờ bắt đầu:</td><td style="color:#0f172a;font-weight:600;font-size:13px;font-family:Arial,sans-serif">08:30</td></tr>' +
-          '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn đăng ký:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Năm, 17:00</td></tr>' +
+          '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn đăng ký:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Sáu, 17:00</td></tr>' +
           (count > 1 ? '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Lần nhắc:</td><td style="color:' + badgeColor + ';font-weight:600;font-size:13px;font-family:Arial,sans-serif">Lần ' + count + ' / 第' + count + '回</td></tr>' : '') +
           '</table></div>' +
           '<div style="text-align:center;margin-bottom:20px"><a href="#" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,' + ctaColor + ',' + (count >= 3 ? '#991b1b' : count === 2 ? '#d97706' : '#1d4ed8') + ');color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2)">📝 ' + ctaText + '</a></div>' +
@@ -334,20 +334,20 @@
           '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">運営委員会 御中</p>' +
           '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Arial,sans-serif">' +
           '<p style="margin:0 0 10px">Hiện có <strong style="color:#dc2626;font-size:16px">' + pending + ' đăng ký</strong> báo cáo đang chờ phê duyệt cho cuộc họp BOD ngày <strong>' + date + '</strong>.</p>' +
-          '<p style="margin:0 0 10px">Để lịch trình cuộc họp được gửi đúng hẹn vào <strong>Chủ Nhật 20:00</strong>, kính mời Anh/Chị hoàn tất phê duyệt trước <strong style="color:#dc2626">17:00 Thứ Sáu</strong>.</p>' +
+          '<p style="margin:0 0 10px">Để lịch trình cuộc họp được gửi đúng hẹn vào <strong>Chủ Nhật 20:00</strong>, kính mời Anh/Chị hoàn tất phê duyệt trước <strong style="color:#dc2626">17:00 Thứ Bảy</strong>.</p>' +
           '<p style="margin:0 0 10px">Các mục cần xử lý:</p>' +
           '<ul style="margin:0 0 10px;padding-left:20px;color:#334155">' +
           '<li>Xem xét nội dung từng đăng ký</li>' +
           '<li>Chọn trạng thái: Duyệt / Từ chối / Hoãn</li>' +
           '<li>Ghi chú chỉ đạo (nếu có)</li></ul></div>' +
           '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #f59e0b;font-family:Arial,sans-serif">' +
-          '次のBOD会議に向けて' + pending + '件の発表登録が承認待ちです。<br>金曜日17:00までに承認処理をお願いします。</div>' +
+          '次のBOD会議に向けて' + pending + '件の発表登録が承認待ちです。<br>土曜日17:00までに承認処理をお願いします。</div>' +
           '<div style="background:#fefce8;border-radius:10px;padding:14px 18px;border:1px solid #fde68a">' +
           '<p style="font-size:11px;font-weight:700;color:#92400e;margin:0 0 8px;font-family:Arial,sans-serif">TÌNH TRẠNG PHÊ DUYỆT / 承認状況</p>' +
           '<table style="border-collapse:collapse;width:100%">' +
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Ngày họp:</td><td style="color:#0f172a;font-weight:600;font-size:13px;font-family:Arial,sans-serif">' + date + '</td></tr>' +
           '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Chờ phê duyệt:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">' + pending + ' mục</td></tr>' +
-          '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn phê duyệt:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Sáu, 17:00</td></tr>' +
+          '<tr><td style="color:#64748b;padding:4px 0;width:130px;font-size:13px;font-family:Arial,sans-serif">Hạn phê duyệt:</td><td style="color:#dc2626;font-weight:600;font-size:13px;font-family:Arial,sans-serif">Thứ Bảy, 17:00</td></tr>' +
           '</table></div>' +
           '<div style="text-align:center;margin:20px 0"><a href="#" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;font-family:Arial,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.15)">📋 MỞ DASHBOARD PHÊ DUYỆT</a></div></div>' +
           '<div style="padding:14px 32px;background:#f1f5f9;border-top:1px solid #e2e8f0">' +
