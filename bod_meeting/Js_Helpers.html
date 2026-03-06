@@ -146,15 +146,8 @@
       }
 
       // ========================================
-      // UTILITY: SHOW MSG
+      // showMsg — đã chuyển sang Js_Core.html (version có auto-clear)
       // ========================================
-      function showMsg(id, text, type) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.textContent = text;
-        el.className =
-          "action-msg" + (text ? " show" : "") + (type ? " " + type : "");
-      }
 
       var processData = null;
 
