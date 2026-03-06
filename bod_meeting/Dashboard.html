@@ -3445,7 +3445,8 @@
       </div>
     </div>
 
-
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
 
 
 <script>
@@ -3969,9 +3970,11 @@
             btn.textContent = origText;
           }, 800);
         } catch(e) {
+          console.error('btnWithFeedback error:', e);
           btn.classList.remove('btn-loading');
           btn.classList.add('btn-error');
           btn.textContent = '❌ Lỗi';
+          showToast('Lỗi: ' + (e.message || 'Không xác định'), 'error', 5000);
           setTimeout(function() {
             btn.classList.remove('btn-error');
             btn.textContent = origText;
@@ -5181,53 +5184,52 @@
           sendBtn.textContent = "⏳ Đang gửi...";
           sendBtn.style.background = "#94a3b8";
         }
-        // KHÔNG đóng modal — giữ mở để user thấy trạng thái
+
+        // Label cho toast
+        var typeLabels = {
+          reminder: 'nhắc nhở đăng ký',
+          approvalReminder: 'nhắc phê duyệt',
+          approvalResult: 'kết quả phê duyệt',
+          schedule: 'lịch trình'
+        };
+        var typeLabel = typeLabels[type] || type;
+
+        // Close modal ngay — feedback sẽ qua toast
+        closeEmailModal();
+        showToast('⏳ Đang gửi ' + typeLabel + '...', 'loading');
 
         // Nếu có callback riêng → dùng callback
         if (callback) {
           callback();
-          _showSendResult(true, "Đang xử lý...");
+          _resetSendBtn(sendBtn);
           return;
         }
-        // Route theo type — dùng wrapper có feedback
+        // Route theo type
         switch (type) {
           case "reminder":
             sendBulkReminderDirect();
-            _showSendResult(true, "Đang gửi nhắc nhở...");
             break;
           case "approvalReminder":
             sendApprovalReminderDirect();
-            _showSendResult(true, "Đang gửi nhắc phê duyệt...");
             break;
           case "approvalResult":
             sendApprovalResultsDirect();
-            _showSendResult(true, "Đang gửi kết quả...");
             break;
           case "schedule":
             sendScheduleDirect();
-            _showSendResult(true, "Đang gửi lịch trình...");
             break;
           default:
-            _showSendResult(false, "Không xác định loại email");
+            showToast('Không xác định loại email: ' + type, 'error', 5000);
         }
+        _resetSendBtn(sendBtn);
       }
 
-      // Hiện trạng thái gửi trên nút trong modal
-      function _showSendResult(pending, msg) {
-        var sendBtn = document.getElementById("emailSendBtn");
+      // Reset send button state
+      function _resetSendBtn(sendBtn) {
         if (!sendBtn) return;
-        sendBtn.textContent = pending ? "⏳ " + msg : msg;
-        // Auto-close modal sau 3s nếu đang pending (server callback sẽ show result riêng)
-        if (pending) {
-          setTimeout(function() {
-            closeEmailModal();
-            if (sendBtn) {
-              sendBtn.disabled = false;
-              sendBtn.textContent = "Gửi ngay";
-              sendBtn.style.background = "";
-            }
-          }, 3000);
-        }
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Gửi ngay";
+        sendBtn.style.background = "";
       }
 
       // Helper: toggle loading on any button
@@ -5703,17 +5705,22 @@
       // ========================================
       var _origShowEmailPreview = showEmailPreview;
       showEmailPreview = function(opts) {
-        var labels = {
-          reminder: 'Đang mở email nhắc đăng ký...',
-          approvalReminder: 'Đang mở email nhắc phê duyệt...',
-          approvalResult: 'Đang mở kết quả phê duyệt...',
-          schedule: 'Đang mở email lịch trình...',
-          singleReminder: 'Đang mở email nhắc từng bộ phận...'
-        };
-        // opts có thể là string hoặc object
-        var toastKey = (typeof opts === 'string') ? opts : (opts.type || 'custom');
-        showToast(labels[toastKey] || 'Đang mở xem trước email...', 'info', 2000);
-        _origShowEmailPreview(opts);
+        try {
+          var labels = {
+            reminder: 'Đang mở email nhắc đăng ký...',
+            approvalReminder: 'Đang mở email nhắc phê duyệt...',
+            approvalResult: 'Đang mở kết quả phê duyệt...',
+            schedule: 'Đang mở email lịch trình...',
+            singleReminder: 'Đang mở email nhắc từng bộ phận...'
+          };
+          // opts có thể là string hoặc object
+          var toastKey = (typeof opts === 'string') ? opts : (opts && opts.type || 'custom');
+          showToast(labels[toastKey] || 'Đang mở xem trước email...', 'info', 2000);
+          _origShowEmailPreview(opts);
+        } catch(e) {
+          console.error('showEmailPreview wrapper error:', e);
+          showToast('Lỗi mở email: ' + (e.message || 'Không xác định'), 'error', 5000);
+        }
       };
 
       // Wrap loadSchedulePreview with toast
