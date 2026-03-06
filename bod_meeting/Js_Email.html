@@ -114,28 +114,57 @@
         var callback = currentEmailCallback;
 
         var sendBtn = document.getElementById("emailSendBtn");
-        btnLoading(sendBtn, true);
-        closeEmailModal();
+        if (sendBtn) {
+          sendBtn.disabled = true;
+          sendBtn.textContent = "⏳ Đang gửi...";
+          sendBtn.style.background = "#94a3b8";
+        }
+        // KHÔNG đóng modal — giữ mở để user thấy trạng thái
 
         // Nếu có callback riêng → dùng callback
         if (callback) {
           callback();
+          _showSendResult(true, "Đang xử lý...");
           return;
         }
-        // Fallback: route theo type cũ
+        // Route theo type — dùng wrapper có feedback
         switch (type) {
           case "reminder":
             sendBulkReminderDirect();
+            _showSendResult(true, "Đang gửi nhắc nhở...");
             break;
           case "approvalReminder":
             sendApprovalReminderDirect();
+            _showSendResult(true, "Đang gửi nhắc phê duyệt...");
             break;
           case "approvalResult":
             sendApprovalResultsDirect();
+            _showSendResult(true, "Đang gửi kết quả...");
             break;
           case "schedule":
             sendScheduleDirect();
+            _showSendResult(true, "Đang gửi lịch trình...");
             break;
+          default:
+            _showSendResult(false, "Không xác định loại email");
+        }
+      }
+
+      // Hiện trạng thái gửi trên nút trong modal
+      function _showSendResult(pending, msg) {
+        var sendBtn = document.getElementById("emailSendBtn");
+        if (!sendBtn) return;
+        sendBtn.textContent = pending ? "⏳ " + msg : msg;
+        // Auto-close modal sau 3s nếu đang pending (server callback sẽ show result riêng)
+        if (pending) {
+          setTimeout(function() {
+            closeEmailModal();
+            if (sendBtn) {
+              sendBtn.disabled = false;
+              sendBtn.textContent = "Gửi ngay";
+              sendBtn.style.background = "";
+            }
+          }, 3000);
         }
       }
 
@@ -554,4 +583,3 @@
           })
           .sendScheduleFromDashboard();
       }
-
