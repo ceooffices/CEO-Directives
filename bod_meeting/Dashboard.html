@@ -2857,6 +2857,13 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <div class="container">
+      <!-- BOD HOSTING BANNER -->
+      <div class="hosting-banner" id="hostingBanner">
+        <span class="hosting-badge"><span class="hosting-dot"></span> BOD HOSTING ĐƯƠNG NHIỆM</span>
+        <span class="hosting-name" id="hostingNameDisplay">Đang tải...</span>
+        <span class="hosting-period" id="hostingPeriodDisplay"></span>
+      </div>
+
       <!-- TAB NAVIGATION -->
       <div class="tab-nav" id="tabNav">
         <button class="tab-btn active" data-tab="tab-dangky" onclick="switchTab('tab-dangky', this)">
@@ -2871,13 +2878,6 @@
           <span class="tab-icon">📅</span>
           <span class="tab-label">Lịch trình</span>
         </button>
-      </div>
-
-      <!-- BOD HOSTING BANNER -->
-      <div class="hosting-banner" id="hostingBanner">
-        <span class="hosting-badge"><span class="hosting-dot"></span> BOD HOSTING ĐƯƠNG NHIỆM</span>
-        <span class="hosting-name" id="hostingNameDisplay">Đang tải...</span>
-        <span class="hosting-period" id="hostingPeriodDisplay"></span>
       </div>
 
       <!-- ======== TAB 1: ĐĂNG KÝ BÁO CÁO ======== -->
@@ -4041,8 +4041,10 @@
           .getScriptAppUrl();
 
         // Load BOD Hosting đương nhiệm
+        var hostingLoaded = false;
         google.script.run
           .withSuccessHandler(function(data) {
+            hostingLoaded = true;
             var nameEl = document.getElementById('hostingNameDisplay');
             var periodEl = document.getElementById('hostingPeriodDisplay');
             if (!data || !data.name) {
@@ -4060,11 +4062,23 @@
               }
             }
           })
-          .withFailureHandler(function() {
+          .withFailureHandler(function(e) {
+            hostingLoaded = true;
+            console.error('getBodHosting error:', e);
             var nameEl = document.getElementById('hostingNameDisplay');
-            if (nameEl) nameEl.textContent = 'Không tải được';
+            if (nameEl) nameEl.textContent = 'Lỗi: ' + (e.message || 'Không tải được');
           })
           .getBodHosting();
+        // Timeout fallback: 8s
+        setTimeout(function() {
+          if (!hostingLoaded) {
+            var nameEl = document.getElementById('hostingNameDisplay');
+            if (nameEl && nameEl.textContent === 'Đang tải...') {
+              nameEl.textContent = 'Không kết nối được server';
+              nameEl.style.opacity = '0.6';
+            }
+          }
+        }, 8000);
       }
 
       function formatDateVN_(dateStr) {
