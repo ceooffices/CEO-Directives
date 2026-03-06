@@ -5595,66 +5595,77 @@
       }
 
       // ========================================
-      // SEND FUNCTIONS (giữ nguyên logic gửi)
+      // SEND FUNCTIONS — với alert() feedback rõ ràng
       // ========================================
       function sendBulkReminderDirect() {
-        var searchDate = getSelectedDate();
-        var displayDate = getDisplayDate();
-        console.log('[sendBulkReminder] searchDate=' + searchDate + ', displayDate=' + displayDate);
-        if (!searchDate) {
-          showToast('Lỗi: Không xác định được ngày họp. Vui lòng chọn ngày.', 'error', 5000);
-          return;
+        try {
+          var searchDate = getSelectedDate();
+          var displayDate = getDisplayDate();
+          if (!searchDate) {
+            alert('⚠ Không xác định được ngày họp.\nVui lòng chọn ngày trên Dashboard trước khi gửi.');
+            return;
+          }
+          google.script.run
+            .withSuccessHandler(function (r) {
+              var msg;
+              if (r.sent > 0) {
+                msg = '✅ ĐÃ GỬI NHẮC NHỞ\n\nGửi thành công: ' + r.sent + ' bộ phận';
+              } else if (r.sent === 0 && r.failed === 0) {
+                msg = 'ℹ️ KHÔNG CẦN GỬI\n\nTất cả bộ phận đã đăng ký hoặc thiếu email đại diện.';
+              } else {
+                msg = '⚠ KẾT QUẢ GỬI\n\nĐã gửi: ' + r.sent + '\nLỗi: ' + r.failed;
+              }
+              if (r.details) msg += '\n\nChi tiết:\n' + r.details;
+              alert(msg);
+              showMsg("deptMsg", "Gửi: " + r.sent + " | Lỗi: " + r.failed, r.sent > 0 ? "success" : "error");
+              showMsg("msg1", "Gửi: " + r.sent + " | Lỗi: " + r.failed, r.sent > 0 ? "success" : "error");
+              loadDeptStatus();
+            })
+            .withFailureHandler(function (e) {
+              alert('❌ LỖI GỬI NHẮC NHỞ\n\n' + e.message);
+              showMsg("deptMsg", "Lỗi: " + e.message, "error");
+              showMsg("msg1", "Lỗi: " + e.message, "error");
+            })
+            .sendBulkReminderWeb(searchDate, displayDate);
+        } catch(ex) {
+          alert('❌ LỖI JS: ' + ex.message);
         }
-        showMsg("deptMsg", "Đang gửi hàng loạt...", "");
-        showMsg("msg1", "Đang gửi...", "");
-        google.script.run
-          .withSuccessHandler(function (r) {
-            console.log('[sendBulkReminder] result:', JSON.stringify(r));
-            var msg = "Đã gửi: " + r.sent + " | Lỗi: " + r.failed;
-            if (r.sent === 0 && r.failed === 0) {
-              msg = "Không có bộ phận nào cần nhắc — tất cả đã đăng ký hoặc thiếu email";
-            }
-            showMsg("deptMsg", msg, r.sent > 0 ? "success" : "error");
-            showMsg("msg1", msg, r.sent > 0 ? "success" : "error");
-            loadDeptStatus();
-          })
-          .withFailureHandler(function (e) {
-            console.error('[sendBulkReminder] ERROR:', e.message);
-            showMsg("deptMsg", "Lỗi: " + e.message, "error");
-            showMsg("msg1", "Lỗi: " + e.message, "error");
-          })
-          .sendBulkReminderWeb(searchDate, displayDate);
       }
 
       function sendApprovalReminderDirect() {
-        showMsg("msg2", "Đang gửi...", "");
-        google.script.run
-          .withSuccessHandler(function (r) {
-            showMsg("msg2", r.msg, r.success ? "success" : "error");
-          })
-          .withFailureHandler(function (e) {
-            showMsg("msg2", "Lỗi: " + e.message, "error");
-          })
-          .sendApprovalReminderWeb(getSelectedDate(), getDisplayDate());
+        try {
+          google.script.run
+            .withSuccessHandler(function (r) {
+              alert(r.success ? '✅ ' + r.msg : '⚠ ' + r.msg);
+              showMsg("msg2", r.msg, r.success ? "success" : "error");
+            })
+            .withFailureHandler(function (e) {
+              alert('❌ LỖI GỬI NHẮC PHÊ DUYỆT\n\n' + e.message);
+              showMsg("msg2", "Lỗi: " + e.message, "error");
+            })
+            .sendApprovalReminderWeb(getSelectedDate(), getDisplayDate());
+        } catch(ex) {
+          alert('❌ LỖI JS: ' + ex.message);
+        }
       }
 
       function sendApprovalResultsDirect() {
-        console.log('[sendApprovalResults] Starting...');
-        showMsg("msg2", "Đang gửi kết quả duyệt...", "");
-        google.script.run
-          .withSuccessHandler(function (r) {
-            console.log('[sendApprovalResults] result:', JSON.stringify(r));
-            if (r && r.msg) {
-              showMsg("msg2", r.msg, r.success ? "success" : "error");
-            } else {
-              showMsg("msg2", r || "Đã gửi!", "success");
-            }
-          })
-          .withFailureHandler(function (e) {
-            console.error('[sendApprovalResults] ERROR:', e.message);
-            showMsg("msg2", "Lỗi server: " + e.message, "error");
-          })
-          .sendApprovalResultEmails();
+        try {
+          google.script.run
+            .withSuccessHandler(function (r) {
+              var msg = (r && r.msg) ? r.msg : (r || 'Đã gửi!');
+              var isOk = r && r.success;
+              alert(isOk ? '✅ GỬI KẾT QUẢ PHÊ DUYỆT\n\n' + msg : '⚠ ' + msg);
+              showMsg("msg2", msg, isOk ? "success" : "error");
+            })
+            .withFailureHandler(function (e) {
+              alert('❌ LỖI GỬI KẾT QUẢ PHÊ DUYỆT\n\n' + e.message);
+              showMsg("msg2", "Lỗi server: " + e.message, "error");
+            })
+            .sendApprovalResultEmails();
+        } catch(ex) {
+          alert('❌ LỖI JS: ' + ex.message);
+        }
       }
 
       function sendScheduleDirect() {
