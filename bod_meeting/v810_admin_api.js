@@ -48,6 +48,8 @@ function saveApprovalFromDashboard(jsonUpdates) {
     // Chuyển sang 1-based cho getRange
     var statusColIdx = cols.status + 1;
     var thuTuColIdx = cols.thuTu + 1;
+    var ghiChuColIdx = cols.ghiChu + 1;
+    var tlCDColIdx = cols.thoiLuongChiDao + 1;
 
     var count = 0;
     for (var i = 0; i < updates.length; i++) {
@@ -63,6 +65,16 @@ function saveApprovalFromDashboard(jsonUpdates) {
       // Cập nhật Thứ tự (chỉ khi > 0, bỏ qua khi = 0 để giữ nguyên)
       if (item.thuTu !== undefined && parseInt(item.thuTu) > 0) {
         sheet.getRange(rowNum, thuTuColIdx).setValue(parseInt(item.thuTu));
+      }
+
+      // Cập nhật Ghi chú (nếu có)
+      if (item.ghiChu !== undefined && item.ghiChu !== null) {
+        sheet.getRange(rowNum, ghiChuColIdx).setValue(item.ghiChu);
+      }
+
+      // Cập nhật Thời lượng chỉ đạo (nếu có)
+      if (item.tlCD !== undefined && item.tlCD !== null && String(item.tlCD).trim()) {
+        sheet.getRange(rowNum, tlCDColIdx).setValue(item.tlCD);
       }
 
       count++;

@@ -114,7 +114,12 @@ function getDashboardData(searchDate) {
       status: status || "Chờ duyệt",
       thamGia: row[cols.thamGia] || "",
       daGuiEmail: row[cols.daGuiEmail] || "",
-      thuTu: parseInt(row[cols.thuTu]) || 0, // [V8.1] cho Dashboard inline
+      thuTu: parseInt(row[cols.thuTu]) || 0,
+      ghiChu: row[cols.ghiChu] || "",
+      tlCD: parseInt(row[cols.thoiLuongChiDao]) || 10,
+      email: row[cols.email] || "",
+      emailLienQuan: row[cols.emailLienQuan] || "",
+      emailSent: !!(row[cols.daGuiEmail]),
     });
   }
   return result;

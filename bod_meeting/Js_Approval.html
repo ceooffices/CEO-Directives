@@ -67,10 +67,13 @@
             }
           }
 
+          var thuTuInput = rows[i].querySelector('.approval-order[data-field="thuTu"]');
+          var thuTuVal = thuTuInput ? parseInt(thuTuInput.value) || 0 : 0;
+
           updates.push({
             row: rowNum,
             status: status,
-            thuTu: 0,
+            thuTu: thuTuVal,
             tlCD: cdVal,
             ghiChu: ghiChu,
           });

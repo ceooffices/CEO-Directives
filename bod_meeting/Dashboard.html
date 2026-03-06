@@ -3166,22 +3166,22 @@
                   <br><strong>Hạn phê duyệt: Thứ Bảy hàng tuần, 17:00.</strong>
                 </p>
                 <div class="checklist" id="checklist2">
-                  <div class="check-item" data-check="allReviewed">
+                  <div class="check-item" data-check="hasPending">
                     <span class="check-icon">○</span>
                     <span class="check-text"
-                      >Tất cả nội dung đã được xem xét</span
+                      >Tất cả nội dung đã được xem xét (không còn chờ duyệt)</span
                     >
                   </div>
-                  <div class="check-item" data-check="hasApproved">
-                    <span class="check-icon">○</span>
-                    <span class="check-text"
-                      >Có ít nhất 1 nội dung được duyệt</span
-                    >
-                  </div>
-                  <div class="check-item" data-check="orderSet">
+                  <div class="check-item" data-check="hasOrder">
                     <span class="check-icon">○</span>
                     <span class="check-text"
                       >Thứ tự trình bày đã được sắp xếp</span
+                    >
+                  </div>
+                  <div class="check-item" data-check="resultSent">
+                    <span class="check-icon">○</span>
+                    <span class="check-text"
+                      >Đã gửi kết quả phê duyệt cho người đăng ký</span
                     >
                   </div>
                 </div>
@@ -3233,9 +3233,9 @@
                   <br><strong>Gửi lịch trình: Chủ Nhật trước 20:00.</strong>
                 </p>
                 <div class="checklist" id="checklist3">
-                  <div class="check-item" data-check="scheduleCreated">
+                  <div class="check-item" data-check="scheduleReady">
                     <span class="check-icon">○</span>
-                    <span class="check-text">Lịch trình đã tạo xong</span>
+                    <span class="check-text">Lịch trình đã sẵn sàng</span>
                   </div>
                   <div class="check-item" data-check="scheduleSent">
                     <span class="check-icon">○</span>
@@ -4400,8 +4400,18 @@
             }
             selectHtml += "</select>";
 
-            // Order = thứ tự trình bày
+            // Order = thứ tự trình bày (editable input)
             var orderVal = item.thuTu && item.thuTu > 0 ? item.thuTu : "";
+            var orderHtml =
+              '<input type="number" class="approval-order' +
+              (isTableEditing ? " editing" : "") +
+              '" data-row="' +
+              item.row +
+              '" data-field="thuTu" value="' +
+              orderVal +
+              '" min="1" max="20" step="1" title="Thứ tự trình bày" style="width:45px;text-align:center"' +
+              disabledAttr +
+              ">";
 
             // T.Lượng — editable input
             var tlVal = String(item.thoiLuong || "").replace(/'/g, "");
@@ -4451,7 +4461,7 @@
             return (
               '<tr class="row-highlight">' +
               '<td class="th-stt">' +
-              orderVal +
+              orderHtml +
               "</td>" +
               "<td>" +
               getAvatarHtml(item.hoTen) +
@@ -4595,10 +4605,13 @@
             }
           }
 
+          var thuTuInput = rows[i].querySelector('.approval-order[data-field="thuTu"]');
+          var thuTuVal = thuTuInput ? parseInt(thuTuInput.value) || 0 : 0;
+
           updates.push({
             row: rowNum,
             status: status,
-            thuTu: 0,
+            thuTu: thuTuVal,
             tlCD: cdVal,
             ghiChu: ghiChu,
           });

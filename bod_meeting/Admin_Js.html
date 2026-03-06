@@ -224,7 +224,7 @@ function saveNewUser() {
   var role = document.getElementById('newUserRole').value;
   var status = document.getElementById('newUserStatus').value;
   if (!email || !name) {
-    showStatus('addUserMsg', 'Vui lòng nhập đầy đủ email và họ tên.', 'error');
+    showAdminStatus('addUserMsg', 'Vui lòng nhập đầy đủ email và họ tên.', 'error');
     return;
   }
   var newUser = {email: email, name: name, role: role, status: status};
@@ -431,7 +431,7 @@ function saveBodHosting() {
     to: document.getElementById('hostingTo').value
   };
   if (!data.name || !data.email) {
-    showStatus('hostingMsg', 'Vui lòng nhập đầy đủ họ tên và email.', 'error');
+    showAdminStatus('hostingMsg', 'Vui lòng nhập đầy đủ họ tên và email.', 'error');
     return;
   }
   try {

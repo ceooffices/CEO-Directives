@@ -473,8 +473,18 @@
             }
             selectHtml += "</select>";
 
-            // Order = thứ tự trình bày
+            // Order = thứ tự trình bày (editable input)
             var orderVal = item.thuTu && item.thuTu > 0 ? item.thuTu : "";
+            var orderHtml =
+              '<input type="number" class="approval-order' +
+              (isTableEditing ? " editing" : "") +
+              '" data-row="' +
+              item.row +
+              '" data-field="thuTu" value="' +
+              orderVal +
+              '" min="1" max="20" step="1" title="Thứ tự trình bày" style="width:45px;text-align:center"' +
+              disabledAttr +
+              ">";
 
             // T.Lượng — editable input
             var tlVal = String(item.thoiLuong || "").replace(/'/g, "");
@@ -524,7 +534,7 @@
             return (
               '<tr class="row-highlight">' +
               '<td class="th-stt">' +
-              orderVal +
+              orderHtml +
               "</td>" +
               "<td>" +
               getAvatarHtml(item.hoTen) +
