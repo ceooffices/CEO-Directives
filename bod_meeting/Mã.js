@@ -1537,29 +1537,35 @@ function sendScheduleEmail() {
   const mauBieu = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
   const ngayHopRaw = scheduleSheet.getRange("A8").getValue();
   const searchDate = extractSearchDate(ngayHopRaw);
-  const meetingCfg = getMeetingConfig();
-  let agendaList = "";
+  const displayDate = formatNgayHop(ngayHopRaw);
+
+  // Build schedule items từ sheet Lịch trình
+  const items = [];
   for (let i = CONFIG.AGENDA_START_ROW; i <= CONFIG.AGENDA_END_ROW; i++) {
     const content = scheduleSheet.getRange(i, 3).getValue();
     if (content && content.toString().trim()) {
-      agendaList +=
-        scheduleSheet.getRange(i, 1).getValue() +
-        ". " +
-        formatTime(scheduleSheet.getRange(i, 2).getValue()) +
-        "  " +
-        content +
-        "\n   Trình bày: " +
-        scheduleSheet.getRange(i, 4).getValue() +
-        "\n\n";
+      const presenter = (scheduleSheet.getRange(i, 4).getValue() || "").toString();
+      const tlTB = parseInt(scheduleSheet.getRange(i, 5).getValue()) || 10;
+      const tlCD = parseInt(scheduleSheet.getRange(i, 6).getValue()) || 10;
+      const dept = (scheduleSheet.getRange(i, 7).getValue() || "").toString();
+      items.push({
+        stt: scheduleSheet.getRange(i, 1).getValue(),
+        time: formatTime(scheduleSheet.getRange(i, 2).getValue()),
+        content: content.toString(),
+        presenter: presenter,
+        dept: dept,
+        tlTB: tlTB,
+        tlCD: tlCD
+      });
     }
   }
+
+  // Collect all recipient emails
   const cols = CONFIG.COLUMN_MAP;
   const data = mauBieu.getDataRange().getValues();
   const btcEmails = getBTCEmails();
   const emails = new Set(btcEmails.all.map((e) => e.toLowerCase()));
-  // Thêm TGĐ
   emails.add("leson@esuhai.com");
-  // Thêm BOD Hosting
   try {
     var hosting = getBodHosting();
     if (hosting && hosting.email) emails.add(hosting.email.toLowerCase());
@@ -1581,30 +1587,28 @@ function sendScheduleEmail() {
           .forEach((x) => emails.add(x));
     }
   }
-  const exportUrl =
-    "https://docs.google.com/spreadsheets/d/" +
-    ss.getId() +
-    "/export?format=pdf&size=A4&portrait=false&fitw=true&gridlines=false&printtitle=false&sheetnames=false&pagenumbers=false&fzr=false&gid=" +
-    scheduleSheet.getSheetId();
-  const pdfBlob = UrlFetchApp.fetch(exportUrl, {
-    headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() },
-  }).getBlob();
-  pdfBlob.setName("Lich_trinh_BOD_" + searchDate.replace("/", "_") + ".pdf");
-  const emailData = buildEmailSchedule({
-    ngayHop: formatNgayHop(ngayHopRaw),
-    gioHop: formatTime(meetingCfg.gioHop),
-    diaDiem: meetingCfg.diaDiem,
-    teamsLink: meetingCfg.teamsLink,
-    agendaList: agendaList || "(Chưa có nội dung)\n",
+
+  // Build HTML email using v820 timeline template
+  const htmlBody = buildScheduleEmail(displayDate, items);
+
+  // Plain text fallback
+  let plainBody = "LỊCH TRÌNH CUỘC HỌP BOD — " + displayDate + "\n\n";
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    plainBody += it.stt + ". " + it.time + " — " + it.content + " (" + it.presenter + ")\n";
+  }
+  plainBody += "\n---\nBTC Meeting BOD — ESUHAI GROUP";
+
+  const subject = "[BOD Meeting] Lịch trình cuộc họp — " + displayDate + " / 議事スケジュール";
+
+  sendEmail({
+    to: Array.from(emails).join(","),
+    subject: subject,
+    body: plainBody,
+    htmlBody: htmlBody
   });
-  sendEmailWithAttachment(
-    {
-      to: Array.from(emails).join(","),
-      subject: emailData.subject,
-      body: emailData.body,
-    },
-    pdfBlob,
-  );
+
+  logEmailSend('schedule', 1, displayDate + ' → ' + emails.size + ' recipients');
   return emails.size;
 }
 
