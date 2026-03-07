@@ -858,44 +858,44 @@ function buildEmailNewRegistration(data) {
     '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
     // Header
     '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px">' +
-    '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">ĐĂNG KÝ BÁO CÁO BOD MỚI</h1>' +
-    '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD報告の新規登録 — New Registration</p></td></tr></table>' +
+    '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">ĐĂNG KÝ BÁO CÁO BOD MỚI</h1>' +
+    '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">BOD報告の新規登録 — New Registration</p></td></tr></table>' +
     // Badge
     '<div style="text-align:center;padding:10px;background:#eff6ff;border-bottom:1px solid #dbeafe">' +
-    '<span style="display:inline-block;padding:6px 16px;background:#2563eb;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">CẦN XEM XÉT / 確認が必要</span></div>' +
+    '<span style="display:inline-block;padding:6px 16px;background:#2563eb;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">CẦN XEM XÉT / 確認が必要</span></div>' +
     // Body
     '<div style="padding:28px 32px;background:#fff">' +
-    '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif">Kính gửi Ban Tổ Chức,</p>' +
-    '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">各位へ、</p>' +
-    '<p style="font-size:14px;line-height:1.75;color:#334155;margin:0 0 20px;font-family:Arial,sans-serif">' +
+    '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Kính gửi Ban Tổ Chức,</p>' +
+    '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">各位へ、</p>' +
+    '<p style="font-size:14px;line-height:1.75;color:#334155;margin:0 0 20px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' +
     'Có đăng ký báo cáo BOD mới cần được xem xét.<br>' +
     '<span style="color:#94a3b8;font-size:12px">BOD報告の新規登録がありますのでご確認ください。</span></p>' +
     // Info card
     '<div style="background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden;margin:0 0 20px">' +
     '<div style="padding:10px 16px;background:#f1f5f9;border-bottom:1px solid #e2e8f0">' +
-    '<span style="font-size:11px;font-weight:700;color:#475569;letter-spacing:1px;font-family:Arial,sans-serif">THÔNG TIN ĐĂNG KÝ / 登録情報</span></div>' +
+    '<span style="font-size:11px;font-weight:700;color:#475569;letter-spacing:1px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">THÔNG TIN ĐĂNG KÝ / 登録情報</span></div>' +
     '<table style="border-collapse:collapse;width:100%">' +
-    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;width:130px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">Người đăng ký / 登録者</td>' +
-    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">' + (data.hoTen || 'N/A') + '</td></tr>' +
-    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">Bộ phận / 部署</td>' +
-    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">' + (data.boPhan || 'N/A') + '</td></tr>' +
-    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">Nội dung / 内容</td>' +
-    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">' + (data.noiDung || 'N/A') + '</td></tr>' +
-    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">Ngày họp / 会議日</td>' +
-    '<td style="padding:10px 16px;color:#1e40af;font-weight:700;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:Arial,sans-serif">' + (data.ngayHop || 'N/A') + '</td></tr>' +
-    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;font-family:Arial,sans-serif">Thời lượng / 所要時間</td>' +
-    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;font-family:Arial,sans-serif">' + tl + '</td></tr>' +
+    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;width:130px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Người đăng ký / 登録者</td>' +
+    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' + (data.hoTen || 'N/A') + '</td></tr>' +
+    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Bộ phận / 部署</td>' +
+    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' + (data.boPhan || 'N/A') + '</td></tr>' +
+    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Nội dung / 内容</td>' +
+    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' + (data.noiDung || 'N/A') + '</td></tr>' +
+    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Ngày họp / 会議日</td>' +
+    '<td style="padding:10px 16px;color:#1e40af;font-weight:700;font-size:13px;border-bottom:1px solid #f1f5f9;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' + (data.ngayHop || 'N/A') + '</td></tr>' +
+    '<tr><td style="padding:10px 16px;color:#64748b;font-size:13px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Thời lượng / 所要時間</td>' +
+    '<td style="padding:10px 16px;color:#0f172a;font-weight:600;font-size:13px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">' + tl + '</td></tr>' +
     '</table></div>' +
     // CTA Button
     '<div style="text-align:center;margin:24px 0">' +
-    '<a href="' + dashboardUrl + '" style="display:inline-block;padding:14px 32px;background-color:#2563eb;color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:.3px">MỞ DASHBOARD XEM XÉT / ダッシュボードを開く</a>' +
+    '<a href="' + dashboardUrl + '" style="display:inline-block;padding:14px 32px;background-color:#2563eb;color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif;letter-spacing:.3px">MỞ DASHBOARD XEM XÉT / ダッシュボードを開く</a>' +
     '</div>' +
-    '<p style="font-size:11px;color:#94a3b8;text-align:center;margin:0 0 4px;font-family:Arial,sans-serif">⚠ Link dành riêng cho BTC có quyền truy cập</p>' +
+    '<p style="font-size:11px;color:#94a3b8;text-align:center;margin:0 0 4px;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">⚠ Link dành riêng cho BTC có quyền truy cập</p>' +
     '</div>' +
     // Footer
     '<div style="padding:16px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center">' +
-    '<p style="margin:0;font-size:11px;color:#94a3b8;font-family:Arial,sans-serif">Trân trọng / よろしくお願いいたします</p>' +
-    '<p style="margin:4px 0 0;font-size:12px;font-weight:700;color:#64748b;font-family:Arial,sans-serif">BTC MEETING BOD — ESUHAI GROUP</p></div>' +
+    '<p style="margin:0;font-size:11px;color:#94a3b8;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">Trân trọng / よろしくお願いいたします</p>' +
+    '<p style="margin:4px 0 0;font-size:12px;font-weight:700;color:#64748b;font-family:'Segoe UI',Roboto,'Hiragino Sans','Noto Sans JP',Arial,sans-serif">BTC MEETING BOD — ESUHAI GROUP</p></div>' +
     '</div>';
   
   return {
