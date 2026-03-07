@@ -466,11 +466,14 @@ function buildReminderEmail(
  * @param {number} pendingCount - Số đăng ký chờ duyệt
  * @returns {string} HTML string
  */
-function buildApprovalReminderEmail(reportDate, pendingCount) {
+function buildApprovalReminderEmail(reportDate, pendingCount, dashboardUrl) {
   var header = _eHdr_(
     "BOD MEETING — NHẮC PHÊ DUYỆT NỘI DUNG",
     "BOD会議 — 承認リマインダー",
   );
+
+  var dUrl = dashboardUrl || "";
+  if (!dUrl) { try { dUrl = ScriptApp.getService().getUrl(); } catch(e) {} }
 
   var body =
     '<div style="padding:28px 32px;background:#fff;">' +
@@ -494,6 +497,10 @@ function buildApprovalReminderEmail(reportDate, pendingCount) {
     _eRow_("Chờ phê duyệt:", pendingCount + " mục", "#dc2626") +
     _eRow_("Hạn phê duyệt:", "Thứ Bảy, 17:00", "#dc2626") +
     "</table></div>" +
+    (dUrl ? '<div style="text-align:center;margin:24px 0 8px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0" align="center"><tr><td bgcolor="#f59e0b" style="background-color:#f59e0b;border-radius:10px;padding:14px 32px;">' +
+      '<a href="' + dUrl + '" style="color:#fff;font-size:16px;font-weight:700;text-decoration:none;font-family:Segoe UI,Roboto,Arial,sans-serif;">📋 MỞ DASHBOARD PHÊ DUYỆT</a>' +
+      '</td></tr></table></div>' : '') +
     "</div>";
 
   return _eWrap_(header + body + _eFtr_());

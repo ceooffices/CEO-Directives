@@ -1275,8 +1275,15 @@ function onFormSubmit(e) {
       thoiLuong: rowData[cols.thoiLuong] || "N/A",
       sheetUrl: ss.getUrl(),
     });
+    // CC BOD Hosting
+    var ccList = [];
+    try {
+      var hosting = getBodHosting();
+      if (hosting && hosting.email) ccList.push(hosting.email);
+    } catch(he) {}
     sendEmail({
       to: getBTCEmails().all.join(","),
+      cc: ccList.join(","),
       subject: emailData.subject,
       body: emailData.body,
       htmlBody: emailData.htmlBody,
