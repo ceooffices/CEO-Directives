@@ -796,9 +796,115 @@ function createScheduleFromDashboard(searchDate) {
 // ===== API: GUI LICH TRINH TU DASHBOARD =====
 function sendScheduleFromDashboard() {
   try {
-    var count = sendScheduleEmail();
-    return { success: true, msg: "Đã gửi lịch trình đến " + count + " người!" };
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+    if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký" };
+
+    var cols = CONFIG.COLUMN_MAP;
+    var data = sheet.getDataRange().getValues();
+
+    // Tìm ngày họp gần nhất
+    var targetDate = null;
+    for (var i = data.length - 1; i >= 1; i--) {
+      var d = data[i][cols.ngayHop];
+      if (d) { targetDate = d; break; }
+    }
+    if (!targetDate) return { success: false, msg: "Không tìm thấy đăng ký nào" };
+
+    var searchKey = '';
+    if (targetDate instanceof Date) {
+      searchKey = (targetDate.getDate() < 10 ? '0' : '') + targetDate.getDate() + '/' + 
+                  ((targetDate.getMonth()+1) < 10 ? '0' : '') + (targetDate.getMonth()+1);
+    } else {
+      searchKey = targetDate.toString().trim();
+    }
+    var displayDate = formatNgayHop(targetDate);
+
+    // Build schedule items từ approved registrations
+    var items = [];
+    var emails = new Set();
+    var btcEmails = getBTCEmails();
+    btcEmails.all.forEach(function(e) { emails.add(e.toLowerCase()); });
+    emails.add("leson@esuhai.com");
+    try {
+      var hosting = getBodHosting();
+      if (hosting && hosting.email) emails.add(hosting.email.toLowerCase());
+    } catch(he) {}
+
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!matchNgayHop(row[cols.ngayHop], searchKey)) continue;
+      if (row[cols.status] !== "Duyệt") continue;
+
+      var thuTu = parseInt(row[cols.thuTu]) || 999;
+      var tlTB = parseThoiLuong(row[cols.thoiLuong]) || 10;
+      var tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]) || 10;
+
+      items.push({
+        stt: thuTu,
+        content: (row[cols.noiDung] || "").toString(),
+        presenter: (row[cols.hoTen] || "").toString(),
+        dept: (row[cols.boPhan] || "").toString(),
+        tlTB: tlTB,
+        tlCD: tlCD,
+        time: "" // will be calculated
+      });
+
+      var e = (row[cols.email] || "").toString().trim().toLowerCase();
+      if (isValidEmail(e)) emails.add(e);
+      if (row[cols.emailLienQuan]) {
+        row[cols.emailLienQuan].toString().split(/[,;\n]+/)
+          .map(function(x) { return x.trim().toLowerCase(); })
+          .filter(function(x) { return isValidEmail(x); })
+          .forEach(function(x) { emails.add(x); });
+      }
+    }
+
+    if (items.length === 0)
+      return { success: false, msg: "Không có nội dung nào được duyệt" };
+
+    // Sort theo thuTu
+    items.sort(function(a, b) { return a.stt - b.stt; });
+
+    // Calculate times (08:30 start)
+    var t = 8 * 60 + 30;
+    for (var i = 0; i < items.length; i++) {
+      items[i].stt = i + 1;
+      items[i].time = (Math.floor(t / 60) < 10 ? '0' : '') + Math.floor(t / 60) + ':' + 
+                      (t % 60 < 10 ? '0' : '') + (t % 60);
+      t += items[i].tlTB + items[i].tlCD;
+    }
+
+    // Build HTML using v820 template
+    var htmlBody = buildScheduleEmail(displayDate, items);
+
+    // Plain text fallback
+    var plainBody = "LỊCH TRÌNH CUỘC HỌP BOD — " + displayDate + "\n\n";
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      plainBody += it.stt + ". " + it.time + " — " + it.content + " (" + it.presenter + ")\n";
+    }
+    plainBody += "\n---\nBTC Meeting BOD — ESUHAI GROUP";
+
+    // Send
+    var toList = Array.from(emails).join(",");
+    var subject = "[BOD Meeting] Lịch trình cuộc họp — " + displayDate + " / 議事スケジュール";
+
+    var sent = sendEmail({
+      to: toList,
+      subject: subject,
+      body: plainBody,
+      htmlBody: htmlBody
+    });
+
+    if (sent) {
+      logEmailSend('schedule', emails.size, items.length + ' nội dung');
+      return { success: true, msg: "Đã gửi lịch trình " + items.length + " mục đến " + emails.size + " người!" };
+    } else {
+      return { success: false, msg: "Gửi email thất bại" };
+    }
   } catch (e) {
+    Logger.log("sendScheduleFromDashboard error: " + e.message);
     return { success: false, msg: "Lỗi: " + e.message };
   }
 }

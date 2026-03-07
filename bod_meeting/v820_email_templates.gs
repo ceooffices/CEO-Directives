@@ -676,37 +676,61 @@ function buildScheduleEmail(reportDate, scheduleItems) {
   );
   var items = scheduleItems || [];
 
-  var rows = "";
+  // Calculate total duration
+  var totalMin = 0;
+  for (var i = 0; i < items.length; i++) {
+    totalMin += (parseInt(items[i].tlTB) || 10) + (parseInt(items[i].tlCD) || 10);
+  }
+  var endH = Math.floor((8 * 60 + 30 + totalMin) / 60);
+  var endM = (8 * 60 + 30 + totalMin) % 60;
+  var endTime = (endH < 10 ? '0' : '') + endH + ':' + (endM < 10 ? '0' : '') + endM;
+
+  // Color palette for timeline cards
+  var colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#64748b'];
+
+  // Build timeline cards
+  var cards = '';
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
-    var bg = i % 2 === 0 ? "#fff" : "#f8fafc";
-    rows +=
-      '<tr style="background:' +
-      bg +
-      ';">' +
-      '<td style="padding:8px 10px;text-align:center;color:#64748b;font-size:12px;border-bottom:1px solid #f1f5f9;">' +
-      (it.stt || i + 1) +
-      "</td>" +
-      '<td style="padding:8px 10px;text-align:center;color:#1e40af;font-weight:700;font-size:14px;border-bottom:1px solid #f1f5f9;white-space:nowrap;">' +
-      (it.time || "") +
-      "</td>" +
-      '<td style="padding:8px 10px;color:#0f172a;font-size:14px;border-bottom:1px solid #f1f5f9;">' +
-      (it.content || "") +
-      "</td>" +
-      '<td style="padding:8px 10px;color:#334155;font-size:12px;border-bottom:1px solid #f1f5f9;">' +
-      (it.presenter || "") +
-      "</td>" +
-      '<td style="padding:8px 10px;text-align:center;color:#64748b;font-size:12px;border-bottom:1px solid #f1f5f9;">' +
-      (it.tlTB || "") +
-      "</td>" +
-      '<td style="padding:8px 10px;text-align:center;color:#64748b;font-size:12px;border-bottom:1px solid #f1f5f9;">' +
-      (it.tlCD || "") +
-      "</td>" +
-      "</tr>";
+    var color = colors[i % colors.length];
+    var initial = (it.presenter || '?').charAt(0).toUpperCase();
+    var tbMin = parseInt(it.tlTB) || 10;
+    var cdMin = parseInt(it.tlCD) || 10;
+    var dept = it.dept ? ' <span style="color:#94a3b8;font-size:12px;">(' + it.dept + ')</span>' : '';
+
+    cards +=
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">' +
+      '<tr>' +
+      '<td width="60" valign="top" style="text-align:center;padding-top:2px;">' +
+      '<table cellpadding="0" cellspacing="0" border="0" align="center"><tr><td bgcolor="' + color + '" style="background-color:' + color + ';border-radius:6px;padding:6px 10px;">' +
+      '<span style="color:#fff;font-size:13px;font-weight:800;font-family:Segoe UI,Roboto,Arial,sans-serif;">' + (it.time || '') + '</span>' +
+      '</td></tr></table>' +
+      (i < items.length - 1 ? '<div style="width:2px;height:16px;background:#e2e8f0;margin:4px auto 0;"></div>' : '') +
+      '</td>' +
+      '<td style="padding:0 0 0 12px;">' +
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid ' + color + ';border-radius:0 10px 10px 0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
+      '<tr><td style="padding:14px 16px;">' +
+      '<div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;line-height:1.4;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+      (it.content || '') + '</div>' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+      '<td width="28" valign="middle">' +
+      '<table cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="' + color + '" style="background-color:' + color + ';width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;">' +
+      '<span style="color:#fff;font-size:12px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;">' + initial + '</span>' +
+      '</td></tr></table></td>' +
+      '<td style="padding-left:8px;">' +
+      '<span style="font-size:14px;font-weight:600;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+      (it.presenter || '') + '</span>' + dept +
+      '</td></tr></table>' +
+      '<div style="margin-top:8px;">' +
+      '<span style="display:inline-block;padding:3px 10px;background:#eff6ff;color:#2563eb;border-radius:12px;font-size:11px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;margin-right:6px;">TB ' + tbMin + " ph</span>" +
+      '<span style="display:inline-block;padding:3px 10px;background:#fef3c7;color:#92400e;border-radius:12px;font-size:11px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;">CD ' + cdMin + " ph</span>" +
+      '</div>' +
+      '</td></tr></table>' +
+      '</td></tr></table>';
   }
-  if (!rows) {
-    rows =
-      '<tr><td colspan="6" style="padding:16px;text-align:center;color:#94a3b8;font-size:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Chưa có nội dung lịch trình</td></tr>';
+
+  if (!cards) {
+    cards = '<div style="padding:16px;text-align:center;color:#94a3b8;font-size:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">No schedule content</div>';
   }
 
   var body =
@@ -714,32 +738,28 @@ function buildScheduleEmail(reportDate, scheduleItems) {
     '<p style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi toàn thể thành viên BOD,</p>' +
     '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">BODメンバー各位</p>' +
     '<div style="font-size:16px;line-height:1.8;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
-    '<p style="margin:0 0 10px;">BTC Meeting BOD trân trọng gửi lịch trình cuộc họp chính thức. Kính mời Anh/Chị chuẩn bị nội dung theo đúng thứ tự và thời lượng đã phân bổ.</p>' +
-    "</div>" +
+    '<p style="margin:0 0 10px;">BTC Meeting BOD trân trọng gửi <strong>lịch trình chính thức</strong> cuộc họp BOD. Kính mời Anh/Chị chuẩn bị nội dung theo đúng thứ tự và thời lượng đã phân bổ.</p>' +
+    '</div>' +
     '<div style="font-size:14px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     "次回BOD会議の公式スケジュールです。担当者は割り当て時間内での発表をお願いします。" +
-    "</div>" +
-    '<div style="background:#eff6ff;border-radius:10px;padding:14px 18px;margin:0 0 20px;">' +
+    '</div>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;"><tr><td bgcolor="#eff6ff" style="background-color:#eff6ff;border-radius:10px;padding:14px 18px;">' +
     '<table style="border-collapse:collapse;width:100%;">' +
     _eRow_("Ngày họp:", reportDate) +
     _eRow_("Giờ bắt đầu:", "08:30") +
-    _eRow_("Số mục:", items.length + " nội dung") +
-    "</table></div>" +
-    '<div style="overflow-x:auto;border-radius:8px;border:1px solid #e2e8f0;">' +
-    '<table style="width:100%;border-collapse:collapse;min-width:500px;">' +
-    '<thead><tr style="background:#4472c4;">' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:center;width:32px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">STT</th>' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:center;width:50px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">GIỜ</th>' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:left;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">NỘI DUNG</th>' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:left;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">TRÌNH BÀY</th>' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:center;width:36px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">TB</th>' +
-    '<th style="padding:9px 10px;color:#fff;font-size:12px;font-weight:700;text-align:center;width:36px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">CĐ</th>' +
-    "</tr></thead>" +
-    "<tbody>" +
-    rows +
-    "</tbody>" +
-    "</table></div>" +
-    "</div>";
+    _eRow_("Kết thúc dự kiến:", endTime + " (≈" + totalMin + " phút)") +
+    _eRow_("Số nội dung:", items.length + " mục") +
+    '</table></td></tr></table>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px;"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;border-radius:8px;padding:10px 16px;">' +
+    '<span style="color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;font-family:Segoe UI,Roboto,Arial,sans-serif;">CHI TIẾT LỊCH TRÌNH</span>' +
+    '</td></tr></table>' +
+    cards +
+    '<div style="margin-top:16px;padding:12px 16px;background:#fefce8;border-radius:8px;border:1px solid #fde68a;">' +
+    '<p style="font-size:13px;color:#92400e;margin:0;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    'Nếu có thay đổi, vui lòng liên hệ BTC trước <strong>07:00 sáng ngày họp</strong>.<br>' +
+    '変更がある場合は会議当日の07:00までにBTCにご連絡ください。</p>' +
+    '</div>' +
+    '</div>';
 
-  return _eWrap_(header + body + _eFtr_());
+  return _eWrap_(header + body + _eFtr_(true));
 }
