@@ -18,8 +18,8 @@
 
 function _eHdr_(titleVN, titleJP) {
   return (
-    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px;">' +
-    '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:20px 16px;">' +
+    '<h1 style="margin:0;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     titleVN +
     "</h1>" +
     '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
@@ -31,7 +31,7 @@ function _eHdr_(titleVN, titleJP) {
 
 function _eFtr_(isJp) {
   return (
-    '<div style="padding:18px 32px;background:#f1f5f9;border-top:1px solid #e2e8f0;">' +
+    '<div style="padding:14px 16px;background:#f1f5f9;border-top:1px solid #e2e8f0;">' +
     '<p style="font-size:12px;color:#94a3b8;margin:0;line-height:1.7;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     "Email tự động từ <strong>BTC Meeting BOD — ESUHAI GROUP</strong><br>" +
     (isJp ? "自動送信メール — BOD会議運営委員会<br>" : "") +
@@ -43,8 +43,10 @@ function _eFtr_(isJp) {
 
 function _eWrap_(inner) {
   return (
-    '<!DOCTYPE html><html><head><meta charset="UTF-8"></head>' +
-    '<body style="margin:0;padding:20px;background:#e8edf2;">' +
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1.0">' +
+    '</head>' +
+    '<body style="margin:0;padding:12px;background:#e8edf2;">' +
     '<div style="max-width:640px;width:100%;margin:0 auto;background:#f8fafc;' +
     "border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;" +
     'box-shadow:0 4px 16px rgba(0,0,0,.08);">' +
@@ -56,12 +58,12 @@ function _eWrap_(inner) {
 function _eRow_(label, value, valueColor) {
   return (
     "<tr>" +
-    '<td style="color:#64748b;padding:4px 0;width:130px;font-size:14px;vertical-align:top;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<td style="color:#64748b;padding:4px 0;width:40%;max-width:130px;font-size:13px;vertical-align:top;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     label +
     "</td>" +
     '<td style="color:' +
     (valueColor || "#0f172a") +
-    ';font-weight:600;font-size:14px;vertical-align:top;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    ';font-weight:600;font-size:13px;vertical-align:top;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     value +
     "</td>" +
     "</tr>"
@@ -391,8 +393,8 @@ function buildReminderEmail(
 
   var body =
     badgeHtml +
-    '<div style="padding:28px 32px;background:#fff;">' +
-    '<p style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi ' +
+    '<div style="padding:20px 16px;background:#fff;">' +
+    '<p style="font-size:16px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi ' +
     name +
     " — " +
     deptName +
@@ -400,7 +402,7 @@ function buildReminderEmail(
     '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     (contactName || deptName) +
     " 様</p>" +
-    '<div style="font-size:16px;line-height:1.8;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     bodyVN +
     "</div>";
 
@@ -414,7 +416,7 @@ function buildReminderEmail(
   }
 
   body +=
-    '<div style="font-size:14px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
+    '<div style="font-size:13px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
     badgeColor +
     ';font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     bodyJP +
@@ -476,16 +478,16 @@ function buildApprovalReminderEmail(reportDate, pendingCount, dashboardUrl) {
   if (!dUrl) { try { dUrl = ScriptApp.getService().getUrl(); } catch(e) {} }
 
   var body =
-    '<div style="padding:28px 32px;background:#fff;">' +
-    '<p style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi Ban Tổ Chức,</p>' +
+    '<div style="padding:20px 16px;background:#fff;">' +
+    '<p style="font-size:16px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi Ban Tổ Chức,</p>' +
     '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">運営委員会 御中</p>' +
-    '<div style="font-size:16px;line-height:1.8;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     '<p style="margin:0 0 10px;">Hiện có <strong style="color:#dc2626;font-size:16px;">' +
     pendingCount +
     " đăng ký</strong> báo cáo đang chờ phê duyệt.</p>" +
     '<p style="margin:0 0 10px;">Kính mời Anh/Chị xem xét và hoàn tất phê duyệt trước <strong>17:00 Thứ Bảy</strong>.</p>' +
     "</div>" +
-    '<div style="font-size:14px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #f59e0b;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #f59e0b;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     "次のBOD会議に向けて" +
     pendingCount +
     "件の発表登録が承認待ちです。土曜日17:00までに承認をお願いします。" +
@@ -565,8 +567,8 @@ function buildApprovalResultEmail(
   );
 
   var body =
-    '<div style="padding:28px 32px;background:#fff;">' +
-    '<p style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi ' +
+    '<div style="padding:20px 16px;background:#fff;">' +
+    '<p style="font-size:16px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi ' +
     (recipientName || "Anh/Chị") +
     ",</p>" +
     '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
@@ -595,12 +597,12 @@ function buildApprovalResultEmail(
     s.labelJP +
     "</div>" +
     "</div></div>" +
-    '<div style="font-size:16px;line-height:1.8;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     '<p style="margin:0 0 10px;">BTC Meeting BOD xin thông báo kết quả phê duyệt nội dung đăng ký báo cáo của Anh/Chị cho cuộc họp BOD ngày <strong>' +
     reportDate +
     "</strong>.</p>" +
     "</div>" +
-    '<div style="font-size:14px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
+    '<div style="font-size:13px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
     s.color +
     ';font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     "BOD会議運営委員会より、ご登録いただいた発表申請の審査結果をお知らせします。" +
@@ -623,11 +625,11 @@ function buildApprovalResultEmail(
   // BƯỚC TIẾP THEO — chỉ hiện khi Duyệt
   if (status === "Duyệt") {
     body +=
-      '<div style="margin-top:20px;font-size:16px;line-height:1.8;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+      '<div style="margin-top:20px;font-size:13px;line-height:1.7;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       '<p style="margin:0 0 10px;font-weight:700;color:#0f172a;">BƯỚC TIẾP THEO — để phần trình bày đạt hiệu quả cao nhất:</p>' +
       '<p style="margin:0 0 8px;">&#9312; Chuẩn bị slide hoặc tài liệu trình bày</p>' +
       '<p style="margin:0 0 4px;">&#9313; <strong>GỬI TÀI LIỆU TRƯỚC CHO BTC</strong> (quan trọng)</p>' +
-      '<div style="margin:0 0 12px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:14px;line-height:1.7;">' +
+      '<div style="margin:0 0 12px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:13px;line-height:1.7;">' +
       "Cuộc họp BOD có hệ thống <strong>A.I phiên dịch trực tuyến Việt–Nhật</strong> hoạt động xuyên suốt. " +
       "Để hệ thống hoạt động chính xác nhất, BTC đề nghị:<br>" +
       "✦ Gửi file slide (.pptx/.pdf) hoặc tài liệu trình bày <strong>trước Thứ Hai</strong> qua:<br>" +
@@ -642,7 +644,7 @@ function buildApprovalResultEmail(
 
     // JP block
     body +=
-      '<div style="margin-top:16px;font-size:14px;line-height:1.7;color:#64748b;padding:12px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
+      '<div style="margin-top:16px;font-size:13px;line-height:1.7;color:#64748b;padding:12px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid ' +
       s.color +
       ';font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       '<p style="margin:0 0 6px;font-weight:700;">次のステップ：</p>' +
@@ -701,7 +703,7 @@ function buildScheduleEmail(reportDate, scheduleItems) {
     cards +=
       '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">' +
       '<tr>' +
-      '<td width="60" valign="top" style="text-align:center;padding-top:2px;">' +
+      '<td style="width:56px;min-width:48px;text-align:center;padding-top:2px;" valign="top">' +
       '<table cellpadding="0" cellspacing="0" border="0" align="center"><tr><td bgcolor="' + color + '" style="background-color:' + color + ';border-radius:6px;padding:6px 10px;">' +
       '<span style="color:#fff;font-size:13px;font-weight:800;font-family:Segoe UI,Roboto,Arial,sans-serif;">' + (it.time || '') + '</span>' +
       '</td></tr></table>' +
@@ -710,7 +712,7 @@ function buildScheduleEmail(reportDate, scheduleItems) {
       '<td style="padding:0 0 0 12px;">' +
       '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid ' + color + ';border-radius:0 10px 10px 0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
       '<tr><td style="padding:14px 16px;">' +
-      '<div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;line-height:1.4;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+      '<div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:6px;line-height:1.4;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       (it.content || '') + '</div>' +
       '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
       '<td width="28" valign="middle">' +
@@ -718,12 +720,12 @@ function buildScheduleEmail(reportDate, scheduleItems) {
       '<span style="color:#fff;font-size:12px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;">' + initial + '</span>' +
       '</td></tr></table></td>' +
       '<td style="padding-left:8px;">' +
-      '<span style="font-size:14px;font-weight:600;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+      '<span style="font-size:13px;font-weight:600;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       (it.presenter || '') + '</span>' + dept +
       '</td></tr></table>' +
       '<div style="margin-top:8px;">' +
-      '<span style="display:inline-block;padding:3px 10px;background:#eff6ff;color:#2563eb;border-radius:12px;font-size:11px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;margin-right:6px;">TB ' + tbMin + " ph</span>" +
-      '<span style="display:inline-block;padding:3px 10px;background:#fef3c7;color:#92400e;border-radius:12px;font-size:11px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;">CD ' + cdMin + " ph</span>" +
+      '<span style="display:inline-block;padding:3px 10px;background:#eff6ff;color:#2563eb;border-radius:12px;font-size:12px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;white-space:nowrap;margin-right:6px;">TB ' + tbMin + " ph</span>" +
+      '<span style="display:inline-block;padding:3px 10px;background:#fef3c7;color:#92400e;border-radius:12px;font-size:12px;font-weight:700;font-family:Segoe UI,Arial,sans-serif;white-space:nowrap;">CD ' + cdMin + " ph</span>" +
       '</div>' +
       '</td></tr></table>' +
       '</td></tr></table>';
@@ -734,13 +736,13 @@ function buildScheduleEmail(reportDate, scheduleItems) {
   }
 
   var body =
-    '<div style="padding:28px 32px;background:#fff;">' +
-    '<p style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi toàn thể thành viên BOD,</p>' +
+    '<div style="padding:20px 16px;background:#fff;">' +
+    '<p style="font-size:16px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">Kính gửi toàn thể thành viên BOD,</p>' +
     '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">BODメンバー各位</p>' +
-    '<div style="font-size:16px;line-height:1.8;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     '<p style="margin:0 0 10px;">BTC Meeting BOD trân trọng gửi <strong>lịch trình chính thức</strong> cuộc họp BOD. Kính mời Anh/Chị chuẩn bị nội dung theo đúng thứ tự và thời lượng đã phân bổ.</p>' +
     '</div>' +
-    '<div style="font-size:14px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<div style="font-size:13px;line-height:1.7;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #3b82f6;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     "次回BOD会議の公式スケジュールです。担当者は割り当て時間内での発表をお願いします。" +
     '</div>' +
     '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;"><tr><td bgcolor="#eff6ff" style="background-color:#eff6ff;border-radius:10px;padding:14px 18px;">' +
