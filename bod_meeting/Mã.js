@@ -77,8 +77,8 @@ const CONFIG = {
   // ===== DANH SÁCH ĐẠI DIỆN BỘ PHẬN (SSOT — nguồn duy nhất) =====
   // Cập nhật bởi anh Kha 06/03/2026
   DEPT_CONTACTS: {
-    "KOKA TEAM":  { email: "utsumi@esuhai.com",           contact: "Utsumi" },
-    "IDS":        { email: "letuan@esuhai.com",            contact: "Lê Tuấn" },
+    "ONETEAM":    { email: "letuan@esuhai.com",             contact: "Lê Tuấn",
+                    cc: "utsumi@esuhai.com" },
     "MSA":        { email: "dungdt@esuhai.com",            contact: "Đặng Tiến Dũng" },
     "JPC":        { email: "xuanlanh@esuhai.com",          contact: "Xuân Lành" },
     "KAIZEN":     { email: "ngochan@kaizen.edu.vn",        contact: "Ngọc Hân",
@@ -1318,8 +1318,7 @@ function getDetailedStatsWithDepts(searchDate) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
   const requiredDepts = [
-    "KOKA TEAM",
-    "IDS",
+    "ONETEAM",
     "MSA",
     "JPC",
     "KAIZEN",
