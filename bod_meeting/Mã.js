@@ -1188,6 +1188,19 @@ function sendApprovalResults() {
       skipped++;
       continue;
     }
+
+    // Build HTML email using v820 template (match v800 Dashboard behavior)
+    let htmlBody = "";
+    try {
+      htmlBody = buildApprovalResultEmail(
+        hoTen,
+        emailInput.ngayHop,
+        status,
+        emailInput.noiDung,
+        emailInput.ghiChu
+      );
+    } catch(te) { Logger.log("HTML template error: " + te.message); }
+
     const ccList = [...btcEmails.all];
     const emailLQ = row[cols.emailLienQuan];
     if (emailLQ)
@@ -1204,6 +1217,7 @@ function sendApprovalResults() {
         cc: [...new Set(ccList)].join(","),
         subject: emailData.subject,
         body: emailData.body,
+        htmlBody: htmlBody
       })
     ) {
       sent++;
@@ -1214,6 +1228,7 @@ function sendApprovalResults() {
       details.push("Row " + (i + 1) + ": ❌ → " + email);
     }
   }
+  logEmailSend('approval_result', sent, 'Menu: ' + sent + ' sent, ' + alreadySent + ' skipped');
   if (sent === 0 && skipped === 0 && failed === 0 && alreadySent === 0) {
     ui.alert("Không tìm thấy đăng ký cho ngày " + searchDate + "!");
     return;
@@ -1485,23 +1500,31 @@ function sendReminderToMissingDepts(missingDepts, ngayHopDisplay) {
   if (ui.alert("📬 XÁC NHẬN", cfm, ui.ButtonSet.YES_NO) !== ui.Button.YES)
     return;
   try {
-    const subject = "[NHẮC NHỞ] Đăng ký BOD - " + ngayHopDisplay;
-    const body =
-      "Kính gửi Anh/Chị,\n\nBộ phận của Anh/Chị CHƯA ĐĂNG KÝ báo cáo cho cuộc họp BOD.\n📅 Ngày họp: " +
-      ngayHopDisplay +
-      "\n⏰ 08:30\n\nVui lòng đăng ký sớm.\n\nTrân trọng,\nBan Thư ký Meeting BOD";
+    const btcEmails = getBTCEmails();
+    const ccList = btcEmails.all.join(",");
     let sentCount = 0;
     toSend.forEach((email, i) => {
       try {
         if (i > 0) Utilities.sleep(CONFIG.EMAIL_DELAY_MS);
-        GmailApp.sendEmail(email, subject, body, {
-          name: "BTC Meeting BOD",
-          cc: "hoangkha@esuhai.com",
-          from: CONFIG.EMAIL_SENDER_ADDRESS || undefined,
+        const subject = "[NHẮC NHỞ] Đăng ký BOD - " + ngayHopDisplay;
+        const plainBody =
+          "Kính gửi Anh/Chị,\n\nBộ phận của Anh/Chị CHƯA ĐĂNG KÝ báo cáo cho cuộc họp BOD.\n📅 Ngày họp: " +
+          ngayHopDisplay +
+          "\n⏰ 08:30\n\nVui lòng đăng ký sớm.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD";
+        // Build HTML email using v820 template
+        let htmlBody = "";
+        try { htmlBody = buildReminderEmail(withEmail[i], "", ngayHopDisplay, "", false, 1); } catch(te) {}
+        const sent = sendEmail({
+          to: email,
+          cc: ccList,
+          subject: subject,
+          body: plainBody,
+          htmlBody: htmlBody
         });
-        sentCount++;
+        if (sent) sentCount++;
       } catch (e) {}
     });
+    logEmailSend('reminder', sentCount, withEmail.join(', '));
     ui.alert("✔︎ Đã gửi " + sentCount + "/" + toSend.length + " email!");
   } catch (e) {
     ui.alert("❌ Lỗi: " + e.message);
