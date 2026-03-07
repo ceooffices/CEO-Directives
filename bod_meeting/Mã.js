@@ -1531,6 +1531,13 @@ function sendScheduleEmail() {
   const data = mauBieu.getDataRange().getValues();
   const btcEmails = getBTCEmails();
   const emails = new Set(btcEmails.all.map((e) => e.toLowerCase()));
+  // Thêm TGĐ
+  emails.add("leson@esuhai.com");
+  // Thêm BOD Hosting
+  try {
+    var hosting = getBodHosting();
+    if (hosting && hosting.email) emails.add(hosting.email.toLowerCase());
+  } catch(he) {}
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     if (
