@@ -528,10 +528,11 @@ function sendApprovalResultEmails() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
-    if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký" };
+    if (!sheet) return { success: false, msg: "Không tìm thấy sheet: " + CONFIG.SHEET_RESPONSES };
     
     var cols = CONFIG.COLUMN_MAP;
     var data = sheet.getDataRange().getValues();
+    Logger.log("sendApprovalResultEmails: total rows=" + data.length + ", cols.ngayHop=" + cols.ngayHop);
     var sent = 0, skipped = 0, alreadySent = 0, failed = 0;
     var btcEmails = getBTCEmails();
     var now = new Date();
@@ -544,7 +545,7 @@ function sendApprovalResultEmails() {
       var d = data[i][cols.ngayHop];
       if (d) { targetDate = d; break; }
     }
-    if (!targetDate) return { success: false, msg: "Không tìm thấy đăng ký nào" };
+    if (!targetDate) return { success: false, msg: "Không tìm thấy đăng ký nào trong sheet " + CONFIG.SHEET_RESPONSES };
 
     // Tạo search key từ targetDate
     var searchKey = '';
@@ -554,6 +555,7 @@ function sendApprovalResultEmails() {
     } else {
       searchKey = targetDate.toString().trim();
     }
+    Logger.log("sendApprovalResultEmails: targetDate=" + targetDate + ", searchKey=" + searchKey);
 
     for (var i = 1; i < data.length; i++) {
       var row = data[i];
@@ -581,12 +583,26 @@ function sendApprovalResultEmails() {
         ghiChu: row[cols.ghiChu] || ""
       };
 
+      // Build plain text email (fallback)
       var emailData;
       if (status === "Duyệt") emailData = buildEmailApproved(emailInput);
       else if (status === "Từ chối") emailData = buildEmailRejected(emailInput);
       else if (status === "Hoãn") emailData = buildEmailPostponed(emailInput);
       else { skipped++; continue; }
 
+      // Build HTML email using v820 template
+      var htmlBody = "";
+      try {
+        htmlBody = buildApprovalResultEmail(
+          hoTen,
+          emailInput.ngayHop,
+          status,
+          emailInput.noiDung,
+          emailInput.ghiChu
+        );
+      } catch(te) { Logger.log("HTML template error: " + te.message); }
+
+      // CC: luôn CC BTC
       var ccList = btcEmails.all.slice();
       var emailLQ = row[cols.emailLienQuan];
       if (emailLQ) {
@@ -603,7 +619,7 @@ function sendApprovalResultEmails() {
         cc: ccList.filter(function(v, idx, arr) { return arr.indexOf(v) === idx; }).join(","),
         subject: emailData.subject,
         body: emailData.body,
-        htmlBody: emailData.htmlBody || ""
+        htmlBody: htmlBody
       })) {
         sent++;
         details.push("✔︎ " + hoTen + " (" + status + ") → " + email);
