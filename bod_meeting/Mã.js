@@ -1055,6 +1055,9 @@ function sendViaGmail(emailData) {
 function sendEmail(emailData) {
   if (!emailData.to || !isValidEmail(emailData.to.split(",")[0])) return false;
 
+  // Nạp config mới nhất từ AdminPage trước khi gửi
+  loadConfigFromSheet();
+
   // Route based on EMAIL_METHOD config
   if (CONFIG.EMAIL_METHOD === "n8n") {
     var payload = {

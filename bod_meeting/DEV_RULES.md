@@ -1,68 +1,53 @@
 # QUY TẮC KỸ THUẬT — BOD MEETING DASHBOARD
 
-**Version:** 1.0  
-**Updated:** 05/03/2026  
+**Version:** 1.1  
+**Updated:** 08/03/2026  
 **By:** Antigravity + Anh Kha  
 **Status:** APPROVED — SOURCE OF TRUTH  
 
 ---
 
-## 1. QUY TẮC VÀNG: FILE .GS KHÔNG BAO GIỜ ĐƯỢC PUSH LÊN CLOUD
+## 1. QUY TẮC VÀNG: CHỈ DÙNG FILE `.js` CHO CODE BACKEND
 
 ### Nguyên tắc
 
 | Loại file | Vai trò | Được clasp push? |
 |-----------|---------|:-:|
 | `.js` | **Code chạy thật** — clasp push đẩy lên GAS cloud | ✅ CÓ |
-| `.gs` | **Bản tham khảo local** — bị `.claspignore` chặn | ❌ KHÔNG |
 | `.html` | Template/module — clasp push đẩy lên GAS cloud | ✅ CÓ |
 
 ### Hệ quả bắt buộc
 
-1. **MỌI thay đổi code backend PHẢI sửa trong file `.js`**, không phải `.gs`
-2. File `.gs` chỉ dùng để tham khảo cú pháp GAS, **không phải nguồn thật**
-3. Nếu sửa file `.gs` mà quên sửa `.js` → code trên cloud **KHÔNG thay đổi** → lỗi
-4. Khi thêm hàm mới → thêm vào `.js` trước, `.gs` sửa sau (nếu cần)
+1. **MỌI code backend PHẢI dùng extension `.js`** (kể cả email templates)
+2. Khi thêm hàm/file mới → luôn tạo file `.js`
+3. File component CSS/JS cho Dashboard đã được build sẵn vào `Dashboard.html` → liệt kê trong `.claspignore` để không push trùng
 
-### Lý do
-
-`.claspignore` cấu hình:
-```
-v800_server_api.gs
-v810_admin_api.gs
-```
-→ clasp push bỏ qua toàn bộ file `.gs`. Chỉ file `.js` được đẩy lên Google Apps Script.
+### v1.1 — THAY ĐỔI
+- Đã đổi tên `v820_email_templates.gs` → `v820_email_templates.js` để nhất quán
+- Loại bỏ convention giữ file `.gs` tham khảo (gây nhầm lẫn)
 
 ---
 
-## 2. QUY TẮC DASHBOARD: LUÔN DÙNG createTemplateFromFile
+## 2. QUY TẮC HTML PAGE: DÙNG createHtmlOutputFromFile
 
-### Dashboard (dùng include pattern)
+### Cả Dashboard và AdminPage đều đã build sẵn (self-contained)
+
+`Dashboard.html` được tạo bởi `build_dashboard.ps1` — gộp toàn bộ CSS+HTML+JS component vào 1 file (221KB). Không còn scriptlet `<?!= include() ?>`.
 
 ```javascript
-// ✅ ĐÚNG — Dashboard cần scriptlet <?!= include() ?>
-HtmlService.createTemplateFromFile("Dashboard").evaluate()
-
-// ❌ SAI — include() sẽ không hoạt động
+// ✅ ĐÚNG — Cả 2 page đều self-contained
 HtmlService.createHtmlOutputFromFile("Dashboard")
-```
-
-### AdminPage (file self-contained)
-
-```javascript
-// ✅ ĐÚNG — AdminPage gộp toàn bộ CSS+HTML+JS trong 1 file
 HtmlService.createHtmlOutputFromFile("AdminPage")
-
-// ❌ KHÔNG CẦN — AdminPage không dùng scriptlet
-HtmlService.createTemplateFromFile("AdminPage").evaluate()
 ```
 
 ### Tóm tắt
 
-| Page | Pattern | Hàm đúng |
-|------|---------|----------|
-| Dashboard | include() modular | `createTemplateFromFile().evaluate()` |
-| AdminPage | self-contained | `createHtmlOutputFromFile()` |
+| Page | Build | Hàm đúng |
+|------|-------|----------|
+| Dashboard | Pre-built bởi `build_dashboard.ps1` | `createHtmlOutputFromFile()` |
+| AdminPage | Self-contained | `createHtmlOutputFromFile()` |
+
+> **Lưu ý:** Nếu sau này Dashboard quay lại dùng scriptlet `<?!= include() ?>`, phải đổi sang `createTemplateFromFile().evaluate()`.
 
 ---
 
@@ -97,12 +82,9 @@ bod_meeting/
 ├── appsscript.json      ← GAS manifest
 │
 ├── Mã.js                ← Code gốc (CONFIG, menu, helpers)
-├── v800_server_api.js   ← SERVER API + routing (NGUỒN THẬT)
-├── v810_admin_api.js    ← ADMIN API (NGUỒN THẬT)
-├── v820_email_templates.gs ← Email templates
-│
-├── v800_server_api.gs   ← THAM KHẢO — không push
-├── v810_admin_api.gs    ← THAM KHẢO — không push
+├── v800_server_api.js   ← SERVER API + routing
+├── v810_admin_api.js    ← ADMIN API
+├── v820_email_templates.js ← Email HTML templates
 │
 ├── Dashboard.html       ← Entry point Dashboard (include pattern)
 ├── Css_*.html           ← CSS modules cho Dashboard
@@ -139,7 +121,10 @@ bod_meeting/
 |------|---------|-------------|-----------|
 | 05/03/2026 | Dashboard trắng | Sửa `.gs` nhưng clasp chỉ push `.js` | Sửa trong `.js`, push lại |
 | 05/03/2026 | AdminPage trắng | Dùng `createHtmlOutputFromFile` cho file có scriptlet | Gộp AdminPage thành self-contained |
-| 05/03/2026 | Dashboard không mở từ Sheet | `showDashboardDialog` dùng redirect URL thay vì mở trực tiếp | Đổi sang `createTemplateFromFile().evaluate()` |
+| 05/03/2026 | Dashboard không mở từ Sheet | `showDashboardDialog` dùng redirect URL thay vì mở trực tiếp | Đổi sang `createHtmlOutputFromFile` (Dashboard đã pre-built) |
+| 08/03/2026 | Reminder count luôn = 0 | `getDeptRegistrationStatus` không parse `dd/mm` (2 parts) | Thêm handle `sp.length === 2` |
+| 08/03/2026 | Config AdminPage không có hiệu lực | `sendEmail()` không gọi `loadConfigFromSheet()` | Thêm load config đầu `sendEmail()` |
+| 08/03/2026 | File `.gs` gây nhầm lẫn convention | `v820_email_templates.gs` trái với quy tắc chỉ dùng `.js` | Đổi tên → `.js` |
 
 ---
 

@@ -327,6 +327,7 @@ function getDeptRegistrationStatus(searchDate) {
     if (isNaN(sDate.getTime())) {
       var sp = searchDate.split("/");
       if (sp.length === 3) sDate = new Date(sp[2], parseInt(sp[1])-1, parseInt(sp[0]));
+      else if (sp.length === 2) sDate = new Date(new Date().getFullYear(), parseInt(sp[1])-1, parseInt(sp[0]));
     }
     var dayOfWeek = sDate.getDay(); // 0=Sun..6=Sat
     var diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
