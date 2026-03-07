@@ -1035,13 +1035,15 @@ function sendViaGmail(emailData) {
   } catch (e) {
     // Retry without 'from'
     try {
-      MailApp.sendEmail({
+      var retryOpts = {
         to: emailData.to,
         cc: emailData.cc || "",
         subject: emailData.subject,
         body: emailData.body,
         name: CONFIG.EMAIL_SENDER_NAME,
-      });
+      };
+      if (emailData.htmlBody) retryOpts.htmlBody = emailData.htmlBody;
+      MailApp.sendEmail(retryOpts);
       return true;
     } catch (e2) {
       Logger.log("Gmail send error: " + e2.message);
