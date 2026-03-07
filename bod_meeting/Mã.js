@@ -1547,11 +1547,15 @@ function sendScheduleEmail() {
       const presenter = (scheduleSheet.getRange(i, 4).getValue() || "").toString();
       const tlTB = parseInt(scheduleSheet.getRange(i, 5).getValue()) || 10;
       const tlCD = parseInt(scheduleSheet.getRange(i, 6).getValue()) || 10;
-      const dept = (scheduleSheet.getRange(i, 7).getValue() || "").toString();
+      // Cột 7 = "Thành viên liên quan" (không phải dept)
+      // Extract dept từ content format: "[JPC] Báo cáo..."
+      const contentStr = content.toString();
+      const deptMatch = contentStr.match(/^\[([^\]]+)\]/);
+      const dept = deptMatch ? deptMatch[1] : "";
       items.push({
         stt: scheduleSheet.getRange(i, 1).getValue(),
         time: formatTime(scheduleSheet.getRange(i, 2).getValue()),
-        content: content.toString(),
+        content: contentStr,
         presenter: presenter,
         dept: dept,
         tlTB: tlTB,
