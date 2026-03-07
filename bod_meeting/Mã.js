@@ -857,9 +857,9 @@ function buildEmailNewRegistration(data) {
   var htmlBody = 
     '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
     // Header
-    '<div style="background-color:#0f172a;padding:28px 32px">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px">' +
     '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">ĐĂNG KÝ BÁO CÁO BOD MỚI</h1>' +
-    '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD報告の新規登録 — New Registration</p></div>' +
+    '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD報告の新規登録 — New Registration</p></td></tr></table>' +
     // Badge
     '<div style="text-align:center;padding:10px;background:#eff6ff;border-bottom:1px solid #dbeafe">' +
     '<span style="display:inline-block;padding:6px 16px;background:#2563eb;color:#fff;border-radius:20px;font-size:12px;font-weight:700;font-family:Arial,sans-serif">CẦN XEM XÉT / 確認が必要</span></div>' +

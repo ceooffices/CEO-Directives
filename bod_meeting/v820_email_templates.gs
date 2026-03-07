@@ -18,14 +18,14 @@
 
 function _eHdr_(titleVN, titleJP) {
   return (
-    '<div style="background-color:#0f172a;padding:28px 32px;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px;">' +
     '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif;">' +
     titleVN +
     "</h1>" +
     '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif;">' +
     titleJP +
     "</p>" +
-    "</div>"
+    "</td></tr></table>"
   );
 }
 

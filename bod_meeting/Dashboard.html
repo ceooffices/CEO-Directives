@@ -3355,7 +3355,6 @@
                   <th style="width: 50px">Giờ</th>
                   <th>Nội dung</th>
                   <th>Người trình bày</th>
-                  <th>Email</th>
                   <th style="width: 45px">TB</th>
                   <th style="width: 45px">CĐ</th>
                   <th>Liên quan</th>
@@ -4465,7 +4464,7 @@
               ">";
 
             // T.Lượng — editable input
-            var tlVal = String(item.thoiLuong || "").replace(/'/g, "");
+            var tlVal = parseInt(String(item.thoiLuong || "0").replace(/[^\d]/g, "")) || "";
             var tlHtml =
               '<input type="number" class="tl-input' +
               (isTableEditing ? " editing" : "") +
@@ -4954,7 +4953,7 @@
         var tbody = document.getElementById("scheduleTableBody");
         if (!data || !data.items || data.items.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="8" class="schedule-empty">Chưa có nội dung nào được duyệt. Hãy duyệt đăng ký trước.</td></tr>';
+            '<tr><td colspan="7" class="schedule-empty">Chưa có nội dung nào được duyệt. Hãy duyệt đăng ký trước.</td></tr>';
           document.getElementById("sendScheduleBtn").disabled = true;
           return;
         }
@@ -5002,7 +5001,7 @@
               escapeHtml(it.email) +
               "</span>"
             : '<span style="font-size:11px;color:#ef4444">Chưa có</span>';
-          html +=
+            html +=
             "<tr>" +
             '<td style="text-align:center">' +
             (it.stt || i + 1) +
@@ -5015,9 +5014,6 @@
             "</td>" +
             "<td>" +
             getAvatarHtml(it.presenter) +
-            "</td>" +
-            "<td>" +
-            emailDisplay +
             "</td>" +
             '<td style="text-align:center"><input type="number" value="' +
             tbVal +
@@ -5051,7 +5047,7 @@
           " (≈" +
           totalMin +
           " phút)</td>" +
-          '<td colspan="5"></td></tr>';
+          '<td colspan="4"></td></tr>';
         tbody.innerHTML = html;
         updateScheduleSummary();
       }
@@ -5473,9 +5469,9 @@
         }).length;
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;padding:28px 32px">' +
+          '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — NHẮC PHÊ DUYỆT NỘI DUNG</h1>' +
-          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認リマインダー</p></div>' +
+          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認リマインダー</p></td></tr></table>' +
           '<div style="padding:28px 32px;background:#fff">' +
           '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif">Kính gửi Ban Tổ Chức,</p>' +
           '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">運営委員会 御中</p>' +
@@ -5509,9 +5505,9 @@
       function generateApprovalResultHtml(date) {
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;padding:28px 32px">' +
+          '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — KẾT QUẢ PHÊ DUYỆT</h1>' +
-          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認結果通知</p></div>' +
+          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 承認結果通知</p></td></tr></table>' +
           '<div style="padding:28px 32px;background:#fff">' +
           '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif">Kính gửi Anh/Chị,</p>' +
           '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">各位</p>' +
@@ -5588,9 +5584,9 @@
         var numItems = scheduleItems ? scheduleItems.length : 0;
         return (
           '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +
-          '<div style="background-color:#0f172a;padding:28px 32px">' +
+          '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#0f172a" style="background-color:#0f172a;padding:28px 32px">' +
           '<h1 style="margin:0;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:Arial,sans-serif">BOD MEETING — LỊCH TRÌNH CUỘC HỌP</h1>' +
-          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 議事スケジュール</p></div>' +
+          '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,255,255,.72);font-weight:500;font-family:Arial,sans-serif">BOD会議 — 議事スケジュール</p></td></tr></table>' +
           '<div style="padding:28px 32px;background:#fff">' +
           '<p style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 3px;font-family:Arial,sans-serif">Kính gửi toàn thể thành viên BOD,</p>' +
           '<p style="font-size:12px;color:#94a3b8;margin:0 0 20px;font-family:Arial,sans-serif">BODメンバー各位</p>' +
