@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="CEO Dashboard - Theo doi chi dao BOD, quan ly directive 5T, giam sat HM50">
+  <meta name="description" content="CEO Dashboard - Chien luoc, Leo thang, Ket qua, Hanh dong">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>CEO Dashboard</title>
   <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,7 +29,6 @@
 
   <!-- APP -->
   <div id="app" class="app hidden">
-    <!-- TOP BAR -->
     <header class="topbar">
       <div class="topbar-left">
         <div class="topbar-logo">
@@ -40,150 +39,79 @@
         <h1 class="topbar-title">CEO Dashboard</h1>
       </div>
       <div class="topbar-right">
-        <button id="btnRefresh" class="topbar-btn" title="Refresh">Lam moi</button>
+        <button id="btnRefresh" class="topbar-btn">Lam moi</button>
         <div class="topbar-time" id="topbarTime"></div>
       </div>
     </header>
 
-    <!-- TAB NAV -->
     <nav class="tab-nav">
       <button class="tab active" data-tab="overview">
-        <span class="tab-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-        </span>
-        <span class="tab-label">Tong quan</span>
+        <span class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
+        <span class="tab-label">Buc tranh</span>
       </button>
-      <button class="tab" data-tab="directives">
-        <span class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </span>
-        <span class="tab-label">Chi dao</span>
+      <button class="tab" data-tab="escalation">
+        <span class="tab-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+        <span class="tab-label">Leo thang</span>
       </button>
-      <button class="tab" data-tab="hm50">
-        <span class="tab-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        </span>
-        <span class="tab-label">HM50</span>
+      <button class="tab" data-tab="strategy">
+        <span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+        <span class="tab-label">Chien luoc</span>
       </button>
-      <button class="tab" data-tab="people">
-        <span class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </span>
-        <span class="tab-label">Nhan su</span>
+      <button class="tab" data-tab="actions">
+        <span class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+        <span class="tab-label">Hanh dong</span>
       </button>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-      <!-- TAB: OVERVIEW -->
+      <!-- TAB: BUC TRANH TONG -->
       <section id="tab-overview" class="tab-panel active">
-        <div class="section-header">Tong quan chi dao</div>
-        <div class="kpi-row">
-          <div class="kpi-card kpi-total">
-            <div class="kpi-label">Tong chi dao</div>
-            <div class="kpi-value" id="kpiTotal">0</div>
-            <div class="kpi-sub">tu BOD meeting</div>
-          </div>
-          <div class="kpi-card kpi-pending">
-            <div class="kpi-label">Cho xac nhan</div>
-            <div class="kpi-value" id="kpiPending">0</div>
-            <div class="kpi-sub">can phe duyet 5T</div>
-          </div>
-          <div class="kpi-card kpi-done">
-            <div class="kpi-label">Hoan thanh</div>
-            <div class="kpi-value" id="kpiDone">0</div>
-            <div class="kpi-sub">da close</div>
-          </div>
-          <div class="kpi-card kpi-overdue">
-            <div class="kpi-label">Qua han</div>
-            <div class="kpi-value" id="kpiOverdue">0</div>
-            <div class="kpi-sub">can xu ly gap</div>
-          </div>
-        </div>
+        <!-- Health Score -->
+        <div class="health-score-card" id="healthScore"></div>
 
-        <!-- Status cards (replaces donut) -->
-        <div class="section-header">Trang thai chi dao</div>
-        <div class="stat-cards" id="statusCards"></div>
+        <!-- Traffic Light Summary -->
+        <div class="section-header">He thong den tin hieu</div>
+        <div class="traffic-lights" id="trafficLights"></div>
 
-        <!-- Person distribution -->
-        <div class="section-header">Phan bo theo dau moi</div>
-        <div class="person-bar-cards" id="personBars"></div>
+        <!-- Strategy Pillars Preview -->
+        <div class="section-header">8 tru cot chien luoc</div>
+        <div class="pillars-grid" id="pillarsGrid"></div>
 
-        <!-- HM50 Summary -->
-        <div class="section-header">HM50 — 50 hang muc</div>
-        <div class="summary-card">
-          <div class="hm50-bars">
-            <div class="hm-bar-row">
-              <span class="hm-bar-label">Co chu</span>
-              <div class="hm-bar-track"><div class="hm-bar-fill hm-green" id="hmGreen"></div></div>
-              <span class="hm-bar-val" id="hmGreenVal">0</span>
-            </div>
-            <div class="hm-bar-row">
-              <span class="hm-bar-label">Chua chu</span>
-              <div class="hm-bar-track"><div class="hm-bar-fill hm-yellow" id="hmYellow"></div></div>
-              <span class="hm-bar-val" id="hmYellowVal">0</span>
-            </div>
-            <div class="hm-bar-row">
-              <span class="hm-bar-label">Blind spot</span>
-              <div class="hm-bar-track"><div class="hm-bar-fill hm-red" id="hmRed"></div></div>
-              <span class="hm-bar-val" id="hmRedVal">0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Meeting -->
-        <div class="section-header">Cuoc hop gan nhat</div>
-        <div class="summary-card">
-          <div id="recentMeeting" class="meeting-info"></div>
-        </div>
+        <!-- Escalation Funnel -->
+        <div class="section-header">Dong chay chi dao</div>
+        <div class="funnel-card" id="funnelCard"></div>
       </section>
 
-      <!-- TAB: DIRECTIVES -->
-      <section id="tab-directives" class="tab-panel">
-        <div class="section-header">Danh sach chi dao</div>
-        <div class="filter-bar">
-          <select id="filterPerson" class="filter-select">
-            <option value="all">Tat ca dau moi</option>
-          </select>
-          <select id="filterStatus" class="filter-select">
-            <option value="all">Tat ca trang thai</option>
-            <option value="cho_xac_nhan">Cho xac nhan</option>
-            <option value="da_xac_nhan_5t">Da xac nhan 5T</option>
-            <option value="dang_thuc_hien">Dang thuc hien</option>
-            <option value="hoan_thanh">Hoan thanh</option>
-            <option value="can_lam_ro">Can lam ro</option>
-          </select>
-        </div>
-        <div id="directivesList" class="directives-list"></div>
+      <!-- TAB: LEO THANG -->
+      <section id="tab-escalation" class="tab-panel">
+        <div class="section-header">Bieu do leo thang chi dao</div>
+        <div class="escalation-pipeline" id="escalationPipeline"></div>
+
+        <div class="section-header">Chi dao can leo thang</div>
+        <div id="escalationList" class="directives-list"></div>
       </section>
 
-      <!-- TAB: HM50 -->
-      <section id="tab-hm50" class="tab-panel">
-        <div class="section-header">50 hang muc chi dao</div>
-        <div class="filter-bar">
-          <select id="filterSection" class="filter-select">
-            <option value="all">Tat ca phan</option>
-          </select>
-          <select id="filterHmStatus" class="filter-select">
-            <option value="all">Tat ca</option>
-            <option value="ok">Co chu</option>
-            <option value="warn">Chua chu</option>
-            <option value="fail">Blind spot</option>
-          </select>
-        </div>
-        <div id="hm50List" class="hm50-list"></div>
+      <!-- TAB: CHIEN LUOC -->
+      <section id="tab-strategy" class="tab-panel">
+        <div class="section-header">Chien luoc dan den dau?</div>
+        <div id="strategyMap"></div>
       </section>
 
-      <!-- TAB: PEOPLE -->
-      <section id="tab-people" class="tab-panel">
-        <div class="section-header">Nhan su he thong</div>
-        <div id="peopleList" class="people-list"></div>
+      <!-- TAB: HANH DONG -->
+      <section id="tab-actions" class="tab-panel">
+        <div class="section-header">Can lam ngay</div>
+        <div id="urgentActions"></div>
+
+        <div class="section-header">Hanh dong theo trang thai</div>
+        <div id="actionsByStatus"></div>
+
+        <div class="section-header">Theo doi tien do</div>
+        <div id="progressTracking"></div>
       </section>
 
     </main>
 
-    <!-- DIRECTIVE DETAIL MODAL -->
     <div id="modal" class="modal hidden">
       <div class="modal-backdrop"></div>
       <div class="modal-content">
