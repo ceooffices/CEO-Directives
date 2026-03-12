@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="CEO Dashboard - Theo dõi chỉ đạo BOD, quản lý directive 5T, giám sát HM50">
-  <meta name="theme-color" content="#0a0e1a">
+  <meta name="description" content="CEO Dashboard - Theo doi chi dao BOD, quan ly directive 5T, giam sat HM50">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>CEO Dashboard — Chỉ đạo BOD</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>CEO Dashboard</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,9 +16,13 @@
   <!-- SPLASH -->
   <div id="splash" class="splash">
     <div class="splash-content">
-      <div class="splash-icon">🎯</div>
+      <div class="splash-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
       <h1>CEO Dashboard</h1>
-      <p>Đang tải dữ liệu...</p>
+      <p>Dang tai du lieu...</p>
       <div class="splash-bar"><div class="splash-progress"></div></div>
     </div>
   </div>
@@ -29,11 +32,15 @@
     <!-- TOP BAR -->
     <header class="topbar">
       <div class="topbar-left">
-        <span class="topbar-icon">🎯</span>
+        <div class="topbar-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
         <h1 class="topbar-title">CEO Dashboard</h1>
       </div>
       <div class="topbar-right">
-        <button id="btnRefresh" class="topbar-btn" title="Refresh">🔄</button>
+        <button id="btnRefresh" class="topbar-btn" title="Refresh">Lam moi</button>
         <div class="topbar-time" id="topbarTime"></div>
       </div>
     </header>
@@ -41,20 +48,28 @@
     <!-- TAB NAV -->
     <nav class="tab-nav">
       <button class="tab active" data-tab="overview">
-        <span class="tab-icon">📊</span>
-        <span class="tab-label">Tổng quan</span>
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+        </span>
+        <span class="tab-label">Tong quan</span>
       </button>
       <button class="tab" data-tab="directives">
-        <span class="tab-icon">📋</span>
-        <span class="tab-label">Chỉ đạo</span>
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+        <span class="tab-label">Chi dao</span>
       </button>
       <button class="tab" data-tab="hm50">
-        <span class="tab-icon">🎯</span>
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </span>
         <span class="tab-label">HM50</span>
       </button>
       <button class="tab" data-tab="people">
-        <span class="tab-icon">👥</span>
-        <span class="tab-label">Nhân sự</span>
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span class="tab-label">Nhan su</span>
       </button>
     </nav>
 
@@ -63,56 +78,54 @@
 
       <!-- TAB: OVERVIEW -->
       <section id="tab-overview" class="tab-panel active">
-        <!-- KPI Cards -->
+        <div class="section-header">Tong quan chi dao</div>
         <div class="kpi-row">
           <div class="kpi-card kpi-total">
+            <div class="kpi-label">Tong chi dao</div>
             <div class="kpi-value" id="kpiTotal">0</div>
-            <div class="kpi-label">Tổng chỉ đạo</div>
+            <div class="kpi-sub">tu BOD meeting</div>
           </div>
           <div class="kpi-card kpi-pending">
+            <div class="kpi-label">Cho xac nhan</div>
             <div class="kpi-value" id="kpiPending">0</div>
-            <div class="kpi-label">Chờ xác nhận</div>
+            <div class="kpi-sub">can phe duyet 5T</div>
           </div>
           <div class="kpi-card kpi-done">
+            <div class="kpi-label">Hoan thanh</div>
             <div class="kpi-value" id="kpiDone">0</div>
-            <div class="kpi-label">Hoàn thành</div>
+            <div class="kpi-sub">da close</div>
           </div>
           <div class="kpi-card kpi-overdue">
+            <div class="kpi-label">Qua han</div>
             <div class="kpi-value" id="kpiOverdue">0</div>
-            <div class="kpi-label">Quá hạn</div>
+            <div class="kpi-sub">can xu ly gap</div>
           </div>
         </div>
 
-        <!-- Charts Row -->
-        <div class="charts-row">
-          <div class="chart-card">
-            <h3 class="card-title">Trạng thái chỉ đạo</h3>
-            <canvas id="chartStatus" width="280" height="280"></canvas>
-            <div id="chartStatusLegend" class="chart-legend"></div>
-          </div>
-          <div class="chart-card">
-            <h3 class="card-title">Phân bổ theo Đầu mối</h3>
-            <canvas id="chartPeople" width="280" height="220"></canvas>
-            <div id="chartPeopleLegend" class="chart-legend"></div>
-          </div>
-        </div>
+        <!-- Status cards (replaces donut) -->
+        <div class="section-header">Trang thai chi dao</div>
+        <div class="stat-cards" id="statusCards"></div>
+
+        <!-- Person distribution -->
+        <div class="section-header">Phan bo theo dau moi</div>
+        <div class="person-bar-cards" id="personBars"></div>
 
         <!-- HM50 Summary -->
+        <div class="section-header">HM50 — 50 hang muc</div>
         <div class="summary-card">
-          <h3 class="card-title">HM50 — Tổng quan 50 hạng mục</h3>
           <div class="hm50-bars">
             <div class="hm-bar-row">
-              <span class="hm-bar-label">✅ Có chủ</span>
+              <span class="hm-bar-label">Co chu</span>
               <div class="hm-bar-track"><div class="hm-bar-fill hm-green" id="hmGreen"></div></div>
               <span class="hm-bar-val" id="hmGreenVal">0</span>
             </div>
             <div class="hm-bar-row">
-              <span class="hm-bar-label">⚠️ Chưa chủ</span>
+              <span class="hm-bar-label">Chua chu</span>
               <div class="hm-bar-track"><div class="hm-bar-fill hm-yellow" id="hmYellow"></div></div>
               <span class="hm-bar-val" id="hmYellowVal">0</span>
             </div>
             <div class="hm-bar-row">
-              <span class="hm-bar-label">❌ Blind spot</span>
+              <span class="hm-bar-label">Blind spot</span>
               <div class="hm-bar-track"><div class="hm-bar-fill hm-red" id="hmRed"></div></div>
               <span class="hm-bar-val" id="hmRedVal">0</span>
             </div>
@@ -120,25 +133,26 @@
         </div>
 
         <!-- Recent Meeting -->
+        <div class="section-header">Cuoc hop gan nhat</div>
         <div class="summary-card">
-          <h3 class="card-title">Cuộc họp gần nhất</h3>
           <div id="recentMeeting" class="meeting-info"></div>
         </div>
       </section>
 
       <!-- TAB: DIRECTIVES -->
       <section id="tab-directives" class="tab-panel">
+        <div class="section-header">Danh sach chi dao</div>
         <div class="filter-bar">
           <select id="filterPerson" class="filter-select">
-            <option value="all">Tất cả đầu mối</option>
+            <option value="all">Tat ca dau moi</option>
           </select>
           <select id="filterStatus" class="filter-select">
-            <option value="all">Tất cả trạng thái</option>
-            <option value="cho_xac_nhan">⏳ Chờ xác nhận</option>
-            <option value="da_xac_nhan_5t">✅ Đã xác nhận 5T</option>
-            <option value="dang_thuc_hien">🔄 Đang thực hiện</option>
-            <option value="hoan_thanh">✅ Hoàn thành</option>
-            <option value="can_lam_ro">❓ Cần làm rõ</option>
+            <option value="all">Tat ca trang thai</option>
+            <option value="cho_xac_nhan">Cho xac nhan</option>
+            <option value="da_xac_nhan_5t">Da xac nhan 5T</option>
+            <option value="dang_thuc_hien">Dang thuc hien</option>
+            <option value="hoan_thanh">Hoan thanh</option>
+            <option value="can_lam_ro">Can lam ro</option>
           </select>
         </div>
         <div id="directivesList" class="directives-list"></div>
@@ -146,15 +160,16 @@
 
       <!-- TAB: HM50 -->
       <section id="tab-hm50" class="tab-panel">
+        <div class="section-header">50 hang muc chi dao</div>
         <div class="filter-bar">
           <select id="filterSection" class="filter-select">
-            <option value="all">Tất cả phần</option>
+            <option value="all">Tat ca phan</option>
           </select>
           <select id="filterHmStatus" class="filter-select">
-            <option value="all">Tất cả</option>
-            <option value="✅">✅ Có chủ</option>
-            <option value="⚠️">⚠️ Chưa chủ</option>
-            <option value="❌">❌ Blind spot</option>
+            <option value="all">Tat ca</option>
+            <option value="ok">Co chu</option>
+            <option value="warn">Chua chu</option>
+            <option value="fail">Blind spot</option>
           </select>
         </div>
         <div id="hm50List" class="hm50-list"></div>
@@ -162,6 +177,7 @@
 
       <!-- TAB: PEOPLE -->
       <section id="tab-people" class="tab-panel">
+        <div class="section-header">Nhan su he thong</div>
         <div id="peopleList" class="people-list"></div>
       </section>
 
@@ -171,7 +187,7 @@
     <div id="modal" class="modal hidden">
       <div class="modal-backdrop"></div>
       <div class="modal-content">
-        <button class="modal-close" id="modalClose">✕</button>
+        <button class="modal-close" id="modalClose">&times;</button>
         <div id="modalBody"></div>
       </div>
     </div>

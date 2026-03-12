@@ -1,15 +1,15 @@
 {
   "name": "CEO Dashboard",
   "short_name": "CEO Dash",
-  "description": "Dashboard chỉ đạo BOD — Theo dõi directives 5T, HM50, nhân sự",
+  "description": "Dashboard chi dao BOD — Theo doi directives 5T, HM50, nhan su",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0a0e1a",
-  "theme_color": "#0a0e1a",
+  "background_color": "#f2f2f7",
+  "theme_color": "#ffffff",
   "orientation": "any",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23007aff'/><circle cx='50' cy='50' r='30' stroke='white' stroke-width='5' fill='none'/><line x1='50' y1='30' x2='50' y2='50' stroke='white' stroke-width='5' stroke-linecap='round'/><line x1='50' y1='50' x2='65' y2='58' stroke='white' stroke-width='5' stroke-linecap='round'/></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }
