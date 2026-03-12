@@ -305,7 +305,7 @@ function getDeptRegistrationStatus(searchDate) {
     var cols = CONFIG.COLUMN_MAP;
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
-      if (!matchNgayHop(data[i][cols.ngayHop], searchDate)) continue;
+      if (searchDate && !matchNgayHop(data[i][cols.ngayHop], searchDate)) continue;
       var bp = (data[i][cols.boPhan] || "").toString().trim().toUpperCase();
       if (!deptStats[bp])
         deptStats[bp] = { total: 0, approved: 0, pending: 0, rejected: 0 };
@@ -321,14 +321,20 @@ function getDeptRegistrationStatus(searchDate) {
   var reminderCounts = {};
   var lastSentTimes = {};
   try {
-    // Tính Monday-Sunday window cho searchDate
-    var sDate = new Date(searchDate);
-    // Nếu searchDate là string dd/MM/yyyy
-    if (isNaN(sDate.getTime())) {
-      var sp = searchDate.split("/");
-      if (sp.length === 3) sDate = new Date(sp[2], parseInt(sp[1])-1, parseInt(sp[0]));
-      else if (sp.length === 2) sDate = new Date(new Date().getFullYear(), parseInt(sp[1])-1, parseInt(sp[0]));
+    // Cắt DD/MM từ đầu vào (vd: '09/03')
+    var sDate = new Date(); // mặc định dùng today nếu không parse được
+    if (searchDate) {
+      var sp = searchDate.trim().split("/");
+      if (sp.length >= 2) {
+        var year = sp.length === 3 ? parseInt(sp[2]) : new Date().getFullYear();
+        sDate = new Date(year, parseInt(sp[1]) - 1, parseInt(sp[0]));
+      } else {
+        // Fallback cho format chuẩn
+        var parsed = new Date(searchDate);
+        if (!isNaN(parsed.getTime())) sDate = parsed;
+      }
     }
+    
     var dayOfWeek = sDate.getDay(); // 0=Sun..6=Sat
     var diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
     var weekMonday = new Date(sDate);
@@ -914,30 +920,42 @@ function sendScheduleFromDashboard() {
 function updateDeptEmail(deptName, newEmail) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var hrSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_HR) ? CONFIG.SHEET_HR : "Nhân sự bắt buộc";
-    var hrSheet = ss.getSheetByName(hrSheetName) || ss.getSheetByName("DANH SÁCH NHÂN VIÊN");
-    if (!hrSheet) {
-      return { success: false, msg: "Không tìm thấy sheet cấu hình nhân sự" };
-    }
-
-    var colDept  = (CONFIG.HR_COL_DEPT || 4) - 1;
-    var colEmail = (CONFIG.HR_COL_EMAIL || 6);  // 1-indexed cho setCell
-    var data = hrSheet.getDataRange().getValues();
-    var found = false;
-
-    for (var i = 1; i < data.length; i++) {
-      var bp = (data[i][colDept] || "").toString().trim().toUpperCase();
-      if (bp === deptName.toUpperCase()) {
-        // Cập nhật email ở dòng đầu tiên khớp (dòng đại diện)
-        hrSheet.getRange(i + 1, colEmail).setValue(newEmail);
-        found = true;
-        Logger.log("Updated email for " + deptName + " → " + newEmail + " (row " + (i + 1) + ")");
-        break;
+    var updated = false;
+    
+    // Cập nhật Dimension bộ phận (nguồn chính cho UI)
+    var dimSheet = ss.getSheetByName(CONFIG.SHEET_DIM_DEPT);
+    if (dimSheet) {
+      var dimData = dimSheet.getDataRange().getValues();
+      for (var d = 1; d < dimData.length; d++) {
+        var dp = (dimData[d][0] || "").toString().trim().toUpperCase();
+        if (dp === deptName.toUpperCase()) {
+          dimSheet.getRange(d + 1, 3).setValue(newEmail); // Cột C
+          updated = true;
+          break;
+        }
       }
     }
 
-    if (!found) {
-      return { success: false, msg: "Không tìm thấy bộ phận: " + deptName };
+    // Cập nhật Danh sách nhân sự (nguồn fallback)
+    var hrSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_HR) ? CONFIG.SHEET_HR : "Nhân sự bắt buộc";
+    var hrSheet = ss.getSheetByName(hrSheetName) || ss.getSheetByName("DANH SÁCH NHÂN VIÊN");
+    
+    if (hrSheet) {
+      var colDept  = (CONFIG.HR_COL_DEPT || 4) - 1;
+      var colEmail = (CONFIG.HR_COL_EMAIL || 6); 
+      var data = hrSheet.getDataRange().getValues();
+      for (var i = 1; i < data.length; i++) {
+        var bp = (data[i][colDept] || "").toString().trim().toUpperCase();
+        if (bp === deptName.toUpperCase()) {
+          hrSheet.getRange(i + 1, colEmail).setValue(newEmail);
+          updated = true;
+          break;
+        }
+      }
+    }
+
+    if (!updated) {
+      return { success: false, msg: "Không tìm thấy bộ phận (Dim bộ phận & HR): " + deptName };
     }
 
     return { success: true, msg: "Đã cập nhật email " + deptName + " → " + newEmail };
