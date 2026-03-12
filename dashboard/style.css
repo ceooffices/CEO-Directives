@@ -194,30 +194,101 @@ body {
 .funnel-count { font-size: 0.82rem; font-weight: 700; min-width: 28px; text-align: right; }
 .funnel-arrow { color: var(--text-tertiary); text-align: center; padding: 2px 0; font-size: 0.7rem; }
 
-/* ========== ESCALATION PIPELINE ========== */
-.escalation-pipeline {
+/* ========== ESCALATION — SUMMARY GRID ========== */
+.esc-summary-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;
+}
+.esc-summary-card {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 14px 10px;
+  text-align: center; box-shadow: var(--shadow-card);
+}
+.esc-summary-num { font-size: 1.6rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.esc-summary-label { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); }
+.esc-summary-sub { font-size: 0.58rem; color: var(--text-tertiary); margin-top: 2px; line-height: 1.3; }
+
+/* ========== ESCALATION — RATIO CARD ========== */
+.esc-ratio-card {
   background: var(--bg-card); border-radius: var(--radius-lg); padding: 16px;
-  box-shadow: var(--shadow-card); margin-bottom: 16px;
+  box-shadow: var(--shadow-card); margin-bottom: 12px;
 }
-.esc-timeline { position: relative; padding-left: 20px; }
-.esc-timeline::before {
-  content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px;
-  background: linear-gradient(to bottom, var(--green), var(--orange), var(--red), var(--black-signal));
-  border-radius: var(--radius-pill);
+.esc-ratio-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.78rem; font-weight: 600; color: var(--text-primary);
 }
-.esc-level { position: relative; padding: 12px 0 12px 16px; }
-.esc-dot {
-  position: absolute; left: -17px; top: 16px; width: 12px; height: 12px;
-  border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-card);
+
+/* ========== ESCALATION — HM GROUP (TREE VIEW) ========== */
+.esc-hm-group {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card); margin-bottom: 12px; overflow: hidden;
 }
-.esc-level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.esc-level-name { font-size: 0.82rem; font-weight: 700; }
-.esc-level-count {
-  font-size: 0.72rem; font-weight: 700; padding: 2px 10px;
-  border-radius: var(--radius-pill); background: var(--bg-page);
+.esc-hm-root {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px; border-bottom: 0.5px solid var(--border-light);
 }
-.esc-level-desc { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.4; }
-.esc-level-items { margin-top: 8px; }
+.esc-hm-root-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.esc-hm-badge {
+  font-size: 0.65rem; font-weight: 700; padding: 3px 10px;
+  border-radius: var(--radius-pill); flex-shrink: 0;
+}
+.esc-hm-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.esc-hm-pillar { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 2px; }
+.esc-hm-count { font-size: 0.68rem; color: var(--text-secondary); font-weight: 600; flex-shrink: 0; }
+
+.esc-hm-children { padding: 0 16px 8px; }
+
+.esc-child-card {
+  display: flex; align-items: stretch; gap: 0; padding: 10px 0;
+  border-bottom: 0.5px solid var(--border-light); cursor: pointer;
+  transition: var(--transition);
+}
+.esc-child-card:last-child { border-bottom: none; }
+.esc-child-card:active { opacity: 0.7; }
+
+.esc-child-connector {
+  width: 20px; flex-shrink: 0; position: relative;
+}
+.esc-child-connector::before {
+  content: ''; position: absolute; left: 4px; top: 0; bottom: 50%;
+  width: 2px; background: var(--border-light);
+}
+.esc-child-connector::after {
+  content: ''; position: absolute; left: 4px; top: 50%;
+  width: 12px; height: 2px; background: var(--border-light);
+}
+.esc-child-card:first-child .esc-child-connector::before { top: 50%; bottom: auto; height: 0; }
+
+.esc-child-content { flex: 1; min-width: 0; }
+.esc-child-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.esc-child-task { font-size: 0.78rem; font-weight: 500; line-height: 1.4; margin-bottom: 4px; color: var(--text-primary); }
+
+/* ========== ESCALATION — TIMELINE ========== */
+.timeline-container { position: relative; padding-left: 20px; }
+.timeline-container::before {
+  content: ''; position: absolute; left: 5px; top: 10px; bottom: 10px;
+  width: 2px; background: var(--blue); border-radius: var(--radius-pill); opacity: 0.3;
+}
+.timeline-entry { position: relative; padding: 12px 0 12px 20px; }
+.timeline-dot {
+  position: absolute; left: -4px; top: 18px; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--blue); border: 2px solid white;
+  box-shadow: var(--shadow-card);
+}
+.timeline-content {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 14px;
+  box-shadow: var(--shadow-card);
+}
+.timeline-date { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.timeline-stats { font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4; }
+.timeline-hm-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.timeline-tag {
+  font-size: 0.62rem; padding: 3px 8px; border-radius: var(--radius-pill);
+  background: rgba(0, 122, 255, 0.08); color: var(--blue); font-weight: 500;
+}
+.timeline-tag.new {
+  background: rgba(255, 149, 0, 0.1); color: var(--orange);
+}
+
+/* ========== ESCALATION — LEGACY (keeping for backwards compat) ========== */
 .esc-item {
   font-size: 0.72rem; padding: 6px 10px; background: var(--bg-page); border-radius: var(--radius-sm);
   margin-bottom: 4px; line-height: 1.4; cursor: pointer; transition: var(--transition);

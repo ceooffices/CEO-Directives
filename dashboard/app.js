@@ -1,6 +1,12 @@
 /* =============================================
-   CEO Dashboard — App Logic v3
+   CEO Dashboard — App Logic v4
    Chiến lược → Leo thang → Kết quả → Hành động
+   
+   KHÁI NIỆM LEO THANG:
+   - 50 HM = chiến lược gốc đầu năm
+   - DIR = chỉ đạo BOD hàng ngày
+   - DIR có hm50_ref → LEO THANG từ HM gốc (triển khai cụ thể)
+   - DIR không có hm50_ref → CHỈ ĐẠO MỚI ngoài chiến lược
    ============================================= */
 
 (function () {
@@ -20,9 +26,8 @@
     dang_thuc_hien: 'Đang thực hiện', hoan_thanh: 'Hoàn thành', can_lam_ro: 'Cần làm rõ'
   };
 
-  // Escalation logic based on HM-47: Xanh ≥90%, Vàng 70-89%, Đỏ <70%, Đen = Đỏ >2 tuần
-  // For directives: calculate escalation based on timeline and status
-  function getEscalationLevel(d) {
+  // Directive urgency based on timeline
+  function getUrgencyLevel(d) {
     if (d.trang_thai === 'hoan_thanh') return 'done';
     const now = new Date();
     const deadline = d.thoi_han ? new Date(d.thoi_han) : null;
@@ -32,17 +37,17 @@
     const elapsed = totalDays - daysLeft;
     const pctElapsed = totalDays > 0 ? (elapsed / totalDays) * 100 : 0;
 
-    if (daysLeft < -14) return 'black';  // Quá hạn >2 tuần = ĐEN
-    if (daysLeft < 0) return 'red';       // Quá hạn = ĐỎ
-    if (daysLeft < 3 || pctElapsed > 80) return 'yellow'; // Sắp đến hạn = VÀNG
+    if (daysLeft < -14) return 'black';
+    if (daysLeft < 0) return 'red';
+    if (daysLeft < 3 || pctElapsed > 80) return 'yellow';
     return 'green';
   }
 
-  const ESC_LABELS = {
-    green: 'Xanh', yellow: 'Vàng', red: 'Đỏ', black: 'Đen', done: 'Hoàn thành'
+  const URGENCY_LABELS = {
+    green: 'Đúng tiến độ', yellow: 'Sắp đến hạn', red: 'Quá hạn', black: 'Báo động', done: 'Hoàn thành'
   };
 
-  const ESC_COLORS = {
+  const URGENCY_COLORS = {
     green: '#34c759', yellow: '#ff9500', red: '#ff3b30', black: '#1c1c1e', done: '#5ac8fa'
   };
 
@@ -54,7 +59,7 @@
 
   const PEOPLE_COLORS = ['#007aff', '#af52de', '#5ac8fa', '#34c759', '#ff9500', '#ff2d55', '#5856d6', '#ff3b30', '#ffcc00'];
 
-  // Section strategic outcomes — what each pillar LEADS TO
+  // Section strategic outcomes
   const SECTION_OUTCOMES = {
     'SEC-I': 'Toàn hệ thống thay đổi tư duy, từ XKLĐ thành hệ sinh thái nhân lực quốc tế. Mọi nhân viên hiểu triết lý và cam kết cá nhân.',
     'SEC-II': 'Mỗi ngày có số liệu, mỗi tuần có review, mỗi tháng có pipeline — không có "vùng mờ" trong quản trị.',
@@ -66,7 +71,6 @@
     'SEC-VIII': 'Tổ chức học tập liên tục, Kaizen PDCA, tầm nhìn 2045: 20.000 vị trí/năm, hàng trăm ngàn TN VN.'
   };
 
-  // What actions to take based on results
   const ACTION_SUGGESTIONS = {
     green: 'Duy trì, ghi nhận, chia sẻ best practice',
     yellow: 'Nhắc nhở đầu mối, check-in tiến độ, hỗ trợ nguồn lực',
@@ -84,7 +88,10 @@
     person: '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
     clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
     target: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-    chevron: '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
+    chevron: '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    alert: '<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    star: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
   };
 
   function icon(name) { return `<span class="dc-meta-icon">${ICONS[name] || ''}</span>`; }
@@ -108,7 +115,7 @@
       hideSplash();
       startClock();
     } catch (err) {
-      console.error('Failed to load data:', err);
+      console.error('Lỗi tải dữ liệu:', err);
       const splash = $('#splash');
       if (splash) {
         splash.querySelector('p').textContent = 'Lỗi tải dữ liệu';
@@ -119,7 +126,7 @@
 
   async function fetchJSON(url) {
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} cho ${url}`);
     return res.json();
   }
 
@@ -148,9 +155,14 @@
     renderTrafficLights();
     renderPillarsGrid();
     renderFunnel();
-    renderEscalationPipeline();
-    renderEscalationList();
+    // Tab 2: Leo thang (đúng nghĩa)
+    renderEscalationSummary();
+    renderEscalationFromHM();
+    renderEscalationNewDirs();
+    renderEscalationTimeline();
+    // Tab 3: Chiến lược
     renderStrategyMap();
+    // Tab 4: Hành động
     renderUrgentActions();
     renderActionsByStatus();
     renderProgressTracking();
@@ -163,12 +175,10 @@
     const ok = data.outcomes.filter(o => o.status === '✅').length;
     const pct = Math.round((ok / total) * 100);
 
-    // Calculate directive health too
     const dirDone = data.directives.filter(d => d.trang_thai === 'hoan_thanh').length;
     const dirTotal = data.directives.length;
     const dirPct = dirTotal > 0 ? Math.round((dirDone / dirTotal) * 100) : 0;
 
-    // Combined score weighted: 60% strategy completion, 40% directive execution
     const combined = Math.round(pct * 0.6 + dirPct * 0.4);
     const color = combined >= 70 ? '#34c759' : combined >= 40 ? '#ff9500' : '#ff3b30';
     const label = combined >= 70 ? 'Hệ thống ổn định' : combined >= 40 ? 'Cần chú ý, có rủi ro' : 'Báo động — cần hành động ngay';
@@ -201,11 +211,9 @@
   function renderTrafficLights() {
     const levels = { green: 0, yellow: 0, red: 0, black: 0 };
     data.directives.forEach(d => {
-      const lvl = getEscalationLevel(d);
+      const lvl = getUrgencyLevel(d);
       if (lvl !== 'done' && levels[lvl] !== undefined) levels[lvl]++;
     });
-
-    const doneCount = data.directives.filter(d => d.trang_thai === 'hoan_thanh').length;
 
     $('#trafficLights').innerHTML = `
       <div class="tl-card">
@@ -241,8 +249,6 @@
       const items = data.outcomes.filter(o => o.section === sec.id);
       const total = items.length;
       const ok = items.filter(o => o.status === '✅').length;
-      const warn = items.filter(o => o.status === '⚠️').length;
-      const fail = items.filter(o => o.status === '❌').length;
       const pct = total > 0 ? Math.round((ok / total) * 100) : 0;
       const color = pct >= 70 ? '#34c759' : pct >= 40 ? '#ff9500' : '#ff3b30';
 
@@ -292,76 +298,240 @@
     }).join('') + '</div>';
   }
 
-  // ===== TAB 2: LEO THANG =====
+  // ===== TAB 2: LEO THANG (ĐÚNG NGHĨA) =====
+  // Leo thang = từ 50 HM chiến lược gốc → sinh ra chỉ đạo cụ thể hàng ngày
+  // Hướng nhìn: HM gốc → đã triển khai thành bao nhiêu DIR → tình trạng thế nào
 
-  function renderEscalationPipeline() {
-    const levels = [
-      { key: 'green', label: 'Xanh — Đúng tiến độ', desc: 'Chỉ đạo đang triển khai tốt, chưa gặp rào cản gì.', color: '#34c759' },
-      { key: 'yellow', label: 'Vàng — Sắp đến hạn', desc: 'Còn dưới 3 ngày hoặc đã qua 80% thời gian. Cần theo dõi sát và đảm bảo tiến độ.', color: '#ff9500' },
-      { key: 'red', label: 'Đỏ — Quá hạn', desc: 'Đã quá deadline nhưng chưa vượt 2 tuần. Cần họp khẩn với đầu mối, tái phân bổ nguồn lực.', color: '#ff3b30' },
-      { key: 'black', label: 'Đen — Báo động', desc: 'Quá hạn trên 2 tuần. CEO cần can thiệp trực tiếp, có thể cần thay đầu mối hoặc ưu tiên lại.', color: '#1c1c1e' }
-    ];
+  function renderEscalationSummary() {
+    const el = $('#escalationSummary');
 
-    const grouped = {};
-    data.directives.forEach(d => {
-      const lvl = getEscalationLevel(d);
-      if (lvl === 'done') return;
-      if (!grouped[lvl]) grouped[lvl] = [];
-      grouped[lvl].push(d);
+    // Count linked vs unlinked
+    const linked = data.directives.filter(d => d.hm50_ref);
+    const unlinked = data.directives.filter(d => !d.hm50_ref);
+
+    // Which HMs have been activated (have at least 1 DIR)
+    const activatedHMs = new Set(linked.map(d => d.hm50_ref));
+    const totalHM = data.outcomes.length;
+    const activatedCount = activatedHMs.size;
+    const dormantCount = totalHM - activatedCount;
+
+    // HMs with urgent dirs
+    const urgentHMs = new Set();
+    linked.forEach(d => {
+      const lvl = getUrgencyLevel(d);
+      if (lvl === 'red' || lvl === 'black') urgentHMs.add(d.hm50_ref);
     });
 
-    const el = $('#escalationPipeline');
-    el.innerHTML = '<div class="esc-timeline">' + levels.map(l => {
-      const items = grouped[l.key] || [];
-      return `
-        <div class="esc-level">
-          <div class="esc-dot" style="background:${l.color}"></div>
-          <div class="esc-level-header">
-            <span class="esc-level-name" style="color:${l.color}">${l.label}</span>
-            <span class="esc-level-count" style="color:${l.color}">${items.length}</span>
-          </div>
-          <div class="esc-level-desc">${l.desc}</div>
-          ${items.length > 0 ? `<div class="esc-level-items">
-            ${items.slice(0, 3).map(d => `
-              <div class="esc-item" data-id="${d.id}">
-                ${d.nhiem_vu.substring(0, 80)}${d.nhiem_vu.length > 80 ? '...' : ''}
-                <div class="esc-item-meta">${d.dau_moi} — Hạn: ${d.thoi_han || '—'}</div>
-              </div>
-            `).join('')}
-            ${items.length > 3 ? `<div class="esc-item" style="color:var(--text-tertiary);text-align:center">+${items.length - 3} chỉ đạo khác</div>` : ''}
-          </div>` : ''}
+    el.innerHTML = `
+      <div class="esc-summary-grid">
+        <div class="esc-summary-card">
+          <div class="esc-summary-num" style="color:#007aff">${totalHM}</div>
+          <div class="esc-summary-label">Chiến lược gốc</div>
+          <div class="esc-summary-sub">50 HM đầu năm</div>
         </div>
-      `;
-    }).join('') + '</div>';
+        <div class="esc-summary-card">
+          <div class="esc-summary-num" style="color:#34c759">${activatedCount}</div>
+          <div class="esc-summary-label">Đã kích hoạt</div>
+          <div class="esc-summary-sub">Có chỉ đạo triển khai</div>
+        </div>
+        <div class="esc-summary-card">
+          <div class="esc-summary-num" style="color:#8e8e93">${dormantCount}</div>
+          <div class="esc-summary-label">Chưa triển khai</div>
+          <div class="esc-summary-sub">Chưa có chỉ đạo mới</div>
+        </div>
+        <div class="esc-summary-card">
+          <div class="esc-summary-num" style="color:#ff9500">${unlinked.length}</div>
+          <div class="esc-summary-label">Phát sinh mới</div>
+          <div class="esc-summary-sub">Ngoài 50 HM gốc</div>
+        </div>
+      </div>
+
+      <div class="esc-ratio-card">
+        <div class="esc-ratio-header">
+          <span>Tỷ lệ kích hoạt chiến lược</span>
+          <span style="color:#007aff;font-weight:700">${Math.round(activatedCount / totalHM * 100)}%</span>
+        </div>
+        <div class="pillar-bar-track" style="margin-top:8px">
+          <div class="pillar-bar-fill" style="width:${activatedCount / totalHM * 100}%;background:#007aff"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-tertiary);margin-top:6px">
+          <span>${activatedCount}/${totalHM} HM đã có chỉ đạo triển khai</span>
+          <span>${data.directives.length} chỉ đạo BOD tất cả</span>
+        </div>
+      </div>
+
+      ${urgentHMs.size > 0 ? `
+      <div class="esc-ratio-card" style="border-left:3px solid var(--red)">
+        <div style="font-size:0.78rem;font-weight:600;color:var(--red);margin-bottom:6px">
+          ${urgentHMs.size} chiến lược gốc có chỉ đạo quá hạn
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5">
+          ${[...urgentHMs].map(hmId => {
+            const hm = data.outcomes.find(o => o.id === hmId);
+            return hm ? `${hmId}: ${hm.name}` : hmId;
+          }).join(' — ')}
+        </div>
+      </div>` : ''}
+    `;
   }
 
-  function renderEscalationList() {
-    const el = $('#escalationList');
-    // Sort by escalation level: black first, then red, yellow, green, done
-    const order = { black: 0, red: 1, yellow: 2, green: 3, done: 4 };
-    const sorted = [...data.directives].sort((a, b) => {
-      return (order[getEscalationLevel(a)] || 5) - (order[getEscalationLevel(b)] || 5);
+  function renderEscalationFromHM() {
+    const el = $('#escalationFromHM');
+
+    // Group directives by their HM root
+    const hmGroups = {};
+    data.directives.filter(d => d.hm50_ref).forEach(d => {
+      if (!hmGroups[d.hm50_ref]) hmGroups[d.hm50_ref] = [];
+      hmGroups[d.hm50_ref].push(d);
     });
 
-    el.innerHTML = sorted.map(d => {
-      const lvl = getEscalationLevel(d);
-      const daysInfo = getDaysInfo(d);
+    if (Object.keys(hmGroups).length === 0) {
+      el.innerHTML = '<div class="action-group"><div class="action-group-header"><span class="action-group-title">Chưa có chỉ đạo nào liên kết với HM gốc</span></div></div>';
+      return;
+    }
+
+    // Sort by number of dirs (most active first)
+    const sorted = Object.entries(hmGroups).sort((a, b) => b[1].length - a[1].length);
+
+    el.innerHTML = sorted.map(([hmId, dirs]) => {
+      const hm = data.outcomes.find(o => o.id === hmId);
+      if (!hm) return '';
+
+      const si = STATUS_ICONS[hm.status] || STATUS_ICONS['❌'];
+      const sec = data.outcomesSections.find(s => s.id === hm.section);
+
       return `
-        <div class="directive-card esc-${lvl}" data-id="${d.id}">
-          <div class="dc-header">
-            <span class="dc-id">${d.id}</span>
-            <span class="dc-esc-badge ${lvl}">${ESC_LABELS[lvl]}</span>
+        <div class="esc-hm-group">
+          <div class="esc-hm-root">
+            <div class="esc-hm-root-left">
+              <div class="esc-hm-badge" style="background:${si.color}15;color:${si.color}">${hmId}</div>
+              <div>
+                <div class="esc-hm-name">${hm.name}</div>
+                <div class="esc-hm-pillar">${sec ? sec.name : ''} — ${hm.dau_moi}</div>
+              </div>
+            </div>
+            <div class="esc-hm-count">${dirs.length} chỉ đạo</div>
           </div>
-          <div class="dc-task">${d.nhiem_vu}</div>
-          <div class="dc-meta">
-            <span class="dc-meta-item">${icon('person')} ${d.dau_moi}</span>
-            <span class="dc-meta-item" style="${lvl === 'red' || lvl === 'black' ? 'color:var(--red)' : ''}">${icon('clock')} ${daysInfo}</span>
-            <span class="dc-meta-item">${icon('target')} ${d.hm50_ref || '—'}</span>
+          <div class="esc-hm-children">
+            ${dirs.map(d => {
+              const lvl = getUrgencyLevel(d);
+              const daysInfo = getDaysInfo(d);
+              return `
+                <div class="esc-child-card" data-id="${d.id}">
+                  <div class="esc-child-connector"></div>
+                  <div class="esc-child-content">
+                    <div class="esc-child-header">
+                      <span class="dc-id">${d.id}</span>
+                      <span class="dc-esc-badge ${lvl}">${URGENCY_LABELS[lvl]}</span>
+                    </div>
+                    <div class="esc-child-task">${d.nhiem_vu}</div>
+                    <div class="dc-meta">
+                      <span class="dc-meta-item">${icon('person')} ${d.dau_moi}</span>
+                      <span class="dc-meta-item" style="${lvl === 'red' || lvl === 'black' ? 'color:var(--red)' : ''}">${icon('clock')} ${daysInfo}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
-          ${(lvl === 'red' || lvl === 'black') ? `<div class="dc-esc-reason">Hành động: ${ACTION_SUGGESTIONS[lvl]}</div>` : ''}
         </div>
       `;
     }).join('');
+  }
+
+  function renderEscalationNewDirs() {
+    const el = $('#escalationNewDirs');
+    const unlinked = data.directives.filter(d => !d.hm50_ref);
+
+    if (unlinked.length === 0) {
+      el.innerHTML = `
+        <div class="esc-ratio-card" style="border-left:3px solid var(--green)">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--green)">
+            Tất cả chỉ đạo đều nằm trong chiến lược
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:4px">
+            Không có chỉ đạo nào phát sinh ngoài 50 HM gốc. Hệ thống đang chạy đúng chiến lược.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="esc-ratio-card" style="border-left:3px solid var(--orange)">
+        <div style="font-size:0.78rem;font-weight:600;color:var(--orange);margin-bottom:8px">
+          ${unlinked.length} chỉ đạo không thuộc 50 HM chiến lược
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:12px">
+          Những chỉ đạo này phát sinh từ thực tiễn, chưa nằm trong tầm nhìn đầu năm. Cần xem xét: bổ sung vào chiến lược hay xử lý riêng?
+        </div>
+        ${unlinked.map(d => {
+          const lvl = getUrgencyLevel(d);
+          return `
+            <div class="directive-card esc-${lvl}" data-id="${d.id}">
+              <div class="dc-header">
+                <span class="dc-id">${d.id}</span>
+                <span class="dc-esc-badge" style="background:var(--orange)15;color:var(--orange)">Ngoài chiến lược</span>
+              </div>
+              <div class="dc-task">${d.nhiem_vu}</div>
+              <div class="dc-meta">
+                <span class="dc-meta-item">${icon('person')} ${d.dau_moi}</span>
+                <span class="dc-meta-item">${icon('clock')} ${getDaysInfo(d)}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function renderEscalationTimeline() {
+    const el = $('#escalationTimeline');
+
+    // Group directives by meeting date
+    const byMeeting = {};
+    data.directives.forEach(d => {
+      const date = d.meeting_id || 'Không rõ';
+      if (!byMeeting[date]) byMeeting[date] = [];
+      byMeeting[date].push(d);
+    });
+
+    const meetingDates = Object.keys(byMeeting).sort().reverse();
+
+    el.innerHTML = `
+      <div class="timeline-container">
+        ${meetingDates.map(meetId => {
+          const dirs = byMeeting[meetId];
+          const linked = dirs.filter(d => d.hm50_ref);
+          const unlinked = dirs.filter(d => !d.hm50_ref);
+          const date = dirs[0]?.created_at ? new Date(dirs[0].created_at).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : meetId;
+
+          // Unique HM roots touched in this meeting
+          const hmRoots = [...new Set(linked.map(d => d.hm50_ref))];
+
+          return `
+            <div class="timeline-entry">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-date">${meetId} — ${date}</div>
+                <div class="timeline-stats">
+                  ${dirs.length} chỉ đạo ban hành —
+                  ${linked.length} leo thang từ ${hmRoots.length} HM gốc
+                  ${unlinked.length > 0 ? `, ${unlinked.length} phát sinh mới` : ''}
+                </div>
+                <div class="timeline-hm-tags">
+                  ${hmRoots.map(hmId => {
+                    const hm = data.outcomes.find(o => o.id === hmId);
+                    return `<span class="timeline-tag">${hmId}: ${hm ? hm.name.substring(0, 30) : ''}${hm && hm.name.length > 30 ? '...' : ''}</span>`;
+                  }).join('')}
+                  ${unlinked.length > 0 ? `<span class="timeline-tag new">+${unlinked.length} mới</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
   }
 
   function getDaysInfo(d) {
@@ -386,7 +556,6 @@
       const pct = total > 0 ? Math.round((ok / total) * 100) : 0;
       const color = pct >= 70 ? '#34c759' : pct >= 40 ? '#ff9500' : '#ff3b30';
 
-      // Find linked directives
       const linkedDirs = data.directives.filter(d => {
         const hmNum = d.hm50_ref ? parseInt(d.hm50_ref.replace('HM-', '')) : -1;
         const rangeMatch = sec.hm_range.match(/HM (\d+)-(\d+)/);
@@ -415,9 +584,9 @@
           <div class="strat-outcome">
             <div class="strat-outcome-label">Chỉ đạo BOD liên quan (${linkedDirs.length})</div>
             ${linkedDirs.map(d => {
-              const lvl = getEscalationLevel(d);
+              const lvl = getUrgencyLevel(d);
               return `<div class="strat-item" data-id="${d.id}">
-                <div class="strat-item-dot" style="background:${ESC_COLORS[lvl]}"></div>
+                <div class="strat-item-dot" style="background:${URGENCY_COLORS[lvl]}"></div>
                 <span class="strat-item-name">${d.nhiem_vu.substring(0, 60)}${d.nhiem_vu.length > 60 ? '...' : ''}</span>
                 <span class="strat-item-owner">${d.dau_moi}</span>
               </div>`;
@@ -425,7 +594,7 @@
           </div>` : ''}
 
           <div class="strat-outcome">
-            <div class="strat-outcome-label">${total} hạng mục chỉ đạo</div>
+            <div class="strat-outcome-label">${total} hạng mục chiến lược</div>
             <div class="strat-items">
               ${items.map(o => {
                 const si = STATUS_ICONS[o.status] || STATUS_ICONS['❌'];
@@ -446,15 +615,14 @@
 
   function renderUrgentActions() {
     const el = $('#urgentActions');
-    // Find directives that need action: overdue, approaching deadline, or missing info
     const urgent = data.directives
       .filter(d => {
-        const lvl = getEscalationLevel(d);
+        const lvl = getUrgencyLevel(d);
         return lvl === 'black' || lvl === 'red' || lvl === 'yellow';
       })
       .sort((a, b) => {
         const order = { black: 0, red: 1, yellow: 2 };
-        return (order[getEscalationLevel(a)] || 9) - (order[getEscalationLevel(b)] || 9);
+        return (order[getUrgencyLevel(a)] || 9) - (order[getUrgencyLevel(b)] || 9);
       });
 
     if (!urgent.length) {
@@ -469,13 +637,14 @@
           <span class="action-group-count" style="background:rgba(255,59,48,0.1);color:var(--red)">${urgent.length}</span>
         </div>
         ${urgent.map(d => {
-          const lvl = getEscalationLevel(d);
+          const lvl = getUrgencyLevel(d);
           return `
             <div class="action-item" data-id="${d.id}">
-              <div class="action-dot" style="background:${ESC_COLORS[lvl]}"></div>
+              <div class="action-dot" style="background:${URGENCY_COLORS[lvl]}"></div>
               <div class="action-body">
                 <div class="action-task">${d.nhiem_vu.substring(0, 80)}${d.nhiem_vu.length > 80 ? '...' : ''}</div>
                 <div class="action-meta">${d.dau_moi} — ${getDaysInfo(d)}</div>
+                ${d.hm50_ref ? `<div class="action-meta" style="color:var(--blue)">Leo thang từ: ${d.hm50_ref} — ${d.hm50_name || ''}</div>` : `<div class="action-meta" style="color:var(--orange)">Phát sinh ngoài chiến lược</div>`}
                 <div class="action-suggest">Hành động: ${ACTION_SUGGESTIONS[lvl]}</div>
               </div>
             </div>
@@ -487,7 +656,6 @@
 
   function renderActionsByStatus() {
     const el = $('#actionsByStatus');
-    // Group HM50 outcomes by status and suggest actions
     const groups = [
       {
         status: '❌', label: 'Blind spot — Cần hành động gấp',
@@ -532,7 +700,6 @@
 
   function renderProgressTracking() {
     const el = $('#progressTracking');
-    // Per-person progress
     const personDirs = {};
     data.directives.forEach(d => {
       if (!personDirs[d.dau_moi]) personDirs[d.dau_moi] = { total: 0, done: 0 };
@@ -542,8 +709,8 @@
 
     el.innerHTML = `
       <div class="progress-card">
-        ${Object.entries(personDirs).map(([person, data], i) => {
-          const pct = Math.round((data.done / data.total) * 100);
+        ${Object.entries(personDirs).map(([person, pData], i) => {
+          const pct = Math.round((pData.done / pData.total) * 100);
           const color = PEOPLE_COLORS[i % PEOPLE_COLORS.length];
           return `
             <div class="progress-row">
@@ -551,7 +718,7 @@
               <div class="progress-track">
                 <div class="progress-fill" style="width:${pct}%;background:${color}"></div>
               </div>
-              <span class="progress-pct" style="color:${color}">${data.done}/${data.total}</span>
+              <span class="progress-pct" style="color:${color}">${pData.done}/${pData.total}</span>
             </div>
           `;
         }).join('')}
@@ -563,16 +730,41 @@
   function showDirectiveModal(id) {
     const d = data.directives.find(x => x.id === id);
     if (!d) return;
-    const lvl = getEscalationLevel(d);
+    const lvl = getUrgencyLevel(d);
     const hm = data.outcomes.find(o => o.id === d.hm50_ref);
+    const isLinked = !!d.hm50_ref;
     const body = $('#modalBody');
     body.innerHTML = `
       <div class="modal-title">${d.nhiem_vu}</div>
-      <div style="margin-bottom:16px">
+      <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
         <span class="dc-esc-badge ${lvl}" style="font-size:0.75rem;padding:4px 14px">
-          Đèn tín hiệu: ${ESC_LABELS[lvl]}
+          ${URGENCY_LABELS[lvl]}
         </span>
+        ${isLinked ? `
+          <span class="dc-esc-badge" style="font-size:0.75rem;padding:4px 14px;background:#007aff15;color:#007aff">
+            Leo thang từ ${d.hm50_ref}
+          </span>
+        ` : `
+          <span class="dc-esc-badge" style="font-size:0.75rem;padding:4px 14px;background:#ff950015;color:#ff9500">
+            Phát sinh ngoài chiến lược
+          </span>
+        `}
       </div>
+
+      ${isLinked && hm ? `
+      <div class="modal-section">
+        <div class="modal-section-title">Nguồn gốc chiến lược</div>
+        <div class="modal-row"><span class="modal-row-label">Chiến lược gốc</span><span class="modal-row-value">${d.hm50_ref}: ${hm.name}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Target gốc</span><span class="modal-row-value">${hm.target}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Dẫn đến</span><span class="modal-row-value">${SECTION_OUTCOMES[hm.section] || '—'}</span></div>
+      </div>` : `
+      <div class="modal-section" style="border-left:3px solid var(--orange)">
+        <div class="modal-section-title">Phát sinh ngoài chiến lược</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.5;padding:4px 0">
+          Chỉ đạo này không nằm trong 50 HM chiến lược đầu năm. Cần xem xét: có nên bổ sung vào chiến lược không?
+        </div>
+      </div>`}
+
       <div class="modal-section">
         <div class="modal-section-title">5T Chi tiết</div>
         <div class="modal-row"><span class="modal-row-label">T1 Đầu mối</span><span class="modal-row-value">${d.dau_moi}</span></div>
@@ -581,20 +773,15 @@
         <div class="modal-row"><span class="modal-row-label">T4 Thời hạn</span><span class="modal-row-value">${d.thoi_han || '—'} (${getDaysInfo(d)})</span></div>
         <div class="modal-row"><span class="modal-row-label">T5 Liên quan</span><span class="modal-row-value">${(d.thanh_vien_lien_quan || []).map(t => `<span class="modal-tag">${t}</span>`).join(' ') || '—'}</span></div>
       </div>
+
       ${(lvl === 'yellow' || lvl === 'red' || lvl === 'black') ? `
       <div class="modal-section">
         <div class="modal-section-title">Hành động đề xuất</div>
-        <div style="padding:10px 14px;background:${ESC_COLORS[lvl]}08;border:1px solid ${ESC_COLORS[lvl]}20;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-primary);line-height:1.5">
+        <div style="padding:10px 14px;background:${URGENCY_COLORS[lvl]}08;border:1px solid ${URGENCY_COLORS[lvl]}20;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-primary);line-height:1.5">
           ${ACTION_SUGGESTIONS[lvl]}
         </div>
       </div>` : ''}
-      ${hm ? `
-      <div class="modal-section">
-        <div class="modal-section-title">Chiến lược liên quan: ${hm.id}</div>
-        <div class="modal-row"><span class="modal-row-label">Hạng mục</span><span class="modal-row-value">${hm.name}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Target</span><span class="modal-row-value">${hm.target}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Dẫn đến</span><span class="modal-row-value">${SECTION_OUTCOMES[hm.section] || '—'}</span></div>
-      </div>` : ''}
+
       <div class="modal-section">
         <div class="modal-section-title">Lịch sử</div>
         <div class="modal-history">
@@ -618,15 +805,18 @@
     const body = $('#modalBody');
     body.innerHTML = `
       <div class="modal-title">${hm.name}</div>
-      <div style="margin-bottom:16px">
+      <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
         <span class="dc-esc-badge" style="background:${si.color}15;color:${si.color};font-size:0.75rem;padding:4px 14px">
           ${hm.status === '✅' ? 'Có chủ' : hm.status === '⚠️' ? 'Chưa chủ' : 'Blind spot'}
         </span>
+        <span class="dc-esc-badge" style="background:#007aff15;color:#007aff;font-size:0.75rem;padding:4px 14px">
+          ${linkedDirs.length} chỉ đạo leo thang
+        </span>
       </div>
       <div class="modal-section">
-        <div class="modal-section-title">Chi tiết hạng mục</div>
+        <div class="modal-section-title">Chi tiết hạng mục chiến lược</div>
         <div class="modal-row"><span class="modal-row-label">Đầu mối</span><span class="modal-row-value">${hm.dau_moi}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Task</span><span class="modal-row-value">${hm.task}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Nhiệm vụ</span><span class="modal-row-value">${hm.task}</span></div>
         <div class="modal-row"><span class="modal-row-label">Target</span><span class="modal-row-value">${hm.target}</span></div>
         <div class="modal-row"><span class="modal-row-label">Deadline</span><span class="modal-row-value">${hm.deadline}</span></div>
       </div>
@@ -636,15 +826,22 @@
       </div>
       ${linkedDirs.length ? `
       <div class="modal-section">
-        <div class="modal-section-title">Chỉ đạo BOD liên quan (${linkedDirs.length})</div>
+        <div class="modal-section-title">Chỉ đạo BOD leo thang (${linkedDirs.length})</div>
         ${linkedDirs.map(d => {
-          const lvl = getEscalationLevel(d);
+          const lvl = getUrgencyLevel(d);
           return `<div class="modal-row" style="flex-direction:column;gap:4px">
-            <span style="font-size:0.75rem;color:${ESC_COLORS[lvl]};font-weight:600">${d.id} — ${ESC_LABELS[lvl]}</span>
+            <span style="font-size:0.75rem;color:${URGENCY_COLORS[lvl]};font-weight:600">${d.id} — ${URGENCY_LABELS[lvl]}</span>
             <span style="font-size:0.82rem">${d.nhiem_vu}</span>
+            <span style="font-size:0.72rem;color:var(--text-tertiary)">${d.dau_moi} — ${getDaysInfo(d)}</span>
           </div>`;
         }).join('')}
-      </div>` : ''}
+      </div>` : `
+      <div class="modal-section" style="border-left:3px solid var(--text-tertiary)">
+        <div class="modal-section-title">Chưa có chỉ đạo triển khai</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.5">
+          Chiến lược này chưa được kích hoạt thành chỉ đạo BOD cụ thể. Cần xem xét: đã triển khai ngầm hay bỏ sót?
+        </div>
+      </div>`}
       ${hm.status !== '✅' ? `
       <div class="modal-section">
         <div class="modal-section-title">Hành động đề xuất</div>
@@ -670,7 +867,6 @@
       });
     });
 
-    // Delegate clicks for directive cards
     document.addEventListener('click', (e) => {
       const dirCard = e.target.closest('[data-id]');
       if (dirCard) { showDirectiveModal(dirCard.dataset.id); return; }
@@ -678,7 +874,6 @@
       if (hmCard) { showHM50Modal(hmCard.dataset.hm); return; }
       const pillarCard = e.target.closest('.pillar-card[data-section]');
       if (pillarCard) {
-        // Switch to strategy tab and scroll to section
         $$('.tab').forEach(t => t.classList.remove('active'));
         $$('.tab-panel').forEach(p => p.classList.remove('active'));
         $$('.tab')[2].classList.add('active');
@@ -708,7 +903,7 @@
         data.outcomesSummary = out.summary || {};
         data.outcomesSections = out.sections || [];
         renderAll();
-      } catch (err) { console.error('Refresh failed:', err); }
+      } catch (err) { console.error('Lỗi làm mới:', err); }
       btn.textContent = 'Làm mới';
     });
   }
