@@ -1,0 +1,208 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-12T00:25:00+07:00",
+  "status_flow": ["moi_tao", "cho_xac_nhan", "da_xac_nhan_5t", "dang_thuc_hien", "hoan_thanh", "can_lam_ro"],
+  "directives": [
+    {
+      "id": "DIR-20260309-001",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T08:30:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "DŨNG",
+      "thanh_vien_lien_quan": ["HIẾU"],
+      "nhiem_vu": "Báo cáo kết quả MSA tuần 1 tháng 3 — tổng hợp con số 2 giảng tại 3 khu vực (HCM, Đà Nẵng, Trà Vinh), 70 BY khai giảng, 55 ứng viên B2B3, 119 ứng viên toàn hệ thống",
+      "chi_tieu": "200 ứng viên/tuần toàn hệ thống",
+      "thoi_han": "2026-03-14",
+      "hm50_ref": "HM-40",
+      "hm50_name": "4 kênh tạo nguồn",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Con số tuần 1 tháng 3 rất phấn khởi, cần duy trì và tăng",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-002",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T08:45:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "DŨNG",
+      "thanh_vien_lien_quan": ["HIẾU", "LAN VY"],
+      "nhiem_vu": "Triển khai kế hoạch tuyển sinh tháng 3 — tháng cao điểm, tập trung tối đa nguồn lực cho đầu nguồn và khách hàng",
+      "chi_tieu": "Đạt target tháng 3 theo pipeline MSA",
+      "thoi_han": "2026-03-31",
+      "hm50_ref": "HM-40",
+      "hm50_name": "4 kênh tạo nguồn",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Tháng 3 là tháng cao điểm trong năm",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-003",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T09:00:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "TUẤN",
+      "thanh_vien_lien_quan": ["DŨNG"],
+      "nhiem_vu": "Phối hợp với Denso + nghiệp đoàn GPC tại Đồng Nai — mở rộng kết nối khách hàng Nhật và nguồn tỉnh",
+      "chi_tieu": "Ký kết ít nhất 2 đối tác mới từ Đồng Nai",
+      "thoi_han": "2026-03-31",
+      "hm50_ref": "HM-21",
+      "hm50_name": "3 mắt xích: KOKA→MSA→JPC",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "thieu_chi_tieu",
+      "ghi_chu": "Tuấn đã đồng hành cùng Denso + GPC tới Đồng Nai với Linh Thúy, Hồ Duy",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-004",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T09:15:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "DŨNG",
+      "dau_moi": "HIẾU",
+      "thanh_vien_lien_quan": ["MSA team"],
+      "nhiem_vu": "Tổng kết hoạt động sự kiện GPS thứ 11 (6-8 tháng 3) — đánh giá kết quả và rút kinh nghiệm",
+      "chi_tieu": "Báo cáo đánh giá GPS-11 hoàn chỉnh",
+      "thoi_han": "2026-03-14",
+      "hm50_ref": "HM-22",
+      "hm50_name": "Vai trò Ban Cố vấn",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Sự kiện GPS thứ 11 rất đặc biệt, có nhiều chính khách Nhật tham dự",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-005",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T09:30:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "DŨNG",
+      "thanh_vien_lien_quan": ["TUẤN", "HIẾU"],
+      "nhiem_vu": "Phân tích pipeline theo vùng — đặc biệt Đồng Nai và Trà Vinh. Đánh giá hiệu quả từng khu vực, nhận diện vùng thiếu nguồn",
+      "chi_tieu": "Bản phân tích pipeline 3 vùng Bắc-Trung-Nam",
+      "thoi_han": "2026-03-20",
+      "hm50_ref": "HM-14",
+      "hm50_name": "Họp tháng Pipeline toàn hệ thống",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Sếp dùng ví dụ giải đá bóng quốc gia — mỗi vùng = 1 đội, cần đủ quân số",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-006",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T09:45:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "LAN VY",
+      "thanh_vien_lien_quan": ["DŨNG"],
+      "nhiem_vu": "Tổ chức hoạt động ngày 8/3 cho chị em hệ thống — xác nhận nội dung chia sẻ chiều 3 giờ",
+      "chi_tieu": "100% chị em tham gia hoạt động 8/3",
+      "thoi_han": "2026-03-09",
+      "hm50_ref": "HM-33",
+      "hm50_name": "Văn hóa công sở có cảm xúc",
+      "trang_thai": "hoan_thanh",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Ngày 8/3 — 90% nhân sự nữ, đặc biệt MSA",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"},
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "completed", "by": "agent", "note": "Sự kiện đã diễn ra chiều 9/3"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-007",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T10:00:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "DŨNG",
+      "thanh_vien_lien_quan": ["HIẾU", "MSA 9 đội"],
+      "nhiem_vu": "Mỗi đội MSA nhìn lại tuần qua: năng lượng, hiệu suất, bài học rút ra → hướng tới action tuần 3 tháng 3",
+      "chi_tieu": "9/9 đội có báo cáo review tuần",
+      "thoi_han": "2026-03-14",
+      "hm50_ref": "HM-18",
+      "hm50_name": "Tái cấu trúc MSA 9 đội hình",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Khẩu hiệu MSA: 1 ngày = năng lượng, 1 tuần = hiệu suất, 1 tháng = kết quả, 1 quý = bứt phá, 1 năm = thăng hoa",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-008",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T10:15:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "DŨNG",
+      "dau_moi": "HIẾU",
+      "thanh_vien_lien_quan": ["LAN VY"],
+      "nhiem_vu": "Ghi nhận 30 MS mới vào hệ thống tuần qua — cập nhật danh sách và phân bổ theo đội",
+      "chi_tieu": "100% MS mới được phân bổ vào 9 đội",
+      "thoi_han": "2026-03-12",
+      "hm50_ref": "HM-12",
+      "hm50_name": "Ghi nhận bằng số hàng ngày",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Tin mừng: Chị Thảo Nguyên hạ sinh thành công trước khi thai sản",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-009",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T10:30:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "TUẤN",
+      "thanh_vien_lien_quan": ["DŨNG", "LAN VY"],
+      "nhiem_vu": "Rà soát khu vực Hà Nội — đội bóng không có khán giả (= không có học viên). Phân tích nguyên nhân và đề xuất giải pháp tăng nguồn phía Bắc",
+      "chi_tieu": "Báo cáo phân tích + 3 giải pháp khả thi",
+      "thoi_han": "2026-03-21",
+      "hm50_ref": "HM-14",
+      "hm50_name": "Họp tháng Pipeline toàn hệ thống",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Sếp ví von: team Hà Nội = CLB bóng đá không có khán giả đi xem",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    },
+    {
+      "id": "DIR-20260309-010",
+      "meeting_id": "BOD-20260309",
+      "created_at": "2026-03-09T10:45:00+07:00",
+      "sent_at": "2026-03-12T00:25:00+07:00",
+      "chi_dao_boi": "SẾP SƠN",
+      "dau_moi": "DŨNG",
+      "thanh_vien_lien_quan": ["TUẤN", "Anh Tín"],
+      "nhiem_vu": "Đảm bảo mỗi khu vực có tối thiểu 15 học viên (công thức Kaizen) để đủ công suất vận hành — rà soát các điểm yếu An Giang, Trà Vinh",
+      "chi_tieu": "100% khu vực ≥ 15 HV",
+      "thoi_han": "2026-03-31",
+      "hm50_ref": "HM-18",
+      "hm50_name": "Tái cấu trúc MSA 9 đội hình",
+      "trang_thai": "cho_xac_nhan",
+      "trang_thai_5t": "du_5t",
+      "ghi_chu": "Công thức Kaizen: tối thiểu 15 HV/khu vực mới đủ công suất. Dưới 15 = đội bóng không đủ 11 người",
+      "history": [
+        {"timestamp": "2026-03-12T00:25:00+07:00", "action": "created", "by": "agent"}
+      ]
+    }
+  ]
+}

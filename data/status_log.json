@@ -1,0 +1,105 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-12T00:25:00+07:00",
+  "log": [
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-001",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-002",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-003",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-004",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-005",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-006",
+      "action": "created",
+      "from": null,
+      "to": "hoan_thanh",
+      "by": "agent",
+      "note": "Sự kiện 8/3 đã diễn ra chiều 9/3"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-007",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-008",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-009",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "DIR-20260309-010",
+      "action": "created",
+      "from": null,
+      "to": "cho_xac_nhan",
+      "by": "agent",
+      "note": "Auto-extracted from BOD transcript 09/03/2026"
+    },
+    {
+      "timestamp": "2026-03-12T00:25:00+07:00",
+      "directive_id": "BATCH",
+      "action": "phase1_migration",
+      "from": "notion",
+      "to": "lightdata_json",
+      "by": "agent",
+      "note": "Phase 1 complete — migrated from Notion to JSON data layer. 5 files: people.json, meetings.json, outcomes.json, directives.json, status_log.json"
+    }
+  ]
+}

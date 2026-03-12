@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-12T00:25:00+07:00",
+  "meetings": [
+    {
+      "id": "BOD-20260309",
+      "title": "HỌP BOD THỨ 2",
+      "date": "2026-03-09",
+      "chu_tri": "SẾP SƠN",
+      "tham_du": ["SẾP SƠN", "TUẤN", "DŨNG", "LAN VY", "HIẾU"],
+      "transcript_file": "ban_chep_loi/transcipts_BOD_09032026.md",
+      "transcript_lines": 1617,
+      "transcript_lang": "vi-ja",
+      "topics": [
+        "Kết quả MSA tuần 1 tháng 3",
+        "GPS sự kiện thứ 11",
+        "Kết quả tuyển sinh: 200 ứng viên/tuần",
+        "2 giảng tại 3 khu vực (HCM, Đà Nẵng, Trà Vinh)",
+        "70 BY khai giảng + 55 ứng viên B2B3",
+        "119 ứng viên toàn hệ thống",
+        "30 MS mới vào hệ thống",
+        "Chiến lược tổ chức vùng (Đồng Nai, Trà Vinh)",
+        "Pipeline nguồn theo khu vực",
+        "Mô hình giải đá bóng = ví dụ chiến lược"
+      ],
+      "total_directives": 10,
+      "status": "processed",
+      "notion_page_id": "31ece590-e9e6-80a3-a66f-cb26a36e3b7b"
+    },
+    {
+      "id": "BOD-20260209",
+      "title": "BUỔI CHỈ ĐẠO TRỰC TIẾP 09/02/2026",
+      "date": "2026-02-09",
+      "chu_tri": "SẾP SƠN",
+      "tham_du": ["SẾP SƠN", "TUẤN", "DŨNG", "LAN VY", "SHIMIZU", "SATOMURA"],
+      "transcript_file": null,
+      "topics": [
+        "50 hạng mục chỉ đạo & cam kết",
+        "Bảng 5T toàn hệ thống",
+        "Mô hình GIAO-NHẬN 2 chiều",
+        "Upgrade or Nothing",
+        "Thư cam kết cá nhân"
+      ],
+      "total_directives": 50,
+      "status": "processed"
+    }
+  ]
+}
