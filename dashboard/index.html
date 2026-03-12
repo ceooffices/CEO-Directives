@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="CEO Dashboard - Chien luoc, Leo thang, Ket qua, Hanh dong">
+  <meta name="description" content="CEO Dashboard - Chiến lược, Leo thang, Kết quả, Hành động">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
         </svg>
       </div>
       <h1>CEO Dashboard</h1>
-      <p>Dang tai du lieu...</p>
+      <p>Đang tải dữ liệu...</p>
       <div class="splash-bar"><div class="splash-progress"></div></div>
     </div>
   </div>
@@ -39,7 +39,7 @@
         <h1 class="topbar-title">CEO Dashboard</h1>
       </div>
       <div class="topbar-right">
-        <button id="btnRefresh" class="topbar-btn">Lam moi</button>
+        <button id="btnRefresh" class="topbar-btn">Làm mới</button>
         <div class="topbar-time" id="topbarTime"></div>
       </div>
     </header>
@@ -47,7 +47,7 @@
     <nav class="tab-nav">
       <button class="tab active" data-tab="overview">
         <span class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
-        <span class="tab-label">Buc tranh</span>
+        <span class="tab-label">Bức tranh</span>
       </button>
       <button class="tab" data-tab="escalation">
         <span class="tab-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
@@ -55,11 +55,11 @@
       </button>
       <button class="tab" data-tab="strategy">
         <span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
-        <span class="tab-label">Chien luoc</span>
+        <span class="tab-label">Chiến lược</span>
       </button>
       <button class="tab" data-tab="actions">
         <span class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-        <span class="tab-label">Hanh dong</span>
+        <span class="tab-label">Hành động</span>
       </button>
     </nav>
 
@@ -71,42 +71,42 @@
         <div class="health-score-card" id="healthScore"></div>
 
         <!-- Traffic Light Summary -->
-        <div class="section-header">He thong den tin hieu</div>
+        <div class="section-header">Hệ thống đèn tín hiệu</div>
         <div class="traffic-lights" id="trafficLights"></div>
 
         <!-- Strategy Pillars Preview -->
-        <div class="section-header">8 tru cot chien luoc</div>
+        <div class="section-header">8 trụ cột chiến lược</div>
         <div class="pillars-grid" id="pillarsGrid"></div>
 
         <!-- Escalation Funnel -->
-        <div class="section-header">Dong chay chi dao</div>
+        <div class="section-header">Dòng chảy chỉ đạo</div>
         <div class="funnel-card" id="funnelCard"></div>
       </section>
 
       <!-- TAB: LEO THANG -->
       <section id="tab-escalation" class="tab-panel">
-        <div class="section-header">Bieu do leo thang chi dao</div>
+        <div class="section-header">Biểu đồ leo thang chỉ đạo</div>
         <div class="escalation-pipeline" id="escalationPipeline"></div>
 
-        <div class="section-header">Chi dao can leo thang</div>
+        <div class="section-header">Chỉ đạo cần leo thang</div>
         <div id="escalationList" class="directives-list"></div>
       </section>
 
       <!-- TAB: CHIEN LUOC -->
       <section id="tab-strategy" class="tab-panel">
-        <div class="section-header">Chien luoc dan den dau?</div>
+        <div class="section-header">Chiến lược dẫn đến đâu?</div>
         <div id="strategyMap"></div>
       </section>
 
       <!-- TAB: HANH DONG -->
       <section id="tab-actions" class="tab-panel">
-        <div class="section-header">Can lam ngay</div>
+        <div class="section-header">Cần làm ngay</div>
         <div id="urgentActions"></div>
 
-        <div class="section-header">Hanh dong theo trang thai</div>
+        <div class="section-header">Hành động theo trạng thái</div>
         <div id="actionsByStatus"></div>
 
-        <div class="section-header">Theo doi tien do</div>
+        <div class="section-header">Theo dõi tiến độ</div>
         <div id="progressTracking"></div>
       </section>
 

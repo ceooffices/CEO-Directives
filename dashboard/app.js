@@ -1,6 +1,6 @@
 /* =============================================
    CEO Dashboard — App Logic v3
-   Chien luoc → Leo thang → Ket qua → Hanh dong
+   Chiến lược → Leo thang → Kết quả → Hành động
    ============================================= */
 
 (function () {
@@ -16,11 +16,11 @@
   };
 
   const STATUS_LABELS = {
-    moi_tao: 'Moi tao', cho_xac_nhan: 'Cho xac nhan', da_xac_nhan_5t: 'Da xac nhan 5T',
-    dang_thuc_hien: 'Dang thuc hien', hoan_thanh: 'Hoan thanh', can_lam_ro: 'Can lam ro'
+    moi_tao: 'Mới tạo', cho_xac_nhan: 'Chờ xác nhận', da_xac_nhan_5t: 'Đã xác nhận 5T',
+    dang_thuc_hien: 'Đang thực hiện', hoan_thanh: 'Hoàn thành', can_lam_ro: 'Cần làm rõ'
   };
 
-  // Escalation logic based on HM-47: Xanh ≥90%, Vang 70-89%, Do <70%, Den = Do >2 tuan
+  // Escalation logic based on HM-47: Xanh ≥90%, Vàng 70-89%, Đỏ <70%, Đen = Đỏ >2 tuần
   // For directives: calculate escalation based on timeline and status
   function getEscalationLevel(d) {
     if (d.trang_thai === 'hoan_thanh') return 'done';
@@ -32,14 +32,14 @@
     const elapsed = totalDays - daysLeft;
     const pctElapsed = totalDays > 0 ? (elapsed / totalDays) * 100 : 0;
 
-    if (daysLeft < -14) return 'black';  // Qua han >2 tuan = DEN
-    if (daysLeft < 0) return 'red';       // Qua han = DO
-    if (daysLeft < 3 || pctElapsed > 80) return 'yellow'; // Sap den han = VANG
+    if (daysLeft < -14) return 'black';  // Quá hạn >2 tuần = ĐEN
+    if (daysLeft < 0) return 'red';       // Quá hạn = ĐỎ
+    if (daysLeft < 3 || pctElapsed > 80) return 'yellow'; // Sắp đến hạn = VÀNG
     return 'green';
   }
 
   const ESC_LABELS = {
-    green: 'Xanh', yellow: 'Vang', red: 'Do', black: 'Den', done: 'Hoan thanh'
+    green: 'Xanh', yellow: 'Vàng', red: 'Đỏ', black: 'Đen', done: 'Hoàn thành'
   };
 
   const ESC_COLORS = {
@@ -56,22 +56,22 @@
 
   // Section strategic outcomes — what each pillar LEADS TO
   const SECTION_OUTCOMES = {
-    'SEC-I': 'Toan he thong thay doi tu duy, tu XKLD thanh he sinh thai nhan luc quoc te. Moi nhan vien hieu triet ly va cam ket ca nhan.',
-    'SEC-II': 'Moi ngay co so lieu, moi tuan co review, moi thang co pipeline — khong co "vung mo" trong quan tri.',
-    'SEC-III': 'To chuc gon nhe, 9 doi MSA du quan, pipeline KOKA→MSA→JPC lien mach, khong co link yeu.',
-    'SEC-IV': 'Moi nguoi duoc tra luong theo ket qua that, thuong vuot ky vong, tu duy dau moi thay cho tu duy lam thue.',
-    'SEC-V': 'Van hoa "chien binh chu dong" thay cho thu dong. Moi NV tu hoi: bo toi ra, ket qua co doi khong?',
-    'SEC-VI': 'Marketing co do luong, 8 landing page chuyen biet, TikMe chieu sinh so, 2.483 leads moi/nam.',
-    'SEC-VII': '100% NV dung Bitrix, Dashboard 3 tang (tong quan → chi tiet → du bao AI), he thong den Xanh-Vang-Do-Den tu dong.',
-    'SEC-VIII': 'To chuc hoc tap lien tuc, Kaizen PDCA, tam nhin 2045: 20.000 vi tri/nam, hang tram ngan TN VN.'
+    'SEC-I': 'Toàn hệ thống thay đổi tư duy, từ XKLĐ thành hệ sinh thái nhân lực quốc tế. Mọi nhân viên hiểu triết lý và cam kết cá nhân.',
+    'SEC-II': 'Mỗi ngày có số liệu, mỗi tuần có review, mỗi tháng có pipeline — không có "vùng mờ" trong quản trị.',
+    'SEC-III': 'Tổ chức gọn nhẹ, 9 đội MSA đủ quân, pipeline KOKA→MSA→JPC liền mạch, không có link yếu.',
+    'SEC-IV': 'Mọi người được trả lương theo kết quả thật, thưởng vượt kỳ vọng, tư duy đầu mối thay cho tư duy làm thuê.',
+    'SEC-V': 'Văn hoá "chiến binh chủ động" thay cho thụ động. Mỗi NV tự hỏi: bỏ tôi ra, kết quả có đổi không?',
+    'SEC-VI': 'Marketing có đo lường, 8 landing page chuyên biệt, TikMe chiêu sinh số, 2.483 leads mới/năm.',
+    'SEC-VII': '100% NV dùng Bitrix, Dashboard 3 tầng (tổng quan → chi tiết → dự báo AI), hệ thống đèn Xanh-Vàng-Đỏ-Đen tự động.',
+    'SEC-VIII': 'Tổ chức học tập liên tục, Kaizen PDCA, tầm nhìn 2045: 20.000 vị trí/năm, hàng trăm ngàn TN VN.'
   };
 
   // What actions to take based on results
   const ACTION_SUGGESTIONS = {
-    green: 'Duy tri, ghi nhan, chia se best practice',
-    yellow: 'Nhac nho dau moi, check-in tien do, ho tro nguon luc',
-    red: 'Hop khan cap voi dau moi, tai phan bo nguon luc, bao cao BOD',
-    black: 'CEO can thiep truc tiep, co the thay dau moi, uu tien cao nhat'
+    green: 'Duy trì, ghi nhận, chia sẻ best practice',
+    yellow: 'Nhắc nhở đầu mối, check-in tiến độ, hỗ trợ nguồn lực',
+    red: 'Họp khẩn cấp với đầu mối, tái phân bổ nguồn lực, báo cáo BOD',
+    black: 'CEO can thiệp trực tiếp, có thể thay đầu mối, ưu tiên cao nhất'
   };
 
   let data = { directives: [], meetings: [], outcomes: [], people: [], statusLog: [] };
@@ -111,7 +111,7 @@
       console.error('Failed to load data:', err);
       const splash = $('#splash');
       if (splash) {
-        splash.querySelector('p').textContent = 'Loi tai du lieu';
+        splash.querySelector('p').textContent = 'Lỗi tải dữ liệu';
         splash.querySelector('.splash-progress').style.background = '#ff3b30';
       }
     }
@@ -156,7 +156,7 @@
     renderProgressTracking();
   }
 
-  // ===== TAB 1: BUC TRANH TONG =====
+  // ===== TAB 1: BỨC TRANH TỔNG =====
 
   function renderHealthScore() {
     const total = data.outcomes.length || 50;
@@ -171,7 +171,7 @@
     // Combined score weighted: 60% strategy completion, 40% directive execution
     const combined = Math.round(pct * 0.6 + dirPct * 0.4);
     const color = combined >= 70 ? '#34c759' : combined >= 40 ? '#ff9500' : '#ff3b30';
-    const label = combined >= 70 ? 'He thong on dinh' : combined >= 40 ? 'Can chu y, co rui ro' : 'Bao dong — can hanh dong ngay';
+    const label = combined >= 70 ? 'Hệ thống ổn định' : combined >= 40 ? 'Cần chú ý, có rủi ro' : 'Báo động — cần hành động ngay';
 
     const circumference = 2 * Math.PI * 60;
     const offset = circumference - (combined / 100) * circumference;
@@ -189,11 +189,11 @@
           ${combined}<span class="health-score-pct">%</span>
         </div>
       </div>
-      <div class="health-label">Diem suc khoe tong the</div>
+      <div class="health-label">Điểm sức khoẻ tổng thể</div>
       <div class="health-desc">${label}</div>
       <div style="display:flex;justify-content:center;gap:20px;margin-top:14px;font-size:0.72rem;color:var(--text-secondary)">
-        <span>Chien luoc: ${pct}% (${ok}/${total})</span>
-        <span>Thuc thi: ${dirPct}% (${dirDone}/${dirTotal})</span>
+        <span>Chiến lược: ${pct}% (${ok}/${total})</span>
+        <span>Thực thi: ${dirPct}% (${dirDone}/${dirTotal})</span>
       </div>
     `;
   }
@@ -211,26 +211,26 @@
       <div class="tl-card">
         <div class="tl-dot green"></div>
         <div class="tl-count" style="color:var(--green)">${levels.green}</div>
-        <div class="tl-label">Dung tien do</div>
-        <div class="tl-threshold">On dinh</div>
+        <div class="tl-label">Đúng tiến độ</div>
+        <div class="tl-threshold">Ổn định</div>
       </div>
       <div class="tl-card">
         <div class="tl-dot yellow"></div>
         <div class="tl-count" style="color:var(--orange)">${levels.yellow}</div>
-        <div class="tl-label">Sap den han</div>
-        <div class="tl-threshold">Can theo doi</div>
+        <div class="tl-label">Sắp đến hạn</div>
+        <div class="tl-threshold">Cần theo dõi</div>
       </div>
       <div class="tl-card">
         <div class="tl-dot red"></div>
         <div class="tl-count" style="color:var(--red)">${levels.red}</div>
-        <div class="tl-label">Qua han</div>
-        <div class="tl-threshold">&lt;2 tuan</div>
+        <div class="tl-label">Quá hạn</div>
+        <div class="tl-threshold">&lt;2 tuần</div>
       </div>
       <div class="tl-card">
         <div class="tl-dot black"></div>
         <div class="tl-count" style="color:var(--black-signal)">${levels.black}</div>
-        <div class="tl-label">Bao dong</div>
-        <div class="tl-threshold">&gt;2 tuan qua</div>
+        <div class="tl-label">Báo động</div>
+        <div class="tl-threshold">&gt;2 tuần quá</div>
       </div>
     `;
   }
@@ -254,7 +254,7 @@
             <div class="pillar-bar-fill" style="width:${pct}%;background:${color}"></div>
           </div>
           <div class="pillar-stats">
-            <span style="color:${color}">${pct}% hoan thanh</span>
+            <span style="color:${color}">${pct}% hoàn thành</span>
             <span>${ok}/${total}</span>
           </div>
         </div>
@@ -264,11 +264,11 @@
 
   function renderFunnel() {
     const stages = [
-      { key: 'cho_xac_nhan', label: 'Cho xac nhan', color: '#ff9500' },
-      { key: 'da_xac_nhan_5t', label: 'Da xac nhan 5T', color: '#5ac8fa' },
-      { key: 'dang_thuc_hien', label: 'Dang thuc hien', color: '#007aff' },
-      { key: 'hoan_thanh', label: 'Hoan thanh', color: '#34c759' },
-      { key: 'can_lam_ro', label: 'Can lam ro', color: '#ff3b30' }
+      { key: 'cho_xac_nhan', label: 'Chờ xác nhận', color: '#ff9500' },
+      { key: 'da_xac_nhan_5t', label: 'Đã xác nhận 5T', color: '#5ac8fa' },
+      { key: 'dang_thuc_hien', label: 'Đang thực hiện', color: '#007aff' },
+      { key: 'hoan_thanh', label: 'Hoàn thành', color: '#34c759' },
+      { key: 'can_lam_ro', label: 'Cần làm rõ', color: '#ff3b30' }
     ];
 
     const total = data.directives.length || 1;
@@ -296,10 +296,10 @@
 
   function renderEscalationPipeline() {
     const levels = [
-      { key: 'green', label: 'Xanh — Dung tien do', desc: 'Chi dao nay dang trien khai tot, chua gap ro rao gi.', color: '#34c759' },
-      { key: 'yellow', label: 'Vang — Sap den han', desc: 'Con duoi 3 ngay hoac da qua 80% thoi gian. Can theo doi sat va dam bao tien do.', color: '#ff9500' },
-      { key: 'red', label: 'Do — Qua han', desc: 'Da qua deadline nhung chua vuot 2 tuan. Can hop khan voi dau moi, tai phan bo nguon luc.', color: '#ff3b30' },
-      { key: 'black', label: 'Den — Bao dong', desc: 'Qua han tren 2 tuan. CEO can thiep truc tiep, co the can thay dau moi hoac uu tien lai.', color: '#1c1c1e' }
+      { key: 'green', label: 'Xanh — Đúng tiến độ', desc: 'Chỉ đạo đang triển khai tốt, chưa gặp rào cản gì.', color: '#34c759' },
+      { key: 'yellow', label: 'Vàng — Sắp đến hạn', desc: 'Còn dưới 3 ngày hoặc đã qua 80% thời gian. Cần theo dõi sát và đảm bảo tiến độ.', color: '#ff9500' },
+      { key: 'red', label: 'Đỏ — Quá hạn', desc: 'Đã quá deadline nhưng chưa vượt 2 tuần. Cần họp khẩn với đầu mối, tái phân bổ nguồn lực.', color: '#ff3b30' },
+      { key: 'black', label: 'Đen — Báo động', desc: 'Quá hạn trên 2 tuần. CEO cần can thiệp trực tiếp, có thể cần thay đầu mối hoặc ưu tiên lại.', color: '#1c1c1e' }
     ];
 
     const grouped = {};
@@ -325,10 +325,10 @@
             ${items.slice(0, 3).map(d => `
               <div class="esc-item" data-id="${d.id}">
                 ${d.nhiem_vu.substring(0, 80)}${d.nhiem_vu.length > 80 ? '...' : ''}
-                <div class="esc-item-meta">${d.dau_moi} — Han: ${d.thoi_han || '—'}</div>
+                <div class="esc-item-meta">${d.dau_moi} — Hạn: ${d.thoi_han || '—'}</div>
               </div>
             `).join('')}
-            ${items.length > 3 ? `<div class="esc-item" style="color:var(--text-tertiary);text-align:center">+${items.length - 3} chi dao khac</div>` : ''}
+            ${items.length > 3 ? `<div class="esc-item" style="color:var(--text-tertiary);text-align:center">+${items.length - 3} chỉ đạo khác</div>` : ''}
           </div>` : ''}
         </div>
       `;
@@ -358,24 +358,24 @@
             <span class="dc-meta-item" style="${lvl === 'red' || lvl === 'black' ? 'color:var(--red)' : ''}">${icon('clock')} ${daysInfo}</span>
             <span class="dc-meta-item">${icon('target')} ${d.hm50_ref || '—'}</span>
           </div>
-          ${(lvl === 'red' || lvl === 'black') ? `<div class="dc-esc-reason">Hanh dong: ${ACTION_SUGGESTIONS[lvl]}</div>` : ''}
+          ${(lvl === 'red' || lvl === 'black') ? `<div class="dc-esc-reason">Hành động: ${ACTION_SUGGESTIONS[lvl]}</div>` : ''}
         </div>
       `;
     }).join('');
   }
 
   function getDaysInfo(d) {
-    if (d.trang_thai === 'hoan_thanh') return 'Da hoan thanh';
-    if (!d.thoi_han) return 'Chua co deadline';
+    if (d.trang_thai === 'hoan_thanh') return 'Đã hoàn thành';
+    if (!d.thoi_han) return 'Chưa có deadline';
     const now = new Date();
     const deadline = new Date(d.thoi_han);
     const days = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
-    if (days < 0) return `Qua han ${Math.abs(days)} ngay`;
-    if (days === 0) return 'Hom nay la deadline';
-    return `Con ${days} ngay`;
+    if (days < 0) return `Quá hạn ${Math.abs(days)} ngày`;
+    if (days === 0) return 'Hôm nay là deadline';
+    return `Còn ${days} ngày`;
   }
 
-  // ===== TAB 3: CHIEN LUOC =====
+  // ===== TAB 3: CHIẾN LƯỢC =====
 
   function renderStrategyMap() {
     const el = $('#strategyMap');
@@ -407,13 +407,13 @@
           </div>
 
           <div class="strat-outcome">
-            <div class="strat-outcome-label">Dan den dau?</div>
+            <div class="strat-outcome-label">Dẫn đến đâu?</div>
             <div class="strat-outcome-text">${outcomeText}</div>
           </div>
 
           ${linkedDirs.length > 0 ? `
           <div class="strat-outcome">
-            <div class="strat-outcome-label">Chi dao BOD lien quan (${linkedDirs.length})</div>
+            <div class="strat-outcome-label">Chỉ đạo BOD liên quan (${linkedDirs.length})</div>
             ${linkedDirs.map(d => {
               const lvl = getEscalationLevel(d);
               return `<div class="strat-item" data-id="${d.id}">
@@ -425,7 +425,7 @@
           </div>` : ''}
 
           <div class="strat-outcome">
-            <div class="strat-outcome-label">${total} hang muc chi dao</div>
+            <div class="strat-outcome-label">${total} hạng mục chỉ đạo</div>
             <div class="strat-items">
               ${items.map(o => {
                 const si = STATUS_ICONS[o.status] || STATUS_ICONS['❌'];
@@ -442,7 +442,7 @@
     }).join('');
   }
 
-  // ===== TAB 4: HANH DONG =====
+  // ===== TAB 4: HÀNH ĐỘNG =====
 
   function renderUrgentActions() {
     const el = $('#urgentActions');
@@ -458,14 +458,14 @@
       });
 
     if (!urgent.length) {
-      el.innerHTML = '<div class="action-group"><div class="action-group-header"><span class="action-group-title">Tat ca chi dao dang on dinh</span></div></div>';
+      el.innerHTML = '<div class="action-group"><div class="action-group-header"><span class="action-group-title">Tất cả chỉ đạo đang ổn định</span></div></div>';
       return;
     }
 
     el.innerHTML = `
       <div class="action-group">
         <div class="action-group-header">
-          <span class="action-group-title">Chi dao can xu ly (${urgent.length})</span>
+          <span class="action-group-title">Chỉ đạo cần xử lý (${urgent.length})</span>
           <span class="action-group-count" style="background:rgba(255,59,48,0.1);color:var(--red)">${urgent.length}</span>
         </div>
         ${urgent.map(d => {
@@ -476,7 +476,7 @@
               <div class="action-body">
                 <div class="action-task">${d.nhiem_vu.substring(0, 80)}${d.nhiem_vu.length > 80 ? '...' : ''}</div>
                 <div class="action-meta">${d.dau_moi} — ${getDaysInfo(d)}</div>
-                <div class="action-suggest">Hanh dong: ${ACTION_SUGGESTIONS[lvl]}</div>
+                <div class="action-suggest">Hành động: ${ACTION_SUGGESTIONS[lvl]}</div>
               </div>
             </div>
           `;
@@ -490,18 +490,18 @@
     // Group HM50 outcomes by status and suggest actions
     const groups = [
       {
-        status: '❌', label: 'Blind spot — Can hanh dong gap',
-        desc: 'Chua co chu, chua ai chiu trach nhiem. Can chi dinh dau moi va deadline cu the.',
+        status: '❌', label: 'Blind spot — Cần hành động gấp',
+        desc: 'Chưa có chủ, chưa ai chịu trách nhiệm. Cần chỉ định đầu mối và deadline cụ thể.',
         color: '#ff3b30'
       },
       {
-        status: '⚠️', label: 'Chua chu dong — Can thuc day',
-        desc: 'Co nhac nhung chua co hanh dong cu the. Can chi dinh nguoi theo doi va cam ket tien do.',
+        status: '⚠️', label: 'Chưa chủ động — Cần thúc đẩy',
+        desc: 'Có nhắc nhưng chưa có hành động cụ thể. Cần chỉ định người theo dõi và cam kết tiến độ.',
         color: '#ff9500'
       },
       {
-        status: '✅', label: 'Dang tot — Giu nguyen va nhan rong',
-        desc: 'Da co chu, dang thuc hien. Tiep tuc giam sat va chia se kinh nghiem cho nhom khac.',
+        status: '✅', label: 'Đang tốt — Giữ nguyên và nhân rộng',
+        desc: 'Đã có chủ, đang thực hiện. Tiếp tục giám sát và chia sẻ kinh nghiệm cho nhóm khác.',
         color: '#34c759'
       }
     ];
@@ -524,7 +524,7 @@
               </div>
             </div>
           `).join('')}
-          ${items.length > 5 ? `<div style="padding:8px 16px;text-align:center;font-size:0.72rem;color:var(--text-tertiary)">+ ${items.length - 5} muc khac</div>` : ''}
+          ${items.length > 5 ? `<div style="padding:8px 16px;text-align:center;font-size:0.72rem;color:var(--text-tertiary)">+ ${items.length - 5} mục khác</div>` : ''}
         </div>
       `;
     }).join('');
@@ -570,37 +570,37 @@
       <div class="modal-title">${d.nhiem_vu}</div>
       <div style="margin-bottom:16px">
         <span class="dc-esc-badge ${lvl}" style="font-size:0.75rem;padding:4px 14px">
-          Den tin hieu: ${ESC_LABELS[lvl]}
+          Đèn tín hiệu: ${ESC_LABELS[lvl]}
         </span>
       </div>
       <div class="modal-section">
-        <div class="modal-section-title">5T Chi tiet</div>
-        <div class="modal-row"><span class="modal-row-label">T1 Dau moi</span><span class="modal-row-value">${d.dau_moi}</span></div>
-        <div class="modal-row"><span class="modal-row-label">T2 Nhiem vu</span><span class="modal-row-value">${d.nhiem_vu}</span></div>
-        <div class="modal-row"><span class="modal-row-label">T3 Chi tieu</span><span class="modal-row-value">${d.chi_tieu || '—'}</span></div>
-        <div class="modal-row"><span class="modal-row-label">T4 Thoi han</span><span class="modal-row-value">${d.thoi_han || '—'} (${getDaysInfo(d)})</span></div>
-        <div class="modal-row"><span class="modal-row-label">T5 Lien quan</span><span class="modal-row-value">${(d.thanh_vien_lien_quan || []).map(t => `<span class="modal-tag">${t}</span>`).join(' ') || '—'}</span></div>
+        <div class="modal-section-title">5T Chi tiết</div>
+        <div class="modal-row"><span class="modal-row-label">T1 Đầu mối</span><span class="modal-row-value">${d.dau_moi}</span></div>
+        <div class="modal-row"><span class="modal-row-label">T2 Nhiệm vụ</span><span class="modal-row-value">${d.nhiem_vu}</span></div>
+        <div class="modal-row"><span class="modal-row-label">T3 Chỉ tiêu</span><span class="modal-row-value">${d.chi_tieu || '—'}</span></div>
+        <div class="modal-row"><span class="modal-row-label">T4 Thời hạn</span><span class="modal-row-value">${d.thoi_han || '—'} (${getDaysInfo(d)})</span></div>
+        <div class="modal-row"><span class="modal-row-label">T5 Liên quan</span><span class="modal-row-value">${(d.thanh_vien_lien_quan || []).map(t => `<span class="modal-tag">${t}</span>`).join(' ') || '—'}</span></div>
       </div>
       ${(lvl === 'yellow' || lvl === 'red' || lvl === 'black') ? `
       <div class="modal-section">
-        <div class="modal-section-title">Hanh dong de xuat</div>
+        <div class="modal-section-title">Hành động đề xuất</div>
         <div style="padding:10px 14px;background:${ESC_COLORS[lvl]}08;border:1px solid ${ESC_COLORS[lvl]}20;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-primary);line-height:1.5">
           ${ACTION_SUGGESTIONS[lvl]}
         </div>
       </div>` : ''}
       ${hm ? `
       <div class="modal-section">
-        <div class="modal-section-title">Chien luoc lien quan: ${hm.id}</div>
-        <div class="modal-row"><span class="modal-row-label">Hang muc</span><span class="modal-row-value">${hm.name}</span></div>
+        <div class="modal-section-title">Chiến lược liên quan: ${hm.id}</div>
+        <div class="modal-row"><span class="modal-row-label">Hạng mục</span><span class="modal-row-value">${hm.name}</span></div>
         <div class="modal-row"><span class="modal-row-label">Target</span><span class="modal-row-value">${hm.target}</span></div>
-        <div class="modal-row"><span class="modal-row-label">Dan den</span><span class="modal-row-value">${SECTION_OUTCOMES[hm.section] || '—'}</span></div>
+        <div class="modal-row"><span class="modal-row-label">Dẫn đến</span><span class="modal-row-value">${SECTION_OUTCOMES[hm.section] || '—'}</span></div>
       </div>` : ''}
       <div class="modal-section">
-        <div class="modal-section-title">Lich su</div>
+        <div class="modal-section-title">Lịch sử</div>
         <div class="modal-history">
           ${(d.history || []).map(h => `
             <div class="modal-history-item">
-              <strong>${h.action}</strong> boi ${h.by} — ${new Date(h.timestamp).toLocaleString('vi-VN')}
+              <strong>${h.action}</strong> bởi ${h.by} — ${new Date(h.timestamp).toLocaleString('vi-VN')}
               ${h.note ? `<br><em>${h.note}</em>` : ''}
             </div>
           `).join('')}
@@ -620,23 +620,23 @@
       <div class="modal-title">${hm.name}</div>
       <div style="margin-bottom:16px">
         <span class="dc-esc-badge" style="background:${si.color}15;color:${si.color};font-size:0.75rem;padding:4px 14px">
-          ${hm.status === '✅' ? 'Co chu' : hm.status === '⚠️' ? 'Chua chu' : 'Blind spot'}
+          ${hm.status === '✅' ? 'Có chủ' : hm.status === '⚠️' ? 'Chưa chủ' : 'Blind spot'}
         </span>
       </div>
       <div class="modal-section">
-        <div class="modal-section-title">Chi tiet hang muc</div>
-        <div class="modal-row"><span class="modal-row-label">Dau moi</span><span class="modal-row-value">${hm.dau_moi}</span></div>
+        <div class="modal-section-title">Chi tiết hạng mục</div>
+        <div class="modal-row"><span class="modal-row-label">Đầu mối</span><span class="modal-row-value">${hm.dau_moi}</span></div>
         <div class="modal-row"><span class="modal-row-label">Task</span><span class="modal-row-value">${hm.task}</span></div>
         <div class="modal-row"><span class="modal-row-label">Target</span><span class="modal-row-value">${hm.target}</span></div>
         <div class="modal-row"><span class="modal-row-label">Deadline</span><span class="modal-row-value">${hm.deadline}</span></div>
       </div>
       <div class="modal-section">
-        <div class="modal-section-title">Dan den dau?</div>
+        <div class="modal-section-title">Dẫn đến đâu?</div>
         <div style="font-size:0.82rem;line-height:1.5;color:var(--text-primary)">${SECTION_OUTCOMES[hm.section] || '—'}</div>
       </div>
       ${linkedDirs.length ? `
       <div class="modal-section">
-        <div class="modal-section-title">Chi dao BOD lien quan (${linkedDirs.length})</div>
+        <div class="modal-section-title">Chỉ đạo BOD liên quan (${linkedDirs.length})</div>
         ${linkedDirs.map(d => {
           const lvl = getEscalationLevel(d);
           return `<div class="modal-row" style="flex-direction:column;gap:4px">
@@ -647,10 +647,10 @@
       </div>` : ''}
       ${hm.status !== '✅' ? `
       <div class="modal-section">
-        <div class="modal-section-title">Hanh dong de xuat</div>
+        <div class="modal-section-title">Hành động đề xuất</div>
         <div style="padding:10px 14px;background:${si.color}08;border:1px solid ${si.color}20;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-primary);line-height:1.5">
-          ${hm.status === '❌' ? 'Can chi dinh dau moi chinh thuc, lap deadline ro rang, va cam ket 5T. Day la blind spot — khong hanh dong = khong ket qua.' :
-            'Can thuc day hanh dong cu the. Dau moi can bao cao tien do hang tuan, dat moc trung gian, va cam ket deadline.'}
+          ${hm.status === '❌' ? 'Cần chỉ định đầu mối chính thức, lập deadline rõ ràng, và cam kết 5T. Đây là blind spot — không hành động = không kết quả.' :
+            'Cần thúc đẩy hành động cụ thể. Đầu mối cần báo cáo tiến độ hàng tuần, đặt mốc trung gian, và cam kết deadline.'}
         </div>
       </div>` : ''}
     `;
@@ -709,7 +709,7 @@
         data.outcomesSections = out.sections || [];
         renderAll();
       } catch (err) { console.error('Refresh failed:', err); }
-      btn.textContent = 'Lam moi';
+      btn.textContent = 'Làm mới';
     });
   }
 
