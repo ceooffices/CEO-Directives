@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="CEO Dashboard - Theo dõi chỉ đạo BOD, quản lý directive 5T, giám sát HM50">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>CEO Dashboard — Chỉ đạo BOD</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- SPLASH -->
+  <div id="splash" class="splash">
+    <div class="splash-content">
+      <div class="splash-icon">🎯</div>
+      <h1>CEO Dashboard</h1>
+      <p>Đang tải dữ liệu...</p>
+      <div class="splash-bar"><div class="splash-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="app hidden">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-icon">🎯</span>
+        <h1 class="topbar-title">CEO Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <button id="btnRefresh" class="topbar-btn" title="Refresh">🔄</button>
+        <div class="topbar-time" id="topbarTime"></div>
+      </div>
+    </header>
+
+    <!-- TAB NAV -->
+    <nav class="tab-nav">
+      <button class="tab active" data-tab="overview">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Tổng quan</span>
+      </button>
+      <button class="tab" data-tab="directives">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Chỉ đạo</span>
+      </button>
+      <button class="tab" data-tab="hm50">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-label">HM50</span>
+      </button>
+      <button class="tab" data-tab="people">
+        <span class="tab-icon">👥</span>
+        <span class="tab-label">Nhân sự</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TAB: OVERVIEW -->
+      <section id="tab-overview" class="tab-panel active">
+        <!-- KPI Cards -->
+        <div class="kpi-row">
+          <div class="kpi-card kpi-total">
+            <div class="kpi-value" id="kpiTotal">0</div>
+            <div class="kpi-label">Tổng chỉ đạo</div>
+          </div>
+          <div class="kpi-card kpi-pending">
+            <div class="kpi-value" id="kpiPending">0</div>
+            <div class="kpi-label">Chờ xác nhận</div>
+          </div>
+          <div class="kpi-card kpi-done">
+            <div class="kpi-value" id="kpiDone">0</div>
+            <div class="kpi-label">Hoàn thành</div>
+          </div>
+          <div class="kpi-card kpi-overdue">
+            <div class="kpi-value" id="kpiOverdue">0</div>
+            <div class="kpi-label">Quá hạn</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3 class="card-title">Trạng thái chỉ đạo</h3>
+            <canvas id="chartStatus" width="280" height="280"></canvas>
+            <div id="chartStatusLegend" class="chart-legend"></div>
+          </div>
+          <div class="chart-card">
+            <h3 class="card-title">Phân bổ theo Đầu mối</h3>
+            <canvas id="chartPeople" width="280" height="220"></canvas>
+            <div id="chartPeopleLegend" class="chart-legend"></div>
+          </div>
+        </div>
+
+        <!-- HM50 Summary -->
+        <div class="summary-card">
+          <h3 class="card-title">HM50 — Tổng quan 50 hạng mục</h3>
+          <div class="hm50-bars">
+            <div class="hm-bar-row">
+              <span class="hm-bar-label">✅ Có chủ</span>
+              <div class="hm-bar-track"><div class="hm-bar-fill hm-green" id="hmGreen"></div></div>
+              <span class="hm-bar-val" id="hmGreenVal">0</span>
+            </div>
+            <div class="hm-bar-row">
+              <span class="hm-bar-label">⚠️ Chưa chủ</span>
+              <div class="hm-bar-track"><div class="hm-bar-fill hm-yellow" id="hmYellow"></div></div>
+              <span class="hm-bar-val" id="hmYellowVal">0</span>
+            </div>
+            <div class="hm-bar-row">
+              <span class="hm-bar-label">❌ Blind spot</span>
+              <div class="hm-bar-track"><div class="hm-bar-fill hm-red" id="hmRed"></div></div>
+              <span class="hm-bar-val" id="hmRedVal">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Meeting -->
+        <div class="summary-card">
+          <h3 class="card-title">Cuộc họp gần nhất</h3>
+          <div id="recentMeeting" class="meeting-info"></div>
+        </div>
+      </section>
+
+      <!-- TAB: DIRECTIVES -->
+      <section id="tab-directives" class="tab-panel">
+        <div class="filter-bar">
+          <select id="filterPerson" class="filter-select">
+            <option value="all">Tất cả đầu mối</option>
+          </select>
+          <select id="filterStatus" class="filter-select">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="cho_xac_nhan">⏳ Chờ xác nhận</option>
+            <option value="da_xac_nhan_5t">✅ Đã xác nhận 5T</option>
+            <option value="dang_thuc_hien">🔄 Đang thực hiện</option>
+            <option value="hoan_thanh">✅ Hoàn thành</option>
+            <option value="can_lam_ro">❓ Cần làm rõ</option>
+          </select>
+        </div>
+        <div id="directivesList" class="directives-list"></div>
+      </section>
+
+      <!-- TAB: HM50 -->
+      <section id="tab-hm50" class="tab-panel">
+        <div class="filter-bar">
+          <select id="filterSection" class="filter-select">
+            <option value="all">Tất cả phần</option>
+          </select>
+          <select id="filterHmStatus" class="filter-select">
+            <option value="all">Tất cả</option>
+            <option value="✅">✅ Có chủ</option>
+            <option value="⚠️">⚠️ Chưa chủ</option>
+            <option value="❌">❌ Blind spot</option>
+          </select>
+        </div>
+        <div id="hm50List" class="hm50-list"></div>
+      </section>
+
+      <!-- TAB: PEOPLE -->
+      <section id="tab-people" class="tab-panel">
+        <div id="peopleList" class="people-list"></div>
+      </section>
+
+    </main>
+
+    <!-- DIRECTIVE DETAIL MODAL -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">✕</button>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
