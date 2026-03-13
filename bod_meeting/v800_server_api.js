@@ -21,6 +21,58 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// ===== DASHBOARD URL — SINGLE SOURCE OF TRUTH =====
+// Tập trung 1 hàm duy nhất để toàn hệ thống lấy URL Dashboard mới nhất.
+// Ưu tiên: 1) cfg_dashboardUrl (Admin override) → 2) ScriptApp HEAD → 3) Sheet URL
+
+/**
+ * Lấy URL Dashboard mới nhất — gọi từ mọi nơi cần link CTA.
+ * @returns {string} URL Dashboard
+ */
+function getDashboardUrl() {
+  // 1. Kiểm tra Settings sheet — admin override
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var configSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_CONFIG) ? CONFIG.SHEET_CONFIG : "Settings";
+    var settingsSheet = ss.getSheetByName(configSheetName);
+    if (settingsSheet) {
+      var sData = settingsSheet.getDataRange().getValues();
+      for (var i = 0; i < sData.length; i++) {
+        var key = (sData[i][0] || "").toString().trim().toLowerCase();
+        var val = (sData[i][1] || "").toString().trim();
+        if ((key === "cfg_dashboardurl" || key === "dashboard url" || key === "cfg_dashboard_url") && val) {
+          return val;
+        }
+      }
+    }
+  } catch (e) {
+    Logger.log("getDashboardUrl: Settings read error: " + e.message);
+  }
+
+  // 2. ScriptApp — HEAD deployment URL (tự động lấy phiên bản mới nhất)
+  try {
+    var url = ScriptApp.getService().getUrl();
+    if (url) return url;
+  } catch (e) {
+    Logger.log("getDashboardUrl: ScriptApp error: " + e.message);
+  }
+
+  // 3. Fallback — Sheet URL
+  try {
+    return SpreadsheetApp.getActiveSpreadsheet().getUrl();
+  } catch (e) {
+    return "";
+  }
+}
+
+/**
+ * Frontend gọi được — Dashboard.html, AdminPage.html, Js_Core.html.
+ * @returns {string} URL Web App
+ */
+function getScriptAppUrl() {
+  return getDashboardUrl();
+}
+
 // ===== MỞ DASHBOARD TRONG POPUP =====
 function showDashboardDialog() {
   var html = HtmlService.createHtmlOutputFromFile("Dashboard")

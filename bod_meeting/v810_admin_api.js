@@ -259,6 +259,7 @@ function getAdminSettings() {
       defaultCD: "10",
       ccEmail: Session.getActiveUser().getEmail(),
       btcEmails: "",
+      dashboardLink: "",
       formLink: "",
       sheetLink: ""
     };
@@ -273,6 +274,7 @@ function getAdminSettings() {
       "cfg_defaultCD": "defaultCD",
       "cfg_ccEmail": "ccEmail",
       "cfg_btcEmails": "btcEmails",
+      "cfg_dashboardUrl": "dashboardLink",
       "cfg_formLink": "formLink",
       "cfg_sheetLink": "sheetLink"
     };
@@ -321,6 +323,7 @@ function saveAdminSettings(jsonSettings) {
       defaultCD: "cfg_defaultCD",
       ccEmail: "cfg_ccEmail",
       btcEmails: "cfg_btcEmails",
+      dashboardLink: "cfg_dashboardUrl",
       formLink: "cfg_formLink",
       sheetLink: "cfg_sheetLink"
     };
