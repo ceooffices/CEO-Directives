@@ -23,14 +23,21 @@ function doGet(e) {
 
 // ===== DASHBOARD URL — SINGLE SOURCE OF TRUTH =====
 // Tập trung 1 hàm duy nhất để toàn hệ thống lấy URL Dashboard mới nhất.
-// Ưu tiên: 1) cfg_dashboardUrl (Admin override) → 2) ScriptApp HEAD → 3) Sheet URL
+// Ưu tiên: 1) cfg_dashboardUrl (Admin override) → 2) Deployed /exec URL → 3) Hardcoded deployment
+//
+// LƯU Ý: ScriptApp.getService().getUrl() trả về /dev URL khi gọi từ trigger/editor
+// → Chỉ editor mở được, BTC bấm CTA sẽ lỗi Google Drive!
+// → Chỉ dùng khi URL chứa "/exec" (deployed version)
+
+// Deployment ID chính — cập nhật mỗi khi đổi deployment chính
+var MAIN_DEPLOYMENT_ID = "AKfycbzWeSuP4GjR9rXeQREcdc5yd4N0dnlHWmpDyBJc5ALxGkKSvofu3fQ0tOzGNz9icV9UTA";
 
 /**
  * Lấy URL Dashboard mới nhất — gọi từ mọi nơi cần link CTA.
  * @returns {string} URL Dashboard
  */
 function getDashboardUrl() {
-  // 1. Kiểm tra Settings sheet — admin override
+  // 1. Kiểm tra Settings sheet — admin override (ưu tiên cao nhất)
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var configSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_CONFIG) ? CONFIG.SHEET_CONFIG : "Settings";
@@ -49,20 +56,19 @@ function getDashboardUrl() {
     Logger.log("getDashboardUrl: Settings read error: " + e.message);
   }
 
-  // 2. ScriptApp — HEAD deployment URL (tự động lấy phiên bản mới nhất)
+  // 2. ScriptApp — CHỈ dùng khi URL chứa "/exec" (deployed version, ai cũng mở được)
+  //    Bỏ qua /dev URL vì chỉ editor mới truy cập được
   try {
     var url = ScriptApp.getService().getUrl();
-    if (url) return url;
+    if (url && url.indexOf("/exec") > -1) return url;
+    // Nếu là /dev URL → log cảnh báo, KHÔNG dùng
+    if (url) Logger.log("getDashboardUrl: Skipped /dev URL (trigger context): " + url);
   } catch (e) {
     Logger.log("getDashboardUrl: ScriptApp error: " + e.message);
   }
 
-  // 3. Fallback — Sheet URL
-  try {
-    return SpreadsheetApp.getActiveSpreadsheet().getUrl();
-  } catch (e) {
-    return "";
-  }
+  // 3. Fallback — dùng deployment ID chính (luôn đúng, ai cũng mở được)
+  return "https://script.google.com/macros/s/" + MAIN_DEPLOYMENT_ID + "/exec";
 }
 
 /**

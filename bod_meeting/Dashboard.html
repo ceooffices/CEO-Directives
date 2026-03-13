@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -5632,30 +5632,35 @@
           var searchDate = getSelectedDate();
           var displayDate = getDisplayDate();
           if (!searchDate) {
-            showToast('Chưa chọn ngày họp', 'error');
+            alert('⚠ Chưa chọn ngày họp! Vui lòng chọn ngày trước khi gửi.');
             return;
           }
           showToast('Đang gửi nhắc nhở...', 'loading');
           google.script.run
             .withSuccessHandler(function (r) {
               dismissToast();
+              var msg = 'Gửi: ' + r.sent + ' | Lỗi: ' + r.failed;
               if (r.sent > 0) {
                 showToast('Đã gửi nhắc ' + r.sent + ' bộ phận', 'success', 5000);
+                alert('✅ Đã gửi nhắc nhở thành công!\n' + msg);
               } else {
                 showToast('Không có bộ phận cần nhắc', 'info', 4000);
+                alert('ℹ Không có bộ phận nào cần nhắc (tất cả đã đăng ký).');
               }
-              showMsg("deptMsg", "Gửi: " + r.sent + " | Lỗi: " + r.failed, r.sent > 0 ? "success" : "error");
+              showMsg("deptMsg", msg, r.sent > 0 ? "success" : "error");
               loadDeptStatus();
             })
             .withFailureHandler(function (e) {
               dismissToast();
-              showToast('Lỗi gửi nhắc: ' + e.message, 'error', 5000);
-              showMsg("deptMsg", "Lỗi: " + e.message, "error");
+              var errMsg = e.message || 'Không xác định';
+              showToast('Lỗi gửi nhắc: ' + errMsg, 'error', 5000);
+              showMsg("deptMsg", "Lỗi: " + errMsg, "error");
+              alert('❌ Lỗi gửi nhắc nhở!\n' + errMsg);
             })
             .sendBulkReminderWeb(searchDate, displayDate);
         } catch(ex) {
           dismissToast();
-          showToast('Lỗi JS: ' + ex.message, 'error');
+          alert('❌ Lỗi hệ thống: ' + ex.message);
         }
       }
 
@@ -5667,16 +5672,19 @@
               dismissToast();
               showToast(r.success ? r.msg : '⚠ ' + r.msg, r.success ? 'success' : 'error', 5000);
               showMsg("msg2", r.msg, r.success ? "success" : "error");
+              alert(r.success ? '✅ ' + r.msg : '⚠ ' + r.msg);
             })
             .withFailureHandler(function (e) {
               dismissToast();
-              showToast('Lỗi: ' + e.message, 'error', 5000);
-              showMsg("msg2", "Lỗi: " + e.message, "error");
+              var errMsg = e.message || 'Không xác định';
+              showToast('Lỗi: ' + errMsg, 'error', 5000);
+              showMsg("msg2", "Lỗi: " + errMsg, "error");
+              alert('❌ Lỗi gửi nhắc phê duyệt!\n' + errMsg);
             })
             .sendApprovalReminderWeb(getSelectedDate(), getDisplayDate());
         } catch(ex) {
           dismissToast();
-          showToast('Lỗi JS: ' + ex.message, 'error');
+          alert('❌ Lỗi hệ thống: ' + ex.message);
         }
       }
 
@@ -5690,16 +5698,19 @@
               var isOk = r && r.success;
               showToast(isOk ? '✅ ' + msg : '⚠ ' + msg, isOk ? 'success' : 'error', 5000);
               showMsg("msg2", msg, isOk ? "success" : "error");
+              alert(isOk ? '✅ ' + msg : '⚠ ' + msg);
             })
             .withFailureHandler(function (e) {
               dismissToast();
-              showToast('Lỗi: ' + e.message, 'error', 5000);
-              showMsg("msg2", "Lỗi: " + e.message, "error");
+              var errMsg = e.message || 'Không xác định';
+              showToast('Lỗi: ' + errMsg, 'error', 5000);
+              showMsg("msg2", "Lỗi: " + errMsg, "error");
+              alert('❌ Lỗi gửi kết quả!\n' + errMsg);
             })
             .sendApprovalResultEmails();
         } catch(ex) {
           dismissToast();
-          showToast('Lỗi JS: ' + ex.message, 'error');
+          alert('❌ Lỗi hệ thống: ' + ex.message);
         }
       }
 
