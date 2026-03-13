@@ -39,6 +39,7 @@ const CONFIG = {
     "hoangkha@esuhai.com",
   ],
   BOD_HOSTING_DEFAULT: "letuan@esuhai.com",
+  BOD_HOSTING_DEFAULT_NAME: "Lê Tuấn",
   N8N_WEBHOOK_URL: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
   EMAIL_SENDER_NAME: "BTC MEETING BOD - ESUHAIGROUP",
   EMAIL_SENDER_ADDRESS: "",  // Để trống = gửi từ tài khoản chủ Script. Khi N8N sẵn sàng sẽ dùng ceo.offices@esuhai.com

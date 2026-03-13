@@ -451,8 +451,10 @@ function getBodHosting() {
     if (!current) {
       var defaultEmail = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT) 
         ? CONFIG.BOD_HOSTING_DEFAULT : "letuan@esuhai.com";
+      var defaultName = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT_NAME)
+        ? CONFIG.BOD_HOSTING_DEFAULT_NAME : "Lê Tuấn";
       current = {
-        name: "Chưa thiết lập",
+        name: defaultName,
         email: defaultEmail,
         from: "",
         to: ""
@@ -464,8 +466,10 @@ function getBodHosting() {
   } catch (e) {
     Logger.log("getBodHosting error: " + e.message);
     // Luôn trả dữ liệu fallback để Dashboard không bị stuck "Đang tải..."
+    var fallbackName = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT_NAME)
+      ? CONFIG.BOD_HOSTING_DEFAULT_NAME : "Lê Tuấn";
     return {
-      name: "Chưa thiết lập",
+      name: fallbackName,
       email: "letuan@esuhai.com",
       from: "",
       to: "",
