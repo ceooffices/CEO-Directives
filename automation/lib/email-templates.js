@@ -21,6 +21,24 @@ const BRAND_AMBER = '#f59e0b';
 const BRAND_RED = '#dc2626';
 const BRAND_PURPLE = '#7c3aed';
 
+// Tracking pixel — URL base cho Next.js dashboard
+// Dev: http://localhost:3000 · Prod: https://ceo.tikme.vn
+const TRACKING_BASE_URL = process.env.TRACKING_BASE_URL || 'http://localhost:3000';
+
+/**
+ * Build tracking pixel IMG tag cho email
+ * Token format: base64url(directiveId:recipientEmail:timestamp)
+ * @param {string} directiveId - Notion page ID
+ * @param {string} recipientEmail - Email người nhận
+ * @returns {string} HTML img tag 1x1 invisible
+ */
+function buildTrackingPixel(directiveId, recipientEmail) {
+  if (!directiveId || !recipientEmail) return '';
+  const payload = `${directiveId}:${recipientEmail}:${Date.now()}`;
+  const token = Buffer.from(payload).toString('base64url');
+  return `<img src="${TRACKING_BASE_URL}/track/${token}" width="1" height="1" style="display:block;width:1px;height:1px;border:0;" alt="" />`;
+}
+
 /** Outer HTML wrapper — max 640px, rounded, shadow */
 function eWrap(inner) {
   return (
@@ -51,14 +69,16 @@ function eHdr(titleVN, subtitleVN) {
   );
 }
 
-/** Footer */
-function eFtr() {
+/** Footer — có thể kèm tracking pixel */
+function eFtr(trackingPixelHtml) {
   return (
     '<div style="padding:14px 16px;background:#f1f5f9;border-top:1px solid #e2e8f0;">' +
     '<p style="font-size:12px;color:#94a3b8;margin:0;line-height:1.7;font-family:' + FONT + ';">' +
     'Email tự động từ <strong>Hệ thống Chỉ đạo CEO — ESUHAI GROUP</strong><br>' +
     'Vui lòng không trả lời email này — Hỗ trợ: hoangkha@esuhai.com' +
-    '</p></div>'
+    '</p>' +
+    (trackingPixelHtml || '') +
+    '</div>'
   );
 }
 
@@ -183,7 +203,7 @@ function buildStep1Email(data) {
       'Sau khi Anh/Chị duyệt, email sẽ được gửi tự động cho ' + (data.tenDauMoi || 'đầu mối') + ' để triển khai ngay.</p></div>'
     );
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 // =====================================================================
@@ -328,7 +348,7 @@ function buildStep2Email(data) {
       '<p style="margin:0;font-size:13px;color:#1e40af;">🏆 <strong>Đồng nghiệp khác đã xác nhận 5T trong vòng 24h.</strong> Bạn cũng làm được!</p></div>'
     );
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 /**
@@ -360,11 +380,11 @@ function buildProgressNotifyEmail(data) {
     eBtn('📋 XEM CHI TIẾT', data.url || '#', BRAND_GREEN) +
     '</div>';
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 /**
- * WF3: Thông báo thay đổi trạng thái chỉ đạo
+ * WF3: Thông báo thay đổi trạng thái chỉ đạo (LELONGSON-Master 2.0 Trackchange Diff)
  */
 function buildStatusChangeEmail(data) {
   const statusColors = {
@@ -380,22 +400,31 @@ function buildStatusChangeEmail(data) {
     (data.tieuDe || '').substring(0, 60)
   );
 
+  // LELONGSON-Master 2.0 Trackchange Diff UI
+  const diffHtml =
+    '<div style="margin:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">' +
+    '<p style="margin:0 0 12px;font-size:12px;font-weight:800;color:#64748b;font-family:' + FONT + ';text-transform:uppercase;letter-spacing:0.5px;">Lịch sử thay đổi (Trackchange Diff)</p>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:' + FONT + ';">' +
+    '<tr><td style="padding:4px 0;">' +
+    '<span style="display:inline-block;background:#fee2e2;color:#991b1b;padding:6px 12px;border-radius:6px;font-size:13px;text-decoration:line-through;font-weight:500;border:1px solid #fca5a5;">' +
+    '<span style="margin-right:8px;font-weight:800;">-</span>' + (data.oldStatus || 'Trạng thái cũ') + '</span>' +
+    '</td></tr>' +
+    '<tr><td style="padding:4px 0;">' +
+    '<span style="display:inline-block;background:#dcfce7;color:#166534;padding:6px 12px;border-radius:6px;font-size:14px;font-weight:800;border:1px solid #86efac;box-shadow:0 2px 4px rgba(22,101,52,0.1);">' +
+    '<span style="margin-right:8px;">+</span>' + (data.newStatus || 'Trạng thái mới') + '</span>' +
+    '</td></tr>' +
+    '</table></div>';
+
   const body =
     eGreeting(data.recipientName) +
     eText(
-      '<p style="margin:0 0 12px;">Chỉ đạo sau đã được cập nhật trạng thái:</p>'
+      '<p style="margin:0 0 12px;">Chỉ đạo sau vừa được cập nhật tiến độ. Vui lòng xem chi tiết thay đổi bên dưới:</p>'
     ) +
-    '<div style="padding:0 16px;background:#fff;text-align:center;margin-bottom:16px;">' +
-    '<div style="display:inline-block;margin:8px 0;">' +
-    eBadge(data.oldStatus || '?', '#94a3b8') +
-    '<span style="margin:0 8px;color:#94a3b8;font-size:18px;">→</span>' +
-    eBadge(data.newStatus || '?', color) +
-    '</div></div>' +
+    diffHtml +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
       eRow('Chỉ đạo:', data.tieuDe || '') +
       eRow('Đầu mối:', data.tenDauMoi || '') +
-      eRow('Trạng thái mới:', data.newStatus || '', color) +
       eRow('Thời hạn:', data.t4ThoiHan || ''),
       '#f8fafc', '#e2e8f0'
     ) + '</div>' +
@@ -403,7 +432,7 @@ function buildStatusChangeEmail(data) {
     eBtn('📋 XEM CHI TIẾT', data.url || '#', color) +
     '</div>';
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 /**
@@ -478,7 +507,7 @@ function buildEscalationEmail(data, level) {
     '(Mở Google Form — giải trình lý do và cam kết thời hạn mới)</p>' +
     '</div>';
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 /**
@@ -517,7 +546,7 @@ function buildReminderEmail(data) {
     '(Mở Google Form — cập nhật tiến độ thực hiện)</p>' +
     '</div>';
 
-  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr());
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
 // =====================================================================
@@ -527,6 +556,8 @@ function buildReminderEmail(data) {
 module.exports = {
   // Helpers (for custom templates)
   eWrap, eHdr, eFtr, eRow, eBadge, eBtn, eSection, eInfoBox, eGreeting, eText, eDivider,
+  // Tracking
+  buildTrackingPixel, TRACKING_BASE_URL,
   // Forms
   buildPrefillUrl, buildWF4PrefillUrl, buildWF5PrefillUrl,
   FORM_ID, FORM_ENTRY_IDS,

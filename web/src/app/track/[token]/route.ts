@@ -5,16 +5,19 @@
  * Mỗi email chỉ đạo sẽ chèn tracking pixel:
  *   <img src="https://ceo.tikme.vn/track/[token]" width="1" height="1">
  *
- * Token format: base64(directiveId:recipientEmail:timestamp)
+ * Token format: base64url(directiveId:recipientEmail:timestamp)
  *
  * Khi email được mở:
  *   - Bot (Outlook/Gmail preview): ghi log is_bot=true
  *   - Real user: ghi log is_bot=false
  *   - Trả về 1x1 transparent PNG
+ *
+ * Logging: Ghi vào JSON file (data/email_opens.json) — không cần DB bên ngoài
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { logEmailOpen } from "@/lib/supabase";
+import { promises as fs } from "fs";
+import path from "path";
 
 // 1x1 transparent PNG (68 bytes)
 const PIXEL = Buffer.from(
@@ -25,6 +28,8 @@ const PIXEL = Buffer.from(
 // Bot detection pattern — tham khảo Track_URL
 const BOT_PATTERN =
   /bot|googleimageproxy|yahoo.*slurp|bingpreview|microsoft|outlook|thunderbird|apple-mail|wget|curl|fetch|python|java|http|spider|crawler/i;
+
+const LOG_FILE = path.join(process.cwd(), "..", "data", "email_opens.json");
 
 function decodeToken(token: string): {
   directiveId: string | null;
@@ -42,6 +47,43 @@ function decodeToken(token: string): {
     };
   } catch {
     return null;
+  }
+}
+
+/** Ghi log email open vào JSON file (async, non-blocking) */
+async function logEmailOpen(
+  directiveId: string | null,
+  recipient: string,
+  ip: string,
+  userAgent: string,
+  isBot: boolean
+) {
+  try {
+    let opens: Array<Record<string, unknown>> = [];
+    try {
+      const raw = await fs.readFile(LOG_FILE, "utf-8");
+      opens = JSON.parse(raw);
+    } catch {
+      // File chưa tồn tại — sẽ tạo mới
+    }
+
+    opens.push({
+      directive_id: directiveId,
+      recipient,
+      ip,
+      user_agent: userAgent,
+      is_bot: isBot,
+      opened_at: new Date().toISOString(),
+    });
+
+    // Giữ tối đa 1000 records gần nhất
+    if (opens.length > 1000) {
+      opens = opens.slice(-1000);
+    }
+
+    await fs.writeFile(LOG_FILE, JSON.stringify(opens, null, 2));
+  } catch (err) {
+    console.error("[TRACK] Log error:", err);
   }
 }
 
@@ -70,7 +112,7 @@ export async function GET(
     "unknown";
   const isBot = BOT_PATTERN.test(userAgent);
 
-  // Log to Supabase (async, non-blocking — same pattern as Track_URL)
+  // Log to JSON file (async, non-blocking)
   logEmailOpen(data.directiveId, data.recipient, ip, userAgent, isBot);
 
   // Return 1x1 transparent PNG
