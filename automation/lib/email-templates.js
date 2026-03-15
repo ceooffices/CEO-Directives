@@ -383,8 +383,116 @@ function buildProgressNotifyEmail(data) {
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
+// =====================================================================
+// TRACKCHANGE DIFF — LELONGSON-Master 2.0
+// Professional change visualization for status emails
+// =====================================================================
+
 /**
- * WF3: Thông báo thay đổi trạng thái chỉ đạo (LELONGSON-Master 2.0 Trackchange Diff)
+ * Build a single diff row: old → new with ± markers
+ * @param {string} label - Field name (e.g. "Trạng thái")
+ * @param {string} oldVal - Previous value
+ * @param {string} newVal - New value
+ * @param {number} lineNum - Line number for diff display
+ * @returns {string} HTML table rows
+ */
+function eDiffRow(label, oldVal, newVal, lineNum) {
+  if (!oldVal && !newVal) return '';
+  if (oldVal === newVal) return ''; // No change
+
+  const ln = lineNum || 1;
+  const lnStyle = 'width:28px;padding:5px 6px;font-size:11px;font-family:monospace;color:#94a3b8;text-align:right;vertical-align:top;border-right:1px solid #e2e8f0;';
+
+  let html = '';
+
+  // Removed line (old value)
+  if (oldVal) {
+    html +=
+      '<tr>' +
+      '<td style="' + lnStyle + 'background:#fef2f2;">' + ln + '</td>' +
+      '<td style="width:24px;padding:5px 4px;font-size:13px;font-weight:800;color:#dc2626;text-align:center;background:#fef2f2;font-family:monospace;">−</td>' +
+      '<td style="padding:5px 10px;background:#fef2f2;font-size:13px;font-family:' + FONT + ';">' +
+      '<span style="color:#94a3b8;font-size:11px;">' + label + ':</span> ' +
+      '<span style="text-decoration:line-through;color:#991b1b;">' + oldVal + '</span>' +
+      '</td></tr>';
+  }
+
+  // Added line (new value)
+  if (newVal) {
+    html +=
+      '<tr>' +
+      '<td style="' + lnStyle + 'background:#f0fdf4;">' + (ln + 1) + '</td>' +
+      '<td style="width:24px;padding:5px 4px;font-size:13px;font-weight:800;color:#16a34a;text-align:center;background:#f0fdf4;font-family:monospace;">+</td>' +
+      '<td style="padding:5px 10px;background:#f0fdf4;font-size:13px;font-family:' + FONT + ';">' +
+      '<span style="color:#94a3b8;font-size:11px;">' + label + ':</span> ' +
+      '<span style="font-weight:700;color:#166534;">' + newVal + '</span>' +
+      '</td></tr>';
+  }
+
+  return html;
+}
+
+/**
+ * Build complete diff block with metadata header
+ * @param {Array} changes - Array of {label, oldVal, newVal}
+ * @param {object} meta - {changedBy, changedAt, directiveTitle}
+ * @returns {string} Full diff HTML block
+ */
+function eDiffBlock(changes, meta) {
+  meta = meta || {};
+
+  // Metadata header bar
+  let metaBar =
+    '<div style="margin:12px 16px 0;background:' + BRAND_DARK + ';border-radius:8px 8px 0 0;padding:10px 14px;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td style="font-size:12px;color:rgba(255,255,255,.85);font-family:monospace;font-weight:600;">' +
+    'diff --directive ' + (meta.directiveTitle || 'a/chỉ-đạo').substring(0, 40) +
+    '</td>' +
+    '<td align="right" style="font-size:11px;color:rgba(255,255,255,.5);font-family:' + FONT + ';">' +
+    (meta.changedAt || new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })) +
+    '</td>' +
+    '</tr></table></div>';
+
+  // Change stats bar
+  let addCount = 0, removeCount = 0;
+  for (const c of changes) {
+    if (c.oldVal && c.oldVal !== c.newVal) removeCount++;
+    if (c.newVal && c.oldVal !== c.newVal) addCount++;
+  }
+
+  let statsBar =
+    '<div style="margin:0 16px;padding:6px 14px;background:#f1f5f9;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;font-size:11px;font-family:monospace;color:#64748b;">' +
+    '<span style="color:#16a34a;font-weight:700;">+' + addCount + ' thêm</span>' +
+    ' &nbsp;·&nbsp; ' +
+    '<span style="color:#dc2626;font-weight:700;">−' + removeCount + ' bỏ</span>' +
+    (meta.changedBy ? ' &nbsp;·&nbsp; Cập nhật bởi: <strong>' + meta.changedBy + '</strong>' : '') +
+    '</div>';
+
+  // Diff table body
+  let lineNum = 1;
+  let diffRows = '';
+  for (const c of changes) {
+    if (c.oldVal === c.newVal) continue;
+    diffRows += eDiffRow(c.label, c.oldVal, c.newVal, lineNum);
+    lineNum += 2;
+  }
+
+  let diffTable =
+    '<div style="margin:0 16px;border:1px solid #e2e8f0;border-top:0;border-radius:0 0 8px 8px;overflow:hidden;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0">' +
+    diffRows +
+    '</table></div>';
+
+  return metaBar + statsBar + diffTable;
+}
+
+/**
+ * WF3: Thông báo thay đổi trạng thái chỉ đạo
+ * LELONGSON-Master 2.0 — Professional TrackChange Diff UI
+ *
+ * Supports multiple field changes, not just status:
+ *   data.changes = [{label, oldVal, newVal}, ...]
+ *   OR data.oldStatus + data.newStatus (legacy fallback)
  */
 function buildStatusChangeEmail(data) {
   const statusColors = {
@@ -400,28 +508,45 @@ function buildStatusChangeEmail(data) {
     (data.tieuDe || '').substring(0, 60)
   );
 
-  // LELONGSON-Master 2.0 Trackchange Diff UI
-  const diffHtml =
-    '<div style="margin:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">' +
-    '<p style="margin:0 0 12px;font-size:12px;font-weight:800;color:#64748b;font-family:' + FONT + ';text-transform:uppercase;letter-spacing:0.5px;">Lịch sử thay đổi (Trackchange Diff)</p>' +
-    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:' + FONT + ';">' +
-    '<tr><td style="padding:4px 0;">' +
-    '<span style="display:inline-block;background:#fee2e2;color:#991b1b;padding:6px 12px;border-radius:6px;font-size:13px;text-decoration:line-through;font-weight:500;border:1px solid #fca5a5;">' +
-    '<span style="margin-right:8px;font-weight:800;">-</span>' + (data.oldStatus || 'Trạng thái cũ') + '</span>' +
-    '</td></tr>' +
-    '<tr><td style="padding:4px 0;">' +
-    '<span style="display:inline-block;background:#dcfce7;color:#166534;padding:6px 12px;border-radius:6px;font-size:14px;font-weight:800;border:1px solid #86efac;box-shadow:0 2px 4px rgba(22,101,52,0.1);">' +
-    '<span style="margin-right:8px;">+</span>' + (data.newStatus || 'Trạng thái mới') + '</span>' +
-    '</td></tr>' +
-    '</table></div>';
+  // Build changes array — support both new format and legacy fallback
+  let changes = data.changes || [];
+  if (changes.length === 0 && (data.oldStatus || data.newStatus)) {
+    changes.push({
+      label: 'Trạng thái',
+      oldVal: data.oldStatus || 'Chưa rõ',
+      newVal: data.newStatus || 'Chưa rõ',
+    });
+  }
+  // Add deadline change if provided
+  if (data.oldDeadline && data.newDeadline && data.oldDeadline !== data.newDeadline) {
+    changes.push({
+      label: 'Thời hạn',
+      oldVal: data.oldDeadline,
+      newVal: data.newDeadline,
+    });
+  }
+  // Add assignee change if provided
+  if (data.oldAssignee && data.newAssignee && data.oldAssignee !== data.newAssignee) {
+    changes.push({
+      label: 'Đầu mối',
+      oldVal: data.oldAssignee,
+      newVal: data.newAssignee,
+    });
+  }
+
+  const diffBlock = eDiffBlock(changes, {
+    directiveTitle: data.tieuDe || 'chỉ-đạo',
+    changedBy: data.changedBy || data.tenDauMoi || '',
+    changedAt: data.changedAt || new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+  });
 
   const body =
     eGreeting(data.recipientName) +
     eText(
-      '<p style="margin:0 0 12px;">Chỉ đạo sau vừa được cập nhật tiến độ. Vui lòng xem chi tiết thay đổi bên dưới:</p>'
+      '<p style="margin:0 0 12px;">Chỉ đạo sau vừa được cập nhật. Vui lòng xem chi tiết thay đổi bên dưới:</p>'
     ) +
-    diffHtml +
-    '<div style="padding:0 16px;background:#fff;">' +
+    diffBlock +
+    '<div style="padding:12px 16px;background:#fff;">' +
     eInfoBox(
       eRow('Chỉ đạo:', data.tieuDe || '') +
       eRow('Đầu mối:', data.tenDauMoi || '') +
@@ -556,6 +681,8 @@ function buildReminderEmail(data) {
 module.exports = {
   // Helpers (for custom templates)
   eWrap, eHdr, eFtr, eRow, eBadge, eBtn, eSection, eInfoBox, eGreeting, eText, eDivider,
+  // TrackChange Diff helpers
+  eDiffRow, eDiffBlock,
   // Tracking
   buildTrackingPixel, TRACKING_BASE_URL,
   // Forms
