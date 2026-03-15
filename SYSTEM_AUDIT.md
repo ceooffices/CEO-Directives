@@ -33,6 +33,6 @@
 - [ ] S1.7: Viết test cases cho convert module
 
 ### ClaudeCode (DEV)
-- [ ] S1.4: Seed ChromaDB startup
-- [ ] S1.5: Xóa dead code (sams_differ)
-- [ ] S1.6: Confirmation cho /chay
+- [x] S1.4: RAG Engine (TF-IDF — rag-engine.js)
+- [x] S1.5: Xóa dead code (sams_differ) — 0 references
+- [x] S1.6: Confirmation cho /chay — inline buttons + callback

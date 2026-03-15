@@ -77,8 +77,10 @@ Response sheets → `wf4-form-processor.js` / `wf5-form-processor.js` poll CSV �
 
 ## Sprint 1 — Tasks cho ClaudeCode
 
-### 🔴 S1.4: Seed ChromaDB startup
-- Seed 14 context files vào ChromaDB khi khởi động
+### ✅ S1.4: RAG Engine (TF-IDF thay ChromaDB)
+- `rag-engine.js` — zero-dependency TF-IDF retrieval
+- Load 12 context files (md + json) → chunk theo section → keyword search → top-K chunks
+- Tiếng Việt tokenizer + stop words + cosine similarity
 - Đảm bảo bot có đủ context để trả lời
 
 ### 🔴 S1.5: Xóa dead code
