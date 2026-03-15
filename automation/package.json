@@ -1,11 +1,20 @@
 {
   "name": "ceo-directive-automation",
-  "version": "2.0.0",
-  "description": "CEO Directive Automation Engine v2 - Full WF1-6 Pipeline",
+  "version": "3.0.0",
+  "description": "CEO Directive Automation Engine v3 — WF1-6 + Telegram Bot + AI Intelligence",
   "main": "scheduler.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node scheduler.js",
     "start:dry": "node scheduler.js --dry-run",
+
+    "bot": "node telegram-bot.js",
+    "bot:test": "node telegram-bot.js --test",
+    "bridge": "node openclaw-bridge.js",
+    "bridge:test": "node -e \"const http=require('http');http.get('http://localhost:3100/health',r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log(d))})\"",
+
     "wf1": "node wf1-approval.js",
     "wf1:dry": "node wf1-approval.js --dry-run",
     "wf2": "node wf2-directive-progress.js",
@@ -28,18 +37,17 @@
     "hm50:dry": "node hm50-linker.js --dry-run",
     "run:all": "node scheduler.js --run-now all",
     "run:all:dry": "node scheduler.js --run-now all --dry-run",
-    "import:kpi": "node import-commitments.js",
-    "import:kpi:dry": "node import-commitments.js --dry-run",
-    "test:email": "node lib/email-sender.js --test",
-    "bridge": "node openclaw-bridge.js",
-    "bridge:test": "node -e \"const http=require('http');http.get('http://localhost:3100/health',r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log(d))})\"",
-    "bot": "node telegram-bot.js",
-    "bot:test": "node telegram-bot.js --test",
+
     "ai:patterns": "node ai-analyzer.js patterns",
     "ai:risks": "node ai-analyzer.js risks",
+    "ai:ask": "node ai-analyzer.js",
     "report:weekly": "node report-generator.js weekly",
     "report:weekly:send": "node report-generator.js weekly --send",
-    "report:monthly": "node report-generator.js monthly"
+    "report:monthly": "node report-generator.js monthly",
+
+    "import:kpi": "node import-commitments.js",
+    "import:kpi:dry": "node import-commitments.js --dry-run",
+    "test:email": "node lib/email-sender.js --test"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.0",
@@ -47,6 +55,6 @@
     "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.67.0",
     "nodemailer": "^6.9.0",
-    "openai": "^6.29.0"
+    "openai": "^4.0.0"
   }
 }
