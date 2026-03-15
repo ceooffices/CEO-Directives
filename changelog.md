@@ -1,102 +1,67 @@
-# CHANGELOG - Database Integration Update
-**Date:** 27/12/2025  
-**Session:** CEO Directive Database Integration  
-**By:** ClaudeK + Anh Kha
+# CHANGELOG — CEO Directive Automation
 
 ---
 
-## THAY ĐỔI MEMORY EDITS
+## v4.0.0 — Sprint 1 + 2 (16/03/2026)
 
-| Line | Trước | Sau |
-|------|-------|-----|
-| 4 | CORE_RULES.md là SOURCE OF TRUTH | + notion_id_mapping.json |
-| 5 | Quy trình chung | Rõ vai trò ClaudeK (1-3) vs Anh Kha (4) |
-| 6 | Kiến trúc 3 tầng lưu trữ | Kiến trúc 7 databases với luồng |
+> Team: Gravity (PM/QC) + ClaudeCode (DEV) + anh Kha (Director)
+> Build: `next build` ✅ PASS
 
----
+### 🏗️ Kiến trúc mới (Sprint 1)
 
-## THAY ĐỔI NOTION
+**Bỏ Supabase, chuyển toàn bộ sang Notion API**
+- Dashboard (`web/`) đọc trực tiếp từ Notion — không cần tầng trung gian
+- 7 file lỗi thời chuyển vào `archive/` (GAS scripts, Supabase client, old dashboard)
+- BOD Meeting archive: giữ data/docs, bỏ code
+- Tài liệu hệ thống viết lại: CLAUDE.md v2.0, SYSTEM_AUDIT.md, .env.example
 
-### 1. Thêm Database mới vào workflow
-**Database:** Ghi chép cuộc họp  
-**Collection ID:** 29279870-ebff-8032-ba8c-000b6ca77b45  
-**Vai trò:** NGUỒN ĐẦU VÀO CHÍNH - CEO dùng hàng ngày
+### 🤖 Intelligence (Sprint 2 — ClaudeCode)
 
-**Relations thêm vào:**
-- `Kết quả mong đợi` → link đến Outcomes
-- `Chỉ đạo Cần Làm Rõ` → link đến Clarifications
+| Module | Mô tả |
+|--------|-------|
+| AI Router | Gemini 2.5 Pro primary, OpenAI fallback (`ai-analyzer.js`) |
+| RAG Engine | TF-IDF retrieval, 12 context files, tiếng Việt tokenizer (`rag-engine.js`) |
+| Rate Limit | Per-user cooldown trong Telegram Bot |
+| Error → Admin DM | `notifyAdmin()` gửi lỗi qua Telegram cho admin — 10 vị trí |
+| Bot Leak Fix | Singleton pattern trong `report-generator.js` |
+| /chay Confirm | Inline buttons "☑ Xác nhận" + callback handler |
+| Dead Code | Xóa `sams_differ` — 0 references |
 
-**Reverse relations tự động tạo:**
-- Outcomes: `Cuộc họp liên quan`
-- Clarifications: `Nguồn cuộc họp`
+### 📧 Email (Sprint 2 — Gravity)
 
-### 2. Đổi tên Sessions → Báo cáo Tổng hợp
-**Database:** b033bbc3-5903-4142-8626-feafed22502a  
-**Tên cũ:** Nhật ký Buổi làm việc ClaudeK  
-**Tên mới:** Báo cáo Tổng hợp
+| Feature | Mô tả |
+|---------|-------|
+| Tracking Pixel | 1x1 invisible pixel trong footer 6 loại email. Log vào `data/email_opens.json` |
+| TrackChange Diff | LELONGSON-Master 2.0 — dark header + diff table + multi-field (status, deadline, assignee) |
+| QC Emoji | 13 violations fixed: 📋📝💡👉🏆 → ▸📌☑ (theo Content Bible) |
 
-**Property đổi tên:**
-- `Loại buổi` → `Loại báo cáo`
+### 🐛 Bug Fixes
 
-**Options mới cho Loại báo cáo:**
-| Option cũ | Option mới |
-|-----------|------------|
-| ClaudeK Session | Báo cáo Tuần |
-| Biên bản họp | Báo cáo Tháng |
-| Workshop | Phân tích Chuyên sâu |
-| Training | Tổng hợp Dự án |
-| 1-on-1 | Báo cáo CEO |
-| (new) | Báo cáo Khác |
-
-**Relation thêm:**
-- `Ghi chép cuộc họp` → link đến Meetings
+| Bug | Nguyên nhân | Fix |
+|-----|-------------|-----|
+| Build fail `@/lib/supabase` | Gravity bỏ sót `api/status/route.ts` khi migrate | Import `getDirectives` từ `@/lib/notion` |
 
 ---
 
-## TÀI LIỆU CẬP NHẬT
+## v3.0.2 (15/03/2026) — ClaudeCode
 
-### Files cần upload vào Project Knowledge:
+- Gemini AI router + retry rate limit
+- Dashboard URL in bot UI
 
-1. **notion_id_mapping_v1.1.json**
-   - Thêm `meetings` database
-   - Đổi `sessions` → `reports`
-   - Thêm `workflow_flow` section
+## v3.0.1 (15/03/2026) — ClaudeCode
 
-2. **CORE_RULES_v1.3.md**
-   - Thêm Mục 9: Kiến trúc 7 Databases
-   - Cập nhật sơ đồ luồng xử lý
-   - Cập nhật bảng Việt hóa
+- Update package.json + .env.example for cross-platform setup
 
----
+## v3.0 (14/03/2026) — ClaudeCode
 
-## KIẾN TRÚC SAU THAY ĐỔI
-
-```
-7 DATABASES:
-1. Ghi chép cuộc họp (NGUỒN ĐẦU VÀO) ← MỚI
-2. Kết quả Mong đợi (Outcomes)
-3. Chỉ đạo Cần Làm Rõ (Clarifications)
-4. Bảng Quản trị Hành động (Tasks)
-5. PROJECT HUB (Projects)
-6. Danh Bạ Nhân Sự (HR)
-7. Báo cáo Tổng hợp (OUTPUT) ← ĐỔI TÊN
-
-LUỒNG:
-Meetings → Outcomes → Clarifications → Tasks
-Meetings → Reports (output)
-```
+- Intelligence modules + project cleanup
 
 ---
 
-## HÀNH ĐỘNG TIẾP THEO
+## v1.0 — Database Integration (27/12/2025)
 
-- [ ] Anh upload 2 files vào Project Knowledge (CORE_RULES_v1.3.md, notion_id_mapping_v1.1.json)
-- [ ] Anh paste PROJECT_INSTRUCTIONS_v1.1.md vào Project Settings → Instructions
-- [x] Memory Edits đã cập nhật (lines 4, 5, 6)
-- [ ] Backfill 30 Clarifications với Nguồn cuộc họp ✅ DONE
-- [ ] Update SOP trong Notion với luồng mới
-- [ ] Test workflow: Tạo meeting → extract → clarification
+- Kiến trúc 7 Databases Notion
+- Meeting → Outcomes → Clarifications → Tasks flow
+- Sessions → Báo cáo Tổng hợp (đổi tên)
+- Relations: Ghi chép cuộc họp ↔ Outcomes ↔ Clarifications
 
----
-
-**END OF CHANGELOG**

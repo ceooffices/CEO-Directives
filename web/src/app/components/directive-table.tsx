@@ -1,4 +1,5 @@
 import type { Directive } from "@/lib/notion";
+import Link from "next/link";
 
 function getUrgency(d: Directive): "green" | "yellow" | "red" | "black" | "done" {
   if (d.status === "Hoàn thành") return "done";
@@ -82,9 +83,9 @@ export default function DirectiveTable({
                 className="transition-colors hover:bg-zinc-800/50"
               >
                 <td className="max-w-xs px-4 py-3">
-                  <p className="truncate font-medium text-white">
+                  <Link href={`/directive/${d.id}`} className="truncate font-medium text-white hover:text-blue-400 transition-colors">
                     {d.title}
-                  </p>
+                  </Link>
                   {d.nhiem_vu && (
                     <p className="mt-0.5 truncate text-xs text-zinc-500">
                       {d.nhiem_vu}
