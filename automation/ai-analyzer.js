@@ -38,6 +38,39 @@ if (process.env.GEMINI_API_KEY) {
   process.exit(1);
 }
 
+// ===== AI CALL WRAPPER: Retry + Rate Limit Handling =====
+const MAX_RETRIES = 3;
+const RETRY_DELAYS = [5000, 15000, 30000]; // 5s, 15s, 30s
+
+async function aiCall(messages, options = {}) {
+  const { temperature = 0.3, max_tokens = 1000 } = options;
+  
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await openai.chat.completions.create({
+        model: MODEL,
+        messages,
+        temperature,
+        max_tokens,
+      });
+      return response;
+    } catch (err) {
+      const isRateLimit = err.status === 429 || (err.message && err.message.includes('rate'));
+      const isLast = attempt >= MAX_RETRIES;
+      
+      if (isRateLimit && !isLast) {
+        const delay = RETRY_DELAYS[attempt] || 30000;
+        console.log(`[AI] ⏳ Rate limit — retry ${attempt + 1}/${MAX_RETRIES} sau ${delay/1000}s...`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      
+      // Không phải rate limit, hoặc đã hết retry
+      throw err;
+    }
+  }
+}
+
 // ===== NOTION DATA LOADER =====
 async function loadDirectiveData() {
   const {
@@ -137,15 +170,10 @@ Phân tích và trả lời bằng tiếng Việt:
 
 Trả lời ngắn gọn, thực tế, không lý thuyết.`;
 
-  const response = await openai.chat.completions.create({
-    model: MODEL,
-    messages: [
+  const response = await aiCall([
       { role: 'system', content: 'Bạn là AI trợ lý phân tích quản trị cho CEO EsuhaiGroup. Trả lời ngắn gọn, có cấu trúc, tiếng Việt.' },
       { role: 'user', content: prompt }
-    ],
-    temperature: 0.3,
-    max_tokens: 1000,
-  });
+    ], { temperature: 0.3, max_tokens: 1000 });
 
   return {
     analysis: response.choices[0].message.content,
@@ -191,15 +219,10 @@ Với mỗi mục, dự đoán:
 
 Trả lời tiếng Việt, ngắn gọn.`;
 
-  const response = await openai.chat.completions.create({
-    model: MODEL,
-    messages: [
+  const response = await aiCall([
       { role: 'system', content: 'Bạn là AI dự đoán rủi ro quản trị. Phân tích dựa trên dữ liệu thực tế.' },
       { role: 'user', content: prompt }
-    ],
-    temperature: 0.2,
-    max_tokens: 800,
-  });
+    ], { temperature: 0.2, max_tokens: 800 });
 
   return {
     prediction: response.choices[0].message.content,
@@ -225,9 +248,7 @@ async function askQuestion(question) {
     active: data.filter(d => d.label === 'active').length,
   };
 
-  const response = await openai.chat.completions.create({
-    model: MODEL,
-    messages: [
+  const response = await aiCall([
       { role: 'system', content: `Bạn là AI trợ lý CEO EsuhaiGroup. Trả lời câu hỏi dựa trên dữ liệu chỉ đạo bên dưới.
 Trả lời ngắn gọn, tiếng Việt, có cấu trúc. Nếu không đủ dữ liệu, nói rõ.
 
@@ -236,10 +257,7 @@ THỐNG KÊ: ${stats.total} tổng, ${stats.pending} chờ duyệt, ${stats.over
 DỮ LIỆU (30 mới nhất):
 ${context}` },
       { role: 'user', content: question }
-    ],
-    temperature: 0.3,
-    max_tokens: 600,
-  });
+    ], { temperature: 0.3, max_tokens: 600 });
 
   return {
     answer: response.choices[0].message.content,

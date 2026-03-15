@@ -110,9 +110,10 @@ function kbd(buttons) {
 
 function kbdMain() {
   return kbd([
-    [{ text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }, { text: '⚠️ Quá hạn', callback_data: 'cmd_quahan' }],
-    [{ text: '🧠 AI Phân tích', callback_data: 'cmd_phantich' }, { text: '📋 Báo cáo', callback_data: 'cmd_baocao' }],
-    [{ text: '📂 Mở Notion', url: NOTION_DB_URL }, { text: '📊 Dashboard', url: DASHBOARD_URL }],
+    [{ text: '📊 Dashboard CEO', url: DASHBOARD_URL }],
+    [{ text: '☑ Trạng thái', callback_data: 'cmd_trangthai' }, { text: '⏳ Quá hạn', callback_data: 'cmd_quahan' }],
+    [{ text: '► AI Phân tích', callback_data: 'cmd_phantich' }, { text: '📌 Báo cáo', callback_data: 'cmd_baocao' }],
+    [{ text: '🔗 Notion DB', url: NOTION_DB_URL }],
   ]);
 }
 
@@ -325,13 +326,11 @@ bot.onText(/\/start/, (msg) => {
   console.log(`[BOT] /start from user ${userId} (${msg.from?.first_name || ''})`);
 
   bot.sendMessage(msg.chat.id,
-`🤖 CEO Directive Bot — OpenClaw R&D
+`Dạ, con chào Thầy${msg.from?.first_name ? ' ' + msg.from.first_name : ''} buổi ${new Date().getHours() < 12 ? 'sáng' : new Date().getHours() < 18 ? 'chiều' : 'tối'} ạ.
+Con là Gravity — bot quản lý chỉ đạo CEO EsuhaiGroup.
 ━━━━━━━━━━━━━━━━━━━━
 
-Dạ, con chào Thầy${msg.from?.first_name ? ' ' + msg.from.first_name : ''}! Con là bot quản lý chỉ đạo CEO.
-User ID: ${userId}
-
-📋 Lệnh khả dụng:
+📌 Lệnh khả dụng:
   /trangthai — Trạng thái tổng quan
   /quahan — Chỉ đạo quá hạn
   /tim <từ khóa> — Tìm chỉ đạo
@@ -341,7 +340,10 @@ User ID: ${userId}
   /phantich — AI phân tích
   /baocaotuan — Báo cáo tuần AI
 
-👇 Hoặc bấm nút bên dưới:`, kbdMain());
+► Dashboard: ${DASHBOARD_URL}
+► Notion: ${NOTION_DB_URL}
+
+▫️ Hoặc Thầy chat tự nhiên, con sẽ hiểu ạ.`, kbdMain());
 });
 
 // ===== COMMAND: /trangthai =====
