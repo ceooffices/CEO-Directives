@@ -1,49 +1,57 @@
-interface TrafficLightProps {
-  green: number;
-  yellow: number;
-  red: number;
-  black?: number;
-  done?: number;
-}
-
 export default function TrafficLight({
   green,
   yellow,
   red,
-  black = 0,
-  done = 0,
-}: TrafficLightProps) {
+  black,
+  done,
+}: {
+  green: number;
+  yellow: number;
+  red: number;
+  black: number;
+  done: number;
+}) {
+  const items = [
+    { label: "An toàn", count: green, color: "bg-green-500", ring: "ring-green-200" },
+    { label: "Cảnh báo", count: yellow, color: "bg-amber-500", ring: "ring-amber-200" },
+    { label: "Quá hạn", count: red, color: "bg-red-500", ring: "ring-red-200" },
+    { label: "Báo động", count: black, color: "bg-gray-800", ring: "ring-gray-300" },
+    { label: "Hoàn thành", count: done, color: "bg-blue-500", ring: "ring-blue-200" },
+  ];
+
   const total = green + yellow + red + black + done;
 
-  const lights = [
-    { label: "Đúng tiến độ", count: green, cls: "light-green", pct: total ? (green / total) * 100 : 0 },
-    { label: "Sắp đến hạn", count: yellow, cls: "light-yellow", pct: total ? (yellow / total) * 100 : 0 },
-    { label: "Quá hạn", count: red, cls: "light-red", pct: total ? (red / total) * 100 : 0 },
-    { label: "Báo động", count: black, cls: "light-black", pct: total ? (black / total) * 100 : 0 },
-    { label: "Hoàn thành", count: done, cls: "bg-sky-500 shadow-[0_0_12px_theme(colors.sky.500)]", pct: total ? (done / total) * 100 : 0 },
-  ].filter(l => l.count > 0);
-
   return (
-    <div className="space-y-3">
-      {lights.map((l) => (
-        <div key={l.label} className="flex items-center gap-3">
-          <div className={`h-4 w-4 shrink-0 rounded-full ${l.cls}`} />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-baseline justify-between">
-              <span className="text-sm text-zinc-300">{l.label}</span>
-              <span className="text-sm font-bold tabular-nums text-white">
-                {l.count}
-              </span>
-            </div>
-            <div className="progress-bar mt-1">
+    <div className="space-y-4">
+      {/* Bar chart */}
+      {total > 0 && (
+        <div className="flex h-3 w-full overflow-hidden rounded-full bg-gray-100">
+          {items.map((item) =>
+            item.count > 0 ? (
               <div
-                className={`progress-fill ${l.cls}`}
-                style={{ width: `${l.pct}%` }}
+                key={item.label}
+                className={`${item.color} transition-all duration-500`}
+                style={{ width: `${(item.count / total) * 100}%` }}
               />
-            </div>
-          </div>
+            ) : null
+          )}
         </div>
-      ))}
+      )}
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-4">
+        {items.map((item) => (
+          <div key={item.label} className="flex items-center gap-2">
+            <div className={`h-3 w-3 rounded-full ${item.color} ring-2 ${item.ring}`} />
+            <span className="text-[13px] text-gray-500">
+              {item.label}
+            </span>
+            <span className="text-[13px] font-semibold text-gray-700 tabular-nums">
+              {item.count}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

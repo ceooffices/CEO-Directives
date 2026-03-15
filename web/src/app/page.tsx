@@ -21,25 +21,21 @@ function getUrgency(d: Directive): "green" | "yellow" | "red" | "black" | "done"
 export default async function DashboardPage() {
   const { stats, byDauMoi, bySection, directives } = await getDashboardStats();
 
-  // Calculate traffic light numbers
   const traffic = { green: 0, yellow: 0, red: 0, black: 0, done: 0 };
   for (const d of directives) {
     const u = getUrgency(d);
     traffic[u]++;
   }
 
-  // Health score (0-100) — balanced formula
   const completionRate = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
   const activeWork = stats.total > 0 ? ((stats.completed + stats.active + stats.confirmed) / stats.total) * 100 : 0;
   const overdueRate = stats.total > 0 ? (stats.overdue / stats.total) * 100 : 0;
   const healthScore = Math.max(0, Math.min(100, Math.round(activeWork * 0.7 - overdueRate * 0.5 + completionRate * 0.3)));
 
-  // Top leaders sorted by total
   const leaders = Object.entries(byDauMoi)
     .map(([name, data]) => ({ name, ...data, completionRate: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0 }))
     .sort((a, b) => b.total - a.total);
 
-  // Overdue directives
   const overdueDirectives = directives
     .filter((d) => getUrgency(d) === "red" || getUrgency(d) === "black")
     .sort((a, b) => {
@@ -48,7 +44,6 @@ export default async function DashboardPage() {
       return da - db;
     });
 
-  // Action items: yellow + red + black
   const actionDirectives = directives
     .filter((d) => {
       const u = getUrgency(d);
@@ -61,7 +56,6 @@ export default async function DashboardPage() {
       return priority[ua] - priority[ub];
     });
 
-  // Sections for strategy tab
   const sections = Object.entries(bySection)
     .map(([name, data]) => ({
       name,
@@ -73,45 +67,47 @@ export default async function DashboardPage() {
   const now = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl">
+    <div className="min-h-screen bg-[#f5f5f7]">
+      {/* Header — Apple-style frosted glass */}
+      <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/70 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-sm font-bold">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-blue-500/25">
               CD
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight">CEO Dashboard</h1>
-              <p className="text-xs text-zinc-500">EsuhaiGroup • {now}</p>
+              <h1 className="text-[17px] font-semibold tracking-tight text-gray-900">
+                CEO Dashboard
+              </h1>
+              <p className="text-[12px] text-gray-400">EsuhaiGroup · {now}</p>
             </div>
           </div>
           <a
             href="/api/status"
-            className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
+            className="rounded-full bg-gray-100 px-4 py-2 text-[13px] font-medium text-gray-600 transition-all hover:bg-gray-200 active:scale-95"
           >
-            API Status →
+            API Status
           </a>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-8 space-y-10">
 
-        {/* ===== SECTION 1: BỨC TRANH TỔNG ===== */}
+        {/* ===== SECTION 1: Overview ===== */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-zinc-300">📊 Bức tranh tổng</h2>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Tổng quan
+          </h2>
 
-          {/* Stats grid */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            <StatCard label="Tổng chỉ đạo" value={stats.total} icon="📌" color="blue" />
-            <StatCard label="Chờ duyệt" value={stats.pending} icon="⏳" color="yellow" />
-            <StatCard label="Đã xác nhận" value={stats.confirmed} icon="☑" />
-            <StatCard label="Đang thực hiện" value={stats.active} icon="🔄" color="blue" />
-            <StatCard label="Hoàn thành" value={stats.completed} icon="✅" color="green" sub={`${Math.round(completionRate)}%`} />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            <StatCard label="Tổng chỉ đạo" value={stats.total} color="blue" />
+            <StatCard label="Chờ duyệt" value={stats.pending} color="yellow" />
+            <StatCard label="Đã xác nhận" value={stats.confirmed} color="cyan" />
+            <StatCard label="Đang thực hiện" value={stats.active} color="blue" />
+            <StatCard label="Hoàn thành" value={stats.completed} color="green" sub={`${Math.round(completionRate)}%`} />
             <StatCard
               label="Quá hạn"
               value={stats.overdue}
-              icon="🔴"
               color={stats.overdue > 0 ? "red" : "green"}
               pulse={stats.overdue > 3}
             />
@@ -120,29 +116,31 @@ export default async function DashboardPage() {
           {/* Health Score + Traffic Light */}
           <div className="mt-6 grid gap-4 lg:grid-cols-2">
             {/* Health Score */}
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-              <h3 className="text-sm font-medium text-zinc-400">🏥 Sức khỏe hệ thống</h3>
-              <div className="mt-3 flex items-end gap-4">
+            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
+              <h3 className="text-[13px] font-medium text-gray-400">
+                Sức khỏe hệ thống
+              </h3>
+              <div className="mt-3 flex items-end gap-3">
                 <span
                   className={`text-6xl font-black tabular-nums ${
                     healthScore >= 70
-                      ? "text-green-400"
+                      ? "text-green-500"
                       : healthScore >= 40
-                      ? "text-yellow-400"
-                      : "text-red-400"
+                      ? "text-amber-500"
+                      : "text-red-500"
                   }`}
                 >
                   {healthScore}
                 </span>
-                <span className="mb-2 text-xl text-zinc-500">/ 100</span>
+                <span className="mb-2 text-xl text-gray-300">/ 100</span>
               </div>
-              <div className="progress-bar mt-4">
+              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-gray-100">
                 <div
-                  className={`progress-fill ${
+                  className={`h-full rounded-full transition-all duration-700 ${
                     healthScore >= 70
                       ? "bg-green-500"
                       : healthScore >= 40
-                      ? "bg-yellow-500"
+                      ? "bg-amber-500"
                       : "bg-red-500"
                   }`}
                   style={{ width: `${healthScore}%` }}
@@ -151,9 +149,9 @@ export default async function DashboardPage() {
             </div>
 
             {/* Traffic Light */}
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-              <h3 className="mb-4 text-sm font-medium text-zinc-400">
-                🚦 Hệ thống đèn tín hiệu
+            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
+              <h3 className="mb-4 text-[13px] font-medium text-gray-400">
+                Đèn tín hiệu
               </h3>
               <TrafficLight
                 green={traffic.green}
@@ -166,50 +164,79 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ===== SECTION 2: LEO THANG ===== */}
+        {/* ===== SECTION 2: Escalation — grouped by 50HM ===== */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-zinc-300">
-            🔺 Leo thang — Chỉ đạo quá hạn ({overdueDirectives.length})
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Leo thang — Theo 50HM 2026 ({overdueDirectives.length})
           </h2>
-          <DirectiveTable directives={overdueDirectives} />
+          {(() => {
+            const grouped: Record<string, typeof overdueDirectives> = {};
+            for (const d of overdueDirectives) {
+              const sec = d.section || "Ngoài kế hoạch";
+              if (!grouped[sec]) grouped[sec] = [];
+              grouped[sec].push(d);
+            }
+            const sortedSections = Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
+            return sortedSections.length > 0 ? (
+              <div className="space-y-6">
+                {sortedSections.map(([sec, items]) => (
+                  <div key={sec}>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="rounded-full bg-red-50 px-3 py-1 text-[12px] font-semibold text-red-600">
+                        {sec}
+                      </span>
+                      <span className="text-[12px] text-gray-400">{items.length} chỉ đạo</span>
+                    </div>
+                    <DirectiveTable directives={items} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-gray-200 bg-white py-12 text-center">
+                <p className="text-gray-400">Không có chỉ đạo quá hạn.</p>
+              </div>
+            );
+          })()}
         </section>
 
-        {/* ===== SECTION 3: CHIẾN LƯỢC ===== */}
+        {/* ===== SECTION 3: Strategy ===== */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-zinc-300">🎯 Chiến lược — Theo trụ cột</h2>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Chiến lược — Theo trụ cột
+          </h2>
           {sections.length === 0 ? (
-            <p className="text-zinc-500">Chưa có dữ liệu chiến lược.</p>
+            <p className="text-gray-400">Chưa có dữ liệu chiến lược.</p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {sections.map((s) => (
                 <div
                   key={s.name}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 transition-all hover:border-zinc-600"
+                  className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-gray-200/50 transition-all hover:shadow-md hover:ring-gray-300/60"
                 >
-                  <p className="text-sm font-medium text-zinc-300">{s.name}</p>
-                  <div className="mt-2 flex items-end justify-between">
-                    <span className="text-2xl font-bold tabular-nums text-white">
+                  <p className="text-[13px] font-medium text-gray-500">{s.name}</p>
+                  <div className="mt-3 flex items-end justify-between">
+                    <span className="text-2xl font-bold tabular-nums text-gray-900">
                       {s.completed}/{s.total}
                     </span>
                     <span
                       className={`text-sm font-semibold ${
                         s.pct >= 70
-                          ? "text-green-400"
+                          ? "text-green-500"
                           : s.pct >= 40
-                          ? "text-yellow-400"
-                          : "text-red-400"
+                          ? "text-amber-500"
+                          : "text-red-500"
                       }`}
                     >
                       {s.pct}%
                     </span>
                   </div>
-                  <div className="progress-bar mt-2">
+                  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className={`progress-fill ${
+                      className={`h-full rounded-full transition-all duration-500 ${
                         s.pct >= 70
                           ? "bg-green-500"
                           : s.pct >= 40
-                          ? "bg-yellow-500"
+                          ? "bg-amber-500"
                           : "bg-red-500"
                       }`}
                       style={{ width: `${s.pct}%` }}
@@ -221,46 +248,46 @@ export default async function DashboardPage() {
           )}
         </section>
 
-        {/* ===== SECTION 4: LÃNH ĐẠO ===== */}
+        {/* ===== SECTION 4: Leaders ===== */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-zinc-300">👥 Lãnh đạo — Đầu mối</h2>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Đầu mối chịu trách nhiệm
+          </h2>
           {leaders.length === 0 ? (
-            <p className="text-zinc-500">Chưa có dữ liệu đầu mối.</p>
+            <p className="text-gray-400">Chưa có dữ liệu đầu mối.</p>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-zinc-800">
+            <div className="overflow-x-auto rounded-3xl bg-white shadow-sm ring-1 ring-gray-200/50">
               <table className="w-full text-sm">
-                <thead className="border-b border-zinc-800 bg-zinc-900">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-400">Đầu mối</th>
-                    <th className="px-4 py-3 text-center font-medium text-zinc-400">Tổng</th>
-                    <th className="px-4 py-3 text-center font-medium text-zinc-400">Hoàn thành</th>
-                    <th className="px-4 py-3 text-center font-medium text-zinc-400">Quá hạn</th>
-                    <th className="px-4 py-3 text-center font-medium text-zinc-400">Tỷ lệ</th>
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">Đầu mối</th>
+                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tổng</th>
+                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Hoàn thành</th>
+                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Quá hạn</th>
+                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tỷ lệ</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800">
+                <tbody className="divide-y divide-gray-50">
                   {leaders.map((l) => (
-                    <tr key={l.name} className="transition-colors hover:bg-zinc-800/50">
-                      <td className="px-4 py-3 font-medium text-white">{l.name}</td>
-                      <td className="px-4 py-3 text-center tabular-nums">{l.total}</td>
-                      <td className="px-4 py-3 text-center tabular-nums text-green-400">
-                        {l.completed}
-                      </td>
-                      <td className="px-4 py-3 text-center tabular-nums">
+                    <tr key={l.name} className="transition-colors hover:bg-gray-50/50">
+                      <td className="px-5 py-4 font-medium text-gray-900">{l.name}</td>
+                      <td className="px-5 py-4 text-center tabular-nums text-gray-600">{l.total}</td>
+                      <td className="px-5 py-4 text-center tabular-nums text-green-600">{l.completed}</td>
+                      <td className="px-5 py-4 text-center tabular-nums">
                         {l.overdue > 0 ? (
-                          <span className="text-red-400">{l.overdue}</span>
+                          <span className="text-red-500 font-medium">{l.overdue}</span>
                         ) : (
-                          <span className="text-zinc-600">0</span>
+                          <span className="text-gray-300">0</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-5 py-4 text-center">
                         <span
-                          className={`inline-block min-w-[3rem] rounded-full border px-2 py-0.5 text-xs font-semibold ${
+                          className={`inline-block min-w-12 rounded-full px-3 py-1 text-xs font-semibold ${
                             l.completionRate >= 70
-                              ? "border-green-500/30 bg-green-500/20 text-green-400"
+                              ? "bg-green-50 text-green-600"
                               : l.completionRate >= 40
-                              ? "border-yellow-500/30 bg-yellow-500/20 text-yellow-400"
-                              : "border-red-500/30 bg-red-500/20 text-red-400"
+                              ? "bg-amber-50 text-amber-600"
+                              : "bg-red-50 text-red-600"
                           }`}
                         >
                           {l.completionRate}%
@@ -274,18 +301,18 @@ export default async function DashboardPage() {
           )}
         </section>
 
-        {/* ===== SECTION 5: HÀNH ĐỘNG ===== */}
+        {/* ===== SECTION 5: Action ===== */}
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-zinc-300">
-            ⚡ Hành động — Cần xử lý ({actionDirectives.length})
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Cần xử lý ({actionDirectives.length})
           </h2>
           <DirectiveTable directives={actionDirectives} />
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-6 text-center text-xs text-zinc-600">
-        CEO Directive Automation — EsuhaiGroup © 2026 • Powered by Next.js + Notion
+      <footer className="border-t border-gray-200/60 py-8 text-center text-[12px] text-gray-400">
+        CEO Directive Automation — EsuhaiGroup © 2026 · Powered by Next.js + Notion
       </footer>
     </div>
   );
