@@ -27,15 +27,15 @@ if (process.env.GEMINI_API_KEY) {
     apiKey: process.env.GEMINI_API_KEY,
     baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
   });
-  MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-pro';
   console.log('[AI] ☑ Router: Gemini (' + MODEL + ')');
 } else if (process.env.OPENAI_API_KEY) {
   openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   MODEL = 'gpt-4o-mini';
   console.log('[AI] ☑ Router: OpenAI (' + MODEL + ')');
 } else {
-  console.error('[AI] ✖ Không có GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env');
-  process.exit(1);
+  // Không crash — cho phép bot chạy, chỉ AI commands sẽ báo lỗi
+  console.warn('[AI] ⚠ Không có GEMINI_API_KEY hoặc OPENAI_API_KEY — AI commands sẽ không hoạt động');
 }
 
 // ===== AI CALL WRAPPER: Retry + Rate Limit Handling =====
@@ -43,8 +43,11 @@ const MAX_RETRIES = 3;
 const RETRY_DELAYS = [5000, 15000, 30000]; // 5s, 15s, 30s
 
 async function aiCall(messages, options = {}) {
+  if (!openai) {
+    throw new Error('AI chưa cấu hình — cần GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env');
+  }
   const { temperature = 0.3, max_tokens = 1000 } = options;
-  
+
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       const response = await openai.chat.completions.create({
@@ -232,12 +235,12 @@ Trả lời tiếng Việt, ngắn gọn.`;
   };
 }
 
-// ===== 3. NATURAL LANGUAGE QUERY =====
+// ===== 3. NATURAL LANGUAGE QUERY (S2.2 — RAG pipeline) =====
 async function askQuestion(question) {
   const data = await loadDirectiveData();
 
-  // Build concise context
-  const context = data.slice(0, 30).map(d => 
+  // Build concise directive context (top 30 mới nhất)
+  const directiveContext = data.slice(0, 30).map(d =>
     `[${d.label}] "${d.title}" | Đầu mối: ${d.dauMoi} | Hạn: ${d.deadline} | Trạng thái: ${d.status}`
   ).join('\n');
 
@@ -248,14 +251,29 @@ async function askQuestion(question) {
     active: data.filter(d => d.label === 'active').length,
   };
 
-  const response = await aiCall([
-      { role: 'system', content: `Bạn là AI trợ lý CEO EsuhaiGroup. Trả lời câu hỏi dựa trên dữ liệu chỉ đạo bên dưới.
+  // RAG: Lấy context liên quan từ knowledge base thay vì inject toàn bộ
+  let ragContext = '';
+  try {
+    const rag = require('./rag-engine');
+    await rag.init();
+    ragContext = rag.buildContext(question, 5, 2000);
+  } catch (err) {
+    console.warn('[AI] ⚠ RAG không khả dụng, chỉ dùng directive data:', err.message);
+  }
+
+  const systemPrompt = `Bạn là AI trợ lý CEO EsuhaiGroup. Trả lời câu hỏi dựa trên dữ liệu chỉ đạo và kiến thức nền bên dưới.
 Trả lời ngắn gọn, tiếng Việt, có cấu trúc. Nếu không đủ dữ liệu, nói rõ.
 
 THỐNG KÊ: ${stats.total} tổng, ${stats.pending} chờ duyệt, ${stats.overdue} quá hạn, ${stats.active} đang thực hiện.
 
-DỮ LIỆU (30 mới nhất):
-${context}` },
+DỮ LIỆU CHỈ ĐẠO (30 mới nhất):
+${directiveContext}${ragContext ? `
+
+KIẾN THỨC NỀN (RAG):
+${ragContext}` : ''}`;
+
+  const response = await aiCall([
+      { role: 'system', content: systemPrompt },
       { role: 'user', content: question }
     ], { temperature: 0.3, max_tokens: 600 });
 

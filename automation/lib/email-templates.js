@@ -176,8 +176,8 @@ function buildStep1Email(data) {
       '<p style="margin:0 0 12px;">Trong cuộc họp <strong>' + (data.nguon || 'BOD') + '</strong> ngày <strong>' + (data.ngayNhan || '') +
       '</strong>, Anh/Chị đã đưa ra chỉ đạo sau:</p>'
     ) +
-    eSection('📋 NỘI DUNG CHỈ ĐẠO', data.noiDung || data.tieuDe || '', BRAND_BLUE) +
-    eText('<p style="margin:12px 0;font-weight:700;color:' + BRAND_GREEN + ';">📝 PHÂN TÍCH SƠ BỘ (Cần Anh/Chị xác nhận):</p>') +
+    eSection('▸ NỘI DUNG CHỈ ĐẠO', data.noiDung || data.tieuDe || '', BRAND_BLUE) +
+    eText('<p style="margin:12px 0;font-weight:700;color:' + BRAND_GREEN + ';">▸ PHÂN TÍCH SƠ BỘ (Cần Anh/Chị xác nhận):</p>') +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
       eRow('T1 — Đầu mối:', data.tenDauMoi || 'Chưa xác định') +
@@ -188,14 +188,14 @@ function buildStep1Email(data) {
     ) + '</div>' +
     eDivider() +
     eText(
-      '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">💡 TẠI SAO CẦN DUYỆT:</p>' +
+      '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📌 TẠI SAO CẦN DUYỆT:</p>' +
       '<ul style="margin:0;padding-left:18px;">' +
       '<li style="margin:4px 0;"><strong>Đảm bảo chính xác:</strong> Xác nhận thông tin trước khi giao cho đầu mối</li>' +
       '<li style="margin:4px 0;"><strong>Tiết kiệm thời gian:</strong> ' + (data.tenDauMoi || 'Đầu mối') + ' nhận hướng dẫn rõ ràng</li>' +
       '<li style="margin:4px 0;"><strong>Theo dõi tiến độ:</strong> CEO nhìn thấy tiến độ xử lý chỉ đạo</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('👉 DUYỆT NGAY TẠI ĐÂY', data.url || '#', BRAND_BLUE) +
+    eBtn('▸ DUYỆT NGAY TẠI ĐÂY', data.url || '#', BRAND_BLUE) +
     '</div>' +
     eText(
       '<div style="background:#fefce8;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #fde68a;">' +
@@ -319,8 +319,8 @@ function buildStep2Email(data) {
       '<p style="margin:0 0 12px;"><strong>' + (data.tenNguoiChiDao || 'Ban Giám Đốc') + '</strong> đã ' +
       '<strong style="color:' + BRAND_GREEN + ';">PHÊ DUYỆT</strong> và giao nhiệm vụ sau:</p>'
     ) +
-    eSection('📋 NỘI DUNG CHỈ ĐẠO', data.noiDung || data.tieuDe || '', BRAND_GREEN) +
-    eText('<p style="margin:12px 0;font-weight:700;color:' + BRAND_BLUE + ';">📝 YÊU CẦU CỤ THỂ (5T):</p>') +
+    eSection('▸ NỘI DUNG CHỈ ĐẠO', data.noiDung || data.tieuDe || '', BRAND_GREEN) +
+    eText('<p style="margin:12px 0;font-weight:700;color:' + BRAND_BLUE + ';">▸ YÊU CẦU CỤ THỂ (5T):</p>') +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
       eRow('T1 — Đầu mối:', (data.tenDauMoi || '') + ' (đã được chỉ định)') +
@@ -332,20 +332,20 @@ function buildStep2Email(data) {
     ) + '</div>' +
     eDivider() +
     eText(
-      '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">💡 TẠI SAO CẦN XÁC NHẬN:</p>' +
+      '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📌 TẠI SAO CẦN XÁC NHẬN:</p>' +
       '<ul style="margin:0;padding-left:18px;">' +
       '<li style="margin:4px 0;"><strong>Làm rõ kỳ vọng:</strong> Đảm bảo hiểu đúng yêu cầu</li>' +
       '<li style="margin:4px 0;"><strong>Cam kết có ý thức:</strong> "Người Nói Phải LÀM" — xác nhận là cam kết</li>' +
       '<li style="margin:4px 0;"><strong>CEO theo dõi:</strong> Tiến độ báo cáo trực tiếp lên CEO</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('👉 XÁC NHẬN 5T NGAY', formUrl, BRAND_GREEN) +
+    eBtn('▸ XÁC NHẬN 5T NGAY', formUrl, BRAND_GREEN) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
     '(Mở Google Form — thông tin đã điền sẵn, chỉ cần kiểm tra và gửi)</p>' +
     '</div>' +
     eText(
       '<div style="background:#dbeafe;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #93c5fd;">' +
-      '<p style="margin:0;font-size:13px;color:#1e40af;">🏆 <strong>Đồng nghiệp khác đã xác nhận 5T trong vòng 24h.</strong> Bạn cũng làm được!</p></div>'
+      '<p style="margin:0;font-size:13px;color:#1e40af;">☑ <strong>Đồng nghiệp khác đã xác nhận 5T trong vòng 24h.</strong> Bạn cũng làm được!</p></div>'
     );
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -366,7 +366,7 @@ function buildProgressNotifyEmail(data) {
       '<p style="margin:0 0 12px;">Chỉ đạo sau đã được <strong style="color:' + BRAND_GREEN + ';">xác nhận đầy đủ 5T</strong> ' +
       'và sẵn sàng triển khai:</p>'
     ) +
-    eSection('📋 ' + (data.tieuDe || 'Chỉ đạo'), '', BRAND_GREEN) +
+    eSection('▸ ' + (data.tieuDe || 'Chỉ đạo'), '', BRAND_GREEN) +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
       eRow('Đầu mối:', data.tenDauMoi || '') +
@@ -377,7 +377,7 @@ function buildProgressNotifyEmail(data) {
       '#f0fdf4', '#bbf7d0'
     ) + '</div>' +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('📋 XEM CHI TIẾT', data.url || '#', BRAND_GREEN) +
+    eBtn('▸ XEM CHI TIẾT', data.url || '#', BRAND_GREEN) +
     '</div>';
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -429,7 +429,7 @@ function buildStatusChangeEmail(data) {
       '#f8fafc', '#e2e8f0'
     ) + '</div>' +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('📋 XEM CHI TIẾT', data.url || '#', color) +
+    eBtn('▸ XEM CHI TIẾT', data.url || '#', color) +
     '</div>';
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -502,7 +502,7 @@ function buildEscalationEmail(data, level) {
         : '')
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('📝 PHẢN HỒI LEO THANG', formUrl, cfg.color) +
+    eBtn('▸ PHẢN HỒI LEO THANG', formUrl, cfg.color) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
     '(Mở Google Form — giải trình lý do và cam kết thời hạn mới)</p>' +
     '</div>';
@@ -541,7 +541,7 @@ function buildReminderEmail(data) {
       isUrgent ? '#fecaca' : '#bfdbfe'
     ) + '</div>' +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('📋 CẬP NHẬT TIẾN ĐỘ', formUrl, color) +
+    eBtn('▸ CẬP NHẬT TIẾN ĐỘ', formUrl, color) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
     '(Mở Google Form — cập nhật tiến độ thực hiện)</p>' +
     '</div>';

@@ -28,13 +28,13 @@ const session = require('./session-manager');
 const bible = require('./content-bible');
 
 // ===== CONFIG =====
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
 const BRIDGE_URL = process.env.BRIDGE_URL || 'http://localhost:3100';
 const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'ceo-directives-r8d-2026-esuhai-secure-token';
 
 // Allowed Telegram user IDs (security: only admin can use)
-const ALLOWED_USERS = (process.env.TELEGRAM_ALLOWED_USERS || '')
+const ALLOWED_USERS = (process.env.TELEGRAM_ALLOWED_USERS || process.env.ADMIN_USER_IDS || '')
   .split(',')
   .map(id => id.trim())
   .filter(Boolean);
@@ -43,6 +43,32 @@ if (!BOT_TOKEN) {
   console.error('[BOT] ✖ TELEGRAM_BOT_TOKEN không có trong .env');
   process.exit(1);
 }
+
+// ===== RATE LIMIT PER USER (S2.3) =====
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 phút
+const RATE_LIMIT_MAX = 10;           // Tối đa 10 tin nhắn/phút
+const rateLimitMap = new Map();      // userId → [timestamp, ...]
+
+function checkRateLimit(userId) {
+  const now = Date.now();
+  const key = String(userId);
+  if (!rateLimitMap.has(key)) rateLimitMap.set(key, []);
+  const timestamps = rateLimitMap.get(key).filter(t => now - t < RATE_LIMIT_WINDOW);
+  rateLimitMap.set(key, timestamps);
+  if (timestamps.length >= RATE_LIMIT_MAX) return false;
+  timestamps.push(now);
+  return true;
+}
+
+// Dọn bộ nhớ rate limit mỗi 5 phút
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, timestamps] of rateLimitMap) {
+    const valid = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW);
+    if (valid.length === 0) rateLimitMap.delete(key);
+    else rateLimitMap.set(key, valid);
+  }
+}, 5 * 60 * 1000);
 
 // ===== BRIDGE CLIENT =====
 function bridgeRequest(path, method = 'GET') {
@@ -91,6 +117,25 @@ function denyMessage() {
   return '🔒 Bạn không có quyền sử dụng bot này.\nLiên hệ admin để được cấp quyền.';
 }
 
+function rateLimitMessage() {
+  return '⏳ Thầy ơi, con cần Thầy chờ một chút ạ. Thầy đang gửi quá nhiều tin nhắn — thử lại sau 1 phút ạ.';
+}
+
+/** Kiểm tra quyền + rate limit. Trả về true nếu OK */
+function canProcess(msg) {
+  if (!isAllowed(msg)) {
+    bot.sendMessage(msg.chat.id, denyMessage());
+    return false;
+  }
+  const userId = msg.from?.id || 'unknown';
+  if (!checkRateLimit(userId)) {
+    bot.sendMessage(msg.chat.id, rateLimitMessage());
+    console.log(`[BOT] ⏳ Rate limit cho user ${userId}`);
+    return false;
+  }
+  return true;
+}
+
 // ===== ADMIN NOTIFICATION =====
 function notifyAdmin(err, context) {
   if (!ADMIN_CHAT_ID) return;
@@ -100,7 +145,7 @@ function notifyAdmin(err, context) {
 
 // ===== CONSTANTS =====
 const NOTION_DB_URL = 'https://www.notion.so/317ce590e9e68150a14ecc16d23334ae';
-const DASHBOARD_URL = 'http://localhost:9090/dashboard/index.html';
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
 
 // ===== INLINE KEYBOARD BUILDERS =====
 function kbd(buttons) {
@@ -320,7 +365,7 @@ console.log('==========================================');
 
 // ===== COMMAND: /start =====
 bot.onText(/\/start/, (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const userId = msg.from?.id || 'unknown';
   console.log(`[BOT] /start from user ${userId} (${msg.from?.first_name || ''})`);
@@ -348,7 +393,7 @@ Con là Gravity — bot quản lý chỉ đạo CEO EsuhaiGroup.
 
 // ===== COMMAND: /trangthai =====
 bot.onText(/\/trangthai/, async (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, '⏳ Đang truy vấn bridge...');
@@ -364,7 +409,7 @@ bot.onText(/\/trangthai/, async (msg) => {
 
 // ===== COMMAND: /quahan =====
 bot.onText(/\/quahan(?:\s+(\d+))?/, async (msg, match) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   const limit = match && match[1] ? parseInt(match[1]) : 5;
@@ -381,7 +426,7 @@ bot.onText(/\/quahan(?:\s+(\d+))?/, async (msg, match) => {
 
 // ===== COMMAND: /tim <keyword> =====
 bot.onText(/\/tim\s+(.+)/, async (msg, match) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   const keyword = match[1].trim();
@@ -398,7 +443,7 @@ bot.onText(/\/tim\s+(.+)/, async (msg, match) => {
 
 // ===== COMMAND: /chay (no args) =====
 bot.onText(/^\/chay$/, (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
   bot.sendMessage(msg.chat.id,
 `⚙️ Sử dụng: /chay <workflow>
 
@@ -415,7 +460,7 @@ Workflows khả dụng:
 
 // ===== COMMAND: /chay <workflow> =====
 bot.onText(/\/chay\s+(\w+)/, (msg, match) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   const wfName = match[1].toLowerCase();
@@ -434,7 +479,7 @@ bot.onText(/\/chay\s+(\w+)/, (msg, match) => {
 
 // ===== COMMAND: /baocao =====
 bot.onText(/\/baocao/, async (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, '⏳ Đang tạo báo cáo...');
@@ -453,7 +498,7 @@ bot.onText(/\/baocao/, async (msg) => {
 
 // ===== COMMAND: /hoi <question> =====
 bot.onText(/\/hoi\s+(.+)/, async (msg, match) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   const question = match[1].trim();
@@ -472,13 +517,13 @@ bot.onText(/\/hoi\s+(.+)/, async (msg, match) => {
 });
 
 bot.onText(/^\/hoi$/, (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
   bot.sendMessage(msg.chat.id, `💡 Sử dụng: /hoi <câu hỏi>\n\nVí dụ:\n  /hoi Ai có nhiều chỉ đạo quá hạn nhất?\n  /hoi Tình hình tuyển sinh MSA thế nào?\n  /hoi Chỉ đạo nào quan trọng nhất tuần này?`);
 });
 
 // ===== COMMAND: /phantich =====
 bot.onText(/\/phantich/, async (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, '🧠 Đang phân tích dữ liệu (15-30s)...');
@@ -503,7 +548,7 @@ bot.onText(/\/phantich/, async (msg) => {
 
 // ===== COMMAND: /baocaotuan =====
 bot.onText(/\/baocaotuan/, async (msg) => {
-  if (!isAllowed(msg)) return bot.sendMessage(msg.chat.id, denyMessage());
+  if (!canProcess(msg)) return;
 
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, '📊 Đang tạo báo cáo tuần AI (30-60s)...');
@@ -607,7 +652,12 @@ bot.on('callback_query', async (query) => {
 
 // ===== FREE-TEXT HANDLER (Intent Detection + Session) =====
 bot.on('message', async (msg) => {
-  if (!msg.text || !isAllowed(msg)) return;
+  if (!msg.text) return;
+  if (!isAllowed(msg)) return;
+  const userIdRL = msg.from?.id || 'unknown';
+  if (!checkRateLimit(userIdRL)) {
+    return bot.sendMessage(msg.chat.id, rateLimitMessage());
+  }
   const chatId = msg.chat.id;
   const text = msg.text.trim();
   const userId = String(msg.from?.id || 'unknown');
@@ -711,6 +761,7 @@ bot.on('message', async (msg) => {
 // ===== ERROR HANDLING =====
 bot.on('polling_error', (err) => {
   console.error('[BOT] Polling error:', err.message);
+  notifyAdmin(err, 'polling_error');
 });
 
 // ===== TEST MODE =====

@@ -16,6 +16,18 @@
 require('dotenv').config();
 const { analyzePatterns, predictRisks } = require('./ai-analyzer');
 
+// ===== SINGLETON TELEGRAM BOT (S2.5 — tránh leak khi gọi sendReport nhiều lần) =====
+let _singletonBot = null;
+function getSingletonBot() {
+  const token = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
+  if (!_singletonBot && token) {
+    const TelegramBot = require('node-telegram-bot-api');
+    _singletonBot = new TelegramBot(token);
+    console.log('[REPORT] ☑ Singleton TelegramBot created (no polling)');
+  }
+  return _singletonBot;
+}
+
 // ===== REPORT BUILDER =====
 async function generateWeeklyReport() {
   console.log('[REPORT] 📊 Generating weekly report...');
@@ -216,14 +228,11 @@ async function sendReport(report, options = {}) {
     }
   }
 
-  // Send Telegram — dùng bot instance được truyền vào, không tạo mới
-  if (options.telegram !== false && process.env.TELEGRAM_BOT_TOKEN) {
+  // Send Telegram — singleton pattern: tránh tạo nhiều TelegramBot instance (S2.5)
+  if (options.telegram !== false && (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN)) {
     try {
-      const tgBot = options.bot || (() => {
-        const TelegramBot = require('node-telegram-bot-api');
-        return new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
-      })();
-      const chatId = options.chatId || process.env.ADMIN_CHAT_ID;
+      const tgBot = options.bot || getSingletonBot();
+      const chatId = options.chatId || process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
       
       if (chatId) {
         const tgMsg = formatReportTelegram(report);

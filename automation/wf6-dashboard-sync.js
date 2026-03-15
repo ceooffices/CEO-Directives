@@ -3,7 +3,7 @@
  * CEO Directive WF6: Dashboard Data Sync
  * 
  * Flow:
- *   Query Notion DBs → Transform → Write JSON → Dashboard auto-reads
+ *   Query Notion DBs → Transform → Write JSON → Next.js Dashboard đọc Notion trực tiếp
  * 
  * Usage:
  *   node wf6-dashboard-sync.js              # Chạy thật
