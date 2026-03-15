@@ -21,6 +21,64 @@ function doGet(e) {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// ===== DASHBOARD URL — SINGLE SOURCE OF TRUTH =====
+// Tập trung 1 hàm duy nhất để toàn hệ thống lấy URL Dashboard mới nhất.
+// Ưu tiên: 1) cfg_dashboardUrl (Admin override) → 2) Deployed /exec URL → 3) Hardcoded deployment
+//
+// LƯU Ý: ScriptApp.getService().getUrl() trả về /dev URL khi gọi từ trigger/editor
+// → Chỉ editor mở được, BTC bấm CTA sẽ lỗi Google Drive!
+// → Chỉ dùng khi URL chứa "/exec" (deployed version)
+
+// Deployment ID chính — cập nhật mỗi khi đổi deployment chính
+var MAIN_DEPLOYMENT_ID = "AKfycbzWeSuP4GjR9rXeQREcdc5yd4N0dnlHWmpDyBJc5ALxGkKSvofu3fQ0tOzGNz9icV9UTA";
+
+/**
+ * Lấy URL Dashboard mới nhất — gọi từ mọi nơi cần link CTA.
+ * @returns {string} URL Dashboard
+ */
+function getDashboardUrl() {
+  // 1. Kiểm tra Settings sheet — admin override (ưu tiên cao nhất)
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var configSheetName = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_CONFIG) ? CONFIG.SHEET_CONFIG : "Settings";
+    var settingsSheet = ss.getSheetByName(configSheetName);
+    if (settingsSheet) {
+      var sData = settingsSheet.getDataRange().getValues();
+      for (var i = 0; i < sData.length; i++) {
+        var key = (sData[i][0] || "").toString().trim().toLowerCase();
+        var val = (sData[i][1] || "").toString().trim();
+        if ((key === "cfg_dashboardurl" || key === "dashboard url" || key === "cfg_dashboard_url") && val) {
+          return val;
+        }
+      }
+    }
+  } catch (e) {
+    Logger.log("getDashboardUrl: Settings read error: " + e.message);
+  }
+
+  // 2. ScriptApp — CHỈ dùng khi URL chứa "/exec" (deployed version, ai cũng mở được)
+  //    Bỏ qua /dev URL vì chỉ editor mới truy cập được
+  try {
+    var url = ScriptApp.getService().getUrl();
+    if (url && url.indexOf("/exec") > -1) return url;
+    // Nếu là /dev URL → log cảnh báo, KHÔNG dùng
+    if (url) Logger.log("getDashboardUrl: Skipped /dev URL (trigger context): " + url);
+  } catch (e) {
+    Logger.log("getDashboardUrl: ScriptApp error: " + e.message);
+  }
+
+  // 3. Fallback — dùng deployment ID chính (luôn đúng, ai cũng mở được)
+  return "https://script.google.com/macros/s/" + MAIN_DEPLOYMENT_ID + "/exec";
+}
+
+/**
+ * Frontend gọi được — Dashboard.html, AdminPage.html, Js_Core.html.
+ * @returns {string} URL Web App
+ */
+function getScriptAppUrl() {
+  return getDashboardUrl();
+}
+
 // ===== MỞ DASHBOARD TRONG POPUP =====
 function showDashboardDialog() {
   var html = HtmlService.createHtmlOutputFromFile("Dashboard")

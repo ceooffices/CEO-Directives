@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
@@ -578,6 +578,15 @@ select.form-input {
       </div>
       <div class="section-card-body">
         <div class="form-group">
+          <label>🔗 Link Dashboard (CTA trong email)</label>
+          <input type="text" class="form-input" id="settingDashboardLink" placeholder="Tự động — để trống nếu không cần override">
+          <div class="hint">
+            Link này sẽ gắn vào nút CTA "MỞ DASHBOARD" trong tất cả email gửi đi.
+            <strong>Để trống</strong> = tự động dùng URL phiên bản deploy mới nhất.
+            Chỉ điền khi muốn trỏ tới URL cố định (VD: sau khi deploy mới mà muốn giữ URL cũ).
+          </div>
+        </div>
+        <div class="form-group">
           <label>Link Form Đăng ký nội dung (Google Form)</label>
           <input type="text" class="form-input" id="settingFormLink" placeholder="https://docs.google.com/forms/d/...">
           <div class="hint">Link bảng đăng ký nội dung trình bày mà các bộ phận sẽ điền vào</div>
@@ -1037,6 +1046,7 @@ function loadSettings() {
         if (data.defaultCD) document.getElementById('settingDefaultCD').value = data.defaultCD;
         if (data.ccEmail) document.getElementById('settingCcEmail').value = data.ccEmail;
         if (data.btcEmails) document.getElementById('settingBtcEmails').value = data.btcEmails;
+        if (data.dashboardLink) document.getElementById('settingDashboardLink').value = data.dashboardLink;
         if (data.formLink) document.getElementById('settingFormLink').value = data.formLink;
         if (data.sheetLink) document.getElementById('settingSheetLink').value = data.sheetLink;
         if (data.admin) document.getElementById('sysAdmin').textContent = data.admin;
@@ -1056,6 +1066,7 @@ function saveSettings() {
     defaultCD: document.getElementById('settingDefaultCD').value,
     ccEmail: document.getElementById('settingCcEmail').value,
     btcEmails: document.getElementById('settingBtcEmails').value,
+    dashboardLink: document.getElementById('settingDashboardLink').value,
     formLink: document.getElementById('settingFormLink').value,
     sheetLink: document.getElementById('settingSheetLink').value
   };

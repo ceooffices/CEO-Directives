@@ -259,6 +259,7 @@ function getAdminSettings() {
       defaultCD: "10",
       ccEmail: Session.getActiveUser().getEmail(),
       btcEmails: "",
+      dashboardLink: "",
       formLink: "",
       sheetLink: ""
     };
@@ -273,6 +274,7 @@ function getAdminSettings() {
       "cfg_defaultCD": "defaultCD",
       "cfg_ccEmail": "ccEmail",
       "cfg_btcEmails": "btcEmails",
+      "cfg_dashboardUrl": "dashboardLink",
       "cfg_formLink": "formLink",
       "cfg_sheetLink": "sheetLink"
     };
@@ -321,6 +323,7 @@ function saveAdminSettings(jsonSettings) {
       defaultCD: "cfg_defaultCD",
       ccEmail: "cfg_ccEmail",
       btcEmails: "cfg_btcEmails",
+      dashboardLink: "cfg_dashboardUrl",
       formLink: "cfg_formLink",
       sheetLink: "cfg_sheetLink"
     };
@@ -407,54 +410,72 @@ var BOD_HOSTING_HEADERS = ["Họ tên", "Email", "Từ ngày", "Đến ngày", "
  * @returns {object} {name, email, from, to, history: [{name, email, from, to, status}]}
  */
 function getBodHosting() {
-  var sheet = getOrCreateSheet_(BOD_HOSTING_SHEET, BOD_HOSTING_HEADERS);
-  var data = sheet.getDataRange().getValues();
-  
-  var current = null;
-  var history = [];
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  // Skip header row
-  for (var i = 1; i < data.length; i++) {
-    var row = data[i];
-    var name = (row[0] || "").toString().trim();
-    var email = (row[1] || "").toString().trim();
-    var fromDate = row[2] ? formatDateToISO_(row[2]) : "";
-    var toDate = row[3] ? formatDateToISO_(row[3]) : "";
-    var status = (row[4] || "").toString().trim().toLowerCase();
+  try {
+    var sheet = getOrCreateSheet_(BOD_HOSTING_SHEET, BOD_HOSTING_HEADERS);
+    var data = sheet.getDataRange().getValues();
     
-    if (!name && !email) continue;
+    var current = null;
+    var history = [];
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    // Determine actual status based on date
-    var endDate = toDate ? new Date(toDate) : null;
-    var isActive = status === "active" || (endDate && endDate >= today);
-    
-    if (isActive && !current) {
-      current = {name: name, email: email, from: fromDate, to: toDate};
+    // Skip header row
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      var name = (row[0] || "").toString().trim();
+      var email = (row[1] || "").toString().trim();
+      var fromDate = row[2] ? formatDateToISO_(row[2]) : "";
+      var toDate = row[3] ? formatDateToISO_(row[3]) : "";
+      var status = (row[4] || "").toString().trim().toLowerCase();
+      
+      if (!name && !email) continue;
+      
+      // Determine actual status based on date
+      var endDate = toDate ? new Date(toDate) : null;
+      var isActive = status === "active" || (endDate && endDate >= today);
+      
+      if (isActive && !current) {
+        current = {name: name, email: email, from: fromDate, to: toDate};
+      }
+      
+      history.push({
+        name: name,
+        email: email,
+        from: fromDate,
+        to: toDate,
+        status: isActive ? "active" : "expired"
+      });
     }
     
-    history.push({
-      name: name,
-      email: email,
-      from: fromDate,
-      to: toDate,
-      status: isActive ? "active" : "expired"
-    });
-  }
-  
-  // If no current host found, return config default
-  if (!current) {
-    current = {
-      name: "Lê Tuấn",
-      email: CONFIG.BOD_HOSTING_DEFAULT || "letuan@esuhai.com",
+    // If no current host found, return config default
+    if (!current) {
+      var defaultEmail = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT) 
+        ? CONFIG.BOD_HOSTING_DEFAULT : "letuan@esuhai.com";
+      var defaultName = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT_NAME)
+        ? CONFIG.BOD_HOSTING_DEFAULT_NAME : "Lê Tuấn";
+      current = {
+        name: defaultName,
+        email: defaultEmail,
+        from: "",
+        to: ""
+      };
+    }
+    
+    current.history = history;
+    return current;
+  } catch (e) {
+    Logger.log("getBodHosting error: " + e.message);
+    // Luôn trả dữ liệu fallback để Dashboard không bị stuck "Đang tải..."
+    var fallbackName = (typeof CONFIG !== 'undefined' && CONFIG.BOD_HOSTING_DEFAULT_NAME)
+      ? CONFIG.BOD_HOSTING_DEFAULT_NAME : "Lê Tuấn";
+    return {
+      name: fallbackName,
+      email: "letuan@esuhai.com",
       from: "",
-      to: ""
+      to: "",
+      history: []
     };
   }
-  
-  current.history = history;
-  return current;
 }
 
 /**

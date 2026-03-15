@@ -475,7 +475,7 @@ function buildApprovalReminderEmail(reportDate, pendingCount, dashboardUrl) {
   );
 
   var dUrl = dashboardUrl || "";
-  if (!dUrl) { try { dUrl = ScriptApp.getService().getUrl(); } catch(e) {} }
+  if (!dUrl) { try { dUrl = getDashboardUrl(); } catch(e) {} }
 
   var body =
     '<div style="padding:20px 16px;background:#fff;">' +
