@@ -1,38 +1,54 @@
 # CEO Directive Automation — ClaudeCode Context
 
+> Cập nhật: 2026-03-16
+> Phiên bản: v2.0 — Sau dọn archive + chuyển Notion
+
 ## Tổng quan dự án
 Hệ thống tự động hóa quản lý chỉ đạo CEO cho EsuhaiGroup (Giáo dục & Nhân lực Việt-Nhật).
-- **Kiến trúc:** Telegram Bot → OpenClaw Bridge (port 3100) → 6 Workflows → Notion DB
-- **AI:** GPT-4o-mini (hiện tại) → cần chuyển sang AI Router (Gemini + OpenAI)
+- **Frontend:** Next.js 16 (Turbopack) dashboard → `web/`
+- **Data source:** Notion API trực tiếp (raw fetch, cache 60s)
+- **Backend:** Node.js automation scripts → `automation/`
+- **Forms:** Google Forms (WF1/WF4/WF5) — live trên Google, IDs hardcode trong `email-templates.js`
+- **AI:** Gemini 2.5 Pro (primary) + OpenAI (fallback) → cần build AI Router
 - **Ngôn ngữ:** Node.js, tiếng Việt có dấu
 
 ## Cấu trúc thư mục
+
 ```
-F:\CEO_DIRECTIVES\
-├── automation/               # Core code
-│   ├── telegram-bot.js       # Telegram Bot (599 LOC)
-│   ├── openclaw-bridge.js    # HTTP bridge (211 LOC)
-│   ├── scheduler.js          # Cron scheduler (142 LOC)
-│   ├── ai-analyzer.js        # AI analysis (262 LOC)
-│   ├── report-generator.js   # Report gen (283 LOC)
+CEO-Directives/
+├── automation/               # ⚙️ CLAUDECODE ZONE — Backend logic
+│   ├── telegram-bot.js       # Telegram Bot
+│   ├── openclaw-bridge.js    # HTTP bridge (port 3100)
+│   ├── scheduler.js          # Cron scheduler
+│   ├── ai-analyzer.js        # AI analysis (cần AI Router)
+│   ├── report-generator.js   # Report generation
 │   ├── wf1-approval.js       # Email duyệt chỉ đạo
 │   ├── wf2-*.js              # Notify + form processor
 │   ├── wf3-*.js              # Status detection
-│   ├── wf4-*.js              # Escalation + form
-│   ├── wf5-*.js              # Reminders + form
-│   ├── wf6-*.js              # Dashboard sync
+│   ├── wf4-*.js              # Escalation + form processor
+│   ├── wf5-*.js              # Reminders + form processor
+│   ├── wf6-dashboard-sync.js # Dashboard sync
 │   ├── hm50-linker.js        # Match chỉ đạo → 50 HM
 │   ├── parse_kpi_sheet.js    # KPI parser
 │   ├── import-*.js           # Data imports
 │   └── lib/                  # Shared modules
-│       ├── notion-client.js
-│       ├── email-sender.js
-│       ├── email-templates.js
-│       └── logger.js
+│       ├── notion-client.js  # Notion API client
+│       ├── email-sender.js   # SMTP sender
+│       ├── email-templates.js # Email HTML + Google Form prefill URLs
+│       └── logger.js         # Logging utility
+├── web/                      # 🎨 GRAVITY ZONE — Next.js Dashboard
+│   ├── src/app/page.tsx      # Dashboard chính (5 sections)
+│   ├── src/app/track/[token]/route.ts  # Email tracking pixel endpoint
+│   ├── src/app/api/status/   # API health check
+│   ├── src/app/components/   # stat-card, traffic-light, directive-table, copy-button
+│   ├── src/lib/notion.ts     # Notion API client (raw fetch, cache 60s)
+│   └── .env.local            # Notion credentials ONLY
 ├── data/                     # JSON data layer
-├── dashboard/                # Static dashboard
-├── CONTENT_BIBLE_AIGENT.md   # ⭐ Content Bible — ĐỌC TRƯỚC KHI CODE
-└── .env                      # Environment (chưa có ADMIN_CHAT_ID)
+├── archive/                  # 📦 Files lỗi thời (GAS, Supabase, old dashboards)
+├── ban_chep_loi/             # Transcripts cuộc họp BOD
+├── CONTENT_BIBLE_AIGENT.md   # ⭐ ĐỌC TRƯỚC KHI CODE — Quy tắc content
+├── notion_properties_lock.md # Properties KHÔNG ĐƯỢC đổi tên
+└── .env.example → .env       # Environment config (automation/)
 ```
 
 ## ⭐ Content Bible — BẮT BUỘC TUÂN THỦ
@@ -50,38 +66,55 @@ F:\CEO_DIRECTIVES\
 - "hậu quả", "phạt", "lỗi của..." → thay bằng "tác động", "điều chỉnh", "cần cải thiện"
 - Không bịa số liệu, không đoán mò
 
+## Google Forms — VẪN HOẠT ĐỘNG
+
+Forms live trên Google (không phụ thuộc local code). IDs trong `email-templates.js`:
+- **WF1:** Form xác nhận 5T → `FORM_ID`
+- **WF4:** Phản hồi leo thang → `FORM_WF4_ID`
+- **WF5:** Cập nhật tiến độ → `FORM_WF5_ID`
+
+Response sheets → `wf4-form-processor.js` / `wf5-form-processor.js` poll CSV → update Notion.
+
 ## Sprint 1 — Tasks cho ClaudeCode
 
-### 🔴 CRITICAL (làm trước)
-1. **C3: Thêm confirmation trước `/chay`**
-   - File: `automation/telegram-bot.js` L390-410
-   - Thêm inline buttons "☑ Xác nhận chạy" / "✖ Hủy" trước khi gọi bridge
-   - Pattern: `cmd_confirm_wf1` → user bấm → gọi bridge
+### 🔴 S1.4: Seed ChromaDB startup
+- Seed 14 context files vào ChromaDB khi khởi động
+- Đảm bảo bot có đủ context để trả lời
 
-2. **C4: AI Router cho ai-analyzer.js**
-   - File: `automation/ai-analyzer.js`
-   - Thay `new OpenAI({ apiKey })` bằng router chọn Gemini hoặc OpenAI
-   - Nếu có `GEMINI_API_KEY` → dùng Gemini (rẻ hơn), fallback OpenAI
+### 🔴 S1.5: Xóa dead code
+- Xóa reference `sams_differ` trong codebase
+- Dọn code không còn dùng
 
-### 🟡 WARNING (làm sau critical)
-3. **W1+W2: Cập nhật xưng hô + emoji**
-   - File: `automation/telegram-bot.js`
-   - Thay tất cả "Tôi" → "con", "Bạn" → "Thầy" (hoặc context-aware)
-   - Thay emoji theo Bible list ở trên
-   - Thay "❌" → "✖", "✅" → "☑", v.v.
+### 🔴 S1.6: Confirmation cho `/chay`
+- File: `automation/telegram-bot.js`
+- Thêm inline buttons "☑ Xác nhận chạy" / "✖ Hủy" trước khi gọi bridge
+- Pattern: `cmd_confirm_wf1` → user bấm → gọi bridge
 
-4. **W3: Error → admin DM**
-   - File: `automation/telegram-bot.js`
-   - Thêm function `notifyAdmin(error, context)` gửi DM cho ADMIN_CHAT_ID
-   - Gọi trong tất cả catch blocks
+### 🟡 Sprint 2 Tasks (sau khi Sprint 1 pass QC)
+- **S2.1:** AI Router (Gemini primary + OpenAI fallback) — `ai-analyzer.js`
+- **S2.2:** RAG pipeline thay full context injection
+- **S2.3:** Rate limit per user — `telegram-bot.js`
+- **S2.4:** Error → admin DM (`notifyAdmin(error)` trong catch blocks)
+- **S2.5:** Fix report-generator TelegramBot leak (singleton pattern)
 
-5. **W5: Fix report-generator TelegramBot leak**
-   - File: `automation/report-generator.js` L221-222
-   - Thay `new TelegramBot(token)` bằng parameter injection hoặc singleton
+## Environment Variables
 
-6. **W7: Validate AI response**
-   - File: `automation/telegram-bot.js` L431-446
-   - Thêm: `if (!result.answer) result.answer = "Thầy ơi, con chưa tìm được câu trả lời phù hợp."`
+File `automation/.env` chứa credentials (xem `.env.example`):
+```
+# Notion
+NOTION_API_KEY=ntn_...
+NOTION_CLARIFICATIONS_DB=317ce590-...
+
+# Telegram / Signal / SMTP / GitHub / AI
+BOT_TOKEN=...
+SIGNAL_BOT_NUMBER=...
+SMTP_USER=... SMTP_PASS=...
+GITHUB_PAT=...
+GEMINI_API_KEY=...
+OPENAI_API_KEY=...
+```
+
+File `web/.env.local` chỉ chứa Notion credentials cho Next.js dashboard.
 
 ## Coding Standards
 - Comments tiếng Việt có dấu
@@ -91,6 +124,7 @@ F:\CEO_DIRECTIVES\
 - Test: chạy `node telegram-bot.js --test` để verify
 
 ## Phối hợp
-- Gravity (Antigravity) review tất cả thay đổi trước khi chạy thật
-- Commit message: `[Sprint1] C3: Thêm confirmation cho /chay`
+- **Gravity** (Antigravity) review tất cả thay đổi trước khi merge
+- Commit message: `emoji Mô tả ngắn (Sprint X, task SX.Y)`
 - Không sửa `.env` trực tiếp — chỉ sửa `.env.example` và thông báo
+- Không sửa file trong `web/` (Gravity zone) trừ khi được duyệt

@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --color-green: #34c759;
+  --color-yellow: #ff9500;
+  --color-red: #ff3b30;
+  --color-black-alert: #1c1c1e;
+  --color-blue: #007aff;
+  --color-purple: #af52de;
+  --color-cyan: #5ac8fa;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  background: #09090b;
+  color: #fafafa;
+}
+
+/* Smooth tab transitions */
+.tab-panel { animation: fadeSlideIn 0.3s ease-out; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stat card pulse for critical values */
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); }
+}
+
+.pulse-danger { animation: pulse-red 2s infinite; }
+
+/* Traffic light glow */
+.light-green { background: var(--color-green); box-shadow: 0 0 12px var(--color-green); }
+.light-yellow { background: var(--color-yellow); box-shadow: 0 0 12px var(--color-yellow); }
+.light-red { background: var(--color-red); box-shadow: 0 0 12px var(--color-red); }
+.light-black { background: var(--color-black-alert); box-shadow: 0 0 12px rgba(255,59,48,0.6); }
+
+/* Progress bar */
+.progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #27272a;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease-out;
+}
