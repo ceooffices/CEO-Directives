@@ -1,32 +1,36 @@
-# CEO Directives — Hệ thống Xử lý Chỉ đạo BOD
+# CEO Directives — Hệ thống Tự động Quản lý Chỉ đạo CEO
 
-> **EsuhaiGroup S2** — Quản lý & tự động hóa chỉ đạo từ BOD/CEO theo quy tắc 5T
+> **EsuhaiGroup S2** — Tự động hóa chỉ đạo CEO theo quy tắc 5T, tích hợp AI phân tích
 
 ---
 
 ## 📋 Tổng quan
 
-Hệ thống chuyển đổi chỉ đạo BOD/CEO thành các Clarification items theo quy tắc **5T**, tự động phê duyệt 2 bước qua email, và theo dõi tiến độ trên Notion.
+Hệ thống end-to-end quản lý chỉ đạo CEO: từ ghi chép cuộc họp → phân tách 5T → email phê duyệt 2 bước → theo dõi tiến độ → AI phân tích rủi ro → Telegram Bot điều khiển.
 
 ```
-📅 Ghi chép cuộc họp (CEO tạo)
+📅 CEO tạo chỉ đạo trên Notion
     ↓
-🎯 Outcomes + 📋 Clarifications (quy tắc 5T)
+🎯 Auto phân tách 5T (T1-T5)
     ↓
-⚡ n8n WF1 → Email phê duyệt 2 bước
+📧 WF1: Email phê duyệt 2 bước (BOD → Đầu mối)
     ↓
-✅ Đầu mối xác nhận 5T → Hoàn thành
+⏳ WF2-5: Theo dõi, nhắc nhở, leo thang
+    ↓
+🤖 Telegram Bot + AI phân tích
+    ↓
+📊 Dashboard tổng quan
 ```
 
 ### Quy tắc 5T
 
 | T | Thành phần | Ý nghĩa |
 |---|---|---|
-| T1 | Tên đầu mối | Ai thực hiện |
+| T1 | Đầu mối | Ai thực hiện |
 | T2 | Nhiệm vụ | Làm gì cụ thể |
-| T3 | Chỉ tiêu | Đo lường thế nào |
+| T3 | Tiêu chí | Đo lường kết quả |
 | T4 | Thời hạn | Deadline |
-| T5 | Thành viên liên quan | Ai cần phối hợp |
+| T5 | Tài chính | Ngân sách + chi phí |
 
 ---
 
@@ -36,21 +40,24 @@ Hệ thống chuyển đổi chỉ đạo BOD/CEO thành các Clarification item
 
 | Layer | Công nghệ |
 |---|---|
-| Database & Relations | **Notion** (6 databases) |
-| Automation | **n8n** (workflows WF0–WF5) |
-| Dashboard UI | **Google Apps Script** (HTML/CSS/JS) |
-| Email | n8n → Gmail API |
+| Database | **Notion** (6 databases) |
+| Automation | **Node.js** (WF1-6, HM50 linker) |
+| AI | **OpenAI GPT-4o-mini** (phân tích, hỏi đáp) |
+| Bot | **Telegram Bot** (polling, inline keyboards) |
+| Dashboard | **HTML/CSS/JS** (local server port 9090) |
+| Scheduler | **node-cron** (tự động chạy workflows) |
+| Bridge | **HTTP server** (OpenClaw bridge port 3100) |
 
 ### 6 Databases (Notion)
 
 | # | Database | Vai trò |
 |---|---|---|
-| 1 | 📅 Ghi chép cuộc họp | NGUỒN ĐẦU VÀO |
+| 1 | 📅 Ghi chép cuộc họp | Nguồn đầu vào |
 | 2 | 🎯 Kết quả Mong đợi | Mục tiêu chiến lược |
-| 3 | 📋 Chỉ đạo Cần Làm Rõ | Track chỉ đạo (thay Tasks) |
+| 3 | 📋 Chỉ đạo Cần Làm Rõ | Track chỉ đạo chính |
 | 4 | 🏢 PROJECT HUB | Quản lý dự án |
 | 5 | 👤 Danh Bạ Nhân Sự | Thông tin nhân sự |
-| 6 | 📊 Báo cáo Tổng hợp | OUTPUT |
+| 6 | 📊 Báo cáo Tổng hợp | Output |
 
 ---
 
@@ -58,73 +65,121 @@ Hệ thống chuyển đổi chỉ đạo BOD/CEO thành các Clarification item
 
 ```
 CEO-Directives/
-├── core/                      # Tài liệu core (Source of Truth)
-│   ├── CORE_RULES.md          # Quy tắc cốt lõi v1.5
-│   ├── PROJECT_INSTRUCTIONS.md # Hướng dẫn dự án v1.3
-│   ├── BOD_FULL_FLOW.md       # Full flow xử lý
-│   └── notion_id_mapping.json # Mapping Notion IDs v1.4
+├── automation/                    # ⭐ Engine chính (Node.js)
+│   ├── telegram-bot.js            # Telegram Bot + intent detection
+│   ├── openclaw-bridge.js         # HTTP bridge port 3100
+│   ├── scheduler.js               # Cron scheduler
+│   ├── ai-analyzer.js             # AI phân tích + NL query
+│   ├── report-generator.js        # Báo cáo tuần/tháng
+│   ├── intent-detector.js         # Intent detection (12 types)
+│   ├── session-manager.js         # Session memory (persist)
+│   ├── content-bible.js           # Content Bible enforcement
+│   ├── wf1-approval.js            # WF1: Email phê duyệt 2 bước
+│   ├── wf2-directive-progress.js  # WF2: Notify tiến độ
+│   ├── wf3-directive-status.js    # WF3: Detect thay đổi trạng thái
+│   ├── wf4-directive-escalation.js# WF4: Leo thang quá hạn
+│   ├── wf5-reminders.js           # WF5: Smart reminders
+│   ├── wf6-dashboard-sync.js      # WF6: Sync dashboard
+│   ├── hm50-linker.js             # Match chỉ đạo → 50 HM
+│   ├── lib/                       # Shared libraries (notion-client)
+│   ├── .env                       # Config (API keys, tokens)
+│   └── package.json               # Dependencies
 │
-├── automation_n8n/            # n8n Workflows (bản latest)
-│   ├── WF0_AutoSyncEmail_v1.0.json
-│   ├── WF1_v14_NEW_DB_IDS.json        # ⭐ Main workflow
-│   ├── WF1_ExtractData_v12.10.js
-│   ├── WF3_v3_FIXED.json
-│   ├── WF4_v3_FIXED.json
-│   └── WF5_v2_FIXED.json
+├── dashboard/                     # Dashboard UI (HTML/JS/CSS)
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
 │
-├── bod_meeting/               # BOD Meeting Dashboard (GAS)
-│   ├── Dashboard.html         # Dashboard chính
-│   ├── AdminPage.html         # Trang quản trị
-│   ├── Mã.js                  # Code chính
-│   ├── v800_server_api.js     # Server API
-│   ├── v810_admin_api.js      # Admin API
-│   ├── v820_email_templates.gs # Email templates
-│   ├── Css_*.html             # CSS modules
-│   ├── Js_*.html              # JS modules
-│   └── *.md                   # Documentation
+├── core/                          # Tài liệu core (Source of Truth)
+│   ├── CORE_RULES.md
+│   ├── PROJECT_INSTRUCTIONS.md
+│   ├── BOD_FULL_FLOW.md
+│   └── notion_id_mapping.json
 │
-├── ban_chep_loi/              # Transcript cuộc họp BOD
-├── archive/                   # Phiên bản cũ (reference only)
+├── data/                          # Data cache (JSON)
+│   ├── directives.json
+│   ├── people.json
+│   ├── hm50_*.json
+│   └── sessions/                  # Session memory persist
 │
-├── notion_properties_lock.md  # ⚠️ Properties KHÔNG được đổi tên
-├── changelog.md               # Nhật ký thay đổi
-└── README.md                  # File này
+├── bod_meeting/                   # BOD Meeting system (Google Apps Script)
+├── ban_chep_loi/                  # Transcript cuộc họp BOD
+├── apps-script/                   # Google Apps Script (Forms WF4/WF5)
+│
+├── CONTENT_BIBLE_AIGENT.md        # Content Bible — chuẩn giao tiếp AI
+├── CLAUDE.md                      # Context cho ClaudeCode
+├── notion_properties_lock.md      # Properties KHÔNG được đổi tên
+├── changelog.md                   # Nhật ký thay đổi
+└── README.md                      # File này
 ```
 
 ---
 
-## ⚡ Workflows (n8n)
+## ⚡ Workflows
 
-| WF | Tên | Mô tả | Status |
+| WF | Tên | Mô tả | Trigger |
 |---|---|---|---|
-| **WF0** | Auto Sync Email | Đồng bộ email tự động | ✅ Active |
-| **WF1** | 2-Step Approval (v14) | Gửi email phê duyệt 2 bước cho BOD & đầu mối | ✅ Active |
-| **WF3** | Phối hợp CC-BCC | Gửi email phối hợp | ✅ Active |
-| **WF4** | Normalize ID | Chuẩn hóa ID | ✅ Active |
-| **WF5** | Duolingo Reminders | Nhắc nhở học tập | ✅ Active |
-| ~~WF2~~ | ~~Xử lý Form Làm rõ~~ | ~~Deprecated từ v1.4~~ | ⛔ Deprecated |
+| **WF1** | Approval 2-Step | Email phê duyệt BOD → Đầu mối | Manual / Cron |
+| **WF2** | Directive Progress | Notify chỉ đạo 5T confirmed | Cron |
+| **WF3** | Status Change | Detect thay đổi trạng thái | Cron |
+| **WF4** | Escalation | Leo thang chỉ đạo quá hạn | Cron / Form |
+| **WF5** | Smart Reminders | Nhắc nhở thông minh | Cron / Form |
+| **WF6** | Dashboard Sync | Sync data → dashboard | Cron |
+| **HM50** | 50 HM Linker | Match chỉ đạo → 50 hạng mục | Manual |
 
-### WF1 — Luồng 2 bước
+---
 
-```
-STEP 1: BOD Chủ trì duyệt
-  Trigger: Status = "Chờ làm rõ" + chưa duyệt
-  → Email gửi BOD Chủ trì
-  → BOD vào Notion duyệt
+## 🤖 Telegram Bot
 
-STEP 2: Đầu mối xác nhận 5T
-  Trigger: Đã duyệt + chưa xác nhận
-  → Email gửi Đầu mối (kèm T5)
-  → Đầu mối submit form → "Đã xác nhận 5T" ✅
+### Commands
+
+| Lệnh | Chức năng |
+|---|---|
+| `/start` | Giới thiệu + menu chính |
+| `/trangthai` | Tổng quan trạng thái |
+| `/quahan` | Chỉ đạo quá hạn |
+| `/tim <keyword>` | Tìm chỉ đạo |
+| `/chay <wf>` | Chạy workflow (có confirmation) |
+| `/baocao` | Báo cáo nhanh |
+| `/hoi <câu hỏi>` | Hỏi AI |
+| `/phantich` | AI phân tích pattern + rủi ro |
+| `/baocaotuan` | Báo cáo tuần AI |
+
+### Free-text Chat
+
+Bot hiểu chat tự nhiên bằng intent detection (12 types). Ví dụ:
+- "Chào em" → greeting reply
+- "Có gì quá hạn không" → auto gọi bridge
+- "Phân tích tình hình" → AI analyze
+
+---
+
+## 🚀 Khởi chạy
+
+```bash
+cd automation
+
+# 1. Bridge (port 3100)
+node openclaw-bridge.js
+
+# 2. Telegram Bot (polling)
+node telegram-bot.js
+
+# 3. Scheduler (cron jobs)
+node scheduler.js
+
+# 4. Dashboard (port 9090)
+cd .. && python -m http.server 9090
 ```
 
 ---
 
-## ⚠️ Lưu ý quan trọng
+## ⚠️ Lưu ý
 
-- **KHÔNG đổi tên** Notion properties trong file `notion_properties_lock.md` — sẽ làm hỏng workflows
+- **KHÔNG đổi tên** Notion properties → xem `notion_properties_lock.md`
 - **Source of Truth:** `core/CORE_RULES.md` > SOP > Schema > Prompt
-- **Thiếu thông tin** → Tạo Clarification, KHÔNG tự suy đoán
+- **Content Bible:** Tất cả AI output phải tuân thủ `CONTENT_BIBLE_AIGENT.md`
+- **Bảo mật:** `TELEGRAM_ALLOWED_USERS` trong `.env` — chỉ CEO dùng bot
 
 ---
 
@@ -132,9 +187,10 @@ STEP 2: Đầu mối xác nhận 5T
 
 | Vai trò | Người |
 |---|---|
+| CEO | Thầy Lê Long Sơn |
 | CEO Assistant | Anh Kha |
-| AI Assistant | ClaudeK |
-| Liên hệ | hoangkha@esuhai.com |
+| AI Assistant (Gravity) | AntiGravity AI |
+| AI Assistant (ClaudeCode) | Claude Code |
 
 ---
 
@@ -142,7 +198,8 @@ STEP 2: Đầu mối xác nhận 5T
 
 | Version | Ngày | Thay đổi |
 |---|---|---|
-| v1.0 | 27/12/2025 | Initial commit |
-| v1.3 | 27/12/2025 | Kiến trúc 7 databases |
-| v1.4 | 03/01/2026 | WF1 v13: 2-step approval |
-| **v1.5** | **14/01/2026** | **4T→5T, Bỏ Tasks, WF1 v14** |
+| v1.0 | 27/12/2025 | Initial commit — Notion + n8n |
+| v1.5 | 14/01/2026 | 4T→5T, WF1 v14 |
+| v2.0 | 10/03/2026 | Migrate n8n → Node.js, Dashboard mới |
+| v2.5 | 14/03/2026 | Telegram Bot, OpenClaw Bridge, AI Analyzer |
+| **v3.0** | **15/03/2026** | **Intent Detection, Session Memory, Content Bible, Project cleanup** |

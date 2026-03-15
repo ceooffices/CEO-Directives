@@ -1,0 +1,590 @@
+[
+  {
+    "directive_id": "317ce590-e9e6-8124-9875-ef7343bbef03",
+    "directive_title": "CLR-TEST-001: [TEST] Kiểm tra hệ thống WF1 mới",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81f1-8f7c-d6db6a018cb4",
+      "hm_tt": 40,
+      "hm_title": "4 kênh tạo nguồn",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8100-b62c-f009af65ae66",
+    "directive_title": "Báo cáo tương tác và chuyển đổi hàng ngày",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-812b-add2-f146443dce64",
+      "hm_tt": 23,
+      "hm_title": "Hệ thống lương 3P",
+      "hm_phan_cl": "IV — Lương 3P & Đầu mối",
+      "confidence": 30
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8104-b595-ec125c846b81",
+    "directive_title": "Tăng hiệu quả phát sinh ứng viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-812b-add2-f146443dce64",
+      "hm_tt": 23,
+      "hm_title": "Hệ thống lương 3P",
+      "hm_phan_cl": "IV — Lương 3P & Đầu mối",
+      "confidence": 20
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8109-9f08-c06abf6d9b38",
+    "directive_title": "Kết hợp với các huyện và bên thất nghiệp TP.HCM",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8166-b0bd-de10410c616d",
+      "hm_tt": 5,
+      "hm_title": "Upgrade or Nothing",
+      "hm_phan_cl": "I — Tầm nhìn & Triết lý",
+      "confidence": 17
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-810b-8779-fc9331aad62b",
+    "directive_title": "Gửi danh sách nghề đào tạo về MSA",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-810c-9c49-c0fb3cdb78bf",
+    "directive_title": "Triển khai thông báo hoạt động kết hợp với thầy cô",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "hm_tt": 37,
+      "hm_title": "8 Landing page + 8 Fanpage theo ngành",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-810e-a00f-d60b4982a626",
+    "directive_title": "Hiếu tổng kết kết quả tuần đầu tháng 3",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "hm_tt": 37,
+      "hm_title": "8 Landing page + 8 Fanpage theo ngành",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8117-9363-e61b7b1ae20c",
+    "directive_title": "Kế hoạch triển khai với Monogatari",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8118-85b3-fe3df150ff21",
+    "directive_title": "Tăng cường học viên từ Trà Vinh",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8118-a64e-cb538e2d2459",
+    "directive_title": "Ưu tiên tuyển dụng cho công ty Agency và One Star",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81fd-8cd4-c6b44c8254b3",
+      "hm_tt": 20,
+      "hm_title": "Onboarding 30-60-90 ngày",
+      "hm_phan_cl": "III — Tổ chức & Nhân sự",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8118-b5b1-f58279a72c19",
+    "directive_title": "Triển khai hoạt động với trường Đại học An Hiến",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "hm_tt": 37,
+      "hm_title": "8 Landing page + 8 Fanpage theo ngành",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-811d-bd18-e868039bb744",
+    "directive_title": "Tổ chức giải đấu chuyên nghiệp",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8120-9f00-d47c0cb349bb",
+    "directive_title": "Dũng chia sẻ kế hoạch triển khai tháng 3",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8121-bb1f-fa43a228aab5",
+    "directive_title": "Triển khai phương án tuyển dụng",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81f5-b186-d5cb22104b88",
+      "hm_tt": 17,
+      "hm_title": "Lãnh đạo không chức danh",
+      "hm_phan_cl": "III — Tổ chức & Nhân sự",
+      "confidence": 15
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8123-b930-c0a83fcd91dd",
+    "directive_title": "Gửi danh sách ứng viên tiềm năng cho anh Tuấn",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8124-b385-dac696e76491",
+    "directive_title": "MS báo cáo kết quả tuyển dụng",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8127-9fd2-c34f0be64993",
+    "directive_title": "Đẩy mạnh tuyển dụng và truyền thông",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8127-b9c4-eb53f64769ab",
+    "directive_title": "Chuẩn bị nguồn cho nhà tuyển dụng Akita và Higa",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-812c-85e7-d1eb8c5bf538",
+    "directive_title": "Tìm giải pháp cho nhóm học viên tốt nghiệp",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-812c-b409-d1746a3e0219",
+      "hm_tt": 48,
+      "hm_title": "Tự học + thương hiệu cá nhân",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 15
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8130-83a7-e2a1b809fdad",
+    "directive_title": "Triển khai hoạt động tại Bình Dương và Huế",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "hm_tt": 37,
+      "hm_title": "8 Landing page + 8 Fanpage theo ngành",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8131-96b6-c3ac0a24c0bb",
+    "directive_title": "Tăng số lượng học viên tại trung tâm liên kết",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8133-a09f-d7fdc64defca",
+    "directive_title": "Tăng số lượng học trò và đảm bảo giờ dạy cho giáo viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8136-80b2-e2d619742e15",
+    "directive_title": "Ưu tiên triển khai nguồn và đơn tuyển",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8185-aba4-cc23bcfeac9f",
+      "hm_tt": 13,
+      "hm_title": "Họp tuần Review KPI",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 15
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8137-8ca5-d992eab19a21",
+    "directive_title": "Tổ chức các buổi webinar",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8138-85c6-ecaa62987230",
+    "directive_title": "Cải thiện và tiếp cận thị trường trong tháng 3",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8143-9320-d78368899c99",
+    "directive_title": "Đảm bảo đủ giáo viên cho các lớp học",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8144-94c2-ede2eda5a2af",
+    "directive_title": "Yêu cầu nhập học CGC trong tháng 3",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8183-804b-fc0b55c2035f",
+      "hm_tt": 14,
+      "hm_title": "Họp tháng Pipeline toàn hệ thống",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 17
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8153-912b-f87ec701e393",
+    "directive_title": "Lập kế hoạch tuyển dụng GA",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81cf-bc9e-d86996563579",
+      "hm_tt": 41,
+      "hm_title": "Personal brand từng MS",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 15
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8158-81a4-d72120d8b800",
+    "directive_title": "Xác nhận chi phí cho ứng viên đặc định",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "hm_tt": 11,
+      "hm_title": "Xác nhận cuối ngày",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 27
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-815a-9cdd-d8631fac35ae",
+    "directive_title": "Dũng nắm chi tiết phối hợp với các công ty",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "hm_tt": 11,
+      "hm_title": "Xác nhận cuối ngày",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 27
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8160-a637-cffbd2b9bded",
+    "directive_title": "Rà soát sơ đồ MS",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-818c-87c1-c1086f13be98",
+    "directive_title": "Tổ chức tuyển dụng cho 22 vị trí",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-818f-a807-d5dc4ec1f00c",
+    "directive_title": "Chốt hồ sơ cho đơn tuyển ATC",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81fd-8cd4-c6b44c8254b3",
+      "hm_tt": 20,
+      "hm_title": "Onboarding 30-60-90 ngày",
+      "hm_phan_cl": "III — Tổ chức & Nhân sự",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-8191-94b6-f433be11a6c3",
+    "directive_title": "Đảm bảo đủ học viên cho các lớp học",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-8196-bf17-cb3a4c129077",
+    "directive_title": "Đề xuất vị trí cho ứng viên không phù hợp",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-819a-b673-cb59da99fd39",
+    "directive_title": "Phối hợp triển khai với One Team",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81fd-8cd4-c6b44c8254b3",
+      "hm_tt": 20,
+      "hm_title": "Onboarding 30-60-90 ngày",
+      "hm_phan_cl": "III — Tổ chức & Nhân sự",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-819b-91b1-eea8b8b026ce",
+    "directive_title": "Tạo điều kiện phỏng vấn online cho Đà Nẵng",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-819f-b0b2-ffa1b93bb753",
+    "directive_title": "Lập danh mục nghề đào tạo và dự kiến số lượng tốt nghiệp",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81cf-bc9e-d86996563579",
+      "hm_tt": 41,
+      "hm_title": "Personal brand từng MS",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 23
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81a2-b4a3-d33d3a968851",
+    "directive_title": "Tăng số lượng ứng viên tiềm năng",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81cf-bc9e-d86996563579",
+      "hm_tt": 41,
+      "hm_title": "Personal brand từng MS",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 15
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81a6-a8a1-f1cb61af7fc7",
+    "directive_title": "Rà soát ngành điện tại các trung tâm liên kết",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81a7-b49b-c7c7f2ed841a",
+    "directive_title": "Sắp xếp lớp online cho giáo viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81ac-b2fc-e69c3dc9c6a6",
+    "directive_title": "Tổ chức chương trình tuyển dụng tại các trung tâm",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81ad-9f9e-d4bee4770b0f",
+    "directive_title": "Lập kế hoạch tuyển dụng và truyền thông",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "hm_tt": 37,
+      "hm_title": "8 Landing page + 8 Fanpage theo ngành",
+      "hm_phan_cl": "VI — Chiến lược KD & MKT",
+      "confidence": 25
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81b4-b899-d9cf0c192886",
+    "directive_title": "Triển khai nguồn cho công ty ưu tiên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8142-8edd-c4391aa1adff",
+      "hm_tt": 32,
+      "hm_title": "Quan liêu → Quản trị",
+      "hm_phan_cl": "V — Văn hóa & Con người",
+      "confidence": 20
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81b5-8b7b-ea80cbccd418",
+    "directive_title": "Tiếp cận và phân loại nhóm học viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81eb-a53c-fbb6d7b05af3",
+      "hm_tt": 19,
+      "hm_title": "Phân loại NS 4 nhóm A-B-C-D",
+      "hm_phan_cl": "III — Tổ chức & Nhân sự",
+      "confidence": 23
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81b8-9e33-ef09702b2d98",
+    "directive_title": "Tuyển dụng và đào tạo ngành ô tô",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81ba-b420-d8b974e4a1e3",
+    "directive_title": "Đề xuất mức phí cho học viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81bd-9fac-eb1dce95c60b",
+    "directive_title": "Giao chỉ tiêu cho các trường về ngành điện",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81be-ab76-df245c095a2b",
+    "directive_title": "Lập danh mục nghề đào tạo",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81c4-8585-da2b99adad18",
+    "directive_title": "Gửi đề xuất kết hợp doanh nghiệp Nhật với trường",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81a6-8083-f112c81c8ebe",
+      "hm_tt": 47,
+      "hm_title": "Hệ thống đèn Xanh-Vàng-Đỏ-Đen",
+      "hm_phan_cl": "VII — Công nghệ & Dữ liệu",
+      "confidence": 22
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81c6-8c71-ec868776f1ec",
+    "directive_title": "Triển khai thông tin tuyển dụng từ tháng 8",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81d1-ac81-cb6ffbfedb62",
+    "directive_title": "Kéo khách hàng ra Đà Nẵng phỏng vấn",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81d5-9404-e4862fe9c8f1",
+    "directive_title": "Thiết lập lại kế hoạch và đầu mối cho Kago",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81f7-bda3-eda88660f9e2",
+      "hm_tt": 26,
+      "hm_title": "Tư duy đầu mối: mỗi người = tử huyệt",
+      "hm_phan_cl": "IV — Lương 3P & Đầu mối",
+      "confidence": 17
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81da-87f4-fd3bc30174b8",
+    "directive_title": "Bổ sung nguồn nhân lực MS",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81dd-8899-f2f303aaa0be",
+    "directive_title": "Kiểm soát team KGO và báo cáo",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "hm_tt": 11,
+      "hm_title": "Xác nhận cuối ngày",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 27
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81df-a107-db92f6212032",
+    "directive_title": "Xác nhận chương trình KGO",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "hm_tt": 11,
+      "hm_title": "Xác nhận cuối ngày",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 18
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81e2-99e9-d8178526a4be",
+    "directive_title": "Triển khai kế hoạch chi tiết cho từng địa phương",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8189-87af-c659b83d2f7f",
+      "hm_tt": 30,
+      "hm_title": "Thụ động → Chiến binh chủ động",
+      "hm_phan_cl": "V — Văn hóa & Con người",
+      "confidence": 23
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81e3-bf18-c6efb5388db8",
+    "directive_title": "Kết hợp giữa One Team, Kaizen và MSA",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "hm_tt": 49,
+      "hm_title": "Kaizen + PDCA",
+      "hm_phan_cl": "VIII — Học tập & Tương lai",
+      "confidence": 44
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81ee-9154-cbeb5ebf56be",
+    "directive_title": "Xác nhận danh sách học viên ngành ô tô",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "hm_tt": 11,
+      "hm_title": "Xác nhận cuối ngày",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 18
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81f6-90dd-ef6136f85c53",
+    "directive_title": "Tổ chức buổi gặp riêng với anh Oanh và các team",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": {
+      "hm_id": "308ce590-e9e6-8135-aa64-ef8f7c2bafc0",
+      "hm_tt": 8,
+      "hm_title": "Check-in buổi sáng",
+      "hm_phan_cl": "II — Quản trị kết quả",
+      "confidence": 33
+    }
+  },
+  {
+    "directive_id": "320ce590-e9e6-81fc-867e-c6cdc081137c",
+    "directive_title": "Đẩy nhanh quá trình nhập học cho học viên",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  },
+  {
+    "directive_id": "320ce590-e9e6-81ff-a8ff-cc9f513a9059",
+    "directive_title": "Phối hợp triển khai đơn vị dựa vào nhu cầu tiêu chuẩn",
+    "directive_status": "Chờ làm rõ",
+    "hm_match": null
+  }
+]

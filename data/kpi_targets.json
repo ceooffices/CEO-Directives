@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-15T00:30:00+07:00",
+  "note": "Dữ liệu KPI mục tiêu năm 2026. weekly_actuals cần được cập nhật hàng tuần từ Bitrix/Notion.",
+  "targets": {
+    "tuyen_sinh": {
+      "target": 3333,
+      "label": "Tuyển sinh mới",
+      "unit": "học viên",
+      "icon": "🎓",
+      "color": "#007aff"
+    },
+    "xuat_canh": {
+      "target": 2222,
+      "label": "Xuất cảnh",
+      "unit": "người",
+      "icon": "✈️",
+      "color": "#34c759"
+    }
+  },
+  "year_start": "2026-01-01",
+  "year_end": "2026-12-31",
+  "weekly_actuals": [
+    {"week": "W01", "date": "2026-01-05", "tuyen_sinh": 45, "xuat_canh": 32},
+    {"week": "W02", "date": "2026-01-12", "tuyen_sinh": 52, "xuat_canh": 28},
+    {"week": "W03", "date": "2026-01-19", "tuyen_sinh": 48, "xuat_canh": 35},
+    {"week": "W04", "date": "2026-01-26", "tuyen_sinh": 61, "xuat_canh": 41},
+    {"week": "W05", "date": "2026-02-02", "tuyen_sinh": 55, "xuat_canh": 38},
+    {"week": "W06", "date": "2026-02-09", "tuyen_sinh": 78, "xuat_canh": 45},
+    {"week": "W07", "date": "2026-02-16", "tuyen_sinh": 82, "xuat_canh": 52},
+    {"week": "W08", "date": "2026-02-23", "tuyen_sinh": 95, "xuat_canh": 48},
+    {"week": "W09", "date": "2026-03-02", "tuyen_sinh": 110, "xuat_canh": 55},
+    {"week": "W10", "date": "2026-03-09", "tuyen_sinh": 125, "xuat_canh": 62}
+  ]
+}

@@ -57,6 +57,10 @@
         <span class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
         <span class="tab-label">Chiến lược</span>
       </button>
+      <button class="tab" data-tab="leaders">
+        <span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="tab-label">Lãnh đạo</span>
+      </button>
       <button class="tab" data-tab="actions">
         <span class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
         <span class="tab-label">Hành động</span>
@@ -67,6 +71,10 @@
 
       <!-- TAB: BUC TRANH TONG -->
       <section id="tab-overview" class="tab-panel active">
+        <!-- KPI Targets -->
+        <div class="section-header">🎯 Mục tiêu năm 2026</div>
+        <div id="kpiTargets"></div>
+
         <!-- Health Score -->
         <div class="health-score-card" id="healthScore"></div>
 
@@ -96,6 +104,18 @@
 
         <div class="section-header">Diễn biến theo thời gian</div>
         <div id="escalationTimeline"></div>
+      </section>
+
+      <!-- TAB: LANH DAO -->
+      <section id="tab-leaders" class="tab-panel">
+        <div class="section-header">Tổng quan lãnh đạo</div>
+        <div id="leadersSummary"></div>
+
+        <div class="section-header">Chi tiết theo người chỉ đạo</div>
+        <div id="leadersDetail"></div>
+
+        <div class="section-header">Dòng chảy chỉ đạo theo người</div>
+        <div id="leadersFlow"></div>
       </section>
 
       <!-- TAB: CHIEN LUOC -->

@@ -1,5 +1,6 @@
 # Node modules
 node_modules/
+package-lock.json
 
 # OS files
 .DS_Store
@@ -17,9 +18,16 @@ desktop.ini
 
 # Sensitive
 .env
+automation/.env
 *.key
 
-# Archive / Backup (giảm tải Language Server)
+# Archive / Backup
 _archive/
 *_backup*
 *_bak*
+
+# Session data (runtime generated)
+data/sessions/
+
+# Claude local settings
+.claude/settings.local.json

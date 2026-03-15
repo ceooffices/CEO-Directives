@@ -1,0 +1,2513 @@
+{
+  "source": "Google Sheet - Thư cam kết cá nhân 2026",
+  "last_updated": "2026-03-14T17:47:40.677Z",
+  "total_employees": 334,
+  "kpi_summary": {
+    "commit_3333_tuyen_sinh": 2122,
+    "commit_2222_xuat_canh": 1861,
+    "commit_both": 23256,
+    "commit_other": 73302,
+    "grand_total": 100541
+  },
+  "departments": {
+    "TRUYỀN THÔNG": {
+      "count": 14,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 15,
+      "commitOther": 37214,
+      "total": 37229
+    },
+    "KAIZEN": {
+      "count": 109,
+      "commit3333": 351,
+      "commit2222": 262,
+      "commitBoth": 788,
+      "commitOther": 1336,
+      "total": 2737
+    },
+    "ESUWORKS": {
+      "count": 7,
+      "commit3333": 20,
+      "commit2222": 17,
+      "commitBoth": 12,
+      "commitOther": 0,
+      "total": 49
+    },
+    "MSA": {
+      "count": 43,
+      "commit3333": 350,
+      "commit2222": 497,
+      "commitBoth": 5105,
+      "commitOther": 9030,
+      "total": 14982
+    },
+    "TC-KT": {
+      "count": 9,
+      "commit3333": 3,
+      "commit2222": 12,
+      "commitBoth": 7,
+      "commitOther": 4,
+      "total": 26
+    },
+    "PRO - SKILLS": {
+      "count": 13,
+      "commit3333": 0,
+      "commit2222": 2,
+      "commitBoth": 0,
+      "commitOther": 9060,
+      "total": 9062
+    },
+    "TỔNG HỢP": {
+      "count": 23,
+      "commit3333": 1,
+      "commit2222": 20,
+      "commitBoth": 22,
+      "commitOther": 461,
+      "total": 504
+    },
+    "IDS": {
+      "count": 25,
+      "commit3333": 678,
+      "commit2222": 617,
+      "commitBoth": 8213,
+      "commitOther": 2240,
+      "total": 11748
+    },
+    "PHÁP CHẾ": {
+      "count": 7,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 39,
+      "commitOther": 113,
+      "total": 152
+    },
+    "ICT": {
+      "count": 13,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 8,
+      "commitOther": 309,
+      "total": 317
+    },
+    "ESUTECH": {
+      "count": 35,
+      "commit3333": 609,
+      "commit2222": 197,
+      "commitBoth": 8620,
+      "commitOther": 3693,
+      "total": 13119
+    },
+    "GATE AWARDS": {
+      "count": 5,
+      "commit3333": 0,
+      "commit2222": 35,
+      "commitBoth": 30,
+      "commitOther": 121,
+      "total": 186
+    },
+    "KOKATEAM": {
+      "count": 12,
+      "commit3333": 110,
+      "commit2222": 188,
+      "commitBoth": 242,
+      "commitOther": 513,
+      "total": 1053
+    },
+    "NHÂN SỰ": {
+      "count": 9,
+      "commit3333": 0,
+      "commit2222": 12,
+      "commitBoth": 52,
+      "commitOther": 8888,
+      "total": 8952
+    },
+    "ESUCARE": {
+      "count": 1,
+      "commit3333": 0,
+      "commit2222": 2,
+      "commitBoth": 0,
+      "commitOther": 0,
+      "total": 2
+    },
+    "BAN ĐỐI NGOẠI": {
+      "count": 2,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 100,
+      "commitOther": 300,
+      "total": 400
+    },
+    "TRỢ LÝ - THƯ KÝ": {
+      "count": 6,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 0,
+      "commitOther": 20,
+      "total": 20
+    },
+    "BAN CỐ VẤN": {
+      "count": 1,
+      "commit3333": 0,
+      "commit2222": 0,
+      "commitBoth": 3,
+      "commitOther": 0,
+      "total": 3
+    }
+  },
+  "hm_linkage": {
+    "Marketing / Truyền thông (HM #36-42)": 53,
+    "Đào tạo / Chất lượng JPC (HM #9-12)": 243,
+    "Chiêu sinh / Tạo nguồn (HM #1-5)": 252,
+    "Matching / Phái cử (HM #6-8)": 92,
+    "Quản trị hàng ngày / KPI (HM #13-15)": 53,
+    "Khác — không thuộc 50 HM": 108,
+    "Tổ chức / Nhân sự (HM #16-22)": 32,
+    "Công nghệ / Bitrix / TikMe (HM #43-47)": 76,
+    "Lương 3P / B2 (HM #23-25)": 19,
+    "Văn hóa / Chuyển đổi con người (HM #29-35)": 40,
+    "Tầm nhìn / Chiến lược dài hạn (HM #48-50)": 32,
+    "Khác ��� không thuộc 50 HM": 1,
+    "Matching / Ph��i cử (HM #6-8)": 1
+  },
+  "employees": [
+    {
+      "name": "Trần Hữu Phước",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Nhân viên Hậu kì video",
+      "commit": 1000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "RYU RYOKO",
+      "dept": "KAIZEN",
+      "role": "教員",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Thị Kiều",
+      "dept": "KAIZEN",
+      "role": "Giáo Viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "DƯƠNG THỊ CẨM VÂN",
+      "dept": "ESUWORKS",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Hồng Ân",
+      "dept": "MSA",
+      "role": "Trưởng ban",
+      "commit": 24,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Hồ Thị Thiên Thu",
+      "dept": "KAIZEN",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ THU HẰNG",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 51,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "PHẠM THỊ MỸ PHƯƠNG",
+      "dept": "TC-KT",
+      "role": "nhân viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Đình Lệ Kim Dung",
+      "dept": "PRO - SKILLS",
+      "role": "Giáo Viên Kỹ Năng",
+      "commit": 555,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Văn Tuấn",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Đặng Thị Sang",
+      "dept": "TC-KT",
+      "role": "Nhân viên kế toán - CN Đà Nẵng",
+      "commit": 8,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYỄN THỊ THU THẢO",
+      "dept": "ESUWORKS",
+      "role": "Nhân viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN LÊ TRỌNG HIẾU",
+      "dept": "KAIZEN",
+      "role": "Giáo viên tiếng Nhật",
+      "commit": 45,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM THỊ HỒNG NHUNG",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên tổng hợp",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "LÊ TRỌNG ĐẠI",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "VŨ THỤY DẠ UYÊN",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 5,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "MAI TRUC CHI",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 3,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "LIÊNG THỊ HỒNG TRÚC",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 136,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN KHÁNH NHƯ",
+      "dept": "KAIZEN",
+      "role": "Giáo viên (Bunkocho Bình Dương)",
+      "commit": 15,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "PHAN THỊ BÉ LOAN",
+      "dept": "KAIZEN",
+      "role": "Nhân viên ( Team Trưởng)",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "LÊ THỊ NGỌC CHÂU",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Minh Thông",
+      "dept": "KAIZEN",
+      "role": "nhân viên",
+      "commit": 6,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "NGUYỄN QUỐC MỸ TRINH",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Hồ Mai Thi",
+      "dept": "ESUWORKS",
+      "role": "Nhân viên kinh doanh",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "VÕ THỊ MAI TRINH",
+      "dept": "IDS",
+      "role": "NHÂN VIÊN",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Giang Huế Thanh",
+      "dept": "MSA",
+      "role": "Trợ lí",
+      "commit": 50,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "LÊ THỊ NGỌC LOAN",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐẶNG THỊ NGỌC DIỄM",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 60,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYỄN THỊ THANH THÚY",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Trần Phương Thảo",
+      "dept": "MSA",
+      "role": "MS1",
+      "commit": 79,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "TRỊNH THỊ PHƯƠNG GIANG",
+      "dept": "KAIZEN",
+      "role": "giáo viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Ngọc Vĩnh Lộc",
+      "dept": "PHÁP CHẾ",
+      "role": "phó phòng",
+      "commit": 10,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Thị Thi",
+      "dept": "PRO - SKILLS",
+      "role": "Giáo viên",
+      "commit": 6,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐẶNG THỊ NGỌC HƯƠNG",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 55,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Thị Minh Thư",
+      "dept": "ESUWORKS",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Nhân Hiếu",
+      "dept": "MSA",
+      "role": "Trợ lý",
+      "commit": 73,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ THU NGÂN",
+      "dept": "IDS",
+      "role": "NHÂN VIÊN",
+      "commit": 3,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "ĐINH QUANG PHI",
+      "dept": "ICT",
+      "role": "Developer",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Võ Trần Phương Nhi",
+      "dept": "KAIZEN",
+      "role": "Giáo viên TTLK",
+      "commit": 10,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "YUJI KATSUMATA",
+      "dept": "ESUTECH",
+      "role": "Cố vấn kỹ thuật/技術アドバイザー",
+      "commit": 580,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRỊNH NGỌC ANH",
+      "dept": "KAIZEN",
+      "role": "BUNKOUCHOU",
+      "commit": 8,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN THỊ HỒNG NHUNG",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 50,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "ĐOÀN THỊ TUYẾT NHUNG",
+      "dept": "MSA",
+      "role": "Nhân viên tư vấn tạo nguồn",
+      "commit": 30,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN NGỌC KIỀU HƯƠNG",
+      "dept": "MSA",
+      "role": "MS",
+      "commit": 42,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRẦN KIM PHỤNG",
+      "dept": "MSA",
+      "role": "AS",
+      "commit": 3000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Quách Kim Anh",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 20,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRƯƠNG THỊ NGỌC TUYẾT",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN TƯ VẤN TẠO NGUỒN",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Thị Hà",
+      "dept": "TC-KT",
+      "role": "Quản trị Tài chính",
+      "commit": 3,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Mai Thị Bích Nga",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Huỳnh Ngọc Trâm Anh",
+      "dept": "IDS",
+      "role": "Nhân viên hồ sơ phái cử",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lê Nguyễn Hồng Chinh",
+      "dept": "MSA",
+      "role": "Nhân viên AS",
+      "commit": 3000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ NGỌC THANH",
+      "dept": "MSA",
+      "role": "AS",
+      "commit": 3000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN THỊ YẾN NHI",
+      "dept": "IDS",
+      "role": "Nhân Viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN HỒNG NGỌC",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 70,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phan Công Trà",
+      "dept": "ICT",
+      "role": "Developer",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Văn Tiến",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Chuyên viên Digital Marketing",
+      "commit": 13993,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Quốc Tuấn",
+      "dept": "TRUYỀN THÔNG",
+      "role": "UI/UX Designer",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN THỊ THÙY LINH",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 62,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Hoàng Thị Thư",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "ĐINH THỊ NGA",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 6,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ MỘNG TUYỀN",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN PHÚC THỊNH",
+      "dept": "IDS",
+      "role": "Nhan viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "VŨ NGỌC QUỲNH NHƯ",
+      "dept": "KAIZEN",
+      "role": "Nhân viên ( giáo viên)",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "VÕ THỊ CẨM TIÊN",
+      "dept": "MSA",
+      "role": "Nhân viên tư vấn tuyển sinh TTLK Vĩnh Long",
+      "commit": 120,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Quang Phúc",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Matching",
+      "commit": 20,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thị Bạch Liên",
+      "dept": "KAIZEN",
+      "role": "Trưởng ban",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "HỒ THỊ HOÀI",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN MINH NHẬT",
+      "dept": "KAIZEN",
+      "role": "Giáo Viên",
+      "commit": 100,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Phạm Thu Hiền",
+      "dept": "KAIZEN",
+      "role": "Hành chính Giáo vụ",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Đinh Trường Sơn",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 40,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Ngọc Phương Thảo",
+      "dept": "PRO - SKILLS",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Quốc Toàn",
+      "dept": "ICT",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "PHẠM NGỌC TRÂM ANH",
+      "dept": "IDS",
+      "role": "NHÂN VIÊN",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Trần Quang Trung",
+      "dept": "TRUYỀN THÔNG",
+      "role": "UI/UX Designer",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HỒ  THỊ YẾN NHI",
+      "dept": "MSA",
+      "role": "TRỢ LÝ ĐỘI 4",
+      "commit": 86,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN THANH LONG NGÂN",
+      "dept": "PRO - SKILLS",
+      "role": "Trưởng ban",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRỊNH LÊ MỸ DUYÊN",
+      "dept": "ESUTECH",
+      "role": "Nhân viên",
+      "commit": 51,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRỊNH THỊ THANH UYÊN",
+      "dept": "PRO - SKILLS",
+      "role": "GIÁO VIÊN",
+      "commit": 3333,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN NGUYỄN TÂY NGUYÊN",
+      "dept": "KAIZEN",
+      "role": "giáo viên",
+      "commit": 54,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Huỳnh Yến Nhi",
+      "dept": "ICT",
+      "role": "Data Analyst",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ MỸ TUYÊN",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trương Quang Minh",
+      "dept": "KAIZEN",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Bùi Thị Mỹ Hoa",
+      "dept": "ESUTECH",
+      "role": "MS - Nhân viên tư vấn tạo nguồn",
+      "commit": 48,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "PHẠM THANH BI",
+      "dept": "KAIZEN",
+      "role": "Chuyên viên",
+      "commit": 36,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị Lên",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 43,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Phạm Thị Kiều My",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 92,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "NGUYỄN TRẦN YẾN NHI",
+      "dept": "IDS",
+      "role": "nhân viên hồ sơ phái cử",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ THỦY NGÂN",
+      "dept": "IDS",
+      "role": "NHÂN VIÊN",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN NGỌC HOÀNG",
+      "dept": "MSA",
+      "role": "TRỢ LÝ ĐỘI 7",
+      "commit": 41,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thị Mỹ Hạnh",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 20,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "VÕ THỊ KIM NGỌC",
+      "dept": "IDS",
+      "role": "nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ ĐAN THANH",
+      "dept": "IDS",
+      "role": "Nhân viên hồ sơ phái cử",
+      "commit": 6,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Đăng Khoa",
+      "dept": "PRO - SKILLS",
+      "role": "Trưởng Khoa Kỹ Năng",
+      "commit": 3000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM THỊ KIÊN",
+      "dept": "MSA",
+      "role": "Trợ lý",
+      "commit": 55,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "HUỲNH MINH PHƯỢNG",
+      "dept": "GATE AWARDS",
+      "role": "Nhân viên",
+      "commit": 35,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Vi Trần Phương Linh",
+      "dept": "ESUTECH",
+      "role": "Back Office",
+      "commit": 5,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Hữu Long",
+      "dept": "ICT",
+      "role": "Chuyên Viên",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN VĂN NHÌN",
+      "dept": "IDS",
+      "role": "Trưởng nhóm Matching",
+      "commit": 300,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "BÙI THỊ THANH THỦY",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 30,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ HƯỜNG",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 93,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ TRANG",
+      "dept": "PRO - SKILLS",
+      "role": "GIÁO VIÊN",
+      "commit": 1500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Võ Công Thành",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 30,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ TUYẾT LINH",
+      "dept": "ESUTECH",
+      "role": "Nhân viên hồ sơ",
+      "commit": 160,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Quốc Lộc",
+      "dept": "ESUTECH",
+      "role": "Kỹ sư thiết kế",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM VĂN TUẤN",
+      "dept": "MSA",
+      "role": "MSL",
+      "commit": 30,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "PHẠM QUANG TÙNG",
+      "dept": "KAIZEN",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Phạm Trường Giang",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Phan Quang Thọ",
+      "dept": "KAIZEN",
+      "role": "nhân viên",
+      "commit": 10,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Bùi Thị Thanh Hà",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Nhân viên",
+      "commit": 200,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN LỆ QUYÊN",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 20,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "ĐỖ THỊ TƯỜNG VI",
+      "dept": "KOKATEAM",
+      "role": "NHÂN VIÊN",
+      "commit": 8,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HỒ THỊ MỸ LINH",
+      "dept": "IDS",
+      "role": "NHÂN VIÊN",
+      "commit": 3,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Minh Nghĩa",
+      "dept": "TRUYỀN THÔNG",
+      "role": "BA",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "UTSUMI NOKA",
+      "dept": "KOKATEAM",
+      "role": "Trưởng ban tư vấn",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "MATSUNOMOTO AYAMI",
+      "dept": "KAIZEN",
+      "role": "教師",
+      "commit": 90,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "PHAN THỊ CHÂU",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Cẩm Lan",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Matching",
+      "commit": 27,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "THẠCH THANH",
+      "dept": "KAIZEN",
+      "role": "NHÂN VIÊN",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Phan Nhật Linh",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phan Hoàng Uyên Chi",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "VŨ MẠNH THẮNG",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 40,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "KOHINATA ERI",
+      "dept": "KAIZEN",
+      "role": "日本語教師",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phạm Đăng Huy",
+      "dept": "MSA",
+      "role": "Đội trưởng 2 - Phụ trách chương trình P2 - Thành viên Ban HL - Thành viên Ban đối ngoại",
+      "commit": 290,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "DƯƠNG ANH THƯ",
+      "dept": "ESUTECH",
+      "role": "Trưởng ban",
+      "commit": 400,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ THẢO MY",
+      "dept": "KAIZEN",
+      "role": "BUNKOCHO-GIÁO VIÊN TIẾNG NHẬT",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Phạm nguyễn hoàng thi",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 10,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ THÙY LINH",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 5,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Quốc Tiến",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHAN THỊ XUÂN THỦY",
+      "dept": "PRO - SKILLS",
+      "role": "Chuyên viên Chăm sóc Học viên",
+      "commit": 60,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "VÕ THỊ QUỲNH NHƯ",
+      "dept": "ESUTECH",
+      "role": "Nhân viên tư vấn tạo nguồn",
+      "commit": 44,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Võ Thị Thuý Hiền",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 333,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM THỊ THANH TRÀ",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 30,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN ĐÌNH LĨNH",
+      "dept": "ESUTECH",
+      "role": "Trưởng phòng thiết kế",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Quốc Tuấn",
+      "dept": "TRUYỀN THÔNG",
+      "role": "UI/UX Designer",
+      "commit": 5,
+      "target": "Hỗ trợ gián tiếp / 間���サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HUỲNH THỊ NGỌC HÒA",
+      "dept": "KAIZEN",
+      "role": "BUNKOCHO",
+      "commit": 20,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN HỒNG NGỌC",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 40,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "HUỲNH MỸ TƯỜNG TRANG",
+      "dept": "KOKATEAM",
+      "role": "NHÂN VIÊN",
+      "commit": 70,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Quang Trung",
+      "dept": "TRUYỀN THÔNG",
+      "role": "UI/UX Designer",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THÀNH TRUNG",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Lê Xuân",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN HOÀNG YẾN",
+      "dept": "KAIZEN",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "ĐẶNG NGUYỄN LAM THI",
+      "dept": "TRUYỀN THÔNG",
+      "role": "NHÂN VIÊN",
+      "commit": 10,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Quốc Việt",
+      "dept": "ICT",
+      "role": "Developer",
+      "commit": 200,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ THỊ QUẾ HƯƠNG",
+      "dept": "KAIZEN",
+      "role": "giáo viên",
+      "commit": 2,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "NGUYỄN PHAN THU NGÂN",
+      "dept": "TỔNG HỢP",
+      "role": "nhân viên",
+      "commit": 10,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN HỮU TRUNG",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 35,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phạm Tiến Lộc",
+      "dept": "IDS",
+      "role": "Nhân viên",
+      "commit": 666,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Bùi Thúy Phượng",
+      "dept": "KAIZEN",
+      "role": "Nhân viên Hành chính - giáo vụ",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM NGỌC NHƯ QUỲNH",
+      "dept": "IDS",
+      "role": "nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Đặng Lam Anh",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 47,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Bùi Lê Minh Anh",
+      "dept": "ICT",
+      "role": "Nhân viên kiểm thử phần mềm",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trang Ngọc Nam Phương",
+      "dept": "ICT",
+      "role": "Nhân viên",
+      "commit": 3,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ THANH NHU",
+      "dept": "KAIZEN",
+      "role": "Chuyên Viên Quản Lý Tài Chính",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thị Hà",
+      "dept": "TC-KT",
+      "role": "Quản trị Tài chính",
+      "commit": 3,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ SON",
+      "dept": "KAIZEN",
+      "role": "Nhân viên/ giáo viên",
+      "commit": 10,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị MInh Phương",
+      "dept": "KAIZEN",
+      "role": "Nhân viên hành chánh giáo vụ",
+      "commit": 5,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "THÁI HỒNG ĐỨC",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 10,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Vũ Ngọc Quỳnh Như",
+      "dept": "KAIZEN",
+      "role": "Nhân viên ( giáo viên)",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lại Đỗ Quyên",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 20,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Tấn Tài",
+      "dept": "ICT",
+      "role": "Chuyên viên IT",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ HỒNG NGỌC",
+      "dept": "TC-KT",
+      "role": "Kế toán tổng hợp",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "PHẠM SƠN TÙNG",
+      "dept": "TC-KT",
+      "role": "Chuyên viên kế toán",
+      "commit": 4,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Thị Minh Hạnh",
+      "dept": "KOKATEAM",
+      "role": "Nhân viên",
+      "commit": 172,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRẦN ÁI NHI",
+      "dept": "PHÁP CHẾ",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Cộng Đồng",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Thị Thuỳ Trinh",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 15,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Duy Khương",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐỖ THỊ THẢO",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 45,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ THỊ XUÂN",
+      "dept": "IDS",
+      "role": "PHÓ BAN",
+      "commit": 2222,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐÀO THỊ THÙY TRANG",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 5,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Phạm duy Trấn",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phạm Thị Hồng Đức",
+      "dept": "KAIZEN",
+      "role": "giáo viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRẦN HOÀNG HOÀI NAM",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Matching",
+      "commit": 105,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị Minh Hiền",
+      "dept": "KAIZEN",
+      "role": "Giáo Viên",
+      "commit": 20,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ THẢO NGUYÊN",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 23,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "VY THỊ MỸ",
+      "dept": "ESUWORKS",
+      "role": "Nhân viên",
+      "commit": 15,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Phạm Hoàng Sơn",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Bùi Thị Nhài",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 6,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ THANH THUỶ",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Vương Thị Thuỳ Trang",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "HUỲNH THỤY KIM NGỌC",
+      "dept": "KOKATEAM",
+      "role": "NHÂN VIÊN",
+      "commit": 22,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "ĐINH THỊ THÚY",
+      "dept": "MSA",
+      "role": "ĐỘI TRƯỞNG ĐỘI 4",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị Hằng",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 15,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Vũ Thị Thảo",
+      "dept": "MSA",
+      "role": "TRợ lý đội",
+      "commit": 50,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "LÊ ANH MINH",
+      "dept": "ESUTECH",
+      "role": "Phụ trách đối ngoại & Tạo nguồn $ Quản lý team MS Đà Nẵng",
+      "commit": 239,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ THỊ THẢO",
+      "dept": "NHÂN SỰ",
+      "role": "Chuyên viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Hồ Trung Quân",
+      "dept": "KAIZEN",
+      "role": "Bunkocho",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ Y NHƯ Ý",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 56,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Itoga Masataka",
+      "dept": "KOKATEAM",
+      "role": "コンサルタント",
+      "commit": 500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Hoa",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 80,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÂM THỊ QUÝ",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 6,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TẠ THỊ HÀ THI",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Quang Tịnh Nghi",
+      "dept": "GATE AWARDS",
+      "role": "Giáo viên",
+      "commit": 50,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lê Duy Phương",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên an ninh",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Cao Văn Nguyện",
+      "dept": "KAIZEN",
+      "role": "Bunkocho",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Minh Tân",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Phó phòng truyền thông",
+      "commit": 22000,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ VĂN LỘC",
+      "dept": "ESUTECH",
+      "role": "Staff",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "YAMAOKA SHIORI",
+      "dept": "KOKATEAM",
+      "role": "顧客開拓サポート担当コンサルタント",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "木船 園江",
+      "dept": "KAIZEN",
+      "role": "日本語教師",
+      "commit": 24,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRIỆU THỊ THU",
+      "dept": "KAIZEN",
+      "role": "NHÂN VIÊN",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Minh Nhựt",
+      "dept": "ESUCARE",
+      "role": "Chuyên Viên",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "PHAN THỊ HUYỀN ANH",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phan Hồ Hận",
+      "dept": "KAIZEN",
+      "role": "Giáo viên.",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "PHẠM THANH LAM",
+      "dept": "PHÁP CHẾ",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Võ Thanh Duy",
+      "dept": "ICT",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Thanh Hùng",
+      "dept": "PRO - SKILLS",
+      "role": "Giảng viên đào tạo kỹ năng",
+      "commit": 500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "VŨ NHƯ NGỌC",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Đỗ Thị Kiều Yên",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 15,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Phan Thị Lan Nhi",
+      "dept": "PHÁP CHẾ",
+      "role": "Nhân viên pháp chế - văn thư",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Hoàng Đức Tân",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Digital Marketing Specialist",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Thu Hằng",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN MINH DUY",
+      "dept": "IDS",
+      "role": "Phó phòng",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ HÀ TRANG",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 50,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Trần Ngọc Như Trang",
+      "dept": "BAN ĐỐI NGOẠI",
+      "role": "Quản lý&Phát triển chương trình Kaigo",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị Kim Hoa",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Biên tập",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGÔ THỊ QUỲNH ANH",
+      "dept": "PRO - SKILLS",
+      "role": "Giáo viên đào tạo kỹ năng",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Phụng Nghi",
+      "dept": "PHÁP CHẾ",
+      "role": "Nhân viên",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Chí Đại",
+      "dept": "KAIZEN",
+      "role": "Bunkochou Sóc Trăng",
+      "commit": 72,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Phạm Minh Anh",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "nhân viên",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Huy Hùng",
+      "dept": "BAN ĐỐI NGOẠI",
+      "role": "Chuyên viên",
+      "commit": 300,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ TUYẾT NHUNG",
+      "dept": "KAIZEN",
+      "role": "Nhân viên Hành chính giáo vụ",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Hoàng Thị Thư",
+      "dept": "IDS",
+      "role": "nhân viên",
+      "commit": 50,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "BÙI THỊ THANH HIẾU",
+      "dept": "MSA",
+      "role": "HUẤN LUYỆN VIÊN PHÓ",
+      "commit": 10,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "LÊ MINH THUẬN",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Nhân viên Thiết kế",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HISANO KEIKO",
+      "dept": "KOKATEAM",
+      "role": "BoD補佐",
+      "commit": 5,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Huỳnh",
+      "dept": "NHÂN SỰ",
+      "role": "Nhân viên C&B",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ BÍCH NGỌC",
+      "dept": "GATE AWARDS",
+      "role": "Giáo viên tiếng Nhật",
+      "commit": 70,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HUỲNH THỊ ANH THƯ",
+      "dept": "KAIZEN",
+      "role": "Trưởng phòng Đào tạo",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nakao Sayuri",
+      "dept": "KAIZEN",
+      "role": "日本語教師",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN VĂN HÀ",
+      "dept": "KOKATEAM",
+      "role": "Chuyên viên",
+      "commit": 8,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Đặng Tiến Dũng",
+      "dept": "MSA",
+      "role": "Trưởng Phòng",
+      "commit": 3333,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Hữu Nghiêm",
+      "dept": "ICT",
+      "role": "IT Support",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phạm Thị Thu Hiền",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 39,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "NGUYỄN THỊ HỒNG GAI",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 135,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN VŨ THÚY OANH",
+      "dept": "KOKATEAM",
+      "role": "Nhân viên",
+      "commit": 8,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Đoàn Minh Thiện",
+      "dept": "NHÂN SỰ",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Thị Liên",
+      "dept": "NHÂN SỰ",
+      "role": "Nhân viên",
+      "commit": 10,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRẦN CHANH SILA",
+      "dept": "MSA",
+      "role": "MSA",
+      "commit": 110,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Ngọc Tường Vy",
+      "dept": "GATE AWARDS",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HỒ THỊ BẢO TRÂN",
+      "dept": "NHÂN SỰ",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Quách Thị Linh",
+      "dept": "KAIZEN",
+      "role": "Bunkochou",
+      "commit": 15,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thế Ngân",
+      "dept": "ESUTECH",
+      "role": "Chuyên viên tư vấn",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐOÀN THỊ ĐẤY",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 15,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYỄN PHƯƠNG TRÂM",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Đoàn Minh Hiếu",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Nguyễn Đông Ban",
+      "dept": "ICT",
+      "role": "Nhân viên",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN VĂN ÚT",
+      "dept": "MSA",
+      "role": "ĐỘI TRƯỞNG ĐỘI 5",
+      "commit": 100,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Thị Hàn Ny",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Phùng Nguyên Hạnh",
+      "dept": "KAIZEN",
+      "role": "Giáo Viên",
+      "commit": 50,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Thị Thanh Thảo",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Matching",
+      "commit": 150,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ THỊ THÚY DIỄM",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 15,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Duy Khánh",
+      "dept": "ICT",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN THỊ THANH THẢO",
+      "dept": "KAIZEN",
+      "role": "GIÁO VIÊN",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Hoàng Uyên Phương",
+      "dept": "MSA",
+      "role": "MS",
+      "commit": 110,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "ĐỖ THỊ THÚY KIỀU",
+      "dept": "MSA",
+      "role": "NHÂN VIÊN",
+      "commit": 40,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thị Thanh",
+      "dept": "MSA",
+      "role": "Trợ Lý",
+      "commit": 108,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Quách Trung Hiếu",
+      "dept": "PRO - SKILLS",
+      "role": "Giáo Viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYỄN THỊ QUỲNH",
+      "dept": "TỔNG HỢP",
+      "role": "Hành chánh - lễ tân - JPC",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "TRẦN THỊ XUÂN",
+      "dept": "PHÁP CHẾ",
+      "role": "Nhân viên",
+      "commit": 12,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "HOSHIYAMA ATSUNAO",
+      "dept": "ESUTECH",
+      "role": "HEAD ,DIVISION OF SALES",
+      "commit": 157,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Nguyễn Thị Thùy Dung",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "Nhân viên",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ THU HƯƠNG",
+      "dept": "KAIZEN",
+      "role": "Trưởng ban",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Dương Thị Oanh",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "ĐINH THỊ DIỆU TUYẾT",
+      "dept": "TC-KT",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Mỹ Chi",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên Hành chánh - Lễ tân",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê Tấn Nhật Anh",
+      "dept": "KAIZEN",
+      "role": "Giáo viên/Nhân viên",
+      "commit": 30,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Phạm Thị Ngọc Hân",
+      "dept": "KAIZEN",
+      "role": "Trưởng phòng",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Lê Thị Hương Ly",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "Thư Ký",
+      "commit": 4,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "NGUYỄN THỊ HÀ PHƯƠNG",
+      "dept": "KOKATEAM",
+      "role": "Nhân viên",
+      "commit": 100,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Thái Thiện Hảo",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "Trợ lý Tổng Giám đốc - Phụ trách lĩnh vực Giáo dục & Nghệ thuật",
+      "commit": 3,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Hồ Phan Bạch Trúc",
+      "dept": "MSA",
+      "role": "Nhân viên",
+      "commit": 59,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Nguyễn Thị Tâm",
+      "dept": "TC-KT",
+      "role": "Trưởng ban",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Phạm Lê Quốc Cường",
+      "dept": "NHÂN SỰ",
+      "role": "Nhân viên",
+      "commit": 40,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Hồ Minh Thư",
+      "dept": "TRUYỀN THÔNG",
+      "role": "Nhân viên",
+      "commit": 15,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "TRẦN THỊ VIỆT TRINH",
+      "dept": "PHÁP CHẾ",
+      "role": "Trưởng Ban Pháp chế",
+      "commit": 5,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN NGỌC LAN VY",
+      "dept": "NHÂN SỰ",
+      "role": "Trưởng phòng",
+      "commit": 6,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "影山千恵美",
+      "dept": "KAIZEN",
+      "role": "教員",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Suzuki  Tadahisa",
+      "dept": "KAIZEN",
+      "role": "日本人教員",
+      "commit": 80,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Võ Thị Hải Yến",
+      "dept": "NHÂN SỰ",
+      "role": "Chuyên viên Nhân sự",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "辻中裕子",
+      "dept": "KAIZEN",
+      "role": "日本語教師",
+      "commit": 1,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "TRẦN PHAN QUỐC DUY",
+      "dept": "TC-KT",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Minh Sang",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 25,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "NGUYỄN THỊ NGUYỆT QUỲNH",
+      "dept": "PRO - SKILLS",
+      "role": "giáo viên kỹ năng",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "LÊ NGỌC CHÂU",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 20,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thuỳ Dương",
+      "dept": "GATE AWARDS",
+      "role": "Giáo viên",
+      "commit": 30,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lê công Hải",
+      "dept": "TỔNG HỢP",
+      "role": "nhân viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn Thủy Trúc",
+      "dept": "TRỢ LÝ - THƯ KÝ",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Phạm Hồng Ân",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên An Ninh",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "TRẦN THỊ HUYỀN",
+      "dept": "ESUTECH",
+      "role": "trưởng nhóm",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thanh Nguyên",
+      "dept": "PRO - SKILLS",
+      "role": "Giáo viên thể chất",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Thanh Kim",
+      "dept": "ESUTECH",
+      "role": "Kỹ sư Thiết kế",
+      "commit": 2,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYỄN HOÀNG YẾN NHI",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Tổng vụ/AS",
+      "commit": 450,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "VĂN HOÀNG THỜI",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Matching",
+      "commit": 100,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Nguyễn Thành Nguyên",
+      "dept": "ESUTECH",
+      "role": "Kỹ sư thiết kế",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Phạm Hữu Hải",
+      "dept": "ESUTECH",
+      "role": "Leader Đối ngoại",
+      "commit": 35,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "NGUYÊN VĂN CHUYỀN",
+      "dept": "ESUTECH",
+      "role": "Trưởng nhóm",
+      "commit": 5,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lê Quốc Thái",
+      "dept": "ESUTECH",
+      "role": "Nhân viên",
+      "commit": 500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thuỳ Dung",
+      "dept": "ESUTECH",
+      "role": "Marketing Leader",
+      "commit": 4000,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Trần Bảo",
+      "dept": "ESUTECH",
+      "role": "Nhân Viên",
+      "commit": 2,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trần Thanh Kim",
+      "dept": "ESUTECH",
+      "role": "Kỹ sư thiết kế",
+      "commit": 2,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "NGÔ HIẾU THIỆN",
+      "dept": "IDS",
+      "role": "nhân viên",
+      "commit": 600,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Nguyễn thị Phương",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên tạp vụ",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "ĐĂNG THỊ LAN",
+      "dept": "ESUTECH",
+      "role": "Nhân viên",
+      "commit": 40,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Trương Nhỉ Khang",
+      "dept": "ESUTECH",
+      "role": "Nhân viên Marketing",
+      "commit": 1500,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lê thị phương Thảo",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "MẠC TUẤN ANH",
+      "dept": "ESUTECH",
+      "role": "NHÂN VIÊN",
+      "commit": 100,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Dương Đông Xuân",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Quốc Nhẫn",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "LÊ THỊ MỸ NGỌC",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 12,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "Bùi Thanh Yên",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 1,
+      "target": "2222 — Khai giảng / 開講"
+    },
+    {
+      "name": "鈴木ありさ",
+      "dept": "KAIZEN",
+      "role": "教師",
+      "commit": 80,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Nhiên",
+      "dept": "KAIZEN",
+      "role": "Trưởng phòng đào tạo",
+      "commit": 10,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Dương Quang Ngọc",
+      "dept": "BAN CỐ VẤN",
+      "role": "cố vấn",
+      "commit": 3,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "江上史",
+      "dept": "KAIZEN",
+      "role": "日本語教師",
+      "commit": 15,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Nguyễn Thị Kim",
+      "dept": "KAIZEN",
+      "role": "Giáo viên",
+      "commit": 2,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thị Huyền Nga",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "川原剛　Kawahara Go",
+      "dept": "KOKATEAM",
+      "role": "コンサルタント",
+      "commit": 10,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Sugiyama Hiroyuki",
+      "dept": "ESUWORKS",
+      "role": "営業部長",
+      "commit": 20,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "Masuda Takehiko",
+      "dept": "ESUTECH",
+      "role": "COO",
+      "commit": 20,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Thuỳ Dung",
+      "dept": "ESUTECH",
+      "role": "Marketing Leader",
+      "commit": 4000,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Hoàng Minh Việt",
+      "dept": "ESUWORKS",
+      "role": "Trợ lý phó TGĐ",
+      "commit": 3,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "LÊ THỊ THƯƠNG",
+      "dept": "KAIZEN",
+      "role": "Giáo Viên",
+      "commit": 24,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Imamachi Masahiro",
+      "dept": "ESUTECH",
+      "role": "CSO",
+      "commit": 350,
+      "target": "3333 — Xuất cảnh / 出国"
+    },
+    {
+      "name": "LÊ ANH TUẤN",
+      "dept": "IDS",
+      "role": "BOD",
+      "commit": 2222,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Lâm văn Nhì",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "2222— Xuất cảnh / 出国"
+    },
+    {
+      "name": "Võ Thị Thuý Hà",
+      "dept": "TỔNG HỢP",
+      "role": "Trưởng phòng",
+      "commit": 5,
+      "target": "2222— Xuất cảnh / 出国"
+    },
+    {
+      "name": "Lại Đức Thịnh",
+      "dept": "TỔNG HỢP",
+      "role": "Giám sát xây dựng",
+      "commit": 10,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Huỳnh Thanh phương",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Trịnh Hoàng Thông",
+      "dept": "TỔNG HỢP",
+      "role": "Tài xế",
+      "commit": 1,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lý Quốc Bảo",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 0,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, vận hành, công nghệ...）"
+    },
+    {
+      "name": "Lê Thanh Sơn",
+      "dept": "TỔNG HỢP",
+      "role": "Nhân viên",
+      "commit": 1,
+      "target": "3333— Khai giảng / 開講"
+    },
+    {
+      "name": "Masuda Takehiko",
+      "dept": "ESUTECH",
+      "role": "COO",
+      "commit": 20,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Nguyễn Long Triều",
+      "dept": "IDS",
+      "role": "nhân viên",
+      "commit": 5555,
+      "target": "Cả hai / 両方"
+    },
+    {
+      "name": "Võ Thị Hồng Phượng",
+      "dept": "NHÂN SỰ",
+      "role": "Trưởng Ban C&B",
+      "commit": 8888,
+      "target": "Hỗ trợ gián tiếp / 間接サポート（đào tạo, v���n h��nh, công nghệ...）"
+    }
+  ]
+}

@@ -443,6 +443,92 @@ body {
 .modal-history { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
 .modal-history-item { padding: 6px 0 6px 12px; border-left: 2px solid var(--bg-input); margin-bottom: 6px; }
 
+/* ========== KPI TARGETS ========== */
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;
+}
+.kpi-card {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+.kpi-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.kpi-icon { font-size: 1.3rem; }
+.kpi-title { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); flex: 1; }
+.kpi-pct { font-size: 1.4rem; font-weight: 900; line-height: 1; }
+.kpi-bar-track {
+  height: 10px; background: var(--bg-page); border-radius: var(--radius-pill);
+  overflow: hidden; margin-bottom: 10px;
+}
+.kpi-bar-fill {
+  height: 100%; border-radius: var(--radius-pill);
+  transition: width 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+}
+.kpi-stats {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 6px;
+}
+.kpi-forecast {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.68rem; color: var(--text-tertiary);
+  padding-top: 6px; border-top: 0.5px solid var(--border-light);
+}
+.kpi-week-info {
+  text-align: center; font-size: 0.68rem; color: var(--text-tertiary);
+  font-weight: 500; padding: 6px 0 4px;
+}
+
+/* ========== LEADER CARDS ========== */
+.leader-card {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 16px;
+  box-shadow: var(--shadow-card); margin-bottom: 10px;
+}
+.leader-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+}
+.leader-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 800; color: white; flex-shrink: 0;
+}
+.leader-info { flex: 1; min-width: 0; }
+.leader-name { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); }
+.leader-sub { font-size: 0.68rem; color: var(--text-tertiary); margin-top: 2px; }
+.leader-score { font-size: 1.5rem; font-weight: 900; line-height: 1; }
+.leader-bars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.leader-bar-row { display: flex; align-items: center; gap: 8px; }
+.leader-bar-label { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); min-width: 72px; }
+.leader-bar-track {
+  flex: 1; height: 6px; background: var(--bg-page); border-radius: var(--radius-pill); overflow: hidden;
+}
+.leader-bar-fill { height: 100%; border-radius: var(--radius-pill); transition: width 1s ease; }
+.leader-bar-count { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); min-width: 36px; text-align: right; }
+.leader-dau-moi { display: flex; flex-wrap: wrap; gap: 4px; }
+.leader-tag {
+  font-size: 0.62rem; padding: 3px 10px; border-radius: var(--radius-pill);
+  background: rgba(0, 122, 255, 0.06); color: var(--blue); font-weight: 600;
+}
+
+/* ========== LEADER FLOW ========== */
+.leader-flow-items { display: flex; flex-direction: column; gap: 6px; }
+.leader-flow-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; background: var(--bg-page); border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+.leader-flow-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.leader-flow-hm { font-weight: 700; color: var(--text-secondary); min-width: 48px; font-size: 0.68rem; }
+.leader-flow-name { flex: 1; color: var(--text-primary); font-weight: 500; }
+.leader-flow-count { font-weight: 700; color: var(--text-primary); font-size: 0.78rem; }
+
+@media (max-width: 639px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}
+
 /* ========== RESPONSIVE ========== */
 @media (min-width: 640px) {
   .main-content { padding: 16px 24px 0; max-width: 860px; margin: 0 auto; }

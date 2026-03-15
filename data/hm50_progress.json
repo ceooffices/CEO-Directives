@@ -1,0 +1,1158 @@
+{
+  "summary": {
+    "total_hm": 50,
+    "total_directives": 62,
+    "matched": 36,
+    "unmatched": 26,
+    "match_rate": 58
+  },
+  "by_phan_cl": {
+    "I — Tầm nhìn & Triết lý": {
+      "total_hm": 5,
+      "total_directives": 1,
+      "completed": 0
+    },
+    "II — Quản trị kết quả": {
+      "total_hm": 10,
+      "total_directives": 8,
+      "completed": 0
+    },
+    "III — Tổ chức & Nhân sự": {
+      "total_hm": 7,
+      "total_directives": 5,
+      "completed": 0
+    },
+    "IV — Lương 3P & Đầu mối": {
+      "total_hm": 6,
+      "total_directives": 3,
+      "completed": 0
+    },
+    "V — Văn hóa & Con người": {
+      "total_hm": 7,
+      "total_directives": 2,
+      "completed": 0
+    },
+    "VI — Chiến lược KD & MKT": {
+      "total_hm": 7,
+      "total_directives": 9,
+      "completed": 0
+    },
+    "VII — Công nghệ & Dữ liệu": {
+      "total_hm": 5,
+      "total_directives": 1,
+      "completed": 0
+    },
+    "VIII — Học tập & Tương lai": {
+      "total_hm": 3,
+      "total_directives": 7,
+      "completed": 0
+    }
+  },
+  "items": [
+    {
+      "id": "308ce590-e9e6-8140-b8b1-ff81abd51329",
+      "tt": 1,
+      "title": "Tái định vị XKLĐ → Hệ sinh thái",
+      "phan_cl": "I — Tầm nhìn & Triết lý",
+      "status": "✅ Có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 9,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81c0-95b1-ca7af6985ddf",
+      "tt": 2,
+      "title": "Triết lý S.Y.S.T.E.M",
+      "phan_cl": "I — Tầm nhìn & Triết lý",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 7,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8145-b8c5-c2d68a00e729",
+      "tt": 3,
+      "title": "5 TỔ: Tổ chức-Tổ Ấm-Tổ Quốc-Tổ Tiên-Tổ Nghề",
+      "phan_cl": "I — Tầm nhìn & Triết lý",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 8,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-814d-8964-e1dc4db8e206",
+      "tt": 4,
+      "title": "6 Giá trị cốt lõi",
+      "phan_cl": "I — Tầm nhìn & Triết lý",
+      "status": "❌ Blind spot",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 8,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8166-b0bd-de10410c616d",
+      "tt": 5,
+      "title": "Upgrade or Nothing",
+      "phan_cl": "I — Tầm nhìn & Triết lý",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 9,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8109-9f08-c06abf6d9b38",
+          "title": "Kết hợp với các huyện và bên thất nghiệp TP.HCM",
+          "status": "Chờ làm rõ",
+          "confidence": 17
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81e5-a92f-db6841d03549",
+      "tt": 6,
+      "title": "Trách nhiệm cuối cấp 5 tầng",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "✅ Có chủ",
+      "dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "impact_score": 8,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81ba-9690-ceadb6bffd65",
+      "tt": 7,
+      "title": "Công thức 5W bắt buộc",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "Tất cả quản lý",
+      "impact_score": 8,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8135-aa64-ef8f7c2bafc0",
+      "tt": 8,
+      "title": "Check-in buổi sáng",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 10,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81f6-90dd-ef6136f85c53",
+          "title": "Tổ chức buổi gặp riêng với anh Oanh và các team",
+          "status": "Chờ làm rõ",
+          "confidence": 33
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81ad-8219-ed8ac424172b",
+      "tt": 9,
+      "title": "Giao việc sáng: Daily Standup",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "Trưởng BU",
+      "impact_score": 9,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81cd-a516-f09a2be50179",
+      "tt": 10,
+      "title": "Gemba — Theo dõi trong ngày",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "Trưởng BU",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8177-9762-f7df075fd4c8",
+      "tt": 11,
+      "title": "Xác nhận cuối ngày",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "❌ Blind spot",
+      "dau_moi": "Tất cả Trưởng BU",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8158-81a4-d72120d8b800",
+          "title": "Xác nhận chi phí cho ứng viên đặc định",
+          "status": "Chờ làm rõ",
+          "confidence": 27
+        },
+        {
+          "id": "320ce590-e9e6-815a-9cdd-d8631fac35ae",
+          "title": "Dũng nắm chi tiết phối hợp với các công ty",
+          "status": "Chờ làm rõ",
+          "confidence": 27
+        },
+        {
+          "id": "320ce590-e9e6-81dd-8899-f2f303aaa0be",
+          "title": "Kiểm soát team KGO và báo cáo",
+          "status": "Chờ làm rõ",
+          "confidence": 27
+        },
+        {
+          "id": "320ce590-e9e6-81df-a107-db92f6212032",
+          "title": "Xác nhận chương trình KGO",
+          "status": "Chờ làm rõ",
+          "confidence": 18
+        },
+        {
+          "id": "320ce590-e9e6-81ee-9154-cbeb5ebf56be",
+          "title": "Xác nhận danh sách học viên ngành ô tô",
+          "status": "Chờ làm rõ",
+          "confidence": 18
+        }
+      ],
+      "completed": 0,
+      "in_progress": 5,
+      "total": 5,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-818b-bdf0-e63343475bbf",
+      "tt": 12,
+      "title": "Ghi nhận bằng số hàng ngày",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "NGUYỄN THÀNH TRUNG (IDS)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8185-aba4-cc23bcfeac9f",
+      "tt": 13,
+      "title": "Họp tuần Review KPI",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "✅ Có chủ",
+      "dau_moi": "MASUDA TAKEHIKO (GĐ vận hành Esutech)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8136-80b2-e2d619742e15",
+          "title": "Ưu tiên triển khai nguồn và đơn tuyển",
+          "status": "Chờ làm rõ",
+          "confidence": 15
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8183-804b-fc0b55c2035f",
+      "tt": 14,
+      "title": "Họp tháng Pipeline toàn hệ thống",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "❌ Blind spot",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8144-94c2-ede2eda5a2af",
+          "title": "Yêu cầu nhập học CGC trong tháng 3",
+          "status": "Chờ làm rõ",
+          "confidence": 17
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81e8-bde5-daeab22be9f0",
+      "tt": 15,
+      "title": "Ghi âm chỉ đạo — AI đối soát",
+      "phan_cl": "II — Quản trị kết quả",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f5-b221-cf22b68d9d2f",
+      "tt": 16,
+      "title": "Sơ đồ tổ chức = khung xương",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "✅ Có chủ",
+      "dau_moi": "MASUDA TAKEHIKO (GĐ vận hành Esutech)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f5-b186-d5cb22104b88",
+      "tt": 17,
+      "title": "Lãnh đạo không chức danh",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN VĂN NHÌN",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8121-bb1f-fa43a228aab5",
+          "title": "Triển khai phương án tuyển dụng",
+          "status": "Chờ làm rõ",
+          "confidence": 15
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-817d-a810-e6ea3a1c5f97",
+      "tt": 18,
+      "title": "Tái cấu trúc MSA 9 đội hình",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "✅ Có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81eb-a53c-fbb6d7b05af3",
+      "tt": 19,
+      "title": "Phân loại NS 4 nhóm A-B-C-D",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "❌ Blind spot",
+      "dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81b5-8b7b-ea80cbccd418",
+          "title": "Tiếp cận và phân loại nhóm học viên",
+          "status": "Chờ làm rõ",
+          "confidence": 23
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81fd-8cd4-c6b44c8254b3",
+      "tt": 20,
+      "title": "Onboarding 30-60-90 ngày",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "❌ Blind spot",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8118-a64e-cb538e2d2459",
+          "title": "Ưu tiên tuyển dụng cho công ty Agency và One Star",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-818f-a807-d5dc4ec1f00c",
+          "title": "Chốt hồ sơ cho đơn tuyển ATC",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-819a-b673-cb59da99fd39",
+          "title": "Phối hợp triển khai với One Team",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        }
+      ],
+      "completed": 0,
+      "in_progress": 3,
+      "total": 3,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-812c-b70b-e4ad948c6ab6",
+      "tt": 21,
+      "title": "3 mắt xích: KOKA→MSA→JPC",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "✅ Có chủ",
+      "dau_moi": "SHIMIZU HIROKO (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-812d-9113-e85bd01a7463",
+      "tt": 22,
+      "title": "Vai trò Ban Cố vấn",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "status": "✅ Có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-812b-add2-f146443dce64",
+      "tt": 23,
+      "title": "Hệ thống lương 3P",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8100-b62c-f009af65ae66",
+          "title": "Báo cáo tương tác và chuyển đổi hàng ngày",
+          "status": "Chờ làm rõ",
+          "confidence": 30
+        },
+        {
+          "id": "320ce590-e9e6-8104-b595-ec125c846b81",
+          "title": "Tăng hiệu quả phát sinh ứng viên",
+          "status": "Chờ làm rõ",
+          "confidence": 20
+        }
+      ],
+      "completed": 0,
+      "in_progress": 2,
+      "total": 2,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81b6-9978-ec36124134c8",
+      "tt": 24,
+      "title": "P2 — Lương theo kết quả ngày",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8108-8b7c-fd683e22dc43",
+      "tt": 25,
+      "title": "P3 — Thưởng vượt kỳ vọng",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f7-bda3-eda88660f9e2",
+      "tt": 26,
+      "title": "Tư duy đầu mối: mỗi người = tử huyệt",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81d5-9404-e4862fe9c8f1",
+          "title": "Thiết lập lại kế hoạch và đầu mối cho Kago",
+          "status": "Chờ làm rõ",
+          "confidence": 17
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-819b-97c7-ebb730212457",
+      "tt": 27,
+      "title": "400 NS × 1 HV/tháng",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN (TikMe)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8128-9999-f68071caf29c",
+      "tt": 28,
+      "title": "Thư cam kết cá nhân",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f6-b477-fb55730542d2",
+      "tt": 29,
+      "title": "Chấm dứt “sống lây lất”",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8189-87af-c659b83d2f7f",
+      "tt": 30,
+      "title": "Thụ động → Chiến binh chủ động",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81e2-99e9-d8178526a4be",
+          "title": "Triển khai kế hoạch chi tiết cho từng địa phương",
+          "status": "Chờ làm rõ",
+          "confidence": 23
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-818b-8e58-c599d100b72c",
+      "tt": 31,
+      "title": "Mỗi cuộc gọi = 1 cuộc đời",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8142-8edd-c4391aa1adff",
+      "tt": 32,
+      "title": "Quan liêu → Quản trị",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81b4-b899-d9cf0c192886",
+          "title": "Triển khai nguồn cho công ty ưu tiên",
+          "status": "Chờ làm rõ",
+          "confidence": 20
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-817e-8743-cf0876672010",
+      "tt": 33,
+      "title": "Văn hóa công sở có cảm xúc",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8132-8b63-caaf290b7560",
+      "tt": 34,
+      "title": "Tự kỷ luật trước quản lý",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8198-a73f-e0170076d5cc",
+      "tt": 35,
+      "title": "Văn hóa chào hỏi",
+      "phan_cl": "V — Văn hóa & Con người",
+      "status": "✅ Có chủ",
+      "dau_moi": "NGUYỄN NGỌC LAN VY (Trưởng phòng Nhân sự)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81a4-b08f-c915990e8e1a",
+      "tt": 36,
+      "title": "Marketing có đo lường",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "SATOMURA YUSUKE (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8141-9f0e-f330055bf357",
+      "tt": 37,
+      "title": "8 Landing page + 8 Fanpage theo ngành",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "❌ Blind spot",
+      "dau_moi": "NGUYỄN MINH TÂN (Phó phòng Truyền thông)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-810c-9c49-c0fb3cdb78bf",
+          "title": "Triển khai thông báo hoạt động kết hợp với thầy cô",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-810e-a00f-d60b4982a626",
+          "title": "Hiếu tổng kết kết quả tuần đầu tháng 3",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-8118-b5b1-f58279a72c19",
+          "title": "Triển khai hoạt động với trường Đại học An Hiến",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-8130-83a7-e2a1b809fdad",
+          "title": "Triển khai hoạt động tại Bình Dương và Huế",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        },
+        {
+          "id": "320ce590-e9e6-81ad-9f9e-d4bee4770b0f",
+          "title": "Lập kế hoạch tuyển dụng và truyền thông",
+          "status": "Chờ làm rõ",
+          "confidence": 25
+        }
+      ],
+      "completed": 0,
+      "in_progress": 5,
+      "total": 5,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-810d-b010-d01c7515568a",
+      "tt": 38,
+      "title": "TikMe — Vũ khí chiêu sinh số",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8132-86b3-e4748213b925",
+      "tt": 39,
+      "title": "Creator Economy: TTS tạo video",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "BÙI THỊ THANH HIẾU (Phó phòng MSA)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f1-8f7c-d6db6a018cb4",
+      "tt": 40,
+      "title": "4 kênh tạo nguồn",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "✅ Có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "317ce590-e9e6-8124-9875-ef7343bbef03",
+          "title": "CLR-TEST-001: [TEST] Kiểm tra hệ thống WF1 mới",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81cf-bc9e-d86996563579",
+      "tt": 41,
+      "title": "Personal brand từng MS",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8153-912b-f87ec701e393",
+          "title": "Lập kế hoạch tuyển dụng GA",
+          "status": "Chờ làm rõ",
+          "confidence": 15
+        },
+        {
+          "id": "320ce590-e9e6-819f-b0b2-ffa1b93bb753",
+          "title": "Lập danh mục nghề đào tạo và dự kiến số lượng tốt nghiệp",
+          "status": "Chờ làm rõ",
+          "confidence": 23
+        },
+        {
+          "id": "320ce590-e9e6-81a2-b4a3-d33d3a968851",
+          "title": "Tăng số lượng ứng viên tiềm năng",
+          "status": "Chờ làm rõ",
+          "confidence": 15
+        }
+      ],
+      "completed": 0,
+      "in_progress": 3,
+      "total": 3,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8155-b2fe-d730967be005",
+      "tt": 42,
+      "title": "ĐT + Kỹ năng = sản phẩm cốt lõi",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "status": "✅ Có chủ",
+      "dau_moi": "SHIMIZU HIROKO (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81ae-9acc-f347802e5a24",
+      "tt": 43,
+      "title": "Bitrix24 — 100% NS sử dụng",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "status": "❌ Blind spot",
+      "dau_moi": "TRẦN THIỆN TÍN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81cd-935d-df6948a0e486",
+      "tt": 44,
+      "title": "8 cụm CSDL chiến lược",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "NGUYỄN THÀNH TRUNG (IDS)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81f9-b946-c4c9356c444b",
+      "tt": 45,
+      "title": "Control Tower Dashboard",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "TRẦN THIỆN TÍN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8120-b033-c4662ff3cccc",
+      "tt": 46,
+      "title": "AI ứng dụng",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81a6-8083-f112c81c8ebe",
+      "tt": 47,
+      "title": "Hệ thống đèn Xanh-Vàng-Đỏ-Đen",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "status": "❌ Blind spot",
+      "dau_moi": "TRẦN THIỆN TÍN (Phó TGĐ)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-81c4-8585-da2b99adad18",
+          "title": "Gửi đề xuất kết hợp doanh nghiệp Nhật với trường",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-812c-b409-d1746a3e0219",
+      "tt": 48,
+      "title": "Tự học + thương hiệu cá nhân",
+      "phan_cl": "VIII — Học tập & Tương lai",
+      "status": "⚠️ Chưa có chủ",
+      "dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-812c-85e7-d1eb8c5bf538",
+          "title": "Tìm giải pháp cho nhóm học viên tốt nghiệp",
+          "status": "Chờ làm rõ",
+          "confidence": 15
+        }
+      ],
+      "completed": 0,
+      "in_progress": 1,
+      "total": 1,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-81b7-ba8d-fe477247e623",
+      "tt": 49,
+      "title": "Kaizen + PDCA",
+      "phan_cl": "VIII — Học tập & Tương lai",
+      "status": "✅ Có chủ",
+      "dau_moi": "MASUDA TAKEHIKO (GĐ vận hành Esutech)",
+      "impact_score": 0,
+      "directives": [
+        {
+          "id": "320ce590-e9e6-8120-9f00-d47c0cb349bb",
+          "title": "Dũng chia sẻ kế hoạch triển khai tháng 3",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        },
+        {
+          "id": "320ce590-e9e6-8124-b385-dac696e76491",
+          "title": "MS báo cáo kết quả tuyển dụng",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        },
+        {
+          "id": "320ce590-e9e6-8131-96b6-c3ac0a24c0bb",
+          "title": "Tăng số lượng học viên tại trung tâm liên kết",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        },
+        {
+          "id": "320ce590-e9e6-81a6-a8a1-f1cb61af7fc7",
+          "title": "Rà soát ngành điện tại các trung tâm liên kết",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        },
+        {
+          "id": "320ce590-e9e6-81ac-b2fc-e69c3dc9c6a6",
+          "title": "Tổ chức chương trình tuyển dụng tại các trung tâm",
+          "status": "Chờ làm rõ",
+          "confidence": 22
+        },
+        {
+          "id": "320ce590-e9e6-81e3-bf18-c6efb5388db8",
+          "title": "Kết hợp giữa One Team, Kaizen và MSA",
+          "status": "Chờ làm rõ",
+          "confidence": 44
+        }
+      ],
+      "completed": 0,
+      "in_progress": 6,
+      "total": 6,
+      "progress_pct": 0
+    },
+    {
+      "id": "308ce590-e9e6-8199-9071-f3e962c180a2",
+      "tt": 50,
+      "title": "Tầm nhìn 2026-2045",
+      "phan_cl": "VIII — Học tập & Tương lai",
+      "status": "✅ Có chủ",
+      "dau_moi": "CEO — LÊ LONG SƠN",
+      "impact_score": 0,
+      "directives": [],
+      "completed": 0,
+      "in_progress": 0,
+      "total": 0,
+      "progress_pct": 0
+    }
+  ],
+  "unmatched": {
+    "id": "unmatched",
+    "tt": 0,
+    "title": "🆕 Chỉ đạo mới (chưa gắn HM)",
+    "phan_cl": "Leo thang",
+    "status": "",
+    "dau_moi": "",
+    "impact_score": 0,
+    "directives": [
+      {
+        "id": "320ce590-e9e6-810b-8779-fc9331aad62b",
+        "title": "Gửi danh sách nghề đào tạo về MSA",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8117-9363-e61b7b1ae20c",
+        "title": "Kế hoạch triển khai với Monogatari",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8118-85b3-fe3df150ff21",
+        "title": "Tăng cường học viên từ Trà Vinh",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-811d-bd18-e868039bb744",
+        "title": "Tổ chức giải đấu chuyên nghiệp",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8123-b930-c0a83fcd91dd",
+        "title": "Gửi danh sách ứng viên tiềm năng cho anh Tuấn",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8127-9fd2-c34f0be64993",
+        "title": "Đẩy mạnh tuyển dụng và truyền thông",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8127-b9c4-eb53f64769ab",
+        "title": "Chuẩn bị nguồn cho nhà tuyển dụng Akita và Higa",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8133-a09f-d7fdc64defca",
+        "title": "Tăng số lượng học trò và đảm bảo giờ dạy cho giáo viên",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8137-8ca5-d992eab19a21",
+        "title": "Tổ chức các buổi webinar",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8138-85c6-ecaa62987230",
+        "title": "Cải thiện và tiếp cận thị trường trong tháng 3",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8143-9320-d78368899c99",
+        "title": "Đảm bảo đủ giáo viên cho các lớp học",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8160-a637-cffbd2b9bded",
+        "title": "Rà soát sơ đồ MS",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-818c-87c1-c1086f13be98",
+        "title": "Tổ chức tuyển dụng cho 22 vị trí",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8191-94b6-f433be11a6c3",
+        "title": "Đảm bảo đủ học viên cho các lớp học",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-8196-bf17-cb3a4c129077",
+        "title": "Đề xuất vị trí cho ứng viên không phù hợp",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-819b-91b1-eea8b8b026ce",
+        "title": "Tạo điều kiện phỏng vấn online cho Đà Nẵng",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81a7-b49b-c7c7f2ed841a",
+        "title": "Sắp xếp lớp online cho giáo viên",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81b8-9e33-ef09702b2d98",
+        "title": "Tuyển dụng và đào tạo ngành ô tô",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81ba-b420-d8b974e4a1e3",
+        "title": "Đề xuất mức phí cho học viên",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81bd-9fac-eb1dce95c60b",
+        "title": "Giao chỉ tiêu cho các trường về ngành điện",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81be-ab76-df245c095a2b",
+        "title": "Lập danh mục nghề đào tạo",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81c6-8c71-ec868776f1ec",
+        "title": "Triển khai thông tin tuyển dụng từ tháng 8",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81d1-ac81-cb6ffbfedb62",
+        "title": "Kéo khách hàng ra Đà Nẵng phỏng vấn",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81da-87f4-fd3bc30174b8",
+        "title": "Bổ sung nguồn nhân lực MS",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81fc-867e-c6cdc081137c",
+        "title": "Đẩy nhanh quá trình nhập học cho học viên",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      },
+      {
+        "id": "320ce590-e9e6-81ff-a8ff-cc9f513a9059",
+        "title": "Phối hợp triển khai đơn vị dựa vào nhu cầu tiêu chuẩn",
+        "status": "Chờ làm rõ",
+        "confidence": 0
+      }
+    ],
+    "completed": 0,
+    "in_progress": 26,
+    "total": 26
+  },
+  "synced_at": "2026-03-15T03:11:21.451Z"
+}
