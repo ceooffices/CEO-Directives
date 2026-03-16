@@ -660,21 +660,39 @@ bot.on('callback_query', async (query) => {
     }
     else if (data === 'cmd_phantich') {
       bot.sendMessage(chatId, '🧠 Đang phân tích (15-30s)...');
-      const { analyzePatterns } = require('./ai-analyzer');
-      const result = await analyzePatterns();
-      const msg_text = `🧠 AI PHÂN TÍCH\n━━━━━━━━━━━━━━━━━━━━\n\n${result.analysis}\n\n💰 Tokens: ${result.tokens?.total_tokens || '?'}`;
-      bot.sendMessage(chatId, msg_text.slice(0, 4000), kbdAfterAI());
+      try {
+        const { analyzePatterns } = require('./ai-analyzer');
+        const result = await analyzePatterns();
+        const msg_text = `🧠 AI PHÂN TÍCH\n━━━━━━━━━━━━━━━━━━━━\n\n${result.analysis}\n\n💰 Tokens: ${result.tokens?.total_tokens || '?'}`;
+        bot.sendMessage(chatId, msg_text.slice(0, 4000), kbdAfterAI());
+      } catch (aiErr) {
+        notifyAdmin(aiErr, 'callback:cmd_phantich');
+        const friendlyMsg = aiErr.message.includes('AI chưa cấu hình')
+          ? 'Cần cấu hình GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env'
+          : aiErr.message.includes('404')
+          ? 'Không kết nối được Notion. Kiểm tra NOTION_API_KEY.'
+          : `Lỗi AI: ${aiErr.message}`;
+        bot.sendMessage(chatId, `Không thể phân tích.\n${friendlyMsg}\n\nThử /hoi để hỏi AI trực tiếp.`, kbdMain());
+      }
     }
     else if (data === 'cmd_baocaotuan') {
       bot.sendMessage(chatId, '📊 Đang tạo báo cáo tuần AI (30-60s)...');
-      const { generateWeeklyReport, formatReportTelegram } = require('./report-generator');
-      const report = await generateWeeklyReport();
-      const tgMsg = formatReportTelegram(report);
-      if (tgMsg.length > 4000) {
-        bot.sendMessage(chatId, tgMsg.slice(0, 4000));
-        bot.sendMessage(chatId, tgMsg.slice(4000), kbdAfterAI());
-      } else {
-        bot.sendMessage(chatId, tgMsg, kbdAfterAI());
+      try {
+        const { generateWeeklyReport, formatReportTelegram } = require('./report-generator');
+        const report = await generateWeeklyReport();
+        const tgMsg = formatReportTelegram(report);
+        if (tgMsg.length > 4000) {
+          bot.sendMessage(chatId, tgMsg.slice(0, 4000));
+          bot.sendMessage(chatId, tgMsg.slice(4000), kbdAfterAI());
+        } else {
+          bot.sendMessage(chatId, tgMsg, kbdAfterAI());
+        }
+      } catch (rptErr) {
+        notifyAdmin(rptErr, 'callback:cmd_baocaotuan');
+        const friendlyMsg = rptErr.message.includes('404')
+          ? 'Chức năng báo cáo tuần AI cần bridge đang chạy. Kiểm tra bridge status.'
+          : `Lỗi: ${rptErr.message}`;
+        bot.sendMessage(chatId, `Không thể tạo báo cáo tuần.\n${friendlyMsg}\n\nThử /baocao để xem báo cáo nhanh.`, kbdMain());
       }
     }
     else if (data.startsWith('cmd_chay_')) {
@@ -700,7 +718,7 @@ bot.on('callback_query', async (query) => {
     }
   } catch (err) {
     notifyAdmin(err, 'callback_query:' + (query.data || ''));
-    bot.sendMessage(chatId, `✖ Lỗi: ${err.message}`);
+    bot.sendMessage(chatId, `Không thể xử lý. Vui lòng thử lại.\n\n💡 Gõ /start để quay về menu chính.`);
   }
 });
 
