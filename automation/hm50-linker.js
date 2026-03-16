@@ -1,28 +1,59 @@
 /**
  * hm50-linker.js
  * Auto-suggest + link chỉ đạo hàng ngày → 50 Hạng Mục Chiến Lược
- * 
- * Logic:
- *   1. Load 50 HM master (from Notion or JSON cache)
- *   2. Load all daily clarifications
- *   3. Match bằng keyword/similarity → generate hm50_mapping.json
- *   4. Sync mapping ngược lên dashboard
- * 
+ *
+ * v2: BSC Strategic Tracking — Phase 2
+ *   - Write Notion relation HM50_Link trên Clarification
+ *   - Update Directive_Count + Completion_Rate trên HM50
+ *   - Auto-classify Directive_Type + BSC_Perspective
+ *
  * Usage:
- *   node hm50-linker.js              # Generate mapping
- *   node hm50-linker.js --sync       # Generate + sync to Notion
- *   node hm50-linker.js --dry-run    # Preview only
+ *   node hm50-linker.js              # Generate mapping + sync Notion
+ *   node hm50-linker.js --sync       # (legacy alias, same as default)
+ *   node hm50-linker.js --dry-run    # Preview only, không ghi Notion
  */
 
 const fs = require('fs');
 const path = require('path');
-const { queryAllClarifications, queryAllHM50,
+const { queryAllClarifications, queryAllHM50, updatePage,
         safeText, safeSelect, safeDate,
         DB } = require('./lib/notion-client');
 const { logExecution } = require('./lib/logger');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const DATA_DIR = path.join(__dirname, '..', 'data');
+
+// ===== BSC AUTO-CLASSIFY (Task 2.2) =====
+
+const PHAN_CL_TO_BSC = {
+  'I — Tầm nhìn & Triết lý':        'Học tập & Phát triển',
+  'II — Quản trị kết quả':           'Quy trình nội bộ',
+  'III — Tổ chức & Nhân sự':         'Học tập & Phát triển',
+  'IV — Lương 3P & Đầu mối':        'Quy trình nội bộ',
+  'V — Văn hóa & Con người':        'Khách hàng',
+  'VI — Chiến lược KD & MKT':       'Tài chính',
+  'VII — Công nghệ & Dữ liệu':      'Quy trình nội bộ',
+  'VIII — Học tập & Tương lai':      'Học tập & Phát triển',
+};
+
+/**
+ * Xác định BSC Perspective từ Phần CL của HM50
+ */
+function classifyBSC(phanCL) {
+  if (!phanCL) return null;
+  // Exact match trước
+  if (PHAN_CL_TO_BSC[phanCL]) return PHAN_CL_TO_BSC[phanCL];
+  // Fallback: match Roman numeral prefix (e.g. "VII" → "VII — Công nghệ...")
+  // Sắp xếp dài → ngắn để tránh "I" match trước "II"
+  const sortedKeys = Object.keys(PHAN_CL_TO_BSC).sort((a, b) => b.length - a.length);
+  for (const key of sortedKeys) {
+    const prefix = key.split(' — ')[0]; // "VII", "II", etc.
+    if (phanCL.startsWith(prefix + ' ') || phanCL === prefix) {
+      return PHAN_CL_TO_BSC[key];
+    }
+  }
+  return null;
+}
 
 // ===== KEYWORD MATCHING ENGINE =====
 
@@ -120,6 +151,53 @@ function parseHM50Pages(pages) {
   }).sort((a, b) => a.tt - b.tt);
 }
 
+// ===== NOTION SYNC (Phase 2) =====
+
+/**
+ * Task 2.1: Ghi HM50_Link relation + Directive_Type lên Clarification page
+ */
+async function syncDirectiveToNotion(directiveId, match) {
+  const properties = {};
+
+  if (match) {
+    // Match thành công → link relation + set type
+    properties['HM50_Link'] = {
+      relation: [{ id: match.id }],
+    };
+    properties['Directive_Type'] = {
+      select: { name: 'Leo thang từ HM' },
+    };
+  } else {
+    // Không match → set type mới phát sinh
+    properties['Directive_Type'] = {
+      select: { name: 'Mới phát sinh' },
+    };
+  }
+
+  await updatePage(directiveId, properties);
+}
+
+/**
+ * Task 2.1: Cập nhật Directive_Count + Completion_Rate trên HM50 page
+ * Task 2.2: Auto-set BSC_Perspective dựa trên Phần CL
+ */
+async function syncHM50ToNotion(hmId, directiveCount, completionRate, phanCL) {
+  const properties = {
+    Directive_Count: { number: directiveCount },
+    Completion_Rate: { number: completionRate },
+  };
+
+  // BSC auto-classify
+  const bsc = classifyBSC(phanCL);
+  if (bsc) {
+    properties['BSC_Perspective'] = {
+      select: { name: bsc },
+    };
+  }
+
+  await updatePage(hmId, properties);
+}
+
 // ===== MAIN =====
 
 async function run() {
@@ -128,11 +206,11 @@ async function run() {
   console.log('==========================================');
   console.log(`[HM50] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[HM50] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
-  console.log('[HM50] Auto-Link Directives → 50 HM Chiến Lược');
+  console.log('[HM50] Auto-Link Directives → 50 HM Chiến Lược (v2 BSC)');
   console.log('==========================================');
 
   // 1. Load HM50
-  console.log('\n[1/4] Loading 50 HM Chiến Lược...');
+  console.log('\n[1/6] Loading 50 HM Chiến Lược...');
   let hm50Items;
   try {
     const pages = await queryAllHM50();
@@ -152,17 +230,17 @@ async function run() {
   }
 
   // 2. Build keyword index
-  console.log('\n[2/4] Building keyword index...');
+  console.log('\n[2/6] Building keyword index...');
   const keywordIndex = buildKeywordIndex(hm50Items);
   console.log(`  Index built: ${keywordIndex.length} HM with keywords`);
 
   // 3. Load daily directives
-  console.log('\n[3/4] Loading daily directives...');
+  console.log('\n[3/6] Loading daily directives...');
   const directives = await queryAllClarifications();
   console.log(`  Found: ${directives.length} directives`);
 
   // 4. Match
-  console.log('\n[4/4] Matching directives → HM...');
+  console.log('\n[4/6] Matching directives → HM...');
   const mapping = [];
   let matchedCount = 0, unmatchedCount = 0;
 
@@ -200,6 +278,26 @@ async function run() {
       unmatchedCount++;
       console.log(`  ❓ "${title.substring(0, 50)}" → Không tìm thấy HM phù hợp`);
     }
+  }
+
+  // 5. Sync relations to Notion (Phase 2 — Task 2.1)
+  console.log('\n[5/6] Syncing to Notion...');
+  if (!DRY_RUN) {
+    let syncOk = 0, syncErr = 0;
+
+    // 5a. Sync directive → HM50_Link + Directive_Type
+    for (const m of mapping) {
+      try {
+        await syncDirectiveToNotion(m.directive_id, m.hm_match ? { id: m.hm_match.hm_id } : null);
+        syncOk++;
+      } catch (err) {
+        syncErr++;
+        console.error(`  ✖ Sync directive ${m.directive_id}: ${err.message}`);
+      }
+    }
+    console.log(`  Directives synced: ${syncOk} ok, ${syncErr} errors`);
+  } else {
+    console.log('  🏜️ DRY-RUN: Bỏ qua sync directives');
   }
 
   // Generate aggregate: HM → list of directives
@@ -250,6 +348,36 @@ async function run() {
     }
   }
 
+  // 6. Sync HM50 counts + BSC to Notion (Phase 2 — Task 2.1 + 2.2)
+  console.log('\n[6/6] Updating HM50 counts + BSC...');
+  if (!DRY_RUN) {
+    let hmSyncOk = 0, hmSyncErr = 0;
+
+    for (const hm of hm50Items) {
+      const agg = hmAggregate[hm.tt];
+      if (!agg) continue;
+
+      const completionRate = agg.total > 0 ? agg.completed / agg.total : 0;
+
+      try {
+        await syncHM50ToNotion(hm.id, agg.total, completionRate, hm.phan_cl);
+        hmSyncOk++;
+      } catch (err) {
+        hmSyncErr++;
+        console.error(`  ✖ Sync HM${hm.tt}: ${err.message}`);
+      }
+    }
+    console.log(`  HM50 synced: ${hmSyncOk} ok, ${hmSyncErr} errors`);
+  } else {
+    // Dry-run: hiển thị BSC mapping
+    console.log('  🏜️ DRY-RUN: BSC Preview:');
+    for (const hm of hm50Items) {
+      const bsc = classifyBSC(hm.phan_cl);
+      const agg = hmAggregate[hm.tt];
+      console.log(`    HM${hm.tt}: ${hm.phan_cl} → ${bsc || '?'} (${agg?.total || 0} directives)`);
+    }
+  }
+
   // Build progress output
   const progress = {
     summary: {
@@ -260,11 +388,13 @@ async function run() {
       match_rate: directives.length > 0 ? Math.round((matchedCount / directives.length) * 100) : 0,
     },
     by_phan_cl: {},
+    by_bsc: {},
     items: Object.values(hmAggregate)
       .filter(h => h.tt > 0)
       .sort((a, b) => a.tt - b.tt)
       .map(h => ({
         ...h,
+        bsc_perspective: classifyBSC(h.phan_cl) || 'Chưa phân loại',
         progress_pct: h.total > 0 ? Math.round((h.completed / h.total) * 100) : 0,
       })),
     unmatched: hmAggregate['new'],
@@ -281,10 +411,21 @@ async function run() {
     progress.by_phan_cl[item.phan_cl].completed += item.completed;
   }
 
-  // Save
+  // Aggregate by BSC Perspective
+  for (const item of progress.items) {
+    const bsc = item.bsc_perspective;
+    if (!progress.by_bsc[bsc]) {
+      progress.by_bsc[bsc] = { total_hm: 0, total_directives: 0, completed: 0 };
+    }
+    progress.by_bsc[bsc].total_hm++;
+    progress.by_bsc[bsc].total_directives += item.total;
+    progress.by_bsc[bsc].completed += item.completed;
+  }
+
+  // Save JSON (backward compatible)
   if (!DRY_RUN) {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    
+
     const progressPath = path.join(DATA_DIR, 'hm50_progress.json');
     fs.writeFileSync(progressPath, JSON.stringify(progress, null, 2));
     console.log(`\n  💾 hm50_progress.json saved`);
@@ -306,20 +447,24 @@ async function run() {
   }
 
   await logExecution({
-    workflow: 'HM50 - Linker',
-    step: 'Auto-Match',
+    workflow: 'HM50 - Linker v2 BSC',
+    step: 'Auto-Match + Sync',
     status: '✅ Success',
-    details: `Matched: ${matchedCount}/${directives.length} (${progress.summary.match_rate}%)`,
+    details: `Matched: ${matchedCount}/${directives.length} (${progress.summary.match_rate}%) | BSC: ${Object.keys(progress.by_bsc).length} perspectives`,
     dryRun: DRY_RUN,
   });
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log('\n==========================================');
-  console.log('[HM50] SUMMARY:');
+  console.log('[HM50] SUMMARY (v2 BSC):');
   console.log(`  📋 HM: ${hm50Items.length}`);
   console.log(`  📊 Directives: ${directives.length}`);
   console.log(`  ✅ Matched: ${matchedCount} (${progress.summary.match_rate}%)`);
   console.log(`  ❓ Unmatched: ${unmatchedCount}`);
+  console.log(`  📈 BSC Breakdown:`);
+  for (const [bsc, data] of Object.entries(progress.by_bsc)) {
+    console.log(`     ${bsc}: ${data.total_hm} HM, ${data.total_directives} directives`);
+  }
   console.log(`  ⏱️ Time: ${elapsed}s`);
   console.log('==========================================');
 
@@ -333,4 +478,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { run, buildKeywordIndex, findBestMatch };
+module.exports = { run, buildKeywordIndex, findBestMatch, classifyBSC, PHAN_CL_TO_BSC };

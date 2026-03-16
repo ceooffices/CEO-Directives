@@ -17,6 +17,7 @@ const DB = {
   HR:            process.env.NOTION_DB_HR,
   EMPLOYEE_COMMITMENTS: process.env.NOTION_DB_EMPLOYEE_COMMITMENTS,
   HM50:                 process.env.NOTION_DB_HM50,
+  BOD_MEETINGS:         process.env.NOTION_DB_BOD_MEETINGS,
 };
 
 // ===== HELPERS =====
