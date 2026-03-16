@@ -22,6 +22,32 @@ const DB = {
 
 // ===== HELPERS =====
 
+const emailCache = {};
+async function getUserEmail(pageId) {
+  if (emailCache[pageId]) return emailCache[pageId];
+  try {
+    const page = await notion.pages.retrieve({ page_id: pageId });
+    const emailProp = page.properties['Email'] || page.properties['email'];
+    if (emailProp && emailProp.type === 'email' && emailProp.email) {
+      emailCache[pageId] = emailProp.email;
+      return emailProp.email;
+    }
+  } catch (e) {
+    // silently fail and fallback to empty
+  }
+  return '';
+}
+
+async function resolveEmailFromRelation(relationProp) {
+  if (!relationProp || relationProp.type !== 'relation') return '';
+  if (!Array.isArray(relationProp.relation) || relationProp.relation.length === 0) return '';
+  for (const rel of relationProp.relation) {
+    const email = await getUserEmail(rel.id);
+    if (email) return email;
+  }
+  return '';
+}
+
 function safeText(richTextArray) {
   if (!Array.isArray(richTextArray) || richTextArray.length === 0) return '';
   return richTextArray.map(t => t.plain_text || '').join('');
@@ -192,6 +218,7 @@ module.exports = {
   DB,
   // Helpers
   safeText, safeSelect, safeDate, safeRelation, safeRollupEmail, safeRollupTitle,
+  resolveEmailFromRelation,
   // Generic
   queryDatabase, getPage, updatePage, createPage,
   // Specific

@@ -12,10 +12,12 @@
  *   node wf5-reminders.js --dry-run    # Chỉ log, không gửi
  */
 
-const { queryActiveTasks, safeText, safeDate } = require('./lib/notion-client');
+const { queryActiveClarifications, safeText, safeDate, resolveEmailFromRelation, safeRollupEmail } = require('./lib/notion-client');
 const { sendEmail } = require('./lib/email-sender');
 
 const DRY_RUN = process.argv.includes('--dry-run');
+const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
+const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== THƯ VIỆN TIN NHẮN (from n8n code node) =====
 
@@ -132,9 +134,9 @@ async function run() {
   console.log('==========================================');
 
   // 1. Query active tasks
-  console.log('\n[1/3] Querying active tasks...');
-  const tasks = await queryActiveTasks();
-  console.log(`  Found: ${tasks.length} active tasks`);
+  console.log('\n[1/3] Querying active commands...');
+  const tasks = await queryActiveClarifications();
+  console.log(`  Found: ${tasks.length} active directives`);
 
   // 2. Group by recipient
   console.log('\n[2/3] Grouping by recipient...');
@@ -165,27 +167,11 @@ async function run() {
       }
     }
 
-    // Extract recipient email
-    let recipientEmail = '', recipientName = '';
-    for (const [key, value] of Object.entries(props)) {
-      const kl = key.toLowerCase();
-      if (kl.includes('người nhận') || kl.includes('đầu mối') || kl.includes('assignee') || kl.includes('email')) {
-        if (value.type === 'people' && value.people?.[0]) {
-          recipientEmail = value.people[0].person?.email || '';
-          recipientName = value.people[0].name || '';
-        }
-        if (value.type === 'email' && value.email) recipientEmail = value.email;
-        if (value.type === 'rich_text' && value.rich_text?.[0]) {
-          const txt = value.rich_text[0].plain_text || '';
-          if (txt.includes('@')) recipientEmail = txt.trim();
-        }
-        if (value.type === 'rollup' && value.rollup?.array?.[0]) {
-          const first = value.rollup.array[0];
-          if (first.type === 'email' && first.email) recipientEmail = first.email;
-        }
-        if (recipientEmail) break;
-      }
-    }
+    // Extract recipient email (Actual assignee) and override to BOD_HOSTING
+    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
+    
+    let recipientEmail = BOD_HOSTING_EMAIL;
+    let recipientName = safeText(props['T1 - Đầu mối']?.rich_text) || 'BOD Hosting';
 
     if (!recipientEmail) continue;
 
@@ -203,11 +189,16 @@ async function run() {
       tasksByRecipient[recipientEmail] = {
         email: recipientEmail, name: recipientName,
         tasks: [], hasOverdue: false, hasDueToday: false, hasDueTomorrow: false,
+        ccSet: new Set(ALWAYS_CC),
       };
     }
 
+    if (emailDauMoiThucTe && emailDauMoiThucTe !== BOD_HOSTING_EMAIL) {
+      tasksByRecipient[recipientEmail].ccSet.add(emailDauMoiThucTe);
+    }
+
     tasksByRecipient[recipientEmail].tasks.push({
-      title, deadline: deadlineStr, daysLeft, status,
+      title, deadline: deadlineStr, daysLeft, status, actualAssignee: emailDauMoiThucTe,
       url: task.url || 'https://www.notion.so/' + task.id.replace(/-/g, ''),
     });
 
@@ -257,7 +248,7 @@ async function run() {
         to: email,
         subject: `🦉 ${urgentPrefix}ClaudeK nhắc ${recipientData.name} nè!`,
         html: buildReminderEmail(recipientData),
-        cc: 'hoangkha@esuhai.com',
+        cc: Array.from(r.ccSet).filter(e => e !== email).join(', '),
         dryRun: DRY_RUN,
       });
       sentCount++;

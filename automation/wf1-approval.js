@@ -15,12 +15,13 @@
 
 const { queryClarificationsStep1, queryClarificationsStep2,
         safeText, safeSelect, safeDate, safeRelation, safeRollupEmail, safeRollupTitle,
-        updatePage } = require('./lib/notion-client');
+        resolveEmailFromRelation, updatePage } = require('./lib/notion-client');
 const { sendEmail } = require('./lib/email-sender');
 const { logExecution } = require('./lib/logger');
 const { buildStep1Email, buildStep2Email } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
+const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
 const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== MAIN LOGIC =====
@@ -41,11 +42,13 @@ async function extractAndProcess(pages) {
     const lenhGuiLoiNhac = safeSelect(props['LỆNH GỬI LỜI NHẮC']?.select) || safeSelect(props['LENH_GUI_LOI_NHAC']?.select);
 
     // Người chỉ đạo
-    const emailNguoiChiDao = safeRollupEmail(props['Email người chỉ đạo']?.rollup);
+    const emailNguoiChiDao = await resolveEmailFromRelation(props['Email người chỉ đạo']) || safeRollupEmail(props['Email người chỉ đạo']?.rollup);
     const tenNguoiChiDao = safeRollupTitle(props['Tên người chỉ đạo']?.rollup);
 
     // Đầu mối
-    const emailDauMoi = safeRollupEmail(props['Email đầu mối']?.rollup);
+    const actualEmailDauMoi = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup);
+    // BOD Hosting là chủ theo yêu cầu của Thầy (Tháng 3/2026: Lê Anh Tuấn)
+    const emailDauMoi = BOD_HOSTING_EMAIL;
     const tenDauMoi = safeRollupTitle(props['Tên đầu mối']?.rollup);
 
     const t2NhiemVu = safeText(props['T2 - NHIỆM VỤ']?.rich_text);
@@ -85,6 +88,7 @@ async function extractAndProcess(pages) {
       emailSubject = `[Cần Làm Rõ] ${tieuDe || 'Chỉ đạo'} - Hạn: ${t4ThoiHan || 'Chưa xác định'}`;
       const ccSet = new Set(ALWAYS_CC);
       if (emailNguoiChiDao) ccSet.add(emailNguoiChiDao);
+      if (actualEmailDauMoi && actualEmailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(actualEmailDauMoi);
       ccSet.delete(sendTo);
       ccTo = Array.from(ccSet).join(', ');
 

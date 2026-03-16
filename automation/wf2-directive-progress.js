@@ -16,13 +16,14 @@
  */
 
 const { queryConfirmed5T, safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle,
+        safeRollupEmail, safeRollupTitle, resolveEmailFromRelation,
         updatePage, DB } = require('./lib/notion-client');
 const { sendEmail } = require('./lib/email-sender');
 const { logExecution } = require('./lib/logger');
 const { buildProgressNotifyEmail } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
+const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
 const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== MAIN LOGIC =====
@@ -60,18 +61,9 @@ async function run() {
     const t5ThanhVien = safeText(props['T5 - Thành viên liên quan']?.rich_text);
     const tenNguoiChiDao = safeText(props['Người chỉ đạo']?.rich_text);
 
-    // Try to get email from various sources
-    let emailDauMoi = '';
-    for (const [key, value] of Object.entries(props)) {
-      const kl = key.toLowerCase();
-      if (kl.includes('email') && kl.includes('đầu mối')) {
-        emailDauMoi = safeRollupEmail(value.rollup) || '';
-        if (emailDauMoi) break;
-      }
-    }
-    if (!emailDauMoi) {
-      emailDauMoi = safeRollupEmail(props['Email đầu mối']?.rollup) || '';
-    }
+    // Resolve email
+    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
+    const emailDauMoi = BOD_HOSTING_EMAIL;
 
     const tenDauMoi = safeRollupTitle(props['Tên đầu mối']?.rollup) || t1DauMoi;
 
@@ -97,11 +89,14 @@ async function run() {
       }
 
       if (!DRY_RUN) {
+        const ccSet = new Set(ALWAYS_CC);
+        if (emailDauMoiThucTe && emailDauMoiThucTe !== BOD_HOSTING_EMAIL) ccSet.add(emailDauMoiThucTe);
+
         await sendEmail({
           to: emailDauMoi,
           subject: `✅ [Chỉ đạo 5T] ${tieuDe || 'Chỉ đạo mới'}`,
           html: buildProgressNotifyEmail(item),
-          cc: ALWAYS_CC.filter(e => e !== emailDauMoi).join(', '),
+          cc: Array.from(ccSet).filter(e => e !== emailDauMoi).join(', '),
         });
       } else {
         console.log(`  [DRY-RUN] Would email ${emailDauMoi}: ${tieuDe}`);

@@ -16,7 +16,7 @@
  */
 
 const { queryOverdueClarifications, safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle } = require('./lib/notion-client');
+        safeRollupEmail, safeRollupTitle, resolveEmailFromRelation } = require('./lib/notion-client');
 const { sendEmail } = require('./lib/email-sender');
 const { logExecution } = require('./lib/logger');
 const { buildEscalationEmail: buildEscalationHtml } = require('./lib/email-templates');
@@ -24,6 +24,7 @@ const { buildEscalationEmail: buildEscalationHtml } = require('./lib/email-templ
 const DRY_RUN = process.argv.includes('--dry-run');
 const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 const CEO_EMAIL = process.env.CEO_EMAIL || 'hoangkha@esuhai.com';
+const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
 
 // ===== ESCALATION LEVELS =====
 
@@ -70,22 +71,12 @@ async function run() {
     const daysOverdue = Math.ceil((now - deadline) / (1000 * 60 * 60 * 24));
     if (daysOverdue < 3) continue;
 
-    // Get email from rollup
-    let emailDauMoi = '';
-    for (const [key, value] of Object.entries(props)) {
-      if (key.toLowerCase().includes('email') && value.type === 'rollup') {
-        emailDauMoi = safeRollupEmail(value.rollup);
-        if (emailDauMoi) break;
-      }
-    }
+    // Resolve email
+    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
+    let emailDauMoi = BOD_HOSTING_EMAIL;
 
-    let emailNguoiChiDao = '';
-    for (const [key, value] of Object.entries(props)) {
-      if (key.toLowerCase().includes('email') && key.toLowerCase().includes('chỉ đạo') && value.type === 'rollup') {
-        emailNguoiChiDao = safeRollupEmail(value.rollup);
-        if (emailNguoiChiDao) break;
-      }
-    }
+    let emailNguoiChiDaoThucTe = await resolveEmailFromRelation(props['Email người chỉ đạo']) || safeRollupEmail(props['Email người chỉ đạo']?.rollup) || '';
+    let emailNguoiChiDao = emailNguoiChiDaoThucTe;
 
     // Classify
     let level;
@@ -96,6 +87,7 @@ async function run() {
     escalations.push({
       id: page.id, title, daysOverdue, deadline: deadlineStr,
       tinhTrang, dauMoi, nhiemVu, nguoiChiDao, level,
+      emailDauMoiThucTe, emailNguoiChiDaoThucTe,
       emailDauMoi, emailNguoiChiDao,
       url: page.url || `https://www.notion.so/${page.id.replace(/-/g, '')}`,
     });
@@ -125,13 +117,13 @@ async function run() {
 
     if (esc.level === 'WARNING') {
       sendTo = esc.emailDauMoi || CEO_EMAIL;
-      ccList = [...ALWAYS_CC];
+      ccList = [...ALWAYS_CC, esc.emailDauMoiThucTe];
     } else if (esc.level === 'ESCALATE') {
       sendTo = esc.emailNguoiChiDao || CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailDauMoi].filter(Boolean);
+      ccList = [...ALWAYS_CC, esc.emailDauMoi, esc.emailDauMoiThucTe, esc.emailNguoiChiDaoThucTe];
     } else {
       sendTo = CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi].filter(Boolean);
+      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi, esc.emailDauMoiThucTe, esc.emailNguoiChiDaoThucTe];
     }
 
     ccList = [...new Set(ccList)].filter(e => e && e !== sendTo);
