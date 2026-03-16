@@ -23,18 +23,24 @@ const DEFAULT_TOP_K = 5;
 
 // Danh sách context files (ưu tiên cao → thấp)
 const CONTEXT_FILES = [
-  // Tài liệu nghiệp vụ quan trọng
+  // ===== BIÊN BẢN HỌP BOD — "Vàng ròng" Pipeline (B) =====
+  // Mô hình tư duy + quyết định của CEO, ưu tiên cao nhất
+  { file: 'ban_chep_loi/transcipts_BOD_09032026.md', weight: 1.8, label: 'BOD 09/03/2026 — Biên bản mới nhất' },
+  { file: 'ban_chep_loi/20260112 LD BQT P1.txt', weight: 1.7, label: 'Lãnh đạo BQT P1 — 12/01/2026' },
+  { file: 'ban_chep_loi/20260112 LD BQT P2.txt', weight: 1.7, label: 'Lãnh đạo BQT P2 — 12/01/2026' },
+  { file: 'ban_chep_loi/BOD_05012026.txt', weight: 1.6, label: 'BOD 05/01/2026 — Đầu năm' },
+  // ===== Tài liệu nghiệp vụ =====
   { file: 'CONTENT_BIBLE_AIGENT.md', weight: 1.5, label: 'Content Bible' },
   { file: 'CAU-HOI-NGHIEP-VU-CAN-TRA-LOI_03022026.md', weight: 1.4, label: 'FAQ nghiệp vụ' },
   { file: 'TỔNG_HỢP_50_HẠNG_MỤC_CHỈ_ĐẠO_CAM_KẾT_BẢNG_5T_14_02_2026.md', weight: 1.3, label: '50 HM chỉ đạo' },
   { file: 'VĂN HÓA CHÀO HỎI ESUHAI GROUP.md', weight: 1.1, label: 'Văn hóa Esuhai' },
-  // Tài liệu kỹ thuật
+  // ===== Tài liệu kỹ thuật =====
   { file: 'CLAUDE.md', weight: 1.0, label: 'Kiến trúc hệ thống' },
   { file: 'SYSTEM_AUDIT.md', weight: 0.9, label: 'System Audit' },
   { file: 'README.md', weight: 0.8, label: 'Tổng quan dự án' },
   { file: 'notion_properties_lock.md', weight: 0.7, label: 'Notion schema' },
   { file: 'changelog.md', weight: 0.6, label: 'Changelog' },
-  // Data files (JSON → đọc và chunk)
+  // ===== Data files (JSON → đọc và chunk) =====
   { file: 'data/hm50_master.json', weight: 1.2, label: 'HM50 Master', isJSON: true },
   { file: 'data/directives.json', weight: 1.0, label: 'Chỉ đạo hiện tại', isJSON: true },
   { file: 'data/people.json', weight: 0.8, label: 'Nhân sự', isJSON: true },
