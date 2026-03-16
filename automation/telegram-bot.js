@@ -145,7 +145,7 @@ function notifyAdmin(err, context) {
 
 // ===== CONSTANTS =====
 const NOTION_DB_URL = 'https://www.notion.so/317ce590e9e68150a14ecc16d23334ae';
-const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';
 
 // ===== INLINE KEYBOARD BUILDERS =====
 function kbd(buttons) {
@@ -391,6 +391,57 @@ Con là Gravity — bot quản lý chỉ đạo CEO EsuhaiGroup.
 ▫️ Hoặc Thầy chat tự nhiên, con sẽ hiểu ạ.`, kbdMain());
 });
 
+// ===== COMMAND: /help (alias for /start) =====
+bot.onText(/\/help/, (msg) => {
+  if (!canProcess(msg)) return;
+  bot.sendMessage(msg.chat.id,
+`Danh sach lenh khả dụng:
+━━━━━━━━━━━━━━━━━━━━
+  /trangthai — Trạng thái tổng quan
+  /quahan — Chỉ đạo quá hạn
+  /tim <từ khóa> — Tìm chỉ đạo
+  /chay <wf> — Chạy workflow
+  /baocao — Báo cáo nhanh
+  /hoi <câu hỏi> — Hỏi AI
+  /phantich — AI phân tích
+  /baocaotuan — Báo cáo tuần AI
+  /healthcheck — Kiểm tra hệ thống
+
+Dashboard: ${DASHBOARD_URL}`, kbdMain());
+});
+
+// ===== COMMAND: /healthcheck =====
+bot.onText(/\/healthcheck/, async (msg) => {
+  if (!canProcess(msg)) return;
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, 'Đang kiểm tra...');
+
+  try {
+    const startTime = Date.now();
+    const result = await bridgeRequest('/status');
+    const latency = Date.now() - startTime;
+
+    const checks = [
+      `Bridge: OK (${latency}ms)`,
+      `Dashboard: ${DASHBOARD_URL}`,
+      `Uptime: ${result.uptime || 'N/A'}`,
+      `Workflows: ${result.workflows?.join(', ') || 'N/A'}`,
+      `Directives: ${result.stats?.total || '?'} total`,
+      `Overdue: ${result.stats?.overdue || '0'}`,
+    ];
+
+    bot.sendMessage(chatId,
+      `HEALTH CHECK\n━━━━━━━━━━━━━━━━━━━━\n\n${checks.join('\n')}\n\nTất cả OK.`,
+      kbdMain()
+    );
+  } catch (err) {
+    bot.sendMessage(chatId,
+      `HEALTH CHECK\n━━━━━━━━━━━━━━━━━━━━\n\nBridge: OFFLINE\nLỗi: ${err.message}\n\nDashboard vẫn hoạt động: ${DASHBOARD_URL}`,
+      kbdMain()
+    );
+  }
+});
+
 // ===== COMMAND: /trangthai =====
 bot.onText(/\/trangthai/, async (msg) => {
   if (!canProcess(msg)) return;
@@ -573,7 +624,10 @@ bot.onText(/\/baocaotuan/, async (msg) => {
     }
   } catch (err) {
     notifyAdmin(err, '/baocaotuan');
-    bot.sendMessage(chatId, `✖ Lỗi: ${err.message}`);
+    const friendlyMsg = err.message.includes('404')
+      ? 'Chức năng báo cáo tuần AI cần bridge đang chạy. Vui lòng kiểm tra bridge status.'
+      : `Lỗi: ${err.message}`;
+    bot.sendMessage(chatId, `Không thể tạo báo cáo tuần.\n${friendlyMsg}\n\nThử /baocao để xem báo cáo nhanh.`, kbdMain());
   }
 });
 
@@ -663,7 +717,7 @@ bot.on('message', async (msg) => {
   const userId = String(msg.from?.id || 'unknown');
 
   // Bỏ qua commands đã handle ở trên
-  if (text.match(/^\/(start|trangthai|quahan|tim|chay|baocao|hoi|phantich|baocaotuan)/)) return;
+  if (text.match(/^\/(start|help|healthcheck|trangthai|quahan|tim|chay|baocao|hoi|phantich|baocaotuan)/)) return;
 
   // Unknown command → gợi ý
   if (text.startsWith('/')) {
