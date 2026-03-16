@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { queryAllClarifications, queryActiveClarifications, queryAllHR,
+const { queryAllClarifications, queryActiveClarifications, queryAllHR, queryAllHM50,
         safeText, safeSelect, safeDate, safeRelation,
         safeRollupEmail, safeRollupTitle } = require('./lib/notion-client');
 const { logExecution } = require('./lib/logger');
@@ -146,6 +146,79 @@ function computeOutcomes(directives) {
   };
 }
 
+// ===== BSC SUMMARY (Phase 4) =====
+
+const BSC_KEY_MAP = {
+  'Tài chính':            'financial',
+  'Khách hàng':           'customer',
+  'Quy trình nội bộ':    'process',
+  'Học tập & Phát triển': 'learning',
+};
+
+const LELONGSON_KEY_MAP = {
+  'Chưa gửi':            'chua_gui',
+  'Đã gửi đề xuất':      'da_gui',
+  'ChatLong phản hồi':   'chatlong_phan_hoi',
+  'Đang nâng cấp':       'dang_nang_cap',
+  'Đã duyệt':            'da_duyet',
+  'Hoàn thành':           'hoan_thanh',
+};
+
+function computeBSCSummary(hm50Pages) {
+  // Khởi tạo cấu trúc output
+  const bsc = {
+    financial: { hm_count: 0, directive_count: 0, completion: 0 },
+    customer:  { hm_count: 0, directive_count: 0, completion: 0 },
+    process:   { hm_count: 0, directive_count: 0, completion: 0 },
+    learning:  { hm_count: 0, directive_count: 0, completion: 0 },
+  };
+
+  const lelongson_stages = {
+    chua_gui: 0, da_gui: 0, chatlong_phan_hoi: 0,
+    dang_nang_cap: 0, da_duyet: 0, hoan_thanh: 0,
+  };
+
+  // Track completion sums cho weighted average
+  const bscCompletionSum = { financial: 0, customer: 0, process: 0, learning: 0 };
+
+  for (const page of hm50Pages) {
+    const props = page.properties || {};
+
+    const bscPerspective = safeSelect(props['BSC_Perspective']?.select);
+    const directiveCount = props['Directive_Count']?.number || 0;
+    const completionRate = props['Completion_Rate']?.number || 0;
+    const lelongsonStage = safeSelect(props['LELONGSON_Stage']?.select);
+
+    // Aggregate BSC
+    const bscKey = BSC_KEY_MAP[bscPerspective];
+    if (bscKey && bsc[bscKey]) {
+      bsc[bscKey].hm_count++;
+      bsc[bscKey].directive_count += directiveCount;
+      bscCompletionSum[bscKey] += completionRate;
+    }
+
+    // Aggregate LELONGSON stages
+    const stageKey = LELONGSON_KEY_MAP[lelongsonStage];
+    if (stageKey && lelongson_stages[stageKey] !== undefined) {
+      lelongson_stages[stageKey]++;
+    }
+  }
+
+  // Tính completion trung bình cho mỗi BSC perspective
+  for (const key of Object.keys(bsc)) {
+    if (bsc[key].hm_count > 0) {
+      bsc[key].completion = Math.round((bscCompletionSum[key] / bsc[key].hm_count) * 100);
+    }
+  }
+
+  return {
+    bsc,
+    lelongson_stages,
+    total_hm: hm50Pages.length,
+    synced_at: new Date().toISOString(),
+  };
+}
+
 // ===== WRITE HELPERS =====
 
 function writeJSON(filename, data) {
@@ -167,8 +240,8 @@ async function run() {
   console.log('==========================================');
 
   // 1. Query all Notion data
-  console.log('\n[1/3] Querying Notion databases...');
-  let clarifications = [], activeClarifications = [], hr = [];
+  console.log('\n[1/4] Querying Notion databases...');
+  let clarifications = [], activeClarifications = [], hr = [], hm50Pages = [];
 
   try {
     clarifications = await queryAllClarifications();
@@ -187,24 +260,33 @@ async function run() {
   } catch (e) {
     console.warn('  ⚠️ HR DB not accessible:', e.message);
   }
+
+  try {
+    hm50Pages = await queryAllHM50();
+  } catch (e) {
+    console.warn('  ⚠️ HM50 DB not accessible:', e.message);
+  }
   console.log(`  Clarifications: ${clarifications.length}`);
   console.log(`  Active directives: ${activeClarifications.length}`);
   console.log(`  HR records: ${hr.length}`);
+  console.log(`  HM50 records: ${hm50Pages.length}`);
 
   // 2. Transform data
-  console.log('\n[2/3] Transforming data...');
+  console.log('\n[2/4] Transforming data...');
   const directives = transformDirectives(clarifications);
   const activeData = computeActiveClarifications(activeClarifications);
   const people = transformPeople(hr);
   const outcomes = computeOutcomes(directives);
+  const bscSummary = computeBSCSummary(hm50Pages);
 
   console.log(`  Directives: ${directives.total} items`);
   console.log(`  Active: ${activeData.total} items (${activeData.overdue} overdue)`);
   console.log(`  People: ${people.length} records`);
   console.log(`  Completion rate: ${outcomes.summary.completion_rate}%`);
+  console.log(`  BSC: ${bscSummary.total_hm} HM across 4 perspectives`);
 
   // 3. Write JSON files
-  console.log('\n[3/3] Writing JSON files...');
+  console.log('\n[3/4] Writing JSON files...');
   if (!DRY_RUN) {
     // Ensure data dir exists
     if (!fs.existsSync(DATA_DIR)) {
@@ -214,6 +296,7 @@ async function run() {
     writeJSON('directives.json', directives);
     writeJSON('outcomes.json', outcomes);
     writeJSON('active_directives.json', activeData);
+    writeJSON('bsc_summary.json', bscSummary);
     // Don't overwrite people.json from HR import or kpi_targets.json
 
     writeJSON('sync_status.json', {
@@ -223,18 +306,29 @@ async function run() {
         active: activeData.total,
         overdue: activeData.overdue,
         people: people.length,
+        hm50: bscSummary.total_hm,
       },
       status: 'success',
     });
   } else {
-    console.log('  [DRY-RUN] Would write: directives.json, outcomes.json, people.json, sync_status.json');
+    console.log('  [DRY-RUN] Would write: directives.json, outcomes.json, bsc_summary.json, sync_status.json');
+  }
+
+  // 4. BSC Summary log
+  console.log('\n[4/4] BSC Summary:');
+  for (const [key, data] of Object.entries(bscSummary.bsc)) {
+    console.log(`  📈 ${key}: ${data.hm_count} HM, ${data.directive_count} directives, ${data.completion}% completion`);
+  }
+  const stageEntries = Object.entries(bscSummary.lelongson_stages).filter(([, v]) => v > 0);
+  if (stageEntries.length > 0) {
+    console.log('  📊 LELONGSON Stages:', stageEntries.map(([k, v]) => `${k}=${v}`).join(', '));
   }
 
   await logExecution({
     workflow: 'WF6 - Dashboard Sync',
     step: 'Full Sync',
     status: '✅ Success',
-    details: `Directives: ${directives.total}, Active: ${activeData.total}, Overdue: ${activeData.overdue}, People: ${people.length}`,
+    details: `Directives: ${directives.total}, Active: ${activeData.total}, Overdue: ${activeData.overdue}, People: ${people.length}, HM50: ${bscSummary.total_hm}`,
     dryRun: DRY_RUN,
   });
 
@@ -245,10 +339,11 @@ async function run() {
   console.log(`  ⚡ Active: ${activeData.total}`);
   console.log(`  🔴 Overdue: ${activeData.overdue}`);
   console.log(`  👥 People: ${people.length}`);
+  console.log(`  📈 HM50 BSC: ${bscSummary.total_hm}`);
   console.log(`  ⏱️ Time: ${elapsed}s`);
   console.log('==========================================');
 
-  return { directives: directives.total, active: activeData.total, people: people.length };
+  return { directives: directives.total, active: activeData.total, people: people.length, hm50: bscSummary.total_hm };
 }
 
 if (require.main === module) {
