@@ -37,6 +37,8 @@
     "hm50:dry": "node hm50-linker.js --dry-run",
     "schema:bsc": "node schema-upgrade-bsc.js",
     "schema:bsc:dry": "node schema-upgrade-bsc.js --dry-run",
+    "transcript": "node transcript-parser.js",
+    "transcript:dry": "node transcript-parser.js --dry-run",
     "run:all": "node scheduler.js --run-now all",
     "run:all:dry": "node scheduler.js --run-now all --dry-run",
 
