@@ -154,27 +154,24 @@ function parseHM50Pages(pages) {
 // ===== NOTION SYNC (Phase 2) =====
 
 /**
- * Task 2.1: Ghi HM50_Link relation + Directive_Type lên Clarification page
+ * Task 2.1: Ghi HM50_Link relation lên Clarification page
+ * KHÔNG override Directive_Type — giữ nguyên giá trị từ bod-import hoặc manual input
+ * (BUG-2 fix: trước đây luôn gán cứng "Leo thang từ HM" cho mọi match → sai phân loại)
  */
 async function syncDirectiveToNotion(directiveId, match) {
   const properties = {};
 
   if (match) {
-    // Match thành công → link relation + set type
+    // Match thành công → chỉ link relation, KHÔNG set Directive_Type
     properties['HM50_Link'] = {
       relation: [{ id: match.id }],
     };
-    properties['Directive_Type'] = {
-      select: { name: 'Leo thang từ HM' },
-    };
-  } else {
-    // Không match → set type mới phát sinh
-    properties['Directive_Type'] = {
-      select: { name: 'Mới phát sinh' },
-    };
   }
+  // Không match → không thay đổi gì (bỏ logic gán "Mới phát sinh" cứng)
 
-  await updatePage(directiveId, properties);
+  if (Object.keys(properties).length > 0) {
+    await updatePage(directiveId, properties);
+  }
 }
 
 /**
@@ -198,6 +195,175 @@ async function syncHM50ToNotion(hmId, directiveCount, completionRate, phanCL) {
   await updatePage(hmId, properties);
 }
 
+// ===== TIMELINE BUILDER (Phase 4) =====
+
+/**
+ * Build hm50_timeline.json từ tất cả BOD_*.json trong data/bod/
+ * Tổng hợp escalation history + trend cho mỗi HM qua nhiều cuộc họp.
+ */
+function buildTimeline(hmAggregate, hm50Items) {
+  const bodDir = path.join(DATA_DIR, 'bod');
+  if (!fs.existsSync(bodDir)) {
+    console.log('  ⚠️ data/bod/ không tồn tại — bỏ qua timeline');
+    return null;
+  }
+
+  // 1. Scan tất cả BOD_*.json
+  const bodFiles = fs.readdirSync(bodDir)
+    .filter(f => f.startsWith('BOD_') && f.endsWith('.json'))
+    .sort();
+
+  if (bodFiles.length === 0) {
+    console.log('  ⚠️ Không tìm thấy BOD_*.json — bỏ qua timeline');
+    return null;
+  }
+
+  const meetings = [];
+  // Track: hm_tt → { escalation_history[], total_mentions, total_escalations }
+  const hmTimeline = {};
+
+  // Khởi tạo từ hm50Items
+  for (const hm of hm50Items) {
+    hmTimeline[hm.tt] = {
+      hm_tt: hm.tt,
+      title: hm.hang_muc,
+      phan_cl: hm.phan_cl,
+      current_status: hm.status,
+      t1_dau_moi: hm.t1_dau_moi,
+      escalation_history: [],
+      total_mentions: 0,
+      total_escalations: 0,
+      snapshots: [],
+    };
+  }
+
+  // 2. Đọc từng BOD file và trích xuất dữ liệu escalation
+  for (const file of bodFiles) {
+    const filePath = path.join(bodDir, file);
+    let bodData;
+    try {
+      bodData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch (err) {
+      console.error(`  ✖ Không đọc được ${file}: ${err.message}`);
+      continue;
+    }
+
+    const meetingId = bodData.meeting_id || file.replace('.json', '');
+    const meetingDate = bodData.date || '';
+    const directives = bodData.directives || [];
+
+    // Aggregate: HM → danh sách chỉ đạo từ meeting này
+    const hmDirectives = {};
+    for (const d of directives) {
+      const hmMatch = d.hm50_match;
+      if (!hmMatch || !hmMatch.hm_tt) continue;
+
+      const hmTT = hmMatch.hm_tt;
+      if (!hmDirectives[hmTT]) {
+        hmDirectives[hmTT] = [];
+      }
+      hmDirectives[hmTT].push({
+        id: `#${d.local_id}`,
+        title: d.title,
+        loai: d.loai || 'moi',
+      });
+    }
+
+    // Đếm HM bị ảnh hưởng
+    const hmAffected = Object.keys(hmDirectives).length;
+    const riskSignals = [];
+
+    // 3. Ghi vào escalation_history cho từng HM
+    for (const [hmTTStr, dirList] of Object.entries(hmDirectives)) {
+      const hmTT = parseInt(hmTTStr, 10);
+      if (!hmTimeline[hmTT]) {
+        // HM chưa có trong master — tạo mới
+        hmTimeline[hmTT] = {
+          hm_tt: hmTT,
+          title: `HM${hmTT}`,
+          phan_cl: '',
+          current_status: '',
+          t1_dau_moi: '',
+          escalation_history: [],
+          total_mentions: 0,
+          total_escalations: 0,
+          snapshots: [],
+        };
+      }
+
+      const escalationCount = dirList.filter(d => d.loai === 'leo_thang').length;
+
+      hmTimeline[hmTT].escalation_history.push({
+        meeting: meetingId,
+        date: meetingDate,
+        count: dirList.length,
+        directives: dirList,
+      });
+
+      hmTimeline[hmTT].total_mentions += dirList.length;
+      hmTimeline[hmTT].total_escalations += escalationCount;
+
+      // Thêm snapshot cho meeting này
+      const agg = hmAggregate[hmTT];
+      hmTimeline[hmTT].snapshots.push({
+        date: meetingDate,
+        directive_count: dirList.length,
+        completion_rate: agg ? (agg.total > 0 ? Math.round((agg.completed / agg.total) * 100) / 100 : 0) : 0,
+      });
+
+      // Risk signal: HM có status xấu + bị leo thang
+      const status = hmTimeline[hmTT].current_status;
+      if (escalationCount > 0 && (status.includes('Blind spot') || status.includes('Chưa có chủ'))) {
+        riskSignals.push({
+          hm_tt: hmTT,
+          reason: `Leo thang ${escalationCount} lần, status ${status}`,
+        });
+      }
+    }
+
+    meetings.push({
+      meeting_id: meetingId,
+      date: meetingDate,
+      total_directives: directives.length,
+      hm_affected: hmAffected,
+      risk_signals: riskSignals,
+    });
+  }
+
+  // 4. Tính trend cho từng HM
+  const hmItems = Object.values(hmTimeline)
+    .filter(h => h.escalation_history.length > 0)
+    .sort((a, b) => b.total_mentions - a.total_mentions)
+    .map(h => {
+      let trend;
+      if (h.total_mentions >= 4) {
+        trend = 'critical';
+      } else if (h.total_mentions >= 2) {
+        trend = 'worsening';
+      } else {
+        trend = 'stable';
+      }
+      return { ...h, trend };
+    });
+
+  // 5. Summary
+  const summary = {
+    total_hm_affected: hmItems.length,
+    critical: hmItems.filter(h => h.trend === 'critical').length,
+    worsening: hmItems.filter(h => h.trend === 'worsening').length,
+    stable: hmItems.filter(h => h.trend === 'stable').length,
+  };
+
+  const timeline = {
+    generated_at: new Date().toISOString(),
+    meetings,
+    hm_items: hmItems,
+    summary,
+  };
+
+  return timeline;
+}
+
 // ===== MAIN =====
 
 async function run() {
@@ -210,7 +376,7 @@ async function run() {
   console.log('==========================================');
 
   // 1. Load HM50
-  console.log('\n[1/6] Loading 50 HM Chiến Lược...');
+  console.log('\n[1/7] Loading 50 HM Chiến Lược...');
   let hm50Items;
   try {
     const pages = await queryAllHM50();
@@ -230,17 +396,17 @@ async function run() {
   }
 
   // 2. Build keyword index
-  console.log('\n[2/6] Building keyword index...');
+  console.log('\n[2/7] Building keyword index...');
   const keywordIndex = buildKeywordIndex(hm50Items);
   console.log(`  Index built: ${keywordIndex.length} HM with keywords`);
 
   // 3. Load daily directives
-  console.log('\n[3/6] Loading daily directives...');
+  console.log('\n[3/7] Loading daily directives...');
   const directives = await queryAllClarifications();
   console.log(`  Found: ${directives.length} directives`);
 
   // 4. Match
-  console.log('\n[4/6] Matching directives → HM...');
+  console.log('\n[4/7] Matching directives → HM...');
   const mapping = [];
   let matchedCount = 0, unmatchedCount = 0;
 
@@ -281,7 +447,7 @@ async function run() {
   }
 
   // 5. Sync relations to Notion (Phase 2 — Task 2.1)
-  console.log('\n[5/6] Syncing to Notion...');
+  console.log('\n[5/7] Syncing to Notion...');
   if (!DRY_RUN) {
     let syncOk = 0, syncErr = 0;
 
@@ -349,7 +515,7 @@ async function run() {
   }
 
   // 6. Sync HM50 counts + BSC to Notion (Phase 2 — Task 2.1 + 2.2)
-  console.log('\n[6/6] Updating HM50 counts + BSC...');
+  console.log('\n[6/7] Updating HM50 counts + BSC...');
   if (!DRY_RUN) {
     let hmSyncOk = 0, hmSyncErr = 0;
 
@@ -376,6 +542,18 @@ async function run() {
       const agg = hmAggregate[hm.tt];
       console.log(`    HM${hm.tt}: ${hm.phan_cl} → ${bsc || '?'} (${agg?.total || 0} directives)`);
     }
+  }
+
+  // 7. Build timeline (Phase 4)
+  console.log('\n[7/7] Building HM50 timeline...');
+  const timeline = buildTimeline(hmAggregate, hm50Items);
+  if (timeline && !DRY_RUN) {
+    const timelinePath = path.join(DATA_DIR, 'hm50_timeline.json');
+    fs.writeFileSync(timelinePath, JSON.stringify(timeline, null, 2));
+    console.log(`  💾 hm50_timeline.json saved (${timeline.hm_items.length} HMs, ${timeline.meetings.length} meetings)`);
+    console.log(`  📊 Trends: ${timeline.summary.critical} critical, ${timeline.summary.worsening} worsening, ${timeline.summary.stable} stable`);
+  } else if (timeline && DRY_RUN) {
+    console.log(`  🏜️ DRY-RUN: Would write hm50_timeline.json (${timeline.hm_items.length} HMs)`);
   }
 
   // Build progress output

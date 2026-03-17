@@ -182,8 +182,9 @@ async function queryOverdueClarifications() {
 /** WF6: Query active directives (not completed) for dashboard */
 async function queryActiveClarifications() {
   return queryDatabase(DB.CLARIFICATION, {
-    property: 'TINH_TRANG',
-    select: { does_not_equal: 'Hoàn thành' },
+    and: [
+      { property: 'TINH_TRANG', select: { does_not_equal: 'Hoàn thành' } },
+    ],
   });
 }
 

@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { queryAllClarifications, queryActiveClarifications, queryAllHR, queryAllHM50,
-        safeText, safeSelect, safeDate, safeRelation,
+        safeText, safeSelect, safeDate,
         safeRollupEmail, safeRollupTitle } = require('./lib/notion-client');
 const { logExecution } = require('./lib/logger');
 
@@ -129,9 +129,10 @@ function transformPeople(hrPages) {
 function computeOutcomes(directives) {
   const statusMap = directives.by_status || {};
   const total = directives.total || 0;
-  const done = statusMap['Hoàn thành'] || statusMap['Đã hoàn thành'] || 0;
-  const inProgress = statusMap['Đang xử lý'] || 0;
-  const waiting = statusMap['Chờ xử lý'] || statusMap['Chờ làm rõ'] || 0;
+  // BUG-5 fix: dùng + thay || để cộng cả 2 status name (Notion có thể có cả hai)
+  const done = (statusMap['Hoàn thành'] || 0) + (statusMap['Đã hoàn thành'] || 0);
+  const inProgress = (statusMap['Đang xử lý'] || 0) + (statusMap['Đang thực hiện'] || 0);
+  const waiting = (statusMap['Chờ xử lý'] || 0) + (statusMap['Chờ làm rõ'] || 0);
 
   return {
     summary: {
@@ -186,7 +187,10 @@ function computeBSCSummary(hm50Pages) {
 
     const bscPerspective = safeSelect(props['BSC_Perspective']?.select);
     const directiveCount = props['Directive_Count']?.number || 0;
-    const completionRate = props['Completion_Rate']?.number || 0;
+    // Convention: Completion_Rate trong Notion luôn 0-1 (hm50-linker ghi 0-1)
+    // Guard: clamp về 0-1 nếu ai nhập > 1 (ví dụ 75 thay vì 0.75)
+    let completionRate = props['Completion_Rate']?.number || 0;
+    if (completionRate > 1) completionRate = completionRate / 100;
     const lelongsonStage = safeSelect(props['LELONGSON_Stage']?.select);
 
     // Aggregate BSC
@@ -217,6 +221,71 @@ function computeBSCSummary(hm50Pages) {
     total_hm: hm50Pages.length,
     synced_at: new Date().toISOString(),
   };
+}
+
+// ===== SNAPSHOT APPEND (Phase 4) =====
+
+/**
+ * Append HM50 snapshots vào JSONL file khi có thay đổi directive_count hoặc completion_rate.
+ * Mỗi dòng = 1 JSON object cho 1 HM tại 1 thời điểm.
+ */
+function appendHM50Snapshots(hm50Pages) {
+  const snapshotPath = path.join(DATA_DIR, 'hm50_snapshots.jsonl');
+  const now = new Date().toISOString();
+
+  // Đọc snapshot cuối cùng cho mỗi HM để detect thay đổi
+  const lastByHM = {};
+  if (fs.existsSync(snapshotPath)) {
+    const lines = fs.readFileSync(snapshotPath, 'utf-8').trim().split('\n').filter(Boolean);
+    for (const line of lines) {
+      try {
+        const entry = JSON.parse(line);
+        if (entry.hm_tt) {
+          lastByHM[entry.hm_tt] = entry;
+        }
+      } catch (_) {
+        // Bỏ qua dòng lỗi
+      }
+    }
+  }
+
+  // So sánh và append nếu có thay đổi
+  let appendCount = 0;
+  for (const page of hm50Pages) {
+    const props = page.properties || {};
+    const hmTT = props['TT']?.number;
+    if (!hmTT) continue;
+
+    const hmTitle = safeText(props['Hạng mục']?.title);
+    const status = safeSelect(props['Status']?.select) || '';
+    const directiveCount = props['Directive_Count']?.number || 0;
+    const completionRate = props['Completion_Rate']?.number || 0;
+
+    const last = lastByHM[hmTT];
+    const changed = !last
+      || last.directive_count !== directiveCount
+      || last.completion_rate !== completionRate;
+
+    if (changed) {
+      const snapshot = {
+        ts: now,
+        hm_tt: hmTT,
+        hm_title: hmTitle,
+        status,
+        directive_count: directiveCount,
+        completion_rate: completionRate,
+        source: 'wf6-sync',
+      };
+      fs.appendFileSync(snapshotPath, JSON.stringify(snapshot) + '\n');
+      appendCount++;
+    }
+  }
+
+  if (appendCount > 0) {
+    console.log(`  📸 Appended ${appendCount} HM50 snapshots to hm50_snapshots.jsonl`);
+  } else {
+    console.log(`  📸 No HM50 changes detected — snapshots skipped`);
+  }
 }
 
 // ===== WRITE HELPERS =====
@@ -310,6 +379,9 @@ async function run() {
       },
       status: 'success',
     });
+
+    // Append HM50 snapshots (chỉ ghi khi có thay đổi)
+    appendHM50Snapshots(hm50Pages);
   } else {
     console.log('  [DRY-RUN] Would write: directives.json, outcomes.json, bsc_summary.json, sync_status.json');
   }

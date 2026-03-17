@@ -9,12 +9,10 @@
   "scripts": {
     "start": "node scheduler.js",
     "start:dry": "node scheduler.js --dry-run",
-
     "bot": "node telegram-bot.js",
     "bot:test": "node telegram-bot.js --test",
     "bridge": "node openclaw-bridge.js",
     "bridge:test": "node -e \"const http=require('http');http.get('http://localhost:3100/health',r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log(d))})\"",
-
     "wf1": "node wf1-approval.js",
     "wf1:dry": "node wf1-approval.js --dry-run",
     "wf2": "node wf2-directive-progress.js",
@@ -41,7 +39,6 @@
     "transcript:dry": "node transcript-parser.js --dry-run",
     "run:all": "node scheduler.js --run-now all",
     "run:all:dry": "node scheduler.js --run-now all --dry-run",
-
     "ai:patterns": "node ai-analyzer.js patterns",
     "ai:risks": "node ai-analyzer.js risks",
     "ai:ask": "node ai-analyzer.js",
@@ -49,13 +46,15 @@
     "report:weekly": "node report-generator.js weekly",
     "report:weekly:send": "node report-generator.js weekly --send",
     "report:monthly": "node report-generator.js monthly",
-
     "import:kpi": "node import-commitments.js",
     "import:kpi:dry": "node import-commitments.js --dry-run",
-    "test:email": "node lib/email-sender.js --test"
+    "test:email": "node lib/email-sender.js --test",
+    "escalation": "node auto-escalation.js",
+    "escalation:dry": "node auto-escalation.js --dry-run"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.0",
+    "@supabase/supabase-js": "^2.99.2",
     "dotenv": "^16.4.0",
     "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.67.0",
