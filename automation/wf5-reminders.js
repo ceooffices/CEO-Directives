@@ -80,7 +80,7 @@ function buildReminderEmail(recipient) {
       + '; padding: 15px 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0;">'
       + '<strong>📋 Tasks cần chú ý:</strong><br>';
     for (const t of recipient.urgentTasks.slice(0, 5)) {
-      const icon = t.status === 'overdue' ? '🔴' : t.status === 'today' ? '🟠' : '🟡';
+      const icon = t.status === 'overdue' ? '📋' : t.status === 'today' ? '📌' : '🔶';
       const label = t.status === 'overdue'
         ? `(cần quan tâm — ${Math.abs(t.daysLeft)} ngày)`
         : t.status === 'today' ? '(hôm nay)' : '(ngày mai)';

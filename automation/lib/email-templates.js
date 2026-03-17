@@ -74,8 +74,8 @@ function eFtr(trackingPixelHtml) {
   return (
     '<div style="padding:14px 16px;background:#f1f5f9;border-top:1px solid #e2e8f0;">' +
     '<p style="font-size:12px;color:#94a3b8;margin:0;line-height:1.7;font-family:' + FONT + ';">' +
-    'Email tự động từ <strong>Hệ thống Chỉ đạo CEO — ESUHAI GROUP</strong><br>' +
-    'Vui lòng không trả lời email này — Hỗ trợ: hoangkha@esuhai.com' +
+    'Email từ <strong>Hệ thống Quản trị Chỉ đạo — ESUHAI GROUP</strong><br>' +
+    'Cần hỗ trợ? Liên hệ: hoangkha@esuhai.com' +
     '</p>' +
     (trackingPixelHtml || '') +
     '</div>'
@@ -166,8 +166,8 @@ function eDivider() {
  */
 function buildStep1Email(data) {
   const header = eHdr(
-    'CHỈ ĐẠO CEO — YÊU CẦU DUYỆT',
-    'Hệ thống tự động phát hiện chỉ đạo mới cần xác nhận'
+    'CHỈ ĐẠO MỚI — XIN MỜI XEM XÉT',
+    'Chỉ đạo mới cần Anh/Chị xác nhận trước khi giao cho đầu mối'
   );
 
   const body =
@@ -195,12 +195,11 @@ function buildStep1Email(data) {
       '<li style="margin:4px 0;"><strong>Theo dõi tiến độ:</strong> CEO nhìn thấy tiến độ xử lý chỉ đạo</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('▸ DUYỆT NGAY TẠI ĐÂY', data.url || '#', BRAND_BLUE) +
+    eBtn('▸ XEM VÀ DUYỆT CHỈ ĐẠO', data.url || '#', BRAND_BLUE) +
     '</div>' +
     eText(
       '<div style="background:#fefce8;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #fde68a;">' +
-      '<p style="margin:0;font-size:13px;color:#92400e;">⏰ Hệ thống đã <strong>BẮT ĐẦU</strong> xử lý chỉ đạo này. ' +
-      'Sau khi Anh/Chị duyệt, email sẽ được gửi tự động cho ' + (data.tenDauMoi || 'đầu mối') + ' để triển khai ngay.</p></div>'
+      '<p style="margin:0;font-size:13px;color:#92400e;">📋 Sau khi Anh/Chị duyệt, hệ thống sẽ gửi thông tin cho ' + (data.tenDauMoi || 'đầu mối') + ' để phối hợp triển khai.</p></div>'
     );
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -309,7 +308,7 @@ function buildStep2Email(data) {
   // Build prefill URL for this directive
   const formUrl = buildPrefillUrl(data);
   const header = eHdr(
-    'NHIỆM VỤ MỚI — CẦN XÁC NHẬN 5T',
+    'NHIỆM VỤ MỚI — XIN MỜI XÁC NHẬN 5T',
     'Từ ' + (data.tenNguoiChiDao || 'Ban Giám Đốc')
   );
 
@@ -339,7 +338,7 @@ function buildStep2Email(data) {
       '<li style="margin:4px 0;"><strong>Hỗ trợ kịp thời:</strong> Ban Cố Vấn nắm tiến độ để hỗ trợ khi cần</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('▸ XÁC NHẬN 5T NGAY', formUrl, BRAND_GREEN) +
+    eBtn('▸ XÁC NHẬN THÔNG TIN 5T', formUrl, BRAND_GREEN) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
     '(Mở Google Form — thông tin đã điền sẵn, chỉ cần kiểm tra và gửi)</p>' +
     '</div>' +
