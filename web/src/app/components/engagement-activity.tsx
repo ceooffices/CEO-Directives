@@ -1,6 +1,7 @@
 /**
  * Engagement Activity Timeline
- * Hiển thị lịch sử tương tác với chỉ đạo (approve, confirm, remind, escalate, view)
+ * Hiển thị lịch sử tương tác & hành vi tuân thủ chỉ đạo
+ * Triết lý: Ghi nhận mọi tín hiệu hành vi — không phán xét, chỉ nhận diện
  */
 
 interface EngagementEvent {
@@ -19,12 +20,12 @@ const EVENT_CONFIG: Record<string, { icon: string; label: string; color: string;
   reject: { icon: "❌", label: "Từ chối", color: "text-red-700", bgColor: "bg-red-50" },
   confirm: { icon: "🔵", label: "Xác nhận", color: "text-blue-700", bgColor: "bg-blue-50" },
   clarify: { icon: "❓", label: "Yêu cầu làm rõ", color: "text-amber-700", bgColor: "bg-amber-50" },
-  remind: { icon: "🔔", label: "Nhắc nhở", color: "text-orange-700", bgColor: "bg-orange-50" },
-  escalate: { icon: "📢", label: "Leo thang", color: "text-red-700", bgColor: "bg-red-50" },
+  remind: { icon: "💬", label: "Gửi hỗ trợ", color: "text-blue-700", bgColor: "bg-blue-50" },
+  escalate: { icon: "📋", label: "Báo cáo rủi ro", color: "text-amber-700", bgColor: "bg-amber-50" },
   view: { icon: "👁", label: "Đã xem", color: "text-gray-600", bgColor: "bg-gray-50" },
   email_sent: { icon: "📧", label: "Gửi email", color: "text-indigo-700", bgColor: "bg-indigo-50" },
-  auto_remind: { icon: "🤖", label: "Tự động nhắc", color: "text-purple-700", bgColor: "bg-purple-50" },
-  auto_escalate: { icon: "🤖📢", label: "Tự động leo thang", color: "text-rose-700", bgColor: "bg-rose-50" },
+  auto_remind: { icon: "🤖", label: "Tự động kiểm tra", color: "text-purple-700", bgColor: "bg-purple-50" },
+  auto_escalate: { icon: "🤖📋", label: "Tự động báo cáo", color: "text-amber-700", bgColor: "bg-amber-50" },
 };
 
 function relativeTime(dateStr: string): string {

@@ -134,7 +134,7 @@ export default async function DashboardPage() {
               <StatCard label="Đang thực hiện" value={stats.active} color="blue" />
               <StatCard label="Hoàn thành" value={stats.completed} color="green" sub={`${Math.round(completionRate)}%`} />
               <StatCard
-                label="Quá hạn"
+                label="Cần quan tâm"
                 value={stats.overdue}
                 color={stats.overdue > 0 ? "red" : "green"}
                 pulse={stats.overdue > 3}
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
                         <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-zinc-500">Đầu mối</th>
                         <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-zinc-500">Tổng</th>
                         <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-zinc-500">Hoàn thành</th>
-                        <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-zinc-500">Quá hạn</th>
+                        <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-zinc-500">Rủi ro</th>
                         <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-zinc-500">Tỷ lệ</th>
                       </tr>
                     </thead>
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
 
             <div>
               <h3 className="mb-4 text-[13px] font-medium text-zinc-500 uppercase tracking-wide">
-                Tất cả chỉ đạo cần xử lý ({actionDirectives.length})
+                Chỉ đạo cần hỗ trợ thêm ({actionDirectives.length})
               </h3>
               <DirectiveTable directives={actionDirectives} />
             </div>
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
                 {bodTimeline.hmItems.filter((h) => h.trend === "critical").length > 0 && (
                   <div className="rounded-2xl bg-red-500/10 p-5 ring-1 ring-red-500/20">
                     <h3 className="text-[13px] font-semibold text-red-400">
-                      Cảnh báo — HM leo thang nghiêm trọng
+                      Tín hiệu — HM cần quan tâm thêm
                     </h3>
                     <div className="mt-3 space-y-2">
                       {bodTimeline.hmItems
