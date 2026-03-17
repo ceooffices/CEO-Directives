@@ -39,6 +39,128 @@ export const LLS_STEP_NAMES: Record<number, string> = {
   7: "B7 TGĐ duyệt",
 };
 
+// ===== STAFF EMAIL LOOKUP — 3-tier resolution =====
+
+/**
+ * Bảng alias: tên tắt / chức danh → tên đầy đủ trong bảng staff (UPPER)
+ * Được build từ QC audit data thực tế 17/03/2026
+ * 
+ * Rule theo anh Kha:
+ * - Tên viết tắt → tham chiếu phòng ban từ context cuộc họp để xác định đúng người
+ * - Giao cho bộ phận → lấy trưởng bộ phận đầu mối
+ */
+const ALIAS_MAP: Record<string, string> = {
+  // Chức danh → họ tên đầy đủ
+  "Thầy Nam":       "TRẦN HOÀNG HOÀI NAM",
+  "Cô Nhiên":       "NGUYỄN THỊ NHIÊN",
+  "Cô Anh Thư":     "HUỲNH THỊ ANH THƯ",
+  "Thầy Huy":       "ĐẶNG QUANG HUY",
+  "Cô Xuân":        "LÊ THỊ XUÂN",
+  // Tên tắt → họ tên dựa theo context phòng ban cuộc họp BOD 16/03
+  "Thanh Hiếu":     "BÙI THỊ THANH HIẾU",
+  "Hoàng":          "NGUYỄN NGỌC HOÀNG",     // MSA context
+  "Trúc":           "HỒ PHAN BẠCH TRÚC",     // MSA context
+};
+
+/**
+ * Mapping bộ phận → department name trong bảng staff
+ * Rule: giao bộ phận → lấy trưởng bộ phận (is_manager = true)
+ */
+const DEPARTMENT_ALIAS: Record<string, string> = {
+  "Toàn bộ MS":     "MSA",
+  "toàn bộ MS":     "MSA",
+  "Ban Giám Đốc":   "BAN TỔNG GIÁM ĐỐC",
+};
+
+interface EmailResolution {
+  /** Map: tên gốc → email (có thể nhiều email nếu nhiều đầu mối) */
+  resolved: Record<string, string>;
+  /** Tên không tìm được email */
+  unresolved: string[];
+}
+
+/**
+ * Resolve email từ tên đầu mối (t1_dau_moi).
+ * 3-tier lookup:
+ *   1. ALIAS_MAP — tên tắt/chức danh → query staff bằng tên đầy đủ
+ *   2. Exact ILIKE — tìm trong staff.name
+ *   3. Department — nếu là tên bộ phận, query trưởng bộ phận (is_manager)
+ */
+export async function resolveStaffEmails(names: string[]): Promise<EmailResolution> {
+  const resolved: Record<string, string> = {};
+  const unresolved: string[] = [];
+
+  for (const rawName of names) {
+    const name = rawName.trim();
+    if (!name) continue;
+
+    // Check department alias first (e.g. "Toàn bộ MS" → trưởng MSA)
+    if (DEPARTMENT_ALIAS[name]) {
+      const dept = DEPARTMENT_ALIAS[name];
+      const { data } = await db
+        .from("staff")
+        .select("name, email")
+        .eq("department", dept)
+        .eq("is_manager", true)
+        .limit(1)
+        .single();
+      if (data?.email) {
+        resolved[name] = data.email;
+        continue;
+      }
+    }
+
+    // Resolve alias → full name
+    const fullName = ALIAS_MAP[name] || name.toUpperCase();
+
+    // Query staff table by ILIKE on name
+    const { data } = await db
+      .from("staff")
+      .select("name, email")
+      .ilike("name", `%${fullName}%`)
+      .limit(3);
+
+    if (data && data.length === 1 && data[0].email) {
+      // Unique match
+      resolved[name] = data[0].email;
+    } else if (data && data.length > 1) {
+      // Multiple matches — try exact match first 
+      const exact = data.find(
+        (s: { name: string; email: string | null }) => s.name === fullName && s.email
+      );
+      if (exact) {
+        resolved[name] = exact.email!;
+      } else if (data[0].email) {
+        // Take first match (best effort)
+        resolved[name] = data[0].email;
+      } else {
+        unresolved.push(name);
+      }
+    } else {
+      unresolved.push(name);
+    }
+  }
+
+  return { resolved, unresolved };
+}
+
+/**
+ * Parse t1_dau_moi (comma-separated) → resolve all emails
+ * Returns: first email found (primary contact) + all emails array
+ */
+export async function resolveDirectiveEmail(
+  t1_dau_moi: string
+): Promise<{ primary: string | null; all: string[]; unresolved: string[] }> {
+  const names = t1_dau_moi.split(",").map((n) => n.trim()).filter(Boolean);
+  const { resolved, unresolved } = await resolveStaffEmails(names);
+  const allEmails = Object.values(resolved);
+  return {
+    primary: allEmails[0] || null,
+    all: allEmails,
+    unresolved,
+  };
+}
+
 // ===== DASHBOARD DATA — Real Supabase queries =====
 
 export interface SupabaseHM50 {
