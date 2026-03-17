@@ -335,8 +335,8 @@ function buildStep2Email(data) {
       '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📌 TẠI SAO CẦN XÁC NHẬN:</p>' +
       '<ul style="margin:0;padding-left:18px;">' +
       '<li style="margin:4px 0;"><strong>Làm rõ kỳ vọng:</strong> Đảm bảo hiểu đúng yêu cầu</li>' +
-      '<li style="margin:4px 0;"><strong>Cam kết có ý thức:</strong> "Người Nói Phải LÀM" — xác nhận là cam kết</li>' +
-      '<li style="margin:4px 0;"><strong>CEO theo dõi:</strong> Tiến độ báo cáo trực tiếp lên CEO</li></ul>'
+      '<li style="margin:4px 0;"><strong>Phối hợp hiệu quả:</strong> Xác nhận giúp cả đội cùng hiểu và cùng hành động</li>' +
+      '<li style="margin:4px 0;"><strong>Hỗ trợ kịp thời:</strong> Ban Cố Vấn nắm tiến độ để hỗ trợ khi cần</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ XÁC NHẬN 5T NGAY', formUrl, BRAND_GREEN) +
@@ -345,7 +345,7 @@ function buildStep2Email(data) {
     '</div>' +
     eText(
       '<div style="background:#dbeafe;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #93c5fd;">' +
-      '<p style="margin:0;font-size:13px;color:#1e40af;">☑ <strong>Đồng nghiệp khác đã xác nhận 5T trong vòng 24h.</strong> Bạn cũng làm được!</p></div>'
+      '<p style="margin:0;font-size:13px;color:#1e40af;">☑ <strong>Đồng nghiệp khác đã xác nhận 5T trong vòng 24h.</strong> Cảm ơn Anh/Chị!</p></div>'
     );
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -568,28 +568,28 @@ function buildEscalationEmail(data, level) {
   const formUrl = buildWF4PrefillUrl(data);
   const levels = {
     WARNING: {
-      titleVN: 'CẢNH BÁO — Chỉ đạo sắp quá hạn',
-      subtitle: 'Quá hạn ' + (data.overdueDays || 0) + ' ngày · Mức: Cảnh báo',
+      titleVN: 'CẦN QUAN TÂM — Chỉ đạo cần hỗ trợ',
+      subtitle: 'Chưa có cập nhật ' + (data.overdueDays || 0) + ' ngày · Tầng: Quan tâm',
       color: BRAND_AMBER,
       bgColor: '#fefce8',
       borderColor: '#fde68a',
-      icon: '⚠️',
+      icon: '📋',
     },
     ESCALATE: {
-      titleVN: 'LEO THANG — Chỉ đạo quá hạn nghiêm trọng',
-      subtitle: 'Quá hạn ' + (data.overdueDays || 0) + ' ngày · Mức: Leo thang',
+      titleVN: 'TÍN HIỆU RỦI RO — Chỉ đạo cần xem xét',
+      subtitle: 'Chưa có cập nhật ' + (data.overdueDays || 0) + ' ngày · Tầng: Rủi ro',
       color: '#ea580c',
       bgColor: '#fff7ed',
       borderColor: '#fed7aa',
       icon: '🔶',
     },
     ALERT: {
-      titleVN: 'BÁO ĐỘNG — Chỉ đạo quá hạn nghiêm trọng',
-      subtitle: 'Quá hạn ' + (data.overdueDays || 0) + ' ngày · Mức: Báo động đỏ · CC CEO',
+      titleVN: 'CẦN HỖ TRỢ ĐẶC BIỆT — Ban Cố Vấn can thiệp',
+      subtitle: 'Chưa có cập nhật ' + (data.overdueDays || 0) + ' ngày · Tầng: Hỗ trợ đặc biệt · CC CEO',
       color: BRAND_RED,
       bgColor: '#fef2f2',
       borderColor: '#fecaca',
-      icon: '🚨',
+      icon: '📋',
     },
   };
 
@@ -600,22 +600,22 @@ function buildEscalationEmail(data, level) {
   const badgeHtml =
     '<div style="text-align:center;padding:12px;background-color:' + cfg.bgColor +
     ';border-bottom:2px solid ' + cfg.color + ';">' +
-    eBadge(level + ' · QUÁ HẠN ' + (data.overdueDays || 0) + ' NGÀY', cfg.color) +
+    eBadge(level + ' · CHƯA CẬP NHẬT ' + (data.overdueDays || 0) + ' NGÀY', cfg.color) +
     '</div>';
 
   const body =
     badgeHtml +
     eGreeting(data.recipientName) +
     eText(
-      '<p style="margin:0 0 12px;">Chỉ đạo sau đã <strong style="color:' + cfg.color + ';">quá hạn ' +
-      (data.overdueDays || 0) + ' ngày</strong> và cần được xử lý khẩn cấp:</p>'
+      '<p style="margin:0 0 12px;">Chỉ đạo sau đã <strong style="color:' + cfg.color + ';">chưa có cập nhật trong ' +
+      (data.overdueDays || 0) + ' ngày</strong> và cần được xem xét:</p>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
       eRow('Chỉ đạo:', data.tieuDe || '') +
       eRow('Đầu mối:', data.tenDauMoi || '') +
       eRow('Thời hạn:', data.t4ThoiHan || '', BRAND_RED) +
-      eRow('Quá hạn:', (data.overdueDays || 0) + ' ngày', cfg.color) +
+      eRow('Chưa cập nhật:', (data.overdueDays || 0) + ' ngày', cfg.color) +
       eRow('Trạng thái:', data.tinhTrang || '') +
       eRow('Nguồn:', data.nguon || ''),
       cfg.bgColor, cfg.borderColor
@@ -623,13 +623,13 @@ function buildEscalationEmail(data, level) {
     eText(
       (level === 'ALERT'
         ? '<div style="background:#fef2f2;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #fecaca;">' +
-          '<p style="margin:0;font-size:13px;color:' + BRAND_RED + ';font-weight:700;">⚠ Email này đã được CC cho CEO và Ban Giám Đốc.</p></div>'
+          '<p style="margin:0;font-size:13px;color:' + BRAND_RED + ';font-weight:700;">📋 Email này đã được gửi đến CEO và Ban Cố Vấn để phối hợp hỗ trợ.</p></div>'
         : '')
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('▸ PHẢN HỒI LEO THANG', formUrl, cfg.color) +
+    eBtn('▸ CẬP NHẬT TÌNH HÌNH', formUrl, cfg.color) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
-    '(Mở Google Form — giải trình lý do và cam kết thời hạn mới)</p>' +
+    '(Mở Google Form — chia sẻ tình hình và kế hoạch tiếp theo)</p>' +
     '</div>';
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -645,15 +645,15 @@ function buildReminderEmail(data) {
   const color = isUrgent ? BRAND_RED : daysLeft <= 3 ? BRAND_AMBER : BRAND_BLUE;
 
   const header = eHdr(
-    'NHẮC NHỞ — Chỉ đạo sắp đến hạn',
-    (isUrgent ? '⚠️ Còn ' : 'Còn ') + daysLeft + ' ngày · ' + (data.tieuDe || '').substring(0, 50)
+    'ĐỒNG HÀNH — Chỉ đạo sắp đến thời hạn',
+    'Còn ' + daysLeft + ' ngày · ' + (data.tieuDe || '').substring(0, 50)
   );
 
   const body =
     eGreeting(data.recipientName) +
     eText(
-      '<p style="margin:0 0 12px;">Chỉ đạo sau sẽ <strong style="color:' + color + ';">đến hạn trong ' +
-      daysLeft + ' ngày</strong>:</p>'
+      '<p style="margin:0 0 12px;">Chỉ đạo sau còn <strong style="color:' + color + ';">' +
+      daysLeft + ' ngày</strong> đến thời hạn dự kiến. Anh/Chị có cần hỗ trợ gì không?</p>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(

@@ -102,13 +102,13 @@ async function run() {
   lines.push(`───────────────────────`);
   lines.push(`Tổng chỉ đạo: ${total}`);
   lines.push(`✅ Hoàn thành: ${completed} | ⏳ Đang xử lý: ${active.length}`);
-  lines.push(`🔥 Quá hạn: ${overdueCount} | 💀 Mất kiểm soát: ${lostControlCount}`);
+  lines.push(`📌 Cần quan tâm: ${overdueCount} | 📋 Cần hỗ trợ đặc biệt: ${lostControlCount}`);
   lines.push(`📝 Đã xác nhận: ${confirmed}/${total}`);
   lines.push(`📨 Events tuần này: ${eventsThisWeek || 0}`);
   lines.push(`───────────────────────`);
 
   if (hm50Hot && hm50Hot.length > 0) {
-    lines.push(`TOP 5 HM nóng nhất:`);
+    lines.push(`TOP 5 HM cần quan tâm nhất:`);
     for (let i = 0; i < hm50Hot.length; i++) {
       const h = hm50Hot[i];
       lines.push(`  ${i + 1}. HM${h.hm_number} — ${h.ten} (${h.directive_count} chỉ đạo)`);

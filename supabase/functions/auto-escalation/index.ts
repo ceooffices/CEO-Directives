@@ -2,7 +2,7 @@
  * auto-escalation — Supabase Edge Function
  *
  * Chạy hàng ngày 1h UTC (= 8h sáng VN) via Supabase Cron.
- * Logic: kiểm tra t4_thoi_han, tự động nhắc nhở & leo thang.
+ * Logic: kiểm tra t4_thoi_han, tự động phát hiện tín hiệu & hỗ trợ đầu mối.
  *
  * Cron setup trong Supabase Dashboard:
  *   Schedule: 0 1 * * *
@@ -16,7 +16,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
-// Ngưỡng quá hạn (ngày)
+// Ngưỡng tín hiệu (ngày — số ngày chưa có cập nhật sau thời hạn dự kiến)
 const THRESHOLD_REMIND = 1;
 const THRESHOLD_ESCALATE = 3;
 const THRESHOLD_CRITICAL = 7;
@@ -106,7 +106,7 @@ Deno.serve(async (_req: Request) => {
     const recentEvTypes = recentMap.get(d.id) || new Set();
 
     try {
-      // ≥14 ngày → Mất kiểm soát
+      // ≥14 ngày → Cần hỗ trợ đặc biệt
       if (daysOverdue >= THRESHOLD_LOST) {
         if (recentEvTypes.has("auto_escalate")) {
           summary.skipped_dedup++;
@@ -121,7 +121,7 @@ Deno.serve(async (_req: Request) => {
         summary.lost_control++;
         await updateTinhTrang(db, d);
       }
-      // ≥7 ngày → Critical
+      // ≥7 ngày → Tín hiệu rủi ro nghiêm trọng
       else if (daysOverdue >= THRESHOLD_CRITICAL) {
         if (recentEvTypes.has("auto_escalate")) {
           summary.skipped_dedup++;
@@ -143,7 +143,7 @@ Deno.serve(async (_req: Request) => {
           summary.email_skipped_no_address++;
         }
       }
-      // ≥3 ngày → Escalate warning
+      // ≥3 ngày → Tín hiệu rủi ro
       else if (daysOverdue >= THRESHOLD_ESCALATE) {
         if (recentEvTypes.has("auto_escalate")) {
           summary.skipped_dedup++;
@@ -158,7 +158,7 @@ Deno.serve(async (_req: Request) => {
         summary.auto_escalate++;
         await updateTinhTrang(db, d);
       }
-      // ≥1 ngày + chưa xác nhận → Remind
+      // ≥1 ngày + chưa xác nhận → Đồng hành nhắc nhẹ
       else if (daysOverdue >= THRESHOLD_REMIND) {
         if (d.confirmed_at) continue; // Đã xác nhận, không cần nhắc
         if (recentEvTypes.has("auto_remind")) {

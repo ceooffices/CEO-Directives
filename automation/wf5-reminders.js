@@ -23,42 +23,42 @@ const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.co
 
 const MSG = {
   deadline_tomorrow: [
-    'Anh/chị ơi, có task đến hạn ngày mai nè. Xem qua nhé ạ',
-    'Nhắc nhẹ: ngày mai có deadline rồi đó ạ',
-    'Hú! Mai là hạn chót nè, check qua nhé',
-    '24h nữa là deadline. Cần hỗ trợ gì không ạ?'
+    'Anh/chị ơi, có task sắp đến thời hạn ngày mai. Xem qua nhé ạ',
+    'Ngày mai có thời hạn dự kiến đó ạ. Anh/chị cần hỗ trợ gì không?',
+    'Mai là thời hạn dự kiến nè, anh/chị check qua nhé',
+    '24h nữa là thời hạn. Cần hỗ trợ gì không ạ?'
   ],
   deadline_today: [
-    'Hôm nay là D-day rồi! Tình hình thế nào ạ?',
-    'Deadline là HÔM NAY. Cập nhật giúp em nhé',
-    '🚨 Task đến hạn hôm nay ạ. Tình hình thế nào rồi?',
-    'D-day đây rồi! Có cần support gì không ạ?'
+    'Hôm nay là thời hạn dự kiến rồi ạ! Tình hình thế nào?',
+    'Thời hạn dự kiến là HÔM NAY. Anh/chị cập nhật giúp em nhé',
+    'Task đến thời hạn hôm nay ạ. Tình hình thế nào rồi?',
+    'Hôm nay là thời hạn nè! Có cần hỗ trợ gì không ạ?'
   ],
   deadline_overdue: [
-    'Có task đã quá hạn rồi ạ. Có khó khăn gì không?',
-    'Task này quá deadline rồi. Cần thêm thời gian không ạ?',
-    'Task đã overdue, nhưng không sao, em ở đây hỗ trợ',
-    'Quá hạn rồi. Mình cập nhật lại timeline nhé?'
+    'Có task cần quan tâm thêm rồi ạ. Có khó khăn gì không?',
+    'Task này cần cập nhật tiến độ. Anh/chị cần thêm thời gian không ạ?',
+    'Task cần quan tâm, nhưng không sao, em ở đây hỗ trợ',
+    'Task chưa có cập nhật gần đây. Mình cập nhật lại kế hoạch nhé?'
   ],
   monday_start: [
-    'Thứ Hai rồi! Tuần mới, năng lượng mới. Fighting! 💪',
+    'Thứ Hai rồi! Tuần mới, năng lượng mới nha',
     'Đầu tuần rồi! Mình bắt đầu tuần mới thật hiệu quả nhé?',
-    'Happy Monday! Tuần này mình chiến thắng nhé'
+    'Chào thứ Hai! Tuần này mình cùng tiến bước nhé'
   ],
   friday_wrapup: [
     'Thứ 6 rồi! Tuần này vất vả quá, nghỉ ngơi nhé ạ',
-    'TGIF! Cuối tuần vui vẻ nhé',
-    'Hết tuần rồi! Weekend thư giãn nhé'
+    'Cuối tuần rồi! Cuối tuần vui vẻ nhé',
+    'Hết tuần rồi! Cuối tuần thư giãn nhé'
   ],
   new_month: [
-    'Tháng mới rồi! Fresh start, fresh goals. Let\'s go! 🚀',
-    'Chào tháng mới! Tháng này mình chinh phục mục tiêu mới nào'
+    'Tháng mới rồi! Khởi đầu mới, mục tiêu mới nha',
+    'Chào tháng mới! Tháng này mình cùng chinh phục mục tiêu mới nào'
   ],
   normal_day: [
-    'Chào! Hôm nay có task nào cần xử lý không ạ?',
+    'Chào! Hôm nay có task nào cần xem xét không ạ?',
     'Ngày mới tốt lành! Em ở đây sẵn sàng hỗ trợ',
-    'Hôm nay mình productive nhé!',
-    'Chúc một ngày làm việc hiệu quả ạ!'
+    'Hôm nay mình cùng làm việc hiệu quả nhé!',
+    'Chúc một ngày làm việc thuận lợi ạ!'
   ]
 };
 
@@ -82,7 +82,7 @@ function buildReminderEmail(recipient) {
     for (const t of recipient.urgentTasks.slice(0, 5)) {
       const icon = t.status === 'overdue' ? '🔴' : t.status === 'today' ? '🟠' : '🟡';
       const label = t.status === 'overdue'
-        ? `(quá hạn ${Math.abs(t.daysLeft)} ngày)`
+        ? `(cần quan tâm — ${Math.abs(t.daysLeft)} ngày)`
         : t.status === 'today' ? '(hôm nay)' : '(ngày mai)';
       taskHtml += `• ${icon} ${t.title} ${label}<br>`;
     }
@@ -104,7 +104,7 @@ function buildReminderEmail(recipient) {
         <div style="font-size: 28px; font-weight: bold; color: ${recipient.stats.overdue > 0 ? '#e74c3c' : '#27ae60'};">${recipient.stats.totalActive}</div>
         <div style="font-size: 12px; color: #7f8c8d;">Tasks đang làm</div>
       </div>
-      ${recipient.stats.overdue > 0 ? `<div style="flex: 1;"><div style="font-size: 28px; font-weight: bold; color: #e74c3c;">${recipient.stats.overdue}</div><div style="font-size: 12px; color: #7f8c8d;">Quá hạn</div></div>` : ''}
+      ${recipient.stats.overdue > 0 ? `<div style="flex: 1;"><div style="font-size: 28px; font-weight: bold; color: #e74c3c;">${recipient.stats.overdue}</div><div style="font-size: 12px; color: #7f8c8d;">Cần quan tâm</div></div>` : ''}
       ${recipient.stats.dueToday > 0 ? `<div style="flex: 1;"><div style="font-size: 28px; font-weight: bold; color: #f39c12;">${recipient.stats.dueToday}</div><div style="font-size: 12px; color: #7f8c8d;">Hôm nay</div></div>` : ''}
     </div>
     <div style="text-align: center; margin: 25px 0 10px 0;">
@@ -235,8 +235,8 @@ async function run() {
       dueTomorrow: r.tasks.filter(t => t.status === 'tomorrow').length,
     };
 
-    const urgentPrefix = category === 'deadline_overdue' ? '🚨 Urgent: '
-      : category === 'deadline_today' ? '⚠️ Today: ' : '';
+    const urgentPrefix = category === 'deadline_overdue' ? '📋 Cần quan tâm: '
+      : category === 'deadline_today' ? '📌 Hôm nay: ' : '';
 
     const recipientData = {
       email, name: r.name || email.split('@')[0],
@@ -246,7 +246,7 @@ async function run() {
     try {
       await sendEmail({
         to: email,
-        subject: `🦉 ${urgentPrefix}ClaudeK nhắc ${recipientData.name} nè!`,
+        subject: `🦉 ${urgentPrefix}ClaudeK đồng hành cùng ${recipientData.name}!`,
         html: buildReminderEmail(recipientData),
         cc: Array.from(r.ccSet).filter(e => e !== email).join(', '),
         dryRun: DRY_RUN,

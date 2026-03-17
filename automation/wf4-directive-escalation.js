@@ -3,10 +3,10 @@
  * CEO Directive WF4: Directive Escalation Engine
  * 
  * Logic mới (bỏ DB_TASK):
- *   Query CLARIFICATION có T4-Thời hạn → Check quá hạn → Phân loại → Email
- *   - 3-7 ngày: ⚠️ Nhắc đầu mối
- *   - 7-14 ngày: 🔴 Leo thang → người chỉ đạo
- *   - >14 ngày: 🚨 Báo động → CEO
+ *   Query CLARIFICATION có T4-Thời hạn → Check tiến độ → Phân loại → Email
+ *   - 3-7 ngày: 📋 Cần quan tâm → hỏi đầu mối có cần hỗ trợ
+ *   - 7-14 ngày: 🔶 Tín hiệu rủi ro → tìm hiểu khó khăn
+ *   - >14 ngày: 📋 Cần hỗ trợ đặc biệt → Ban Cố Vấn can thiệp
  * 
  * Track trực tiếp từ chỉ đạo, không cần task riêng.
  * 
@@ -29,9 +29,9 @@ const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
 // ===== ESCALATION LEVELS =====
 
 const LEVELS = {
-  WARNING:  { min: 3,  max: 7,  label: '⚠️ Nhắc nhở',       color: '#f59e0b' },
-  ESCALATE: { min: 7,  max: 14, label: '🔴 Leo thang',       color: '#dc2626' },
-  ALERT:    { min: 14, max: Infinity, label: '🚨 Báo động CEO', color: '#7f1d1d' },
+  WARNING:  { min: 3,  max: 7,  label: '📋 Cần quan tâm',         color: '#f59e0b' },
+  ESCALATE: { min: 7,  max: 14, label: '🔶 Tín hiệu rủi ro',     color: '#dc2626' },
+  ALERT:    { min: 14, max: Infinity, label: '📋 Cần hỗ trợ đặc biệt', color: '#7f1d1d' },
 };
 
 // ===== MAIN =====
@@ -99,12 +99,12 @@ async function run() {
   const escalateCount = escalations.filter(e => e.level === 'ESCALATE').length;
   const alertCount = escalations.filter(e => e.level === 'ALERT').length;
 
-  console.log(`  ⚠️ Warning (3-7 ngày): ${warningCount}`);
-  console.log(`  🔴 Escalate (7-14 ngày): ${escalateCount}`);
-  console.log(`  🚨 Alert (>14 ngày): ${alertCount}`);
+  console.log(`  📋 Cần quan tâm (3-7 ngày): ${warningCount}`);
+  console.log(`  🔶 Tín hiệu rủi ro (7-14 ngày): ${escalateCount}`);
+  console.log(`  📋 Cần hỗ trợ đặc biệt (>14 ngày): ${alertCount}`);
 
   if (escalations.length === 0) {
-    console.log('  → Không có chỉ đạo nào quá hạn.');
+    console.log('  → Không có chỉ đạo nào cần quan tâm.');
     return { total: 0, sent: 0 };
   }
 
@@ -132,7 +132,7 @@ async function run() {
       if (!DRY_RUN) {
         await sendEmail({
           to: sendTo,
-          subject: `${LEVELS[esc.level].label} "${esc.title}" quá hạn ${esc.daysOverdue} ngày`,
+          subject: `${LEVELS[esc.level].label} "${esc.title}" — chưa cập nhật ${esc.daysOverdue} ngày`,
           html: buildEscalationHtml({
             tieuDe: esc.title,
             tenDauMoi: esc.dauMoi,
@@ -154,7 +154,7 @@ async function run() {
         step: esc.level,
         status: '✅ Success',
         clarificationId: esc.id,
-        details: `${esc.level}: "${esc.title}" quá hạn ${esc.daysOverdue} ngày`,
+        details: `${esc.level}: "${esc.title}" chưa cập nhật ${esc.daysOverdue} ngày`,
         emailTo: sendTo,
         dryRun: DRY_RUN,
       });
@@ -176,9 +176,9 @@ async function run() {
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log('\n==========================================');
   console.log('[WF4] SUMMARY:');
-  console.log(`  ⚠️ Warning: ${warningCount}`);
-  console.log(`  🔴 Escalate: ${escalateCount}`);
-  console.log(`  🚨 Alert: ${alertCount}`);
+  console.log(`  📋 Cần quan tâm: ${warningCount}`);
+  console.log(`  🔶 Tín hiệu rủi ro: ${escalateCount}`);
+  console.log(`  📋 Cần hỗ trợ đặc biệt: ${alertCount}`);
   console.log(`  📧 Sent: ${sentCount}`);
   console.log(`  ⏱️ Time: ${elapsed}s`);
   console.log('==========================================');

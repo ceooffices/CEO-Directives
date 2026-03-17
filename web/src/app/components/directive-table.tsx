@@ -24,8 +24,8 @@ const URGENCY_STYLE = {
 const URGENCY_LABEL = {
   green: "Đúng tiến độ",
   yellow: "Sắp đến hạn",
-  red: "Quá hạn",
-  black: "Báo động",
+  red: "Cần quan tâm",
+  black: "Cần hỗ trợ",
   done: "Hoàn thành",
 };
 
