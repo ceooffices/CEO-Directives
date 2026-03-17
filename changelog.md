@@ -2,6 +2,44 @@
 
 ---
 
+## v5.0.0 — Sprint 4-5: Auto-Escalation & Full Email (17/03/2026)
+
+> Team: Gravity (QC/Docs) + ClaudeCode (DEV) + anh Kha (Director)
+> Build: `next build` ✅ PASS | 12 routes | 52/52 email mapped
+
+### ⚡ Tự động hóa (ClaudeCode)
+
+| Feature | Mô tả |
+|---------|-------|
+| Edge Function | `auto-escalation` — Supabase Edge Function, 4 cấp leo thang |
+| Cron Job | `0 1 * * *` (8h sáng VN) — pg_cron ACTIVE |
+| Seed Email | `seed-emails.js` — 52/52 email mapped từ 366 nhân sự |
+| Dedup | `dedup-directives.js` — tìm 14 cặp trùng giữa 3 BOD |
+| Signal Brief | `signal-briefing.js` — báo cáo tuần format đẹp |
+| API Status | health_score + events + hm50_hot + CORS |
+
+### 🎨 QC & Tài liệu (Gravity)
+
+| Feature | Mô tả |
+|---------|-------|
+| QC Sprint 4-5 | Review toàn bộ 7 files, fix 3 bugs |
+| PostgREST Fix | Sửa NOT IN syntax trong Edge Function |
+| Phân loại 3 tầng | cá nhân (39), nhóm (8), tổng thể (5) |
+| Routing rules | MS → Dũng, Thầy Nam → Huỳnh Phước, chỉ đạo tổng thể → BOD Hosting |
+| CC List | 7 BOD members cho chỉ đạo toàn hệ thống |
+| README mới | Viết lại hoàn chỉnh + 3 hình minh họa |
+| SYSTEM_AUDIT | Cập nhật phản ánh kiến trúc Supabase mới |
+
+### 🐛 Bug Fixes
+
+| Bug | Fix |
+|-----|-----|
+| Edge Function chưa deploy | ✅ Deployed + ACTIVE |
+| PostgREST NOT IN syntax sai | ✅ Bỏ double quotes |
+| 9/52 chỉ đạo thiếu email | ✅ Routing 3 tầng + alias |
+
+---
+
 ## v4.0.0 — Sprint 1 + 2 (16/03/2026)
 
 > Team: Gravity (PM/QC) + ClaudeCode (DEV) + anh Kha (Director)
