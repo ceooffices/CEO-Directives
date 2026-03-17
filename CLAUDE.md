@@ -1,54 +1,90 @@
 # CEO Directive Automation — ClaudeCode Context
 
-> Cập nhật: 2026-03-16
-> Phiên bản: v2.0 — Sau dọn archive + chuyển Notion
+> Cập nhật: 2026-03-17
+> Phiên bản: v3.0 — Supabase migration (Notion = deprecated)
 
 ## Tổng quan dự án
 Hệ thống tự động hóa quản lý chỉ đạo CEO cho EsuhaiGroup (Giáo dục & Nhân lực Việt-Nhật).
 - **Frontend:** Next.js 16 (Turbopack) dashboard → `web/`
-- **Data source:** Notion API trực tiếp (raw fetch, cache 60s)
+- **Database:** Supabase PostgreSQL (source of truth)
 - **Backend:** Node.js automation scripts → `automation/`
-- **Forms:** Google Forms (WF1/WF4/WF5) — live trên Google, IDs hardcode trong `email-templates.js`
-- **AI:** Gemini 2.5 Pro (primary) + OpenAI (fallback) → cần build AI Router
+- **AI:** Gemini 2.5 Pro (primary) + OpenAI (fallback)
 - **Ngôn ngữ:** Node.js, tiếng Việt có dấu
+
+## Data Architecture
+
+```
+Supabase (Source of Truth)
+├── hm50 (50 records) — 50 Hạng Mục chiến lược 2026
+├── staff (366 records) — Nhân sự EsuhaiGroup
+├── directives — Chỉ đạo CEO (import từ transcript BOD)
+├── lls_step_history — Lịch sử LELONGSON per directive
+└── engagement_events — Email/action tracking
+
+Notion — DEPRECATED (data = rác, KHÔNG đọc từ Notion)
+JSON files trong data/ — DEPRECATED (thay bằng Supabase queries)
+```
 
 ## Cấu trúc thư mục
 
 ```
 CEO-Directives/
 ├── automation/               # ⚙️ CLAUDECODE ZONE — Backend logic
+│   ├── transcript-parser.js  # BOD transcript → 5T → Supabase
 │   ├── telegram-bot.js       # Telegram Bot
-│   ├── openclaw-bridge.js    # HTTP bridge (port 3100)
-│   ├── scheduler.js          # Cron scheduler
-│   ├── ai-analyzer.js        # AI analysis (cần AI Router)
-│   ├── report-generator.js   # Report generation
+│   ├── ai-analyzer.js        # AI analysis (Gemini/OpenAI)
 │   ├── wf1-approval.js       # Email duyệt chỉ đạo
 │   ├── wf2-*.js              # Notify + form processor
-│   ├── wf3-*.js              # Status detection
-│   ├── wf4-*.js              # Escalation + form processor
-│   ├── wf5-*.js              # Reminders + form processor
-│   ├── wf6-dashboard-sync.js # Dashboard sync
 │   ├── hm50-linker.js        # Match chỉ đạo → 50 HM
-│   ├── parse_kpi_sheet.js    # KPI parser
-│   ├── import-*.js           # Data imports
 │   └── lib/                  # Shared modules
-│       ├── notion-client.js  # Notion API client
 │       ├── email-sender.js   # SMTP sender
 │       ├── email-templates.js # Email HTML + Google Form prefill URLs
 │       └── logger.js         # Logging utility
+├── supabase/                 # 📦 Schema + Seed scripts
+│   ├── migration.sql         # 5 tables + RLS + indexes
+│   ├── seed-hm50.js          # Seed 50 HM từ JSON
+│   └── seed-staff.js         # Seed 366 staff từ CSV
 ├── web/                      # 🎨 GRAVITY ZONE — Next.js Dashboard
-│   ├── src/app/page.tsx      # Dashboard chính (5 sections)
-│   ├── src/app/track/[token]/route.ts  # Email tracking pixel endpoint
-│   ├── src/app/api/status/   # API health check
-│   ├── src/app/components/   # stat-card, traffic-light, directive-table, copy-button
-│   ├── src/lib/notion.ts     # Notion API client (raw fetch, cache 60s)
-│   └── .env.local            # Notion credentials ONLY
-├── data/                     # JSON data layer
-├── archive/                  # 📦 Files lỗi thời (GAS, Supabase, old dashboards)
-├── ban_chep_loi/             # Transcripts cuộc họp BOD
+│   ├── src/app/page.tsx      # Dashboard chính (6 sections BSC)
+│   ├── src/app/dashboard/assistant/ # P1: Bảng điều khiển buổi sáng
+│   ├── src/app/approve/[id]/ # P2: Duyệt chỉ đạo (BOD Hosting)
+│   ├── src/app/confirm/[id]/ # P3: Xác nhận đầu mối
+│   ├── src/app/directive/[id]/ # Chi tiết chỉ đạo
+│   ├── src/app/api/          # 4 API routes: approve, confirm, remind, escalate
+│   ├── src/lib/supabase.ts   # Supabase client + dashboard queries
+│   ├── src/lib/supabase-types.ts # TypeScript types cho 5 tables
+│   └── .env.local            # Supabase + Notion credentials
+├── ban_chep_loi/             # Transcripts cuộc họp BOD (source of truth)
+├── archive/                  # 📦 Files lỗi thời (GAS, old Supabase, Notion code)
 ├── CONTENT_BIBLE_AIGENT.md   # ⭐ ĐỌC TRƯỚC KHI CODE — Quy tắc content
-├── notion_properties_lock.md # Properties KHÔNG ĐƯỢC đổi tên
 └── .env.example → .env       # Environment config (automation/)
+```
+
+## Supabase Project
+
+- **URL:** `https://fgiszdvchpknmyfscxnp.supabase.co`
+- **Keys:** trong `web/.env.local` + `automation/.env`
+- **Tables:** hm50, staff, directives, lls_step_history, engagement_events
+- **RLS:** anon = SELECT only, service_role = full CRUD
+
+## API Routes (Phase 2)
+
+| Route | Persona | Mô tả |
+|---|---|---|
+| `POST /api/approve` | P2 (BOD Hosting) | Duyệt/từ chối → update lls_step |
+| `POST /api/confirm` | P3 (Đầu mối) | Xác nhận 5T → update lls_step |
+| `POST /api/remind` | P1 (Trợ lý CEO) | Nhắc đầu mối → ghi event |
+| `POST /api/escalate` | P1 (Trợ lý CEO) | Leo thang CEO → ghi event |
+
+## Import Transcript
+
+```bash
+# Dry-run (preview, không insert)
+cd automation
+node transcript-parser.js --file ../ban_chep_loi/transcipts_BOD_09032026.md --meeting-date 2026-03-09 --dry-run
+
+# Live (insert vào Supabase)
+node transcript-parser.js --file ../ban_chep_loi/transcipts_BOD_09032026.md --meeting-date 2026-03-09
 ```
 
 ## ⭐ Content Bible — BẮT BUỘC TUÂN THỦ
@@ -66,67 +102,35 @@ CEO-Directives/
 - "hậu quả", "phạt", "lỗi của..." → thay bằng "tác động", "điều chỉnh", "cần cải thiện"
 - Không bịa số liệu, không đoán mò
 
-## Google Forms — VẪN HOẠT ĐỘNG
-
-Forms live trên Google (không phụ thuộc local code). IDs trong `email-templates.js`:
-- **WF1:** Form xác nhận 5T → `FORM_ID`
-- **WF4:** Phản hồi leo thang → `FORM_WF4_ID`
-- **WF5:** Cập nhật tiến độ → `FORM_WF5_ID`
-
-Response sheets → `wf4-form-processor.js` / `wf5-form-processor.js` poll CSV → update Notion.
-
-## Sprint 1 — Tasks cho ClaudeCode
-
-### ✅ S1.4: RAG Engine (TF-IDF thay ChromaDB)
-- `rag-engine.js` — zero-dependency TF-IDF retrieval
-- Load 12 context files (md + json) → chunk theo section → keyword search → top-K chunks
-- Tiếng Việt tokenizer + stop words + cosine similarity
-- Đảm bảo bot có đủ context để trả lời
-
-### 🔴 S1.5: Xóa dead code
-- Xóa reference `sams_differ` trong codebase
-- Dọn code không còn dùng
-
-### 🔴 S1.6: Confirmation cho `/chay`
-- File: `automation/telegram-bot.js`
-- Thêm inline buttons "☑ Xác nhận chạy" / "✖ Hủy" trước khi gọi bridge
-- Pattern: `cmd_confirm_wf1` → user bấm → gọi bridge
-
-### 🟡 Sprint 2 Tasks (sau khi Sprint 1 pass QC)
-- **S2.1:** AI Router (Gemini primary + OpenAI fallback) — `ai-analyzer.js`
-- **S2.2:** RAG pipeline thay full context injection
-- **S2.3:** Rate limit per user — `telegram-bot.js`
-- **S2.4:** Error → admin DM (`notifyAdmin(error)` trong catch blocks)
-- **S2.5:** Fix report-generator TelegramBot leak (singleton pattern)
-
 ## Environment Variables
 
 File `automation/.env` chứa credentials (xem `.env.example`):
 ```
-# Notion
-NOTION_API_KEY=ntn_...
-NOTION_CLARIFICATIONS_DB=317ce590-...
+# Supabase
+SUPABASE_URL=https://fgiszdvchpknmyfscxnp.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbG...
 
-# Telegram / Signal / SMTP / GitHub / AI
+# AI
+GEMINI_API_KEY=...
+OPENAI_API_KEY=... (fallback)
+
+# Telegram / Signal / SMTP / GitHub
 BOT_TOKEN=...
 SIGNAL_BOT_NUMBER=...
 SMTP_USER=... SMTP_PASS=...
-GITHUB_PAT=...
-GEMINI_API_KEY=...
-OPENAI_API_KEY=...
 ```
 
-File `web/.env.local` chỉ chứa Notion credentials cho Next.js dashboard.
+File `web/.env.local` chứa Supabase keys (anon + service_role) + Notion (legacy).
 
 ## Coding Standards
 - Comments tiếng Việt có dấu
-- Console logs: `[MODULE] icon Message` (e.g. `[BOT] ☑ Command processed`)
+- Console logs: `[MODULE] Message` (e.g. `[TRANSCRIPT] Tìm thấy 15 chỉ đạo`)
 - Error messages tuân thủ Content Bible
-- Không dùng `console.log` cho user-facing output — log riêng, message riêng
-- Test: chạy `node telegram-bot.js --test` để verify
+- Test: `cd web && npm run build` để verify
 
 ## Phối hợp
 - **Gravity** (Antigravity) review tất cả thay đổi trước khi merge
-- Commit message: `emoji Mô tả ngắn (Sprint X, task SX.Y)`
+- Commit message tiếng Việt có dấu
 - Không sửa `.env` trực tiếp — chỉ sửa `.env.example` và thông báo
-- Không sửa file trong `web/` (Gravity zone) trừ khi được duyệt
+- **KHÔNG sửa file trong phân vùng Gravity** (web/src/app/page.tsx, components/, supabase.ts functions có sẵn) trừ khi được duyệt
+- Có thể THÊM function mới vào supabase.ts
