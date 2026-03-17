@@ -5,6 +5,8 @@
 
 import { getDirectiveById, getTrackingEvents, getStepHistory, LLS_STEP_NAMES } from "@/lib/supabase";
 import Link from "next/link";
+import DeadlineCountdown from "@/app/components/deadline-countdown";
+import EngagementActivity from "@/app/components/engagement-activity";
 
 export const dynamic = "force-dynamic";
 
@@ -109,6 +111,9 @@ export default async function DirectivePage({
           {d.meeting_source && (
             <p className="mt-2 text-[13px] text-gray-400">{d.meeting_source}</p>
           )}
+          <div className="mt-3">
+            <DeadlineCountdown deadline={d.t4_thoi_han} />
+          </div>
         </div>
 
         {/* 5T Grid */}
@@ -151,29 +156,8 @@ export default async function DirectivePage({
           </div>
         )}
 
-        {/* Engagement Events */}
-        <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-gray-200/50 sm:p-6">
-          <h2 className="text-[13px] font-medium text-gray-400 uppercase tracking-wide">
-            Engagement Events
-          </h2>
-          {events.length > 0 ? (
-            <div className="mt-4 space-y-2">
-              {events.map((e, i) => (
-                <div key={i} className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3 text-[13px]">
-                  <div>
-                    <p className="text-gray-600">{e.event_type}</p>
-                    {e.recipient_email && <p className="text-[11px] text-gray-400">{e.recipient_email}</p>}
-                  </div>
-                  <p className="text-[11px] text-gray-300 tabular-nums">
-                    {new Date(e.created_at).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-4 text-[13px] text-gray-300">Chưa có events.</p>
-          )}
-        </div>
+        {/* Engagement Events — Phase 4 Timeline */}
+        <EngagementActivity events={events} />
 
         {/* Meta */}
         <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-gray-200/50 sm:p-6">

@@ -1,13 +1,33 @@
-import { getDashboardStats } from "@/lib/notion";
+import { getDashboardStatsFromSupabase, getBSCFromSupabase, getDirectiveOriginsFromSupabase, getBODTimelineFromSupabase, getAlertDirectives } from "@/lib/supabase";
 import StatCard from "@/app/components/stat-card";
-import TrafficLight from "@/app/components/traffic-light";
 import DirectiveTable from "@/app/components/directive-table";
-import type { Directive } from "@/lib/notion";
+import HM50Heatmap from "@/app/components/hm50-heatmap";
+import BODTimeline from "@/app/components/bod-timeline";
+import BSCScorecard from "@/app/components/bsc-scorecard";
+import LELONGSONPipelineView from "@/app/components/lelongson-pipeline";
+import DirectiveOrigin from "@/app/components/directive-origin";
+import CompanyTargets from "@/app/components/company-targets";
+import AlertPanel from "@/app/components/alert-panel";
 
 export const dynamic = "force-dynamic";
 
-function getUrgency(d: Directive): "green" | "yellow" | "red" | "black" | "done" {
-  if (d.status === "Hoàn thành") return "done";
+interface DisplayDirective {
+  id: string;
+  title: string;
+  status: string;
+  dau_moi: string;
+  nhiem_vu: string;
+  deadline: string | null;
+  hm50_ref: string;
+  section: string | null;
+  nguon: string;
+  url: string;
+  created_at: string;
+  lelongson_stage?: string;
+}
+
+function getUrgency(d: DisplayDirective): "green" | "yellow" | "red" | "black" | "done" {
+  if (d.status === "hoan_thanh" || d.status === "Hoàn thành") return "done";
   if (!d.deadline) return "green";
   const now = new Date();
   const deadline = new Date(d.deadline);
@@ -19,7 +39,19 @@ function getUrgency(d: Directive): "green" | "yellow" | "red" | "black" | "done"
 }
 
 export default async function DashboardPage() {
-  const { stats, byDauMoi, bySection, directives } = await getDashboardStats();
+  const [
+    { stats, byDauMoi, directives, lelongsonPipeline },
+    bodTimeline,
+    { bscPerspectives, matchSummary },
+    origins,
+    alertDirectives,
+  ] = await Promise.all([
+    getDashboardStatsFromSupabase(),
+    getBODTimelineFromSupabase(),
+    getBSCFromSupabase(),
+    getDirectiveOriginsFromSupabase(),
+    getAlertDirectives(),
+  ]);
 
   const traffic = { green: 0, yellow: 0, red: 0, black: 0, done: 0 };
   for (const d of directives) {
@@ -36,14 +68,6 @@ export default async function DashboardPage() {
     .map(([name, data]) => ({ name, ...data, completionRate: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0 }))
     .sort((a, b) => b.total - a.total);
 
-  const overdueDirectives = directives
-    .filter((d) => getUrgency(d) === "red" || getUrgency(d) === "black")
-    .sort((a, b) => {
-      const da = a.deadline ? new Date(a.deadline).getTime() : 0;
-      const db = b.deadline ? new Date(b.deadline).getTime() : 0;
-      return da - db;
-    });
-
   const actionDirectives = directives
     .filter((d) => {
       const u = getUrgency(d);
@@ -56,13 +80,18 @@ export default async function DashboardPage() {
       return priority[ua] - priority[ub];
     });
 
-  const sections = Object.entries(bySection)
-    .map(([name, data]) => ({
-      name,
-      ...data,
-      pct: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const bscRates = bscPerspectives.map((p) => ({
+    label: p.label,
+    pct: p.completion_pct,
+    color:
+      p.key === "financial"
+        ? "bg-green-500"
+        : p.key === "customer"
+        ? "bg-blue-500"
+        : p.key === "process"
+        ? "bg-amber-500"
+        : "bg-purple-500",
+  }));
 
   const now = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 
@@ -89,17 +118,55 @@ export default async function DashboardPage() {
             API Status
           </a>
         </div>
+        {/* Target banner */}
+        <div className="border-t border-gray-100/80 bg-white/50 px-6 py-2 text-center text-[12px] text-gray-500">
+          Mục tiêu 2026:{" "}
+          <span className="font-bold text-green-700">3.333</span> tuyển sinh ·{" "}
+          <span className="font-bold text-blue-700">2.222</span> xuất cảnh ·{" "}
+          <span className="font-bold text-gray-700">50 HM</span> chiến lược
+        </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-8 space-y-10">
 
-        {/* ===== SECTION 1: Overview ===== */}
+        {/* ===== SECTION 1: TAI SAO (WHY) — BSC Scorecard ===== */}
         <section>
           <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
-            Tổng quan
+            Tại sao — BSC Scorecard
+          </h2>
+          <BSCScorecard perspectives={bscPerspectives} matchSummary={matchSummary} />
+        </section>
+
+        {/* ===== SECTION 2: TU DAU DEN (WHERE FROM) — Nguon goc ===== */}
+        <section>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Từ đâu đến — Nguồn gốc chỉ đạo
+          </h2>
+          {origins.total > 0 ? (
+            <DirectiveOrigin origins={origins} />
+          ) : (
+            <div className="rounded-3xl border border-dashed border-gray-200 bg-white py-12 text-center">
+              <p className="text-gray-400">Chưa có dữ liệu nguồn gốc (cần import BOD).</p>
+            </div>
+          )}
+        </section>
+
+        {/* ===== SECTION 3: DANG O DAU (WHERE AT) — LELONGSON Pipeline ===== */}
+        <section>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Đang ở đâu — Quy trình LELONGSON
+          </h2>
+          <LELONGSONPipelineView pipeline={lelongsonPipeline} />
+        </section>
+
+        {/* ===== SECTION 4: DI VE DAU (WHERE TO) — Ket qua & Muc tieu ===== */}
+        <section>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Đi về đâu — Kết quả & Mục tiêu
           </h2>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {/* Stat cards */}
+          <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             <StatCard label="Tổng chỉ đạo" value={stats.total} color="blue" />
             <StatCard label="Chờ duyệt" value={stats.pending} color="yellow" />
             <StatCard label="Đã xác nhận" value={stats.confirmed} color="cyan" />
@@ -113,201 +180,135 @@ export default async function DashboardPage() {
             />
           </div>
 
-          {/* Health Score + Traffic Light */}
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            {/* Health Score */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
-              <h3 className="text-[13px] font-medium text-gray-400">
-                Sức khỏe hệ thống
+          {/* Health + Traffic + BSC bars */}
+          <CompanyTargets
+            healthScore={healthScore}
+            traffic={traffic}
+            bscRates={bscRates}
+          />
+        </section>
+
+        {/* ===== SECTION 5: HANH DONG — Can xu ly + Dau moi ===== */}
+        <section>
+          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+            Hành động — Cần xử lý ({actionDirectives.length})
+          </h2>
+          <AlertPanel directives={alertDirectives} />
+
+          <div className="mt-6">
+            <h3 className="mb-4 text-[13px] font-medium text-gray-400">
+              Tất cả chỉ đạo cần xử lý
+            </h3>
+            <DirectiveTable directives={actionDirectives} />
+          </div>
+
+          {/* Leader accountability table */}
+          {leaders.length > 0 && (
+            <div className="mt-6">
+              <h3 className="mb-4 text-[13px] font-medium text-gray-400">
+                Đầu mối chịu trách nhiệm
               </h3>
-              <div className="mt-3 flex items-end gap-3">
-                <span
-                  className={`text-6xl font-black tabular-nums ${
-                    healthScore >= 70
-                      ? "text-green-500"
-                      : healthScore >= 40
-                      ? "text-amber-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {healthScore}
-                </span>
-                <span className="mb-2 text-xl text-gray-300">/ 100</span>
+              <div className="overflow-x-auto rounded-3xl bg-white shadow-sm ring-1 ring-gray-200/50">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">Đầu mối</th>
+                      <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tổng</th>
+                      <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Hoàn thành</th>
+                      <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Quá hạn</th>
+                      <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tỷ lệ</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {leaders.map((l) => (
+                      <tr key={l.name} className="transition-colors hover:bg-gray-50/50">
+                        <td className="px-5 py-4 font-medium text-gray-900">{l.name}</td>
+                        <td className="px-5 py-4 text-center tabular-nums text-gray-600">{l.total}</td>
+                        <td className="px-5 py-4 text-center tabular-nums text-green-600">{l.completed}</td>
+                        <td className="px-5 py-4 text-center tabular-nums">
+                          {l.overdue > 0 ? (
+                            <span className="text-red-500 font-medium">{l.overdue}</span>
+                          ) : (
+                            <span className="text-gray-300">0</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-4 text-center">
+                          <span
+                            className={`inline-block min-w-12 rounded-full px-3 py-1 text-xs font-semibold ${
+                              l.completionRate >= 70
+                                ? "bg-green-50 text-green-600"
+                                : l.completionRate >= 40
+                                ? "bg-amber-50 text-amber-600"
+                                : "bg-red-50 text-red-600"
+                            }`}
+                          >
+                            {l.completionRate}%
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                <div
-                  className={`h-full rounded-full transition-all duration-700 ${
-                    healthScore >= 70
-                      ? "bg-green-500"
-                      : healthScore >= 40
-                      ? "bg-amber-500"
-                      : "bg-red-500"
-                  }`}
-                  style={{ width: `${healthScore}%` }}
+            </div>
+          )}
+        </section>
+
+        {/* ===== SECTION 6: DIEN BIEN — Chien luoc ===== */}
+        {bodTimeline.allHM.length > 0 && (
+          <section>
+            <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
+              Diễn biến — BOD → HM50
+            </h2>
+
+            {/* Risk alerts */}
+            {bodTimeline.hmItems.filter((h) => h.trend === "critical").length > 0 && (
+              <div className="mb-6 rounded-3xl bg-red-50/50 p-5 ring-1 ring-red-100">
+                <h3 className="text-[13px] font-semibold text-red-700">
+                  Cảnh báo — HM leo thang nghiêm trọng
+                </h3>
+                <div className="mt-3 space-y-2">
+                  {bodTimeline.hmItems
+                    .filter((h) => h.trend === "critical")
+                    .map((h) => (
+                      <div
+                        key={h.hm_tt}
+                        className="flex items-center gap-3 text-[13px]"
+                      >
+                        <span className="font-bold text-red-600">
+                          HM{h.hm_tt}
+                        </span>
+                        <span className="text-gray-700">{h.title}</span>
+                        <span className="text-red-500">
+                          {h.total_mentions} mentions
+                        </span>
+                        <span className="text-[12px] text-gray-400">
+                          {h.current_status}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className="grid gap-6 lg:grid-cols-5">
+              {/* Heat map — 3 cột */}
+              <div className="lg:col-span-3">
+                <HM50Heatmap
+                  hmItems={bodTimeline.hmItems}
+                  allHM={bodTimeline.allHM}
+                />
+              </div>
+              {/* Timeline — 2 cột */}
+              <div className="lg:col-span-2">
+                <BODTimeline
+                  meetings={bodTimeline.meetings}
+                  directives={bodTimeline.directivesByMeeting}
                 />
               </div>
             </div>
-
-            {/* Traffic Light */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
-              <h3 className="mb-4 text-[13px] font-medium text-gray-400">
-                Đèn tín hiệu
-              </h3>
-              <TrafficLight
-                green={traffic.green}
-                yellow={traffic.yellow}
-                red={traffic.red}
-                black={traffic.black}
-                done={traffic.done}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ===== SECTION 2: Escalation — grouped by 50HM ===== */}
-        <section>
-          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
-            Leo thang — Theo 50HM 2026 ({overdueDirectives.length})
-          </h2>
-          {(() => {
-            const grouped: Record<string, typeof overdueDirectives> = {};
-            for (const d of overdueDirectives) {
-              const sec = d.section || "Ngoài kế hoạch";
-              if (!grouped[sec]) grouped[sec] = [];
-              grouped[sec].push(d);
-            }
-            const sortedSections = Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
-            return sortedSections.length > 0 ? (
-              <div className="space-y-6">
-                {sortedSections.map(([sec, items]) => (
-                  <div key={sec}>
-                    <div className="mb-3 flex items-center gap-2">
-                      <span className="rounded-full bg-red-50 px-3 py-1 text-[12px] font-semibold text-red-600">
-                        {sec}
-                      </span>
-                      <span className="text-[12px] text-gray-400">{items.length} chỉ đạo</span>
-                    </div>
-                    <DirectiveTable directives={items} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-3xl border border-dashed border-gray-200 bg-white py-12 text-center">
-                <p className="text-gray-400">Không có chỉ đạo quá hạn.</p>
-              </div>
-            );
-          })()}
-        </section>
-
-        {/* ===== SECTION 3: Strategy ===== */}
-        <section>
-          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
-            Chiến lược — Theo trụ cột
-          </h2>
-          {sections.length === 0 ? (
-            <p className="text-gray-400">Chưa có dữ liệu chiến lược.</p>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {sections.map((s) => (
-                <div
-                  key={s.name}
-                  className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-gray-200/50 transition-all hover:shadow-md hover:ring-gray-300/60"
-                >
-                  <p className="text-[13px] font-medium text-gray-500">{s.name}</p>
-                  <div className="mt-3 flex items-end justify-between">
-                    <span className="text-2xl font-bold tabular-nums text-gray-900">
-                      {s.completed}/{s.total}
-                    </span>
-                    <span
-                      className={`text-sm font-semibold ${
-                        s.pct >= 70
-                          ? "text-green-500"
-                          : s.pct >= 40
-                          ? "text-amber-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {s.pct}%
-                    </span>
-                  </div>
-                  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        s.pct >= 70
-                          ? "bg-green-500"
-                          : s.pct >= 40
-                          ? "bg-amber-500"
-                          : "bg-red-500"
-                      }`}
-                      style={{ width: `${s.pct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* ===== SECTION 4: Leaders ===== */}
-        <section>
-          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
-            Đầu mối chịu trách nhiệm
-          </h2>
-          {leaders.length === 0 ? (
-            <p className="text-gray-400">Chưa có dữ liệu đầu mối.</p>
-          ) : (
-            <div className="overflow-x-auto rounded-3xl bg-white shadow-sm ring-1 ring-gray-200/50">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">Đầu mối</th>
-                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tổng</th>
-                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Hoàn thành</th>
-                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Quá hạn</th>
-                    <th className="px-5 py-4 text-center text-[12px] font-medium uppercase tracking-wider text-gray-400">Tỷ lệ</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {leaders.map((l) => (
-                    <tr key={l.name} className="transition-colors hover:bg-gray-50/50">
-                      <td className="px-5 py-4 font-medium text-gray-900">{l.name}</td>
-                      <td className="px-5 py-4 text-center tabular-nums text-gray-600">{l.total}</td>
-                      <td className="px-5 py-4 text-center tabular-nums text-green-600">{l.completed}</td>
-                      <td className="px-5 py-4 text-center tabular-nums">
-                        {l.overdue > 0 ? (
-                          <span className="text-red-500 font-medium">{l.overdue}</span>
-                        ) : (
-                          <span className="text-gray-300">0</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <span
-                          className={`inline-block min-w-12 rounded-full px-3 py-1 text-xs font-semibold ${
-                            l.completionRate >= 70
-                              ? "bg-green-50 text-green-600"
-                              : l.completionRate >= 40
-                              ? "bg-amber-50 text-amber-600"
-                              : "bg-red-50 text-red-600"
-                          }`}
-                        >
-                          {l.completionRate}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-
-        {/* ===== SECTION 5: Action ===== */}
-        <section>
-          <h2 className="mb-5 text-[15px] font-semibold text-gray-500 uppercase tracking-wide">
-            Cần xử lý ({actionDirectives.length})
-          </h2>
-          <DirectiveTable directives={actionDirectives} />
-        </section>
+          </section>
+        )}
       </main>
 
       {/* Footer */}
