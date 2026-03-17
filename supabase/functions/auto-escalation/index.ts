@@ -52,7 +52,7 @@ Deno.serve(async (_req: Request) => {
     .select(
       "id, directive_code, t1_dau_moi, t1_email, t2_nhiem_vu, t4_thoi_han, tinh_trang, confirmed_at, bod_hosting_email"
     )
-    .not("tinh_trang", "in", '("hoan_thanh","tu_choi")');
+    .not("tinh_trang", "in", "(hoan_thanh,tu_choi)");
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {
