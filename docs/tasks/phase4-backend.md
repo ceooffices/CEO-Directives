@@ -102,17 +102,38 @@ Gravity đã tạo 3 component UI sẵn sàng hiển thị data từ backend:
 
 ### Prerequisite — TASK 0: Seed Email Data
 
-**PHẢI LÀM TRƯỚC Task 1.** Map `t1_email` từ bảng `staff`:
+**PHẢI LÀM TRƯỚC Task 1.** 2 việc: map t1_email + set bod_hosting_email.
+
+#### A. Map `t1_email` từ bảng `staff`
+
+Gravity đã tạo `resolveStaffEmails()` + `resolveDirectiveEmail()` trong `supabase.ts`.
+Tạo script chạy 1 lần: query directives WHERE t1_email IS NULL → resolve → UPDATE.
+
+#### B. Set `bod_hosting_email` — BUSINESS RULE QUAN TRỌNG
+
+> ⚠️ **KHÔNG hardcode email CEO cho tất cả!**
+> 
+> `bod_hosting_email` = email **người chủ trì cuộc họp đương nhiệm**.
+> Mỗi cuộc họp có 1 BOD Hosting (có thể là PTGĐốc, Trưởng phòng...).
+> 
+> **Rule:**
+> 1. Chỉ đạo nào do **TGĐ Lê Long Sơn** trực tiếp ra → auto-fill đầy đủ 5T,
+>    `bod_hosting_email = 'leson@esuhai.com'`
+> 2. Chỉ đạo khác (thiếu 5T) → `bod_hosting_email` = email người chủ trì cuộc họp đó,
+>    gửi cho BOD Hosting xét duyệt bổ sung 5T
+> 3. Cần xác định BOD Hosting cho từng cuộc họp từ biên bản
 
 ```sql
--- Map t1_dau_moi → t1_email qua bảng staff
--- Cách: tách t1_dau_moi (comma-separated) → tìm trong staff.ten → lấy staff.email
--- Ví dụ: "Lê Anh Minh, Hoàng" → tìm "Lê Anh Minh" trong staff.ten → lấy email
+-- Ví dụ: BOD Hosting cho từng cuộc họp (cần tra biên bản để xác định)
+-- BOD 16/03: Chủ trì = Lê Anh Tuấn (PTGĐốc) → letuan@esuhai.com
+-- BOD 09/03: Chủ trì = ? (tra biên bản)
+-- BOD 02/03: Chủ trì = ? (tra biên bản)
 
--- Hardcode bod_hosting_email cho tất cả directives BOD 16/03
+-- Chỉ đạo do TGĐ ra trực tiếp:
 UPDATE directives 
-SET bod_hosting_email = 'son.le@esuhai.com' 
-WHERE meeting_source LIKE 'BOD%';
+SET bod_hosting_email = 'leson@esuhai.com' 
+WHERE t2_nhiem_vu LIKE '%CEO%' OR t2_nhiem_vu LIKE '%TGĐ%' OR t2_nhiem_vu LIKE '%Tổng Giám đốc%';
+```
 ```
 
 ### Yêu cầu (ĐÃ SỬA)
