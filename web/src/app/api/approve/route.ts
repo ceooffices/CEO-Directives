@@ -1,91 +1,109 @@
-/**
- * POST /api/approve — Cho P2 (BOD Hosting) bấm
- * Duyệt hoặc từ chối chỉ đạo → update lls_step + ghi step_history
- */
+import { NextResponse } from "next/server";
+import { getServiceClient } from "@/lib/supabase";
 
-import { NextRequest, NextResponse } from "next/server";
-import { getServiceClient, LLS_STEP_NAMES } from "@/lib/supabase";
+const VALID_STATUSES = ["cho_xu_ly", "da_xac_nhan", "dang_thuc_hien", "hoan_thanh"];
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  cho_xu_ly: ["da_xac_nhan"],
+  da_xac_nhan: ["dang_thuc_hien"],
+  dang_thuc_hien: ["hoan_thanh"],
+  hoan_thanh: [], // final state
+};
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
-    const { directive_id, action, note } = body as {
-      directive_id: string;
-      action: "approve" | "reject";
-      note?: string;
-    };
+    const body = await request.json();
+    const { directive_id, new_status } = body;
 
-    if (!directive_id || !action) {
+    if (!directive_id || !new_status) {
       return NextResponse.json(
-        { error: "Cần directive_id và action (approve/reject)" },
+        { error: "Thiếu directive_id hoặc new_status" },
         { status: 400 }
       );
     }
 
-    if (action !== "approve" && action !== "reject") {
+    if (!VALID_STATUSES.includes(new_status)) {
       return NextResponse.json(
-        { error: "action phải là 'approve' hoặc 'reject'" },
+        { error: `Trạng thái không hợp lệ: ${new_status}. Cho phép: ${VALID_STATUSES.join(", ")}` },
         { status: 400 }
       );
     }
 
-    const db = getServiceClient();
+    const supabase = getServiceClient();
 
-    // Lấy directive hiện tại
-    const { data: directive, error: fetchErr } = await db
+    // Get current status
+    const { data: current, error: fetchError } = await supabase
       .from("directives")
-      .select("*")
+      .select("id, tinh_trang, directive_code")
       .eq("id", directive_id)
       .single();
 
-    if (fetchErr || !directive) {
+    if (fetchError || !current) {
       return NextResponse.json(
-        { error: "Không tìm thấy chỉ đạo", detail: fetchErr?.message },
+        { error: `Không tìm thấy chỉ đạo: ${directive_id}` },
         { status: 404 }
       );
     }
 
-    const newStep = action === "approve" ? 4 : 1;
-    const newStatus = action === "approve" ? "da_duyet" : "tu_choi";
+    // Validate transition
+    const allowed = VALID_TRANSITIONS[current.tinh_trang || "cho_xu_ly"] || [];
+    if (!allowed.includes(new_status)) {
+      return NextResponse.json(
+        { error: `Không thể chuyển từ "${current.tinh_trang}" sang "${new_status}". Cho phép: ${allowed.join(", ") || "không có (trạng thái cuối)"}` },
+        { status: 400 }
+      );
+    }
 
-    // Update directive
-    const { error: updateErr } = await db
+    // Build update payload
+    const updatePayload: Record<string, unknown> = {
+      tinh_trang: new_status,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Set approval metadata based on transition
+    if (new_status === "da_xac_nhan") {
+      updatePayload.approved_by = "CEO";
+      updatePayload.approved_at = new Date().toISOString();
+    } else if (new_status === "dang_thuc_hien") {
+      updatePayload.confirmed_by = "CEO";
+      updatePayload.confirmed_at = new Date().toISOString();
+    }
+
+    const { error: updateError } = await supabase
       .from("directives")
-      .update({
-        lls_step: newStep,
-        tinh_trang: newStatus,
-        approved_by: body.actor || "BOD Hosting",
-        approved_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq("id", directive_id);
 
-    if (updateErr) {
+    if (updateError) {
+      console.error("[APPROVE] Update failed:", updateError);
       return NextResponse.json(
-        { error: "Lỗi update directive", detail: updateErr.message },
+        { error: `Lỗi cập nhật: ${updateError.message}` },
         { status: 500 }
       );
     }
 
-    // Ghi step_history
-    await db.from("lls_step_history").insert({
+    // Log engagement event
+    await supabase.from("engagement_events").insert({
       directive_id,
-      step_number: newStep,
-      step_name: LLS_STEP_NAMES[newStep] || `Step ${newStep}`,
-      action: action === "approve" ? "approve" : "reject",
-      actor: body.actor || "BOD Hosting",
-      detail: note || null,
+      event_type: "approve",
+      metadata: {
+        from_status: current.tinh_trang,
+        to_status: new_status,
+        approved_by: "CEO",
+        timestamp: new Date().toISOString(),
+      },
     });
 
     return NextResponse.json({
-      success: true,
-      action,
-      directive_id,
-      new_step: newStep,
-      new_status: newStatus,
+      status: "ok",
+      directive_code: current.directive_code,
+      from: current.tinh_trang,
+      to: new_status,
+      message: `Đã chuyển ${current.directive_code} → ${new_status}`,
     });
   } catch (err) {
+    console.error("[APPROVE] Error:", err);
     return NextResponse.json(
-      { error: "Server error", detail: err instanceof Error ? err.message : "Unknown" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

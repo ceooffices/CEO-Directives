@@ -1,5 +1,4 @@
-import { getDashboardStatsFromSupabase, getBSCFromSupabase, getDirectiveOriginsFromSupabase, getBODTimelineFromSupabase, getAlertDirectives } from "@/lib/supabase";
-import StatCard from "@/app/components/stat-card";
+import { getDashboardStatsFromSupabase, getBSCFromSupabase, getDirectiveOriginsFromSupabase, getBODTimelineFromSupabase, getAlertDirectives, getAllDirectivesForDrilldown } from "@/lib/supabase";
 import DirectiveTable from "@/app/components/directive-table";
 import HM50Heatmap from "@/app/components/hm50-heatmap";
 import BODTimeline from "@/app/components/bod-timeline";
@@ -9,6 +8,7 @@ import DirectiveOrigin from "@/app/components/directive-origin";
 import CompanyTargets from "@/app/components/company-targets";
 import AlertPanel from "@/app/components/alert-panel";
 import DashboardShell from "@/app/components/dashboard-shell";
+import StatCardGrid from "@/app/components/stat-card-grid";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +46,14 @@ export default async function DashboardPage() {
     { bscPerspectives, matchSummary },
     origins,
     alertDirectives,
+    drilldownDirectives,
   ] = await Promise.all([
     getDashboardStatsFromSupabase(),
     getBODTimelineFromSupabase(),
     getBSCFromSupabase(),
     getDirectiveOriginsFromSupabase(),
     getAlertDirectives(),
+    getAllDirectivesForDrilldown(),
   ]);
 
   const traffic = { green: 0, yellow: 0, red: 0, black: 0, done: 0 };
@@ -126,20 +128,18 @@ export default async function DashboardPage() {
       <DashboardShell
         tongQuan={
           <>
-            {/* Quick stats */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              <StatCard label="Tổng chỉ đạo" value={stats.total} color="blue" />
-              <StatCard label="Chờ duyệt" value={stats.pending} color="yellow" />
-              <StatCard label="Đã xác nhận" value={stats.confirmed} color="cyan" />
-              <StatCard label="Đang thực hiện" value={stats.active} color="blue" />
-              <StatCard label="Hoàn thành" value={stats.completed} color="green" sub={`${Math.round(completionRate)}%`} />
-              <StatCard
-                label="Cần quan tâm"
-                value={stats.overdue}
-                color={stats.overdue > 0 ? "red" : "green"}
-                pulse={stats.overdue > 3}
-              />
-            </div>
+            {/* Quick stats — clickable drilldown */}
+            <StatCardGrid
+              stats={[
+                { label: "Tổng chỉ đạo", value: stats.total, color: "blue", filterStatus: "all" },
+                { label: "Chờ duyệt", value: stats.pending, color: "yellow", filterStatus: "cho_xu_ly" },
+                { label: "Đã xác nhận", value: stats.confirmed, color: "cyan", filterStatus: "da_xac_nhan" },
+                { label: "Đang thực hiện", value: stats.active, color: "blue", filterStatus: "dang_thuc_hien" },
+                { label: "Hoàn thành", value: stats.completed, color: "green", sub: `${Math.round(completionRate)}%`, filterStatus: "hoan_thanh" },
+                { label: "Cần quan tâm", value: stats.overdue, color: stats.overdue > 0 ? "red" : "green", pulse: stats.overdue > 3, filterStatus: "overdue" },
+              ]}
+              directives={drilldownDirectives}
+            />
 
             {/* Health + Traffic + BSC bars */}
             <CompanyTargets

@@ -384,6 +384,21 @@ export async function getDashboardStatsFromSupabase() {
   return { stats, byDauMoi, directives: displayDirectives, lelongsonPipeline };
 }
 
+// ===== RAW DIRECTIVES FOR DRILLDOWN =====
+
+export async function getAllDirectivesForDrilldown() {
+  const { data, error } = await db
+    .from("directives")
+    .select("id, directive_code, t1_dau_moi, t2_nhiem_vu, t4_thoi_han, tinh_trang, meeting_source, created_at, lls_step")
+    .order("directive_code");
+
+  if (error) {
+    console.error("[SUPABASE] Lỗi đọc directives for drilldown:", error.message);
+    return [];
+  }
+  return (data || []) as { id: string; directive_code: string; t1_dau_moi: string; t2_nhiem_vu: string; t4_thoi_han: string | null; tinh_trang: string; meeting_source: string | null; created_at: string; lls_step: number | null }[];
+}
+
 // ===== DIRECTIVE ORIGINS from Supabase =====
 
 export async function getDirectiveOriginsFromSupabase() {
