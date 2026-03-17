@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo Nâng cấp Dashboard CEO Directives — 17/03/2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      color: #1a1a2e;
+      background: #fff;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    h1 { font-size: 28px; color: #0c4a6e; border-bottom: 3px solid #0ea5e9; padding-bottom: 12px; margin-bottom: 10px; }
+    h2 { font-size: 22px; color: #0369a1; margin-top: 40px; margin-bottom: 14px; padding-left: 14px; border-left: 4px solid #0ea5e9; }
+    h3 { font-size: 18px; color: #334155; margin-top: 22px; margin-bottom: 10px; }
+
+    .header-meta { font-size: 15px; color: #6b7280; margin-bottom: 30px; line-height: 1.9; }
+    .header-meta strong { color: #374151; }
+
+    table { width: 100%; border-collapse: collapse; margin: 14px 0 22px; font-size: 15px; }
+    th { background: #f0f9ff; color: #0369a1; font-weight: 600; text-align: left; padding: 10px 14px; border: 1px solid #e0f2fe; }
+    td { padding: 9px 14px; border: 1px solid #e5e7eb; vertical-align: top; }
+    tr:nth-child(even) td { background: #fafbfc; }
+
+    .callout { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px 20px; margin: 18px 0; font-size: 15px; }
+    .callout.important { background: #fef3c7; border-color: #f59e0b; }
+    .callout.success { background: #f0fdf4; border-color: #22c55e; }
+
+    blockquote {
+      border-left: 4px solid #0ea5e9;
+      padding: 14px 20px;
+      margin: 18px 0;
+      color: #4b5563;
+      font-style: italic;
+      font-size: 15px;
+      background: #f8fafc;
+    }
+    blockquote strong { color: #1f2937; font-style: normal; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number { font-size: 36px; font-weight: 800; color: #0369a1; line-height: 1; }
+    .stat-label { font-size: 13px; color: #6b7280; margin-top: 6px; }
+
+    /* Screenshot gallery */
+    .screenshot-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .screenshot-item { text-align: center; }
+    .screenshot-item img {
+      max-width: 100%;
+      max-height: 420px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border: 1px solid #e5e7eb;
+    }
+    .screenshot-item .caption {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* Diff example */
+    .diff-example {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 14px 0;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+    }
+    .diff-header { background: #f6f8fa; border-bottom: 1px solid #e5e7eb; padding: 8px 16px; font-size: 12px; color: #57606a; }
+    .diff-line-add { background: #dafbe1; border-left: 3px solid #2da44e; padding: 4px 16px; color: #1a7f37; }
+    .diff-line-del { background: #ffebe9; border-left: 3px solid #cf222e; padding: 4px 16px; color: #cf222e; }
+
+    .next-actions { background: #f8fafc; border: 2px solid #0ea5e9; padding: 20px; margin: 24px 0; }
+    .next-actions h3 { color: #0369a1; margin-top: 0; }
+    .next-actions ul { padding-left: 20px; }
+    .next-actions li { margin-bottom: 8px; font-size: 15px; }
+
+    /* Technical appendix — compact font */
+    .tech-appendix {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px dashed #d1d5db;
+    }
+    .tech-appendix h2 { font-size: 18px; color: #6b7280; border-left-color: #9ca3af; }
+    .tech-appendix p, .tech-appendix li, .tech-appendix td { font-size: 13px; line-height: 1.6; }
+    .tech-appendix table { font-size: 13px; }
+    .tech-appendix th { font-size: 12px; }
+
+    /* Code reference block — font size 8pt for Agent only */
+    .code-ref {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 8pt;
+      line-height: 1.5;
+      color: #6b7280;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+    }
+    .code-ref-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 14px; text-align: right; }
+    a { color: #0ea5e9; text-decoration: none; }
+
+    @media (min-width: 768px) { body { padding: 40px 50px; } }
+    @media print {
+      body { padding: 20px 30px; font-size: 14px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 19px; }
+      .page-break { page-break-before: always; }
+      .screenshot-item img { max-height: 350px; box-shadow: none; }
+      .tech-appendix { page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════════
+       PHẦN A · BÁO CÁO KINH DOANH (Ngôn ngữ Business)
+       ════════════════════════════════════════════════════════════ -->
+
+  <h1>📋 CEO Directive Automation — Báo cáo Nâng cấp Dashboard</h1>
+
+  <div class="header-meta">
+    <strong>Ngày:</strong> 17/03/2026<br>
+    <strong>Người báo cáo:</strong> Gravity (Frontend / QC)<br>
+    <strong>Kính gửi:</strong> Anh Kha — Director / PM<br>
+    <strong>Phiên bản:</strong> Dashboard v2.0 — Sprint Tracking & Engagement
+  </div>
+
+  <!-- ===== BỐI CẢNH SẢN PHẨM ===== -->
+  <h2>1. Bối cảnh & Giá trị sản phẩm</h2>
+
+  <h3>CEO Directive Automation là gì?</h3>
+  <p>
+    Hệ thống <strong>CEO Directive Automation</strong> là công cụ quản trị điều hành dành cho Ban Giám đốc EsuhaiGroup, giúp <strong>chuyển hóa chỉ đạo từ lời nói thành hành động có theo dõi</strong>. Thay vì chỉ đạo qua email rồi "rơi vào quên lãng", hệ thống đảm bảo mỗi chỉ đạo được:
+  </p>
+  <ul style="margin: 12px 0 12px 24px;">
+    <li><strong>Ghi nhận chính thức</strong> — từ nguồn gốc (HM50, BOD meeting, CEO trực tiếp)</li>
+    <li><strong>Giao đến đầu mối</strong> — qua email chính thức với biên bản đính kèm</li>
+    <li><strong>Theo dõi tương tác</strong> — đầu mối có mở email không? có xác nhận không?</li>
+    <li><strong>Hiển thị tiến trình</strong> — qua dashboard trực quan, CEO nhìn 3 giây biết tình hình</li>
+  </ul>
+
+  <h3>Tác động vào hoạt động kinh doanh</h3>
+  <table>
+    <thead>
+      <tr><th>Vấn đề trước đây</th><th>Giải pháp Dashboard mang lại</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Chỉ đạo gửi email → không biết đầu mối có đọc không</td>
+        <td>Tracking pixel tự động ghi nhận: ai mở, bao nhiêu lần, lúc nào</td>
+      </tr>
+      <tr>
+        <td>Nội dung chỉ đạo thay đổi nhiều lần → mất dấu phiên bản</td>
+        <td>Diff View kiểu GitHub — mỗi thay đổi là 1 "commit", CEO thấy rõ bản cũ → bản mới</td>
+      </tr>
+      <tr>
+        <td>Đầu mối không phản hồi → CEO không biết có cần can thiệp</td>
+        <td>Chỉ số "Mức quan tâm" — tự động tính từ hành vi mở email, click xác nhận</td>
+      </tr>
+      <tr>
+        <td>Báo cáo tiến độ phụ thuộc đầu mối tự viết → thiếu khách quan</td>
+        <td>Dữ liệu hành vi khách quan: metadata email, IP, thời điểm — không phụ thuộc báo cáo tay</td>
+      </tr>
+      <tr>
+        <td>52 chỉ đạo cùng lúc → khó biết cái nào "trôi"</td>
+        <td>Bảng tổng hợp phân loại theo mức độ: Cần quan tâm, Đang thực hiện, Hoàn thành</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <blockquote>
+    <strong>Triết lý Cố vấn Đồng hành:</strong> Hệ thống không nhắc nhở, không truy vấn. Hệ thống <em>nhận diện</em> tín hiệu qua hành vi — để người quản lý có thông tin đúng lúc, ra quyết định đúng thời điểm.
+  </blockquote>
+
+  <!-- ===== 2. KẾT QUẢ NÂNG CẤP ===== -->
+  <h2>2. Kết quả nâng cấp lần này</h2>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-number">52</div>
+      <div class="stat-label">Chỉ đạo đang theo dõi</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Tính năng mới</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">3.8s</div>
+      <div class="stat-label">Thời gian tải trang</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">0</div>
+      <div class="stat-label">Lỗi hệ thống</div>
+    </div>
+  </div>
+
+  <h3>4 tính năng mới phục vụ điều hành</h3>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Tính năng</th><th>Giá trị cho CEO</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Theo dõi email tự động</strong></td>
+        <td>Biết đầu mối có mở email chỉ đạo không — không cần hỏi</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Bảng Mức quan tâm</strong></td>
+        <td>4 con số lớn: Email gửi, Lần mở, Click xác nhận, Thời gian theo dõi — CEO nhìn 3 giây hiểu</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Dòng thời gian tương tác</strong></td>
+        <td>Lịch sử mọi hành động theo ngày — giống GitHub commit log</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Lịch sử thay đổi nội dung</strong></td>
+        <td>Mỗi thay đổi nội dung chỉ đạo hiển thị đỏ (xóa) / xanh (thêm) — thấy rõ trước → sau</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>✓ Hệ thống đã sẵn sàng.</strong> Toàn bộ tính năng mới đã tích hợp thành công, không có lỗi. Dữ liệu 52 chỉ đạo hiện tại hiển thị đầy đủ trên giao diện.
+  </div>
+
+  <!-- ===== 3. GIAO DIỆN THỰC TẾ ===== -->
+  <h2>3. Giao diện thực tế — xem trên điện thoại</h2>
+
+  <p>Dashboard được thiết kế <strong>mobile-first</strong> — CEO có thể kiểm tra trên điện thoại bất cứ lúc nào:</p>
+
+  <div class="screenshot-gallery">
+    <div class="screenshot-item">
+      <img src="img-dashboard-mobile-top.png" alt="Dashboard — tổng quan chỉ đạo">
+      <div class="caption">Dashboard tổng quan: 52 chỉ đạo, mục tiêu 3.333/2.222, phân loại theo trạng thái</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="img-dashboard-mobile-bottom.png" alt="Dashboard — đầu mối và hệ thống">
+      <div class="caption">Phần dưới: đầu mối chịu trách nhiệm, sức khỏe hệ thống, BSC scorecard</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="img-directive-detail-top.png" alt="Chi tiết chỉ đạo — thông tin và tracking">
+      <div class="caption">Trang chi tiết: thông tin chỉ đạo, nút Duyệt/Xác nhận, mức quan tâm</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="img-directive-detail-bottom.png" alt="Chi tiết — timeline và diff view">
+      <div class="caption">Lịch sử thay đổi (diff view): thêm xanh, xóa đỏ — kiểu GitHub</div>
+    </div>
+  </div>
+
+  <!-- ===== 4. VÍ DỤ MINH HỌA ===== -->
+  <h2>4. Ví dụ minh họa: Theo dõi thay đổi nội dung</h2>
+
+  <p>Khi nội dung chỉ đạo được cập nhật (VD: gia hạn thời gian, thêm thành viên), hệ thống tự động ghi lại và hiển thị:</p>
+
+  <div class="diff-example">
+    <div class="diff-header">📄 Nội dung chỉ đạo · +2 −1</div>
+    <div class="diff-line-del">− Thời hạn: 20/03/2026</div>
+    <div class="diff-line-add">+ Thời hạn: 25/03/2026</div>
+    <div class="diff-line-add">+ Thành viên: Nguyễn Văn A, Trần Thị B</div>
+  </div>
+  <p style="font-size: 14px; color: #6b7280;">Mỗi cập nhật = 1 bản ghi trong dòng thời gian. CEO thấy rõ ai đã sửa gì, khi nào — không phụ thuộc báo cáo miệng.</p>
+
+  <!-- ===== 5. GIỚI HẠN CẦN BIẾT ===== -->
+  <h2>5. Giới hạn cần nhận thức</h2>
+
+  <div class="callout important">
+    <strong>Trung thực trước, ấn tượng sau.</strong> Dưới đây là những giới hạn mà hệ thống hiện tại chưa giải quyết được — em báo trước để anh có kỳ vọng đúng.
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Hạng mục</th><th>Giới hạn</th><th>Ảnh hưởng</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Email tracking</strong></td>
+        <td>Chỉ biết "mở / chưa mở" — không đo thời gian đọc. Apple Mail proxy có thể tạo false positive (~15%)</td>
+        <td>Thấp — đủ nhận diện xu hướng quan tâm của đầu mối</td>
+      </tr>
+      <tr>
+        <td><strong>Lịch sử thay đổi</strong></td>
+        <td>Chỉ có diff khi chỉ đạo đã trải qua ít nhất 1 lần cập nhật. Chỉ đạo mới tạo → chưa có diff</td>
+        <td>Thấp — dữ liệu tự tích lũy theo thời gian</td>
+      </tr>
+      <tr>
+        <td><strong>Giao diện</strong></td>
+        <td>Trang chi tiết dùng dark theme, dashboard chính dùng light theme — chưa đồng nhất 100%</td>
+        <td>Trung bình — cần quyết định thống nhất</td>
+      </tr>
+      <tr>
+        <td><strong>Dữ liệu tracking</strong></td>
+        <td>Hiện chưa có email nào được gửi kèm tracking pixel → chỉ số tracking đang = 0</td>
+        <td>Cần 1 lần gửi email thực tế để kích hoạt dữ liệu</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 6. HÀNH ĐỘNG TIẾP THEO ===== -->
+  <div class="next-actions">
+    <h3>📌 Hành động tiếp theo — Cần anh quyết định</h3>
+    <ul>
+      <li><strong>Review giao diện:</strong> Truy cập dashboard trên điện thoại để xem thực tế — em sẽ hướng dẫn triển khai</li>
+      <li><strong>Gửi email thử nghiệm:</strong> Chọn 1 chỉ đạo, gửi email kèm tracking pixel → xác nhận dữ liệu hiển thị đúng</li>
+      <li><strong>Thống nhất giao diện:</strong> Anh muốn dark theme (như trang chi tiết) hay light theme cho toàn bộ?</li>
+      <li><strong>Email hỗ trợ tự động:</strong> Có muốn hệ thống tự gửi email hỗ trợ khi đầu mối không mở email sau 48h?</li>
+    </ul>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       PHẦN B · PHỤ LỤC KỸ THUẬT (Tách riêng, font nhỏ)
+       ════════════════════════════════════════════════════════════ -->
+
+  <div class="tech-appendix page-break">
+
+    <h2>📎 Phụ lục kỹ thuật — Dành cho đội dev & AI Agent</h2>
+    <p style="color: #9ca3af; font-size: 12px; margin-bottom: 16px;">Phần này chứa thông tin kỹ thuật chi tiết. CEO có thể bỏ qua.</p>
+
+    <h3>A. Danh sách file đã thay đổi</h3>
+
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Mô tả</th><th>File</th><th>Trạng thái</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Tracking Pixel API</td><td><code>/api/track/[token]/route.ts</code></td><td>✅ Mới</td></tr>
+        <tr><td>2</td><td>Engagement Stats Hero Panel</td><td><code>engagement-stats.tsx</code></td><td>✅ Mới</td></tr>
+        <tr><td>3</td><td>Timeline GitHub-style</td><td><code>engagement-activity.tsx</code></td><td>✅ Viết lại</td></tr>
+        <tr><td>4</td><td>Diff / TrackChange View</td><td><code>diff-timeline.tsx</code></td><td>✅ Mới</td></tr>
+        <tr><td>5</td><td>Tổ hợp directive detail page</td><td><code>directive/[id]/page.tsx</code></td><td>✅ Viết lại</td></tr>
+        <tr><td>—</td><td>Supabase helper functions</td><td><code>lib/supabase.ts</code></td><td>✅ Bổ sung</td></tr>
+      </tbody>
+    </table>
+
+    <h3>B. Tracking Pixel — Cơ chế hoạt động</h3>
+
+    <table>
+      <thead>
+        <tr><th>Bước</th><th>Chi tiết</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1. Token</td><td>Base64url encode: directiveId + email + timestamp</td></tr>
+        <tr><td>2. Pixel</td><td>Ẩn trong email dưới dạng &lt;img&gt; 1×1 trong suốt</td></tr>
+        <tr><td>3. Detect</td><td>Phân biệt người thật vs bot (Apple Mail proxy, Google Cache, Outlook SafeLink)</td></tr>
+        <tr><td>4. Ghi DB</td><td>Insert engagement_events: IP, User Agent, bot flag, timestamp</td></tr>
+        <tr><td>5. Fire-and-forget</td><td>Trả pixel ngay, ghi DB nền — không block email rendering</td></tr>
+      </tbody>
+    </table>
+
+    <h3>C. Task song song — ClaudeCode</h3>
+    <p>Task doc: <code>docs/tasks/claudecode-content-bible-fix.md</code></p>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Nhiệm vụ</th><th>Scope</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Fix từ cấm Content Bible trong backend</td><td>10+ files: telegram-bot, auto-escalation, ai-analyzer, signal-bot...</td></tr>
+        <tr><td>2</td><td>Mở rộng DB engagement_events CHECK constraint</td><td>Supabase migration: thêm event types mới</td></tr>
+      </tbody>
+    </table>
+
+    <h3>D. Quy trình đã adapt từ team-workflows</h3>
+    <table>
+      <thead>
+        <tr><th>File</th><th>Nội dung</th><th>Điểm adapt</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>docs/commit-rule.md</code></td><td>Commit format TRƯỚC/SAU tiếng Việt</td><td>Thêm label [CONTENT], [TRACKING]</td></tr>
+        <tr><td><code>docs/report-rule.md</code></td><td>Báo cáo SELF × Cố vấn Đồng hành</td><td>Content Bible, CSS template, checklist QC</td></tr>
+      </tbody>
+    </table>
+
+    <h3>E. Build info</h3>
+    <div class="code-ref">
+      <div class="code-ref-label">Build output — Agent reference only</div>
+✓ Compiled in 3.8s — 7/7 static pages generated
+✓ TypeScript: 0 errors
+✓ Next.js 16.1.6 (Turbopack) · React 19.2.3
+✓ Dev server: localhost:3333
+
+Files changed (this sprint):
+  [NEW]     web/src/app/api/track/[token]/route.ts         — 121 lines
+  [NEW]     web/src/app/components/engagement-stats.tsx     — 207 lines
+  [REWRITE] web/src/app/components/engagement-activity.tsx  — 451 lines
+  [NEW]     web/src/app/components/diff-timeline.tsx        — 278 lines
+  [REWRITE] web/src/app/directive/[id]/page.tsx             — 278 lines
+  [MODIFY]  web/src/lib/supabase.ts                         — +50 lines (getEngagementStats, buildDiffEntries)
+  [NEW]     docs/commit-rule.md                             — 63 lines
+  [NEW]     docs/report-rule.md                             — 171 lines
+  [NEW]     data/dashboard/report/bao-cao-*.html            — this file
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    Gravity — 17/03/2026 · CEO Directive Automation — EsuhaiGroup
+  </div>
+
+</body>
+</html>

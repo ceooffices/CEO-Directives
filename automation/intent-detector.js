@@ -26,7 +26,7 @@ const INTENT_TYPES = {
   GREETING: 'greeting',       // Chào hỏi → trả lời cục bộ
   THANKS: 'thanks',           // Cảm ơn → trả lời cục bộ
   STATUS: 'status',           // Hỏi trạng thái hệ thống
-  OVERDUE: 'overdue',         // Hỏi quá hạn
+  OVERDUE: 'overdue',         // Hỏi cần quan tâm
   SEARCH: 'search',           // Tìm kiếm chỉ đạo
   REPORT: 'report',           // Yêu cầu báo cáo
   RUN_WF: 'run_workflow',     // Chạy workflow
@@ -303,7 +303,7 @@ function getQuickReply(intent, context = {}) {
 /**
  * Map intent → Telegram command tương ứng.
  * Dùng khi user chat tự nhiên thay vì gõ /command.
- * Ví dụ: "Có gì quá hạn không?" → /quahan
+ * Ví dụ: "Có gì cần quan tâm không?" → /quahan
  */
 function intentToCommand(intent) {
   const map = {

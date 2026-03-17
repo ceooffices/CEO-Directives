@@ -11,7 +11,7 @@
  * Usage:
  *   const analyzer = require('./ai-analyzer');
  *   const insights = await analyzer.analyzePatterns();
- *   const answer = await analyzer.askQuestion("Chỉ đạo nào quá hạn?");
+ *   const answer = await analyzer.askQuestion("Chỉ đạo nào cần quan tâm?");
  */
 
 require('dotenv').config();

@@ -5,7 +5,7 @@
  * Commands:
  *   /start      — Giới thiệu bot
  *   /trangthai  — Tổng quan trạng thái chỉ đạo
- *   /quahan     — Danh sách chỉ đạo quá hạn
+ *   /quahan     — Danh sách chỉ đạo cần quan tâm
  *   /tim <keyword> — Tìm chỉ đạo theo từ khóa
  *   /chay <wf>  — Chạy workflow (wf1-6, hm50, all)
  *   /baocao     — Báo cáo tổng hợp hàng ngày

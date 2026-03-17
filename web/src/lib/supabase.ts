@@ -604,16 +604,68 @@ export async function getDirectiveById(id: string): Promise<DirectiveDetail | nu
   return data as unknown as DirectiveDetail;
 }
 
-// Tracking events cho directive detail
+// Tracking events cho directive detail — tăng limit cho timeline đầy đủ
 export async function getTrackingEvents(directiveId: string) {
   const { data } = await supabase
     .from("engagement_events")
     .select("*")
     .eq("directive_id", directiveId)
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(100);
 
   return (data || []) as { event_type: string; recipient_email: string | null; metadata: Record<string, unknown> | null; created_at: string }[];
+}
+
+// Engagement stats — aggregate cho hero panel
+export async function getEngagementStats(directiveId: string) {
+  const { data } = await supabase
+    .from("engagement_events")
+    .select("event_type, recipient_email, created_at, metadata")
+    .eq("directive_id", directiveId)
+    .order("created_at", { ascending: true });
+
+  const events = (data || []) as { event_type: string; recipient_email: string | null; created_at: string; metadata: Record<string, unknown> | null }[];
+
+  let emailSent = 0;
+  let emailOpened = 0;
+  let linkClicked = 0;
+  let firstOpenAt: string | null = null;
+  let lastOpenAt: string | null = null;
+  const openerEmails = new Set<string>();
+  const recipientEmails = new Set<string>();
+
+  for (const e of events) {
+    if (e.recipient_email) recipientEmails.add(e.recipient_email);
+
+    switch (e.event_type) {
+      case "email_sent":
+        emailSent++;
+        break;
+      case "email_opened": {
+        const isBot = e.metadata?.is_bot === true;
+        if (!isBot) {
+          emailOpened++;
+          if (!firstOpenAt) firstOpenAt = e.created_at;
+          lastOpenAt = e.created_at;
+          if (e.recipient_email) openerEmails.add(e.recipient_email);
+        }
+        break;
+      }
+      case "link_clicked":
+        linkClicked++;
+        break;
+    }
+  }
+
+  return {
+    emailSent,
+    emailOpened,
+    linkClicked,
+    firstOpenAt,
+    lastOpenAt,
+    uniqueOpeners: openerEmails.size,
+    totalRecipients: Math.max(recipientEmails.size, 1), // ít nhất 1
+  };
 }
 
 // LLS step history cho directive detail

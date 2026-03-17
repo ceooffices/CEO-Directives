@@ -228,6 +228,6 @@ run()
     process.exit(0);
   })
   .catch((err) => {
-    console.error(`${MODULE} Lỗi nghiêm trọng:`, err);
+    console.error(`${MODULE} Lỗi hệ thống:`, err);
     process.exit(1);
   });
