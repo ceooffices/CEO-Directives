@@ -40,7 +40,9 @@ const ALIASES = {
   'Tuấn': 'Lê Anh Tuấn',
   'Cô Nhiên': 'Nguyễn Thị Nhiên',
   'Nhiên': 'Nguyễn Thị Nhiên',
-  'Thầy Nam': 'Võ Nam',
+  // Thầy Nam (Võ Nam) không có trong staff → Ban Cố Vấn (Huỳnh Phước) tiếp nhận
+  'Thầy Nam': 'Huỳnh Phước',
+  'Võ Nam': 'Huỳnh Phước',
   'Cô Anh Thư': 'Huỳnh Thị Anh Thư',
   'Anh Thư': 'Huỳnh Thị Anh Thư',
   'Thầy Huy': 'Phạm Đăng Huy',
@@ -60,6 +62,23 @@ const ALIASES = {
 
 // Alias là department (cần lookup manager thay vì nhân viên)
 const DEPARTMENT_ALIASES = new Set(['Đối ngoại', 'MSA', 'ONETEAM', 'KAIZEN', 'Ban Đối Ngoại']);
+
+// ===== ROUTING RULES =====
+
+// --- NHÓM: giao cho bộ phận MS → Đặng Tiến Dũng (Trưởng MSA) ---
+const NHOM_ROUTING_EMAIL = 'dungdt@esuhai.com';
+const COLLECTIVE_PATTERNS = [
+  /^tất cả\s*(ms|team\s*msa|đội trưởng)/i,    // "Tất cả MS", "Tất cả team MSA", "Tất cả đội trưởng..."
+  /^toàn bộ\s*ms/i,                             // "Toàn bộ MS"
+  /đội trưởng.*tt\s*liên\s*kết/i,               // "các đội trưởng TT liên kết"
+];
+
+// --- TỔNG THỂ: giao cho toàn hệ thống / BOD → BOD Hosting theo dõi ---
+const SYSTEM_WIDE_PATTERNS = [
+  /^toàn\s*(hệ\s*thống|bộ\s*hệ)/i,            // "Toàn hệ thống", "Toàn hệ thống S2"
+  /^ban\s*giám\s*đốc/i,                         // "Ban Giám Đốc"
+  /^tất cả\s*thành\s*viên\s*one\s*team/i,       // "Tất cả thành viên One Team"
+];
 
 // ===== MAIN =====
 
@@ -104,6 +123,50 @@ async function run() {
     if (!rawName) {
       resultA.failed++;
       resultA.details.push({ code: d.directive_code, name: rawName, status: 'SKIP — t1_dau_moi trống' });
+      continue;
+    }
+
+
+    // === 1. NHÓM: MS / Đội trưởng → Đặng Tiến Dũng (Trưởng MSA) ===
+    const isNhom = COLLECTIVE_PATTERNS.some((pattern) => pattern.test(rawName));
+    if (isNhom) {
+      resultA.mapped++;
+      resultA.details.push({
+        code: d.directive_code,
+        name: rawName,
+        matched: 'NHÓM → Đặng Tiến Dũng (Trưởng MSA)',
+        email: NHOM_ROUTING_EMAIL,
+        status: 'OK (nhóm → trưởng BP)',
+      });
+
+      if (!DRY_RUN) {
+        await db
+          .from('directives')
+          .update({ t1_email: NHOM_ROUTING_EMAIL, phan_loai_giao: 'nhom' })
+          .eq('id', d.id);
+      }
+      continue;
+    }
+
+    // === 2. TỔNG THỂ: Toàn hệ thống / BOD → BOD Hosting theo dõi ===
+    const isTongThe = SYSTEM_WIDE_PATTERNS.some((pattern) => pattern.test(rawName));
+    if (isTongThe) {
+      const email = d.bod_hosting_email || bodHostingEmail;
+      resultA.mapped++;
+      resultA.details.push({
+        code: d.directive_code,
+        name: rawName,
+        matched: 'TỔNG THỂ → BOD Hosting theo dõi',
+        email: email,
+        status: 'OK (tổng thể → BOD Hosting)',
+      });
+
+      if (!DRY_RUN && email) {
+        await db
+          .from('directives')
+          .update({ t1_email: email, phan_loai_giao: 'tong_the' })
+          .eq('id', d.id);
+      }
       continue;
     }
 
