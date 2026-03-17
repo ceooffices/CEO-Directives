@@ -89,24 +89,62 @@ Gravity đã tạo 3 component UI sẵn sàng hiển thị data từ backend:
 
 ## TASK 1: Cron Auto-Escalation Engine
 
-### Yêu cầu
+> ⚠️ **QC FINDINGS (Gravity, 17/03 11:17)** — Data thực tế cần lưu ý:
+>
+> | Metric | Giá trị | Ảnh hưởng |
+> | --- | --- | --- |
+> | `t1_email` | **0/25 có email** | ❌ Không gửi được email nhắc nhở — CẦN SEED TRƯỚC |
+> | `t4_thoi_han` | **12/25 có deadline** | ⚠️ 13 chỉ đạo không có deadline → skip trong cron |
+> | `bod_hosting_email` | **0/25 có** | ❌ Không gửi được email CEO — dùng hardcode |
+> | `confirmed_at` | **0/25** | Chưa ai confirm → cron chạy sẽ remind TẤT CẢ |
+> | `approved_at` | **0/25** | Chưa ai approve |
+> | `engagement_events` | **0 records** | Bảng trống hoàn toàn |
 
-Tạo **Supabase Edge Function** hoặc **cron job** chạy mỗi ngày 1 lần (8h sáng VN):
+### Prerequisite — TASK 0: Seed Email Data
+
+**PHẢI LÀM TRƯỚC Task 1.** Map `t1_email` từ bảng `staff`:
+
+```sql
+-- Map t1_dau_moi → t1_email qua bảng staff
+-- Cách: tách t1_dau_moi (comma-separated) → tìm trong staff.ten → lấy staff.email
+-- Ví dụ: "Lê Anh Minh, Hoàng" → tìm "Lê Anh Minh" trong staff.ten → lấy email
+
+-- Hardcode bod_hosting_email cho tất cả directives BOD 16/03
+UPDATE directives 
+SET bod_hosting_email = 'son.le@esuhai.com' 
+WHERE meeting_source LIKE 'BOD%';
+```
+
+### Yêu cầu (ĐÃ SỬA)
+
+Tạo **Supabase Edge Function** hoặc **cron job** chạy mỗi ngày 1 lần (8h sáng VN = 1h UTC):
 
 ```
-Với mỗi directive chưa hoàn thành (tinh_trang != 'hoan_thanh'):
-  - Quá 24h chưa xác nhận (confirmed_at IS NULL, created > 24h)
-    → Insert engagement_event: event_type = "auto_remind"
-    → Optional: gửi email nhắc nhở qua t1_email
+Với mỗi directive:
+  - tinh_trang != 'hoan_thanh' VÀ tinh_trang != 'tu_choi'
+  - t4_thoi_han IS NOT NULL (skip nếu không có deadline)
 
-  - Quá 48h chưa xác nhận
+  Tính: days_overdue = today - t4_thoi_han (dùng DEADLINE, không phải created_at)
+
+  IF days_overdue >= 1 AND confirmed_at IS NULL:
+    → Insert engagement_event: event_type = "auto_remind"
+    → Gửi email nhắc t1_email (NẾU t1_email != NULL)
+
+  IF days_overdue >= 3:
     → Insert engagement_event: event_type = "auto_escalate"
     → Update tinh_trang → "leo_thang_ceo" (nếu chưa)
 
-  - Quá 72h không phản hồi
-    → Insert engagement_event: event_type = "auto_escalate", metadata: { severity: "critical" }
-    → Gửi email cho bod_hosting_email (CEO)
+  IF days_overdue >= 7:
+    → Insert engagement_event: event_type = "auto_escalate"
+      metadata: { severity: "critical", days_overdue: X }
+    → Gửi email cho bod_hosting_email (NẾU có)
 ```
+
+> **LƯU Ý QUAN TRỌNG**: Task cũ dùng `created_at + 24/48/72h` — SAI!
+> Phải dùng `t4_thoi_han` (deadline) để tính quá hạn. Lý do:
+> - created_at = thời điểm import vào DB (tất cả = 17/03 02:14 UTC)
+> - t4_thoi_han = deadline thật từ chỉ đạo CEO
+> - Nếu dùng created_at, cron chạy ngay hôm nay sẽ remind TẤT CẢ 25 chỉ đạo
 
 ### Gợi ý triển khai
 
@@ -115,18 +153,20 @@ Với mỗi directive chưa hoàn thành (tinh_trang != 'hoan_thanh'):
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 Deno.serve(async () => {
-  // 1. Query directives chưa hoàn thành
-  // 2. Tính số giờ từ created_at đến now
-  // 3. Insert engagement_events theo rules
-  // 4. Update tinh_trang nếu cần
-  // 5. Trả về summary
+  // 1. Query directives: tinh_trang NOT IN ('hoan_thanh','tu_choi'), t4_thoi_han IS NOT NULL
+  // 2. Tính days_overdue = CURRENT_DATE - t4_thoi_han
+  // 3. Check dedup: đã có auto_remind/auto_escalate trong 24h chưa?
+  // 4. Insert engagement_events theo rules trên
+  // 5. Update tinh_trang nếu days_overdue >= 3
+  // 6. Trả về summary JSON
 });
 ```
 
 ### Lưu ý
 - Dùng `SUPABASE_SERVICE_ROLE_KEY` (bypass RLS)
-- Không ghi duplicate events (check đã có auto_remind/auto_escalate trong 24h chưa)
-- Log kết quả vào metadata: `{ checked: 25, reminded: 3, escalated: 1 }`
+- **Dedup**: Check `engagement_events` đã có event cùng type trong 24h chưa trước khi insert
+- Log kết quả vào metadata: `{ checked: 12, skipped_no_deadline: 13, reminded: 3, escalated: 1 }`
+- Skip email nếu `t1_email IS NULL` — chỉ ghi event, không crash
 
 ---
 
