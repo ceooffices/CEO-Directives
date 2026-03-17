@@ -12,6 +12,14 @@ import StatCardGrid from "@/app/components/stat-card-grid";
 
 export const dynamic = "force-dynamic";
 
+// Config mục tiêu — thay đổi ở đây thay vì hardcode trong JSX
+const COMPANY_TARGETS = {
+  tuyen_sinh: 3333,
+  xuat_canh: 2222,
+  hm_chien_luoc: 50,
+  year: 2026,
+};
+
 interface DisplayDirective {
   id: string;
   title: string;
@@ -29,7 +37,8 @@ interface DisplayDirective {
 
 function getUrgency(d: DisplayDirective): "green" | "yellow" | "red" | "black" | "done" {
   if (d.status === "hoan_thanh" || d.status === "Hoàn thành") return "done";
-  if (!d.deadline) return "green";
+  // Directive không có deadline → cảnh báo vàng (trước đây sai: trả green)
+  if (!d.deadline) return "yellow";
   const now = new Date();
   const deadline = new Date(d.deadline);
   const daysLeft = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
@@ -63,9 +72,14 @@ export default async function DashboardPage() {
   }
 
   const completionRate = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
-  const activeWork = stats.total > 0 ? ((stats.completed + stats.active + stats.confirmed) / stats.total) * 100 : 0;
-  const overdueRate = stats.total > 0 ? (stats.overdue / stats.total) * 100 : 0;
-  const healthScore = Math.max(0, Math.min(100, Math.round(activeWork * 0.7 - overdueRate * 0.5 + completionRate * 0.3)));
+  // Health Score mới — dựa trên tiến độ thực tế
+  // Mỗi directive được tính điểm: hoàn thành=100, đang thực hiện=60, xác nhận=30, chờ=5
+  const progressPoints = stats.total > 0
+    ? ((stats.completed * 100) + (stats.active * 60) + (stats.confirmed * 30) + (stats.pending * 5)) / (stats.total * 100) * 100
+    : 0;
+  // Trừ điểm overdue: mỗi directive quá hạn trừ 3 điểm
+  const overduePenalty = stats.total > 0 ? (stats.overdue / stats.total) * 30 : 0;
+  const healthScore = Math.max(0, Math.min(100, Math.round(progressPoints - overduePenalty)));
 
   const leaders = Object.entries(byDauMoi)
     .map(([name, data]) => ({ name, ...data, completionRate: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0 }))
@@ -115,12 +129,12 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-        {/* Target banner */}
+        {/* Target banner — lấy từ COMPANY_TARGETS config */}
         <div className="border-t border-zinc-800/40 px-4 py-2 text-center text-[12px] text-zinc-500 sm:px-6">
-          Mục tiêu 2026:{" "}
-          <span className="font-bold text-emerald-400">3.333</span> tuyển sinh ·{" "}
-          <span className="font-bold text-blue-400">2.222</span> xuất cảnh ·{" "}
-          <span className="font-bold text-zinc-300">50 HM</span> chiến lược
+          Mục tiêu {COMPANY_TARGETS.year}:{" "}
+          <span className="font-bold text-emerald-400">{COMPANY_TARGETS.tuyen_sinh.toLocaleString("vi-VN")}</span> tuyển sinh ·{" "}
+          <span className="font-bold text-blue-400">{COMPANY_TARGETS.xuat_canh.toLocaleString("vi-VN")}</span> xuất cảnh ·{" "}
+          <span className="font-bold text-zinc-300">{COMPANY_TARGETS.hm_chien_luoc} HM</span> chiến lược
         </div>
       </header>
 

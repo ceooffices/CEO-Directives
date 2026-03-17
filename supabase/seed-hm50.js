@@ -56,11 +56,21 @@ async function main() {
   const directives = data.directives || [];
   console.log(`[SEED-HM50] Doc ${directives.length} HM tu ${seedPath}`);
 
+  // Map status từ source data → tinh_trang enum
+  function mapStatus(status) {
+    if (!status) return 'chua_bat_dau';
+    if (status.includes('Có chủ')) return 'dang_lam';
+    if (status.includes('Chưa có chủ')) return 'chua_bat_dau';
+    if (status.includes('Blind spot')) return 'nghen';
+    if (status.includes('Hoàn thành')) return 'hoan_thanh';
+    return 'chua_bat_dau';
+  }
+
   const rows = directives.map(d => ({
     hm_number: d.hm,
     ten: d.hang_muc,
     dau_moi: d.dau_moi || null,
-    tinh_trang: 'chua_bat_dau',
+    tinh_trang: mapStatus(d.status),
     muc_tieu: d.target || null,
     thoi_han: d.deadline || null,
     bsc_perspective: classifyBSC(d.section),
