@@ -18,8 +18,18 @@ desktop.ini
 
 # Sensitive
 .env
+.env.local
+.env*.local
 automation/.env
+web/.env*
 *.key
+
+# Next.js build output
+web/.next/
+web/out/
+web/.vercel/
+*.tsbuildinfo
+next-env.d.ts
 
 # Archive / Backup
 _archive/
@@ -31,3 +41,7 @@ data/sessions/
 
 # Claude local settings
 .claude/settings.local.json
+
+# Large data files (keep in archive/)
+*.csv
+*.pdf
