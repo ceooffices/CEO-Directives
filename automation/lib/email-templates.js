@@ -498,7 +498,7 @@ function buildStatusChangeEmail(data) {
     'Hoàn thành': BRAND_GREEN,
     'Đang xử lý': BRAND_BLUE,
     'Chờ làm rõ': BRAND_AMBER,
-    'Quá hạn': BRAND_RED,
+    'Cần quan tâm': BRAND_RED,
   };
   const color = statusColors[data.newStatus] || '#64748b';
 

@@ -86,7 +86,7 @@ function formatReportTelegram(report) {
   Tổng: ${s.total || 0}
   Chờ duyệt: ${s.pending || 0}
   Đang thực hiện: ${s.active || 0}
-  Quá hạn: ${s.overdue || 0}
+  Cần quan tâm: ${s.overdue || 0}
 
 `;
 
@@ -94,7 +94,7 @@ function formatReportTelegram(report) {
   if (report.byDauMoi && report.byDauMoi.length > 0) {
     msg += `👥 TOP ĐẦU MỐI:\n`;
     report.byDauMoi.slice(0, 5).forEach(dm => {
-      const bar = dm.overdue > 0 ? ` ⚠️${dm.overdue} quá hạn` : '';
+      const bar = dm.overdue > 0 ? ` 📌${dm.overdue} cần quan tâm` : '';
       msg += `  ${dm.name}: ${dm.total} nhiệm vụ${bar}\n`;
     });
     msg += '\n';
@@ -103,7 +103,7 @@ function formatReportTelegram(report) {
   // Risk
   if (report.riskCounts) {
     msg += `⚠️ RỦI RO:\n`;
-    msg += `  Sắp quá hạn (≤3 ngày): ${report.riskCounts.atRisk}\n`;
+    msg += `  Sắp cần quan tâm (≤3 ngày): ${report.riskCounts.atRisk}\n`;
     msg += `  Không có deadline: ${report.riskCounts.noDeadline}\n\n`;
   }
 
@@ -156,14 +156,14 @@ function formatReportEmail(report) {
     <div class="stat"><div class="num">${s.total || 0}</div><div class="lbl">Tổng</div></div>
     <div class="stat"><div class="num">${s.pending || 0}</div><div class="lbl">Chờ duyệt</div></div>
     <div class="stat"><div class="num">${s.active || 0}</div><div class="lbl">Đang thực hiện</div></div>
-    <div class="stat overdue"><div class="num">${s.overdue || 0}</div><div class="lbl">⚠️ Quá hạn</div></div>
+    <div class="stat overdue"><div class="num">${s.overdue || 0}</div><div class="lbl">📌 Cần quan tâm</div></div>
   </div>
 
   ${report.byDauMoi && report.byDauMoi.length > 0 ? `
   <div class="card">
     <h3>👥 Phân Bố Theo Đầu Mối</h3>
     <table>
-      <tr><th>Đầu mối</th><th>Tổng</th><th>Quá hạn</th></tr>
+      <tr><th>Đầu mối</th><th>Tổng</th><th>Cần quan tâm</th></tr>
       ${report.byDauMoi.slice(0, 8).map(dm => 
         `<tr><td>${dm.name}</td><td>${dm.total}</td><td style="color:${dm.overdue > 0 ? '#dc2626' : '#16a34a'}">${dm.overdue}</td></tr>`
       ).join('')}
@@ -172,7 +172,7 @@ function formatReportEmail(report) {
 
   ${report.overdueTop5 && report.overdueTop5.length > 0 ? `
   <div class="card">
-    <h3>🔴 Top Quá Hạn Nặng Nhất</h3>
+    <h3>📌 Cần Quan Tâm Nhất</h3>
     <table>
       <tr><th>Chỉ đạo</th><th>Đầu mối</th><th>Ngày quá</th></tr>
       ${report.overdueTop5.map(d =>

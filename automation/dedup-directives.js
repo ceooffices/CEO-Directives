@@ -1,7 +1,7 @@
 /**
  * dedup-directives.js — Kiểm tra chỉ đạo trùng lặp giữa 3 cuộc BOD
  *
- * Vấn đề: Chỉ đạo leo thang có thể lặp lại qua nhiều cuộc họp.
+ * Vấn đề: Chỉ đạo tín hiệu lặp lại có thể lặp lại qua nhiều cuộc họp.
  * Script này tạo report, KHÔNG tự động xóa.
  *
  * Usage:
@@ -129,12 +129,12 @@ async function run() {
   reportLines.push(`> Tổng chỉ đạo: ${directives.length}`);
   reportLines.push('');
 
-  // Section 1: Leo thang trùng lặp
-  reportLines.push('## 1. Chỉ đạo leo thang trùng lặp (cùng HM50, meeting khác nhau)');
+  // Section 1: Tín hiệu trùng lặp
+  reportLines.push('## 1. Chỉ đạo tín hiệu lặp lại (cùng HM50, meeting khác nhau)');
   reportLines.push('');
 
   if (duplicatePairs.length === 0) {
-    reportLines.push('Không tìm thấy cặp leo thang trùng lặp.');
+    reportLines.push('Không tìm thấy cặp tín hiệu trùng lặp.');
   } else {
     reportLines.push(`Tìm thấy **${duplicatePairs.length} cặp**:`);
     reportLines.push('');
@@ -171,7 +171,7 @@ async function run() {
   reportLines.push(`| Tổng chỉ đạo | ${directives.length} |`);
   reportLines.push(`| Có hm50_id | ${directives.length - noHm50} |`);
   reportLines.push(`| Nhóm HM50 | ${grouped.size} |`);
-  reportLines.push(`| Cặp leo thang trùng | ${duplicatePairs.length} |`);
+  reportLines.push(`| Cặp tín hiệu trùng | ${duplicatePairs.length} |`);
   reportLines.push(`| Cặp tương tự | ${similarPairs.length} |`);
 
   const reportContent = reportLines.join('\n');

@@ -1,8 +1,8 @@
 /**
  * wf4-form-processor.js
- * CEO Directive WF4: Xử lý Phản hồi Leo thang từ Google Form
+ * CEO Directive WF4: Xử lý Phản hồi Tín hiệu rủi ro từ Google Form
  * 
- * Flow: Email leo thang → Đầu mối click → Google Form → Sheets → Poll → Update Notion
+ * Flow: Email tín hiệu rủi ro → Đầu mối click → Google Form → Sheets → Poll → Update Notion
  * 
  * Usage:
  *   node wf4-form-processor.js            # Process responses
@@ -111,7 +111,7 @@ async function updateNotion(data) {
     props['T4 - THỜI HẠN'] = { date: { start: data.ngayDuKien } };
   }
   if (data.lyDoTre || data.moTa) {
-    const note = `[Leo thang] ${data.lyDoTre}${data.moTa ? ' - ' + data.moTa : ''}`;
+    const note = `[Tín hiệu rủi ro] ${data.lyDoTre}${data.moTa ? ' - ' + data.moTa : ''}`;
     props['Ghi chú leo thang'] = { rich_text: [{ text: { content: note.substring(0, 2000) } }] };
   }
   if (DRY_RUN) {

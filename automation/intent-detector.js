@@ -237,7 +237,7 @@ function getQuickReply(intent, context = {}) {
 
 ► Thầy cần con làm gì ạ?
 📌 /trangthai — Xem tổng quan
-📌 /quahan — Kiểm tra quá hạn
+📌 /quahan — Kiểm tra cần quan tâm
 📌 /hoi <câu hỏi> — Hỏi AI`;
 
     case INTENT_TYPES.THANKS:
@@ -251,7 +251,7 @@ function getQuickReply(intent, context = {}) {
       return `Dạ thưa ${name}, con là Gravity Bot — hệ thống tự động quản lý chỉ đạo CEO của EsuhaiGroup.
 
 ▫️ Theo dõi chỉ đạo qua Notion
-▫️ Gửi email duyệt, nhắc nhở, leo thang (WF1-6)
+▫️ Gửi email duyệt, đồng hành, tín hiệu rủi ro (WF1-6)
 ▫️ Phân tích AI — pattern, rủi ro, báo cáo
 ▫️ Kết nối Dashboard + Google Forms
 
@@ -261,7 +261,7 @@ function getQuickReply(intent, context = {}) {
       return `Dạ ${name}, đây là các lệnh con hỗ trợ:
 
 📌 /trangthai — Trạng thái tổng quan
-📌 /quahan — Chỉ đạo quá hạn
+📌 /quahan — Chỉ đạo cần quan tâm
 📌 /tim <từ khóa> — Tìm chỉ đạo
 📌 /chay <wf> — Chạy workflow (wf1-6, hm50, all)
 📌 /baocao — Báo cáo nhanh

@@ -156,7 +156,7 @@ function kbd(buttons) {
 function kbdMain() {
   return kbd([
     [{ text: '📊 Dashboard CEO', url: DASHBOARD_URL }],
-    [{ text: '☑ Trạng thái', callback_data: 'cmd_trangthai' }, { text: '⏳ Quá hạn', callback_data: 'cmd_quahan' }],
+    [{ text: '☑ Trạng thái', callback_data: 'cmd_trangthai' }, { text: '📌 Cần quan tâm', callback_data: 'cmd_quahan' }],
     [{ text: '► AI Phân tích', callback_data: 'cmd_phantich' }, { text: '📌 Báo cáo', callback_data: 'cmd_baocao' }],
     [{ text: '🔗 Notion DB', url: NOTION_DB_URL }],
   ]);
@@ -164,7 +164,7 @@ function kbdMain() {
 
 function kbdAfterStatus() {
   return kbd([
-    [{ text: '⚠️ Xem quá hạn', callback_data: 'cmd_quahan' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
+    [{ text: '📌 Xem cần quan tâm', callback_data: 'cmd_quahan' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
     [{ text: '🚀 Chạy WF1 (email duyệt)', callback_data: 'cmd_chay_wf1' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
     [{ text: '📂 Mở Notion DB', url: NOTION_DB_URL }],
   ]);
@@ -172,7 +172,7 @@ function kbdAfterStatus() {
 
 function kbdAfterOverdue() {
   return kbd([
-    [{ text: '🚀 Gửi email leo thang (WF4)', callback_data: 'cmd_chay_wf4' }, { text: '🔔 Gửi nhắc nhở (WF5)', callback_data: 'cmd_chay_wf5' }],
+    [{ text: '🔶 Tín hiệu rủi ro (WF4)', callback_data: 'cmd_chay_wf4' }, { text: '📋 Đồng hành (WF5)', callback_data: 'cmd_chay_wf5' }],
     [{ text: '🧠 AI dự đoán rủi ro', callback_data: 'cmd_phantich' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
     [{ text: '📂 Mở Notion DB', url: NOTION_DB_URL }],
   ]);
@@ -180,7 +180,7 @@ function kbdAfterOverdue() {
 
 function kbdAfterRun() {
   return kbd([
-    [{ text: '📊 Xem trạng thái', callback_data: 'cmd_trangthai' }, { text: '⚠️ Quá hạn', callback_data: 'cmd_quahan' }],
+    [{ text: '📊 Xem trạng thái', callback_data: 'cmd_trangthai' }, { text: '📌 Cần quan tâm', callback_data: 'cmd_quahan' }],
     [{ text: '📂 Mở Notion', url: NOTION_DB_URL }],
   ]);
 }
@@ -188,7 +188,7 @@ function kbdAfterRun() {
 function kbdAfterAI() {
   return kbd([
     [{ text: '💬 Hỏi thêm AI', callback_data: 'prompt_hoi' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
-    [{ text: '⚠️ Xem quá hạn', callback_data: 'cmd_quahan' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
+    [{ text: '📌 Xem cần quan tâm', callback_data: 'cmd_quahan' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
     [{ text: '📂 Mở Notion', url: NOTION_DB_URL }],
   ]);
 }
@@ -226,17 +226,17 @@ function formatStatus(data) {
   • Chờ duyệt: *${d.pending_approval ?? '?'}*
   • Đã confirm 5T: *${d.confirmed_5t ?? '?'}*
   • Đang thực hiện: *${d.active ?? '?'}*
-  • ⚠️ Quá hạn: *${d.overdue ?? '?'}*
+  • 📌 Cần quan tâm: *${d.overdue ?? '?'}*
 
 🔧 Workflows: ${(data.workflows || []).join(', ')}`;
 }
 
 function formatOverdue(data) {
   if (!data.items || data.items.length === 0) {
-    return '☑ *Không có chỉ đạo quá hạn!*\nMọi thứ đang đúng tiến độ.';
+    return '☑ *Không có chỉ đạo cần quan tâm!*\nMọi thứ đang đúng tiến độ.';
   }
 
-  let msg = `⚠️ *CHỈ ĐẠO QUÁ HẠN* (${data.count}/${data.total})\n━━━━━━━━━━━━━━━━━━━━\n\n`;
+  let msg = `📌 *CHỈ ĐẠO CẦN QUAN TÂM* (${data.count}/${data.total})\n━━━━━━━━━━━━━━━━━━━━\n\n`;
 
   data.items.forEach((item, i) => {
     msg += `*${i + 1}. ${escMd(item.title || 'Không tên')}*\n`;
@@ -309,12 +309,12 @@ function formatReport(statusData, overdueData) {
   • Chờ duyệt: ${d.pending_approval ?? '?'}
   • Đã confirm 5T: ${d.confirmed_5t ?? '?'}
   • Đang thực hiện: ${d.active ?? '?'}
-  • ⚠️ Quá hạn: ${d.overdue ?? '?'}
+  • 📌 Cần quan tâm: ${d.overdue ?? '?'}
 
 `;
 
   if (overdueData.items && overdueData.items.length > 0) {
-    msg += `🔴 *Top ${overdueData.items.length} quá hạn nặng nhất:*\n`;
+    msg += `📋 *Top ${overdueData.items.length} cần quan tâm nhất:*\n`;
     overdueData.items.slice(0, 3).forEach((item, i) => {
       msg += `  ${i + 1}. ${escMd(item.title || '')} — *${item.daysOverdue}d* (${escMd(item.dauMoi || '')})\n`;
     });
@@ -340,7 +340,7 @@ function getStatusEmoji(status) {
   const map = {
     'Đang thực hiện': '🔵',
     'Hoàn thành': '☑',
-    'Quá hạn': '🔴',
+    'Quá hạn': '📌',
     'Chờ duyệt': '🟡',
     'Tạm dừng': '⏸',
   };
@@ -377,7 +377,7 @@ Con là Gravity — bot quản lý chỉ đạo CEO EsuhaiGroup.
 
 📌 Lệnh khả dụng:
   /trangthai — Trạng thái tổng quan
-  /quahan — Chỉ đạo quá hạn
+  /quahan — Chỉ đạo cần quan tâm
   /tim <từ khóa> — Tìm chỉ đạo
   /chay <wf> — Chạy workflow
   /baocao — Báo cáo nhanh
@@ -398,7 +398,7 @@ bot.onText(/\/help/, (msg) => {
 `Danh sach lenh khả dụng:
 ━━━━━━━━━━━━━━━━━━━━
   /trangthai — Trạng thái tổng quan
-  /quahan — Chỉ đạo quá hạn
+  /quahan — Chỉ đạo cần quan tâm
   /tim <từ khóa> — Tìm chỉ đạo
   /chay <wf> — Chạy workflow
   /baocao — Báo cáo nhanh
@@ -464,7 +464,7 @@ bot.onText(/\/quahan(?:\s+(\d+))?/, async (msg, match) => {
 
   const chatId = msg.chat.id;
   const limit = match && match[1] ? parseInt(match[1]) : 5;
-  bot.sendMessage(chatId, '⏳ Đang kiểm tra chỉ đạo quá hạn...');
+  bot.sendMessage(chatId, '⏳ Đang kiểm tra chỉ đạo cần quan tâm...');
 
   try {
     const data = await bridgeRequest(`/overdue?limit=${limit}`);
@@ -502,7 +502,7 @@ Workflows khả dụng:
   /chay wf1 — Gửi email duyệt chỉ đạo
   /chay wf2 — Notify chỉ đạo 5T confirmed
   /chay wf3 — Detect thay đổi trạng thái
-  /chay wf4 — Leo thang chỉ đạo quá hạn
+  /chay wf4 — Tín hiệu rủi ro
   /chay wf5 — Smart reminders
   /chay wf6 — Sync dashboard
   /chay hm50 — Match chỉ đạo → 50 HM
@@ -569,7 +569,7 @@ bot.onText(/\/hoi\s+(.+)/, async (msg, match) => {
 
 bot.onText(/^\/hoi$/, (msg) => {
   if (!canProcess(msg)) return;
-  bot.sendMessage(msg.chat.id, `💡 Sử dụng: /hoi <câu hỏi>\n\nVí dụ:\n  /hoi Ai có nhiều chỉ đạo quá hạn nhất?\n  /hoi Tình hình tuyển sinh MSA thế nào?\n  /hoi Chỉ đạo nào quan trọng nhất tuần này?`);
+  bot.sendMessage(msg.chat.id, `💡 Sử dụng: /hoi <câu hỏi>\n\nVí dụ:\n  /hoi Ai có chỉ đạo cần quan tâm nhất?\n  /hoi Tình hình tuyển sinh MSA thế nào?\n  /hoi Chỉ đạo nào quan trọng nhất tuần này?`);
 });
 
 // ===== COMMAND: /phantich =====
@@ -646,7 +646,7 @@ bot.on('callback_query', async (query) => {
       bot.sendMessage(chatId, formatStatus(result), { parse_mode: 'Markdown', ...kbdAfterStatus() });
     }
     else if (data === 'cmd_quahan') {
-      bot.sendMessage(chatId, '⏳ Đang kiểm tra quá hạn...');
+      bot.sendMessage(chatId, '⏳ Đang kiểm tra...');
       const result = await bridgeRequest('/overdue?limit=5');
       bot.sendMessage(chatId, formatOverdue(result), { parse_mode: 'Markdown', disable_web_page_preview: true, ...kbdAfterOverdue() });
     }
@@ -714,7 +714,7 @@ bot.on('callback_query', async (query) => {
       bot.sendMessage(chatId, '✖ Đã hủy. Không có workflow nào được chạy.');
     }
     else if (data === 'prompt_hoi') {
-      bot.sendMessage(chatId, `💬 Gõ câu hỏi cho AI:\n\nVí dụ:\n  /hoi Ai quá hạn nhiều nhất?\n  /hoi Tuyển sinh MSA tình hình sao?\n  /hoi Tuần này cần ưu tiên gì?`);
+      bot.sendMessage(chatId, `💬 Gõ câu hỏi cho AI:\n\nVí dụ:\n  /hoi Ai cần quan tâm nhất?\n  /hoi Tuyển sinh MSA tình hình sao?\n  /hoi Tuần này cần ưu tiên gì?`);
     }
   } catch (err) {
     notifyAdmin(err, 'callback_query:' + (query.data || ''));
@@ -768,7 +768,7 @@ bot.on('message', async (msg) => {
       bot.sendMessage(chatId, reply, { parse_mode: 'Markdown', ...kbdAfterStatus() });
     }
     else if (intent.type === INTENT_TYPES.OVERDUE) {
-      bot.sendMessage(chatId, '⏳ Đang kiểm tra quá hạn...');
+      bot.sendMessage(chatId, '⏳ Đang kiểm tra...');
       const data = await bridgeRequest('/overdue?limit=5');
       const reply = formatOverdue(data);
       session.add(userId, 'assistant', reply);
@@ -790,7 +790,7 @@ bot.on('message', async (msg) => {
       const result = await analyzePatterns();
       const enforced = bible.enforceOutput(result.analysis, {
         addCTA: true,
-        ctaText: '► /phantich để phân tích lại\n📌 /quahan để xem quá hạn',
+        ctaText: '► /phantich để phân tích lại\n📌 /quahan để xem cần quan tâm',
       });
       const reply = `📌 AI PHÂN TÍCH\n━━━━━━━━━━━━━━━━━━━━\n\n${enforced}\n\n📎 Tokens: ${result.tokens?.total_tokens || '?'}`;
       session.add(userId, 'assistant', reply);

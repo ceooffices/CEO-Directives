@@ -471,7 +471,7 @@ function buildAnalysis(directives, nhomMap, meetingDate) {
     if (byLoai[d.loai] !== undefined) byLoai[d.loai]++;
   }
 
-  // hm_escalation_count — đếm số lần mỗi HM bị leo thang
+  // hm_escalation_count — đếm số lần mỗi HM có tín hiệu lặp lại
   const hmEscalation = {};
   for (const d of directives) {
     if (d.loai === 'leo_thang' && d.hm50_match) {
@@ -480,7 +480,7 @@ function buildAnalysis(directives, nhomMap, meetingDate) {
     }
   }
 
-  // risk_signals — HM bị leo thang + status xấu
+  // risk_signals — HM có tín hiệu rủi ro + status cần quan tâm
   const riskSignals = [];
   const hmSeenForRisk = {};
   for (const d of directives) {
@@ -492,7 +492,7 @@ function buildAnalysis(directives, nhomMap, meetingDate) {
     if (status.includes('Chưa có chủ') || status.includes('Blind spot')) {
       const escCount = hmEscalation[tt] || 0;
       const mentionCount = directives.filter(x => x.hm50_match && x.hm50_match.hm_tt === tt).length;
-      const loaiLabel = escCount > 0 ? `Leo thang ${escCount} lần` : `Bổ sung ${mentionCount} lần`;
+      const loaiLabel = escCount > 0 ? `Tín hiệu ${escCount} lần` : `Bổ sung ${mentionCount} lần`;
       riskSignals.push({
         hm_tt: tt,
         reason: `${loaiLabel}, status ${status}`,
@@ -979,7 +979,7 @@ async function run() {
   console.log('[BOD-IMPORT] SUMMARY:');
   console.log(`  📄 File: ${path.basename(filePath)}`);
   console.log(`  📋 Chỉ đạo parsed: ${result.total_directives}`);
-  console.log(`  ► Leo thang: ${result.analysis.by_loai.leo_thang} | Mới: ${result.analysis.by_loai.moi} | Bổ sung: ${result.analysis.by_loai.bo_sung}`);
+  console.log(`  ► Tín hiệu: ${result.analysis.by_loai.leo_thang} | Mới: ${result.analysis.by_loai.moi} | Bổ sung: ${result.analysis.by_loai.bo_sung}`);
   if (result.analysis.deadline_this_week.length > 0) {
     console.log(`  ⏳ Deadline tuần này: ${result.analysis.deadline_this_week.join(', ')}`);
   }

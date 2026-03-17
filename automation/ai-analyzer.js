@@ -153,16 +153,16 @@ DỮ LIỆU CHỈ ĐẠO CEO:
 - Chờ duyệt: ${stats.pending}
 - Đã confirm 5T: ${stats.confirmed}
 - Đang thực hiện: ${stats.active}
-- Quá hạn: ${stats.overdue}
+- Cần quan tâm: ${stats.overdue}
 
 PHÂN BỐ THEO ĐẦU MỐI (top 10):
 ${Object.entries(byDauMoi)
   .sort((a, b) => b[1].total - a[1].total)
   .slice(0, 10)
-  .map(([name, data]) => `  ${name}: ${data.total} tổng, ${data.overdue} quá hạn`)
+  .map(([name, data]) => `  ${name}: ${data.total} tổng, ${data.overdue} cần quan tâm`)
   .join('\n')}
 
-TOP QUÁ HẠN NẶNG NHẤT:
+CẦN QUAN TÂM NHẤT:
 ${overdueItems.slice(0, 5).map(d => `  - "${d.title}" (${d.dauMoi}) — ${d.daysOverdue} ngày`).join('\n')}
 
 Phân tích và trả lời bằng tiếng Việt:
@@ -209,7 +209,7 @@ async function predictRisks() {
 
   const prompt = `Dự đoán rủi ro cho các chỉ đạo CEO:
 
-SẮP QUÁ HẠN (≤3 ngày):
+SẮP CẦN QUAN TÂM (≤3 ngày):
 ${atRisk.slice(0, 10).map(d => `  - "${d.title}" → ${d.dauMoi} → hạn ${d.deadline}`).join('\n') || '  (không có)'}
 
 KHÔNG CÓ DEADLINE:
@@ -264,7 +264,7 @@ async function askQuestion(question) {
   const systemPrompt = `Bạn là AI trợ lý CEO EsuhaiGroup. Trả lời câu hỏi dựa trên dữ liệu chỉ đạo và kiến thức nền bên dưới.
 Trả lời ngắn gọn, tiếng Việt, có cấu trúc. Nếu không đủ dữ liệu, nói rõ.
 
-THỐNG KÊ: ${stats.total} tổng, ${stats.pending} chờ duyệt, ${stats.overdue} quá hạn, ${stats.active} đang thực hiện.
+THỐNG KÊ: ${stats.total} tổng, ${stats.pending} chờ duyệt, ${stats.overdue} cần quan tâm, ${stats.active} đang thực hiện.
 
 DỮ LIỆU CHỈ ĐẠO (30 mới nhất):
 ${directiveContext}${ragContext ? `

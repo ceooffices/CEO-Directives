@@ -1,13 +1,13 @@
 /**
- * auto-escalation.js — Cron tự động nhắc nhở & leo thang
+ * auto-escalation.js — Cron tự động đồng hành & phát hiện tín hiệu rủi ro
  *
  * Chạy mỗi ngày 1 lần (8h sáng VN) hoặc manual:
  *   node auto-escalation.js [--dry-run]
  *
  * Logic (dựa trên t4_thoi_han = deadline thật, KHÔNG dùng created_at):
- *   - Quá hạn ≥1 ngày + chưa xác nhận → auto_remind (nhắc đầu mối)
- *   - Quá hạn ≥3 ngày → auto_escalate (leo thang, update trạng thái)
- *   - Quá hạn ≥7 ngày → auto_escalate severity:critical (email BOD Hosting)
+ *   - Chưa có cập nhật ≥1 ngày + chưa xác nhận → auto_remind (đồng hành đầu mối)
+ *   - Chưa có cập nhật ≥3 ngày → auto_escalate (tín hiệu rủi ro, update trạng thái)
+ *   - Chưa có cập nhật ≥7 ngày → auto_escalate severity:critical (email BOD Hosting)
  *
  * Skip nếu: t4_thoi_han IS NULL, tinh_trang = hoan_thanh/tu_choi
  */
@@ -33,10 +33,10 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
 const DRY_RUN = process.argv.includes('--dry-run');
 const MODULE = '[ESCALATION]';
 
-// Ngưỡng (ngày quá hạn tính từ t4_thoi_han)
-const THRESHOLD_REMIND = 1;    // ≥1 ngày quá hạn → nhắc nhở
-const THRESHOLD_ESCALATE = 3;  // ≥3 ngày quá hạn → leo thang
-const THRESHOLD_CRITICAL = 7;  // ≥7 ngày quá hạn → nghiêm trọng
+// Ngưỡng (ngày chưa có cập nhật tính từ t4_thoi_han)
+const THRESHOLD_REMIND = 1;    // ≥1 ngày chưa có cập nhật → đồng hành
+const THRESHOLD_ESCALATE = 3;  // ≥3 ngày chưa có cập nhật → tín hiệu rủi ro
+const THRESHOLD_CRITICAL = 7;  // ≥7 ngày chưa có cập nhật → cần hỗ trợ đặc biệt
 
 // ===== MAIN =====
 
@@ -114,7 +114,7 @@ async function run() {
     deadline.setHours(0, 0, 0, 0);
     const daysOverdue = Math.floor((today.getTime() - deadline.getTime()) / (1000 * 60 * 60 * 24));
 
-    // Chưa quá hạn → skip
+    // Chưa cần quan tâm → skip
     if (daysOverdue < THRESHOLD_REMIND) {
       summary.skipped_not_overdue++;
       continue;
@@ -124,7 +124,7 @@ async function run() {
 
     try {
       if (daysOverdue >= THRESHOLD_CRITICAL) {
-        // === ≥7 ngày quá hạn → Critical ===
+        // === ≥7 ngày chưa có cập nhật → Cần hỗ trợ đặc biệt ===
         if (recentEvTypes.has('auto_escalate')) {
           summary.skipped_dedup++;
           continue;
@@ -132,7 +132,7 @@ async function run() {
         await handleCritical(d, daysOverdue);
         summary.critical++;
       } else if (daysOverdue >= THRESHOLD_ESCALATE) {
-        // === ≥3 ngày quá hạn → Escalate ===
+        // === ≥3 ngày chưa có cập nhật → Tín hiệu rủi ro ===
         if (recentEvTypes.has('auto_escalate')) {
           summary.skipped_dedup++;
           continue;
@@ -140,7 +140,7 @@ async function run() {
         await handleEscalate(d, daysOverdue);
         summary.escalated++;
       } else if (daysOverdue >= THRESHOLD_REMIND) {
-        // === ≥1 ngày quá hạn + chưa xác nhận → Remind ===
+        // === ≥1 ngày chưa có cập nhật + chưa xác nhận → Đồng hành ===
         if (d.confirmed_at) {
           // Đã xác nhận, không cần nhắc
           continue;
@@ -162,10 +162,10 @@ async function run() {
   console.log(`${MODULE} === KẾT QUẢ ===`);
   console.log(`  Có deadline: ${summary.checked}`);
   console.log(`  Không có deadline (skip): ${summary.skipped_no_deadline}`);
-  console.log(`  Chưa quá hạn (skip): ${summary.skipped_not_overdue}`);
-  console.log(`  Nhắc nhở (≥${THRESHOLD_REMIND}d): ${summary.reminded}`);
-  console.log(`  Leo thang (≥${THRESHOLD_ESCALATE}d): ${summary.escalated}`);
-  console.log(`  Nghiêm trọng (≥${THRESHOLD_CRITICAL}d): ${summary.critical}`);
+  console.log(`  Chưa cần quan tâm (skip): ${summary.skipped_not_overdue}`);
+  console.log(`  Đồng hành (≥${THRESHOLD_REMIND}d): ${summary.reminded}`);
+  console.log(`  Tín hiệu rủi ro (≥${THRESHOLD_ESCALATE}d): ${summary.escalated}`);
+  console.log(`  Cần hỗ trợ đặc biệt (≥${THRESHOLD_CRITICAL}d): ${summary.critical}`);
   console.log(`  Đã xử lý trong 24h (skip): ${summary.skipped_dedup}`);
   console.log(`  Lỗi: ${summary.errors}`);
 
@@ -175,12 +175,12 @@ async function run() {
 // ===== HANDLERS =====
 
 /**
- * ≥1 ngày quá hạn + chưa xác nhận → Nhắc đầu mối
+ * ≥1 ngày chưa có cập nhật + chưa xác nhận → Đồng hành đầu mối
  */
 async function handleRemind(directive, daysOverdue) {
   const code = directive.directive_code;
   const hasEmail = !!directive.t1_email;
-  console.log(`${MODULE} ⏰ ${code} — quá hạn ${daysOverdue} ngày → auto_remind${hasEmail ? '' : ' (không có email)'}`);
+  console.log(`${MODULE} 📌 ${code} — chưa có cập nhật ${daysOverdue} ngày → auto_remind${hasEmail ? '' : ' (không có email)'}`);
 
   if (!DRY_RUN) {
     await db.from('engagement_events').insert({
@@ -197,22 +197,22 @@ async function handleRemind(directive, daysOverdue) {
     });
   }
 
-  // Gửi email nhắc nhở (CHỈ nếu có email, không crash nếu null)
+  // Gửi email đồng hành (CHỈ nếu có email, không crash nếu null)
   if (hasEmail) {
     await trySendEmail({
       to: directive.t1_email,
-      subject: `⏳ Nhắc xác nhận chỉ đạo ${code} — quá hạn ${daysOverdue} ngày`,
+      subject: `⏳ Nhắc xác nhận chỉ đạo ${code} — chưa có cập nhật ${daysOverdue} ngày`,
       html: buildRemindHtml(directive, daysOverdue),
     });
   }
 }
 
 /**
- * ≥3 ngày quá hạn → Leo thang, update trạng thái
+ * ≥3 ngày chưa có cập nhật → Tín hiệu rủi ro, update trạng thái
  */
 async function handleEscalate(directive, daysOverdue) {
   const code = directive.directive_code;
-  console.log(`${MODULE} 🔥 ${code} — quá hạn ${daysOverdue} ngày → auto_escalate`);
+  console.log(`${MODULE} 📌 ${code} — chưa có cập nhật ${daysOverdue} ngày → auto_escalate`);
 
   if (!DRY_RUN) {
     await db.from('engagement_events').insert({
@@ -239,11 +239,11 @@ async function handleEscalate(directive, daysOverdue) {
 }
 
 /**
- * ≥7 ngày quá hạn → Critical, email BOD Hosting
+ * ≥7 ngày chưa có cập nhật → Cần hỗ trợ đặc biệt, email BOD Hosting
  */
 async function handleCritical(directive, daysOverdue) {
   const code = directive.directive_code;
-  console.log(`${MODULE} 💀 ${code} — quá hạn ${daysOverdue} ngày → CRITICAL`);
+  console.log(`${MODULE} 📋 ${code} — chưa có cập nhật ${daysOverdue} ngày → CRITICAL`);
 
   if (!DRY_RUN) {
     await db.from('engagement_events').insert({
@@ -272,7 +272,7 @@ async function handleCritical(directive, daysOverdue) {
   if (directive.bod_hosting_email) {
     await trySendEmail({
       to: directive.bod_hosting_email,
-      subject: `📌 [NGHIÊM TRỌNG] Chỉ đạo ${code} — quá hạn ${daysOverdue} ngày`,
+      subject: `📌 [Cần hỗ trợ đặc biệt] Chỉ đạo ${code} — chưa có cập nhật ${daysOverdue} ngày`,
       html: buildCriticalHtml(directive, daysOverdue),
     });
   }
@@ -286,7 +286,7 @@ function buildRemindHtml(directive, daysOverdue) {
     <div style="font-family: Arial, sans-serif; max-width: 600px;">
       <h3>⏳ Nhắc xác nhận chỉ đạo</h3>
       <p>Chào anh/chị <strong>${directive.t1_dau_moi}</strong>,</p>
-      <p>Chỉ đạo <strong>${directive.directive_code}</strong> đã <strong>quá hạn ${daysOverdue} ngày</strong> (deadline: ${directive.t4_thoi_han}) nhưng chưa được xác nhận.</p>
+      <p>Chỉ đạo <strong>${directive.directive_code}</strong> đã <strong>chưa có cập nhật ${daysOverdue} ngày</strong> (deadline: ${directive.t4_thoi_han}) và chưa được xác nhận.</p>
       <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
         <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Nhiệm vụ</td><td style="padding: 8px; border: 1px solid #ddd;">${directive.t2_nhiem_vu || ''}</td></tr>
         <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Thời hạn</td><td style="padding: 8px; border: 1px solid #ddd;">${directive.t4_thoi_han}</td></tr>
@@ -302,9 +302,9 @@ function buildCriticalHtml(directive, daysOverdue) {
   const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3000';
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px;">
-      <h3 style="color: #dc2626;">📌 Cảnh báo nghiêm trọng — Chỉ đạo quá hạn ${daysOverdue} ngày</h3>
+      <h3 style="color: #dc2626;">📌 Cần hỗ trợ đặc biệt — Chỉ đạo chưa có cập nhật ${daysOverdue} ngày</h3>
       <p>Kính gửi anh/chị,</p>
-      <p>Chỉ đạo <strong>${directive.directive_code}</strong> đã <strong>quá hạn ${daysOverdue} ngày</strong> và đầu mối <strong>${directive.t1_dau_moi}</strong> chưa phản hồi.</p>
+      <p>Chỉ đạo <strong>${directive.directive_code}</strong> đã <strong>chưa có cập nhật ${daysOverdue} ngày</strong> và đầu mối <strong>${directive.t1_dau_moi}</strong> chưa phản hồi.</p>
       <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
         <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Nhiệm vụ</td><td style="padding: 8px; border: 1px solid #ddd;">${directive.t2_nhiem_vu || ''}</td></tr>
         <tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Đầu mối</td><td style="padding: 8px; border: 1px solid #ddd;">${directive.t1_dau_moi}</td></tr>

@@ -2,7 +2,7 @@
  * wf5-form-processor.js
  * CEO Directive WF5: Xử lý Cập nhật Tiến độ từ Google Form
  * 
- * Flow: Email nhắc nhở → Đầu mối click → Google Form → Sheets → Poll → Update Notion
+ * Flow: Email đồng hành → Đầu mối click → Google Form → Sheets → Poll → Update Notion
  * 
  * Usage:
  *   node wf5-form-processor.js            # Process responses

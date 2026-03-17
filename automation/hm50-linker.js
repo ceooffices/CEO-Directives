@@ -311,12 +311,12 @@ function buildTimeline(hmAggregate, hm50Items) {
         completion_rate: agg ? (agg.total > 0 ? Math.round((agg.completed / agg.total) * 100) / 100 : 0) : 0,
       });
 
-      // Risk signal: HM có status xấu + bị leo thang
+      // Risk signal: HM có status xấu + có tín hiệu rủi ro
       const status = hmTimeline[hmTT].current_status;
       if (escalationCount > 0 && (status.includes('Blind spot') || status.includes('Chưa có chủ'))) {
         riskSignals.push({
           hm_tt: hmTT,
-          reason: `Leo thang ${escalationCount} lần, status ${status}`,
+          reason: `Tín hiệu ${escalationCount} lần, status ${status}`,
         });
       }
     }
@@ -489,7 +489,7 @@ async function run() {
     id: 'unmatched',
     tt: 0,
     title: '🆕 Chỉ đạo mới (chưa gắn HM)',
-    phan_cl: 'Leo thang',
+    phan_cl: 'Tín hiệu rủi ro',
     status: '',
     dau_moi: '',
     impact_score: 0,
