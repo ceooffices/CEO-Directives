@@ -1,0 +1,265 @@
+{
+  "meeting_id": "BOD_02032026",
+  "date": "2026-03-02",
+  "duration_min": null,
+  "participants": [],
+  "extracted_by": "claude-opus-4.6",
+  "reviewed_by": "antigravity",
+  "total_directives": 12,
+  "directives": [
+    {
+      "local_id": 1,
+      "title": "Tất cả MS báo cáo chỉ số tương tác ứng viên hàng ngày 16h30 trên Signal",
+      "t1_dau_moi": [
+        "Tất cả MS"
+      ],
+      "t2_nhiem_vu": "Hàng ngày 16h30, mỗi MS báo cáo trên MSA Signal: tổng số ứng viên tương tác trong ngày + kết quả cụ thể (bao nhiêu người, hình thức gì). \"Listen to Me\" — tự báo cáo kết quả cá nhân.",
+      "t3_muc_tieu": "100% MS báo cáo hàng ngày",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "16h30 hằng ngày chúng ta sẽ hành động... tổng hợp thông tin báo cáo tổ chỉ số tương tác với ứng viên ngày hôm nay... chúng ta phải báo cáo ở trên MSI của Signal",
+      "why_line": 146,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 2,
+      "title": "Đội trưởng báo cáo tổng hợp kết quả team hàng ngày (\"Listen to Team\")",
+      "t1_dau_moi": [
+        "Tất cả đội trưởng (Kiều My",
+        "Dương Anh Thư",
+        "Thúy",
+        "Ngọc Tuyết",
+        "Hồng Ngọc...)"
+      ],
+      "t2_nhiem_vu": "Đội trưởng tổng hợp kết quả team hàng ngày: tổng thành viên hoạt động, tổng tương tác, kết quả cụ thể. Báo cáo trên Signal.",
+      "t3_muc_tieu": "Mỗi team có kết quả nhìn thấy được hàng ngày",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "listen to team... đội trưởng sẽ có cái báo cáo ngắn... tổng số thành viên đã hoạt động, tổng số tương tác",
+      "why_line": 148,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 3,
+      "title": "Tất cả team quay video báo cáo kết quả tuần vào thứ 6",
+      "t1_dau_moi": [
+        "Tất cả team MSA"
+      ],
+      "t2_nhiem_vu": "Thứ 6 hàng tuần, mỗi team quay 1 video tổng kết: kết quả tuần, năng lượng, kế hoạch tuần sau. Gửi cho Ban lãnh đạo.",
+      "t3_muc_tieu": "Ban lãnh đạo nhìn thấy năng lượng + kết quả từng team",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "cuối tuần là Kanchi sẽ quay một video tổng... chúng tôi muốn được gặp Kanchi qua những video như vậy chỉ là một tuần, một lần duy nhất vào ngày thứ 6",
+      "why_line": 151,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 4,
+      "title": "Thanh Hiếu + Dũng tổng hợp báo cáo kết quả chuyển đổi nguồn vào thứ 5",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "Đặng Tiến Dũng"
+      ],
+      "t2_nhiem_vu": "Tổng hợp 3 tầng: (1) 36 em chờ khai giảng, (2) 39 em chờ khám sức khỏe/sơ tuyển, (3) 120 em tiềm năng. Báo cáo chuyển đổi từng tầng cho BOD.",
+      "t3_muc_tieu": "BOD nắm được kết quả chuyển đổi cụ thể",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "Giờ đến thứ 5 thì mình sẽ tổng hợp các số liệu cụ thể để có báo cáo lại cho BOD",
+      "why_line": 301,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 5,
+      "title": "One Team đẩy sớm thông tin yêu cầu tuyển dụng cho MS",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn"
+      ],
+      "t2_nhiem_vu": "Tạo group riêng cho từng đơn tuyển (ví dụ: Nakanishi, CCC, CGOC). Trong group: thành viên One Team + MS phụ trách. Đẩy thông tin chi tiết (poster, chế độ, lương, cơ hội phát triển) để MS tư vấn ứng viên.",
+      "t3_muc_tieu": "MS có đủ thông tin để tư vấn ứng viên hiệu quả",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "sau 2 ngày thì cũng đã có được 26 em đã đăng ký vào các cơ hội việc làm... đây là cái nhanh nhất để nó ra được nguồn",
+      "why_line": 217,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 6,
+      "title": "Hiếu cập nhật trường \"người giới thiệu\" + \"người kết nối\" trên hệ thống",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "Trúc Anh"
+      ],
+      "t2_nhiem_vu": "Thêm trường \"người kết nối\" trên hệ thống bit.ly để ghi nhận vai trò giáo viên kết nối (tách biệt với MS2/cộng tác viên). Giáo viên không cần tiền thưởng, chỉ cần ghi nhận.",
+      "t3_muc_tieu": "Ghi nhận công sức giáo viên kết nối trên hệ thống",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "giáo viên là cái người kết nối... người ta không cần tiền... mong muốn hệ thống đưa vào vai trò kết nối",
+      "why_line": 261,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 7,
+      "title": "Mỗi thành viên One Team kết nối tối thiểu 3 giáo viên để phối hợp tạo nguồn",
+      "t1_dau_moi": [
+        "Tất cả thành viên One Team"
+      ],
+      "t2_nhiem_vu": "Mỗi thành viên One Team phải kết nối cụ thể tối thiểu 3 giáo viên tại các TT liên kết. Giáo viên hỗ trợ: (1) nhắc học viên tham gia buổi phổ biến việc làm, (2) chia sẻ thông tin tuyển dụng trên lớp, (3) định hướng nghề nghiệp.",
+      "t3_muc_tieu": "Phối hợp MS-Giáo viên-One Team chặt chẽ",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "anh đang chỉ đạo mỗi thành viên One Team sẽ kết nối được bao nhiêu giáo viên... bắt buộc phải kết nối",
+      "why_line": 233,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 8,
+      "title": "Team tập trung chạy nguồn cho 2 đơn tuyển ưu tiên: Nakanishi + CCC tuần này",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn",
+        "MSA team"
+      ],
+      "t2_nhiem_vu": "Ưu tiên tuyệt đối 2 đơn tuyển: Nakanishi và CCC. Ghi động tất cả nguồn lực MS + One Team + giáo viên để tìm ứng viên. Mỗi tuần chốt 1-2 đơn tuyển.",
+      "t3_muc_tieu": "Có đủ ứng viên cho Nakanishi + CCC",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "2 cái đơn tuyển rất lớn tiệt đối mình không để mất... Nakanishi và CCC... tuần này sẽ tập trung cho 2 hồi việc hàm này",
+      "why_line": 239,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 9,
+      "title": "Cô Hân + cô Thư làm việc với anh Tuấn về phối hợp MS-giáo viên vào thứ 5, 14h",
+      "t1_dau_moi": [
+        "Phạm Thị Ngọc Hân",
+        "cô Thư",
+        "Lê Anh Tuấn"
+      ],
+      "t2_nhiem_vu": "Ngồi lại thứ 5 chiều 14h: (1) Thống nhất thông tin tuyển dụng giữa MS và giáo viên (tránh sai lệch), (2) Xây dựng quy trình phối hợp MS-giáo viên theo timeline học viên, (3) Ghi nhận vai trò giáo viên.",
+      "t3_muc_tieu": "Quy trình phối hợp MS-giáo viên rõ ràng",
+      "t4_deadline": "2026-03-05",
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "thông tin giữa giáo viên và MS nó có khớp hay không... học viên nghe 2 luồng thông tin, nó sẽ mất tin tưởng",
+      "why_line": 265,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 10,
+      "title": "Trang + team KaiGo báo cáo kết quả nguồn tháng 3 trước thứ 5",
+      "t1_dau_moi": [
+        "Trần Ngọc Như Trang"
+      ],
+      "t2_nhiem_vu": "Báo cáo kết quả nguồn KaiGo tháng 3: dự kiến khai giảng 3 bạn nữ KaiGo ngày thứ 5. Báo cáo chi tiết nguồn nữ thiếu bao nhiêu.",
+      "t3_muc_tieu": "BOD nắm tình hình KaiGo",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "bo_sung",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "Trang trước thứ 5 cũng cho chuyển sang cái thông tin",
+      "why_line": 419,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 11,
+      "title": "CEO quản trị chỉ 2 thứ: KẾT QUẢ + TRÁCH NHIỆM",
+      "t1_dau_moi": [
+        "Toàn hệ thống — đặc biệt BOD"
+      ],
+      "t2_nhiem_vu": "CEO tuyên bố: từ nay chỉ quản trị 2 thứ: (1) Kết quả — đạt được gì, (2) Trách nhiệm — ai chịu trách nhiệm. Không còn push-push-push. Cần người tự chịu trách nhiệm. \"Cần người có trách nhiệm, không cần người giỏi.\"",
+      "t3_muc_tieu": "Thay đổi văn hóa quản trị",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "sắp tới cái hành trình tiếp theo là sếp quản trị hai món thôi. Món thứ nhất là kết quả. Món thứ hai là trách nhiệm.",
+      "why_line": 387,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 12,
+      "title": "Mỗi nhân viên phải tương tác tối thiểu với người khác mỗi ngày — không \"đơn bào\"",
+      "t1_dau_moi": [
+        "Toàn hệ thống S2"
+      ],
+      "t2_nhiem_vu": "CEO dùng ẩn dụ \"neuron\": mỗi nhân viên phải kết nối, tương tác trong chuyên môn mỗi ngày. Tối thiểu 1-2 cuộc tương tác/ngày, tăng dần. Không \"đơn bào\" — check-in check-out 8 tiếng mà không kết nối. \"Push, push, pull\" — nhắc nhau liên tục.",
+      "t3_muc_tieu": "Văn hóa kết nối — System = kết nối",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "400 người mà đến công ty, chỉ ngồi đó làm đơn bào... phải push push pull nhớ cứ mỗi nhân sự mở miệng ra... những người không có trách nhiệm thì neuron tự bị cúp điện",
+      "why_line": 311,
+      "notion_id": null,
+      "status": "pending_review"
+    }
+  ],
+  "analysis": {
+    "by_nhom": {
+      "1": {
+        "count": 4,
+        "label": "MSA"
+      },
+      "2": {
+        "count": 6,
+        "label": "ONETEAM"
+      },
+      "CEO": {
+        "count": 2,
+        "label": "CHỈ ĐẠO TỪ CEO"
+      }
+    },
+    "by_loai": {
+      "leo_thang": 5,
+      "moi": 6,
+      "bo_sung": 1
+    },
+    "hm_escalation_count": {},
+    "risk_signals": [],
+    "deadline_this_week": [
+      9
+    ],
+    "deadline_today": [],
+    "high_confidence_matches": []
+  },
+  "created_at": "2026-03-17T04:35:38.738Z"
+}

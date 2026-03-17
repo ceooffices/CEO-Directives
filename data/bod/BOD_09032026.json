@@ -1,0 +1,338 @@
+{
+  "meeting_id": "BOD_09032026",
+  "date": "2026-03-09",
+  "duration_min": null,
+  "participants": [],
+  "extracted_by": "claude-opus-4.6",
+  "reviewed_by": "antigravity",
+  "total_directives": 15,
+  "directives": [
+    {
+      "local_id": 1,
+      "title": "Tuyển gấp 17 nhân sự MS cho hệ thống MSA",
+      "t1_dau_moi": [
+        "Nguyễn Ngọc Lan Vy",
+        "Đặng Tiến Dũng"
+      ],
+      "t2_nhiem_vu": "Tuyển dụng bổ sung 17 vị trí MS trên toàn hệ thống (Huế → TP.HCM). Hiện 45 MS, 3 thai sản, 2 chuẩn bị thai sản, thiếu 1/3 nhân lực.",
+      "t3_muc_tieu": "17 MS mới vào hệ thống",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "17 thành viên còn tuyển dụng thay thế... trong ba tháng đầu năm chưa có một bạn MS nào bổ sung",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 2,
+      "title": "Đẩy nhanh nhập học 179 ứng viên đã khám sức khỏe/sơ tuyển",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "các MS phụ trách"
+      ],
+      "t2_nhiem_vu": "179 ứng viên đang ở bước sơ tuyển/khám sức khỏe → đẩy nhanh thủ tục nhập học. Phối hợp giáo viên tại TT liên kết.",
+      "t3_muc_tieu": "Chuyển đổi 179 ứng viên thành học viên nhập học",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "bo_sung",
+      "nhom": "1",
+      "hm50_match": null,
+      "why_quote": "179 em đang ở giai đoạn khám sức khỏe... bên PVC cũng sẵn sàng phối hợp... cần phải đẩy sớm",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 3,
+      "title": "Kế hoạch tuyển sinh chi tiết theo từng đội, từng địa bàn",
+      "t1_dau_moi": [
+        "Đặng Tiến Dũng",
+        "Bùi Thị Thanh Hiếu"
+      ],
+      "t2_nhiem_vu": "Lập kế hoạch chi tiết cho từng TT liên kết: Đồng Nai, Bình Dương, Vũng Tàu, Đà Nẵng, Hà Nội — mỗi nơi có mục tiêu riêng, con số cụ thể. KHÔNG báo cáo chung chung. Ngắn hạn (tháng 3) + trung hạn (3-6 tháng) song song.",
+      "t3_muc_tieu": "Mỗi đội có kế hoạch + con số cụ thể",
+      "t4_deadline": "2026-03-13",
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "hãy chi tiết cụ thể vào từng đơn tuyển... có địa điểm cụ thể là đội nào thực hiện con số nào",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 4,
+      "title": "Bắt đầu triển khai đơn tuyển GA ngay — không chờ tháng 6-7",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn",
+        "các đội trưởng TT liên kết"
+      ],
+      "t2_nhiem_vu": "Đơn tuyển GA yêu cầu N5 tiếng Nhật → phải tuyển chọn ngay. Giao chỉ tiêu cho từng đội: Đồng Nai, Bình Dương, Đà Nẵng, Hà Nội.",
+      "t3_muc_tieu": "70 vị trí GA, phân bổ theo đội",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "nếu không bắt đầu từ bây giờ mà đến tháng 6 tháng 7 chúng ta mới triển khai... sẽ không thể đạt được",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 5,
+      "title": "Họp 3 bên (One Team + Kaizen + MSA) tại Bình Dương và Huế",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "Nguyễn Thị Nhiên"
+      ],
+      "t2_nhiem_vu": "Tổ chức họp 3 bên tại 2 TT liên kết: Bình Dương và Huế. Đánh giá kết quả + tình hình từng học viên nhóm B2/B3. Triển khai hàng tháng.",
+      "t3_muc_tieu": "Biên bản họp + kế hoạch hành động cho 2 TT",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "sự kết hợp giữa ba bên là One Team Kaizen và MSA... mỗi tháng ngồi chung để đánh giá kết quả",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 6,
+      "title": "Tổng hợp đề xuất mời doanh nghiệp Nhật về trường",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "Trần Ngọc Như Trang"
+      ],
+      "t2_nhiem_vu": "Tổng hợp đề xuất từ MS + TT liên kết về hoạt động mời doanh nghiệp Nhật về trường gặp sinh viên. Gửi anh Tuấn.",
+      "t3_muc_tieu": "Danh sách đề xuất cụ thể gửi ONETEAM",
+      "t4_deadline": "2026-03-13",
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "đề xuất về việc các doanh nghiệp Nhật về chung với các trường... gửi lại đề xuất này vào thứ 5",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 7,
+      "title": "Triển khai bản tin tuyển dụng nội bộ",
+      "t1_dau_moi": [
+        "Nguyễn Ngọc Lan Vy"
+      ],
+      "t2_nhiem_vu": "HR làm bản tin tuyển dụng nội bộ, phát hành trong hệ thống để mỗi thành viên biết nhu cầu và có thể giới thiệu ứng viên MS.",
+      "t3_muc_tieu": "Lan tỏa thông tin tuyển dụng 17 vị trí MS",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "nhân sự sẽ làm một bản tin tuyển dụng... để lan tỏa đến hệ thống",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 8,
+      "title": "Cung cấp đầu mối MS phụ trách tăng hiệu quả phát sinh",
+      "t1_dau_moi": [
+        "Bùi Thị Thanh Hiếu",
+        "Đặng Tiến Dũng"
+      ],
+      "t2_nhiem_vu": "Cung cấp danh sách đầu mối MS phụ trách từng đơn tuyển cho ONETEAM. Hàng ngày phối hợp, xác nhận, báo cáo.",
+      "t3_muc_tieu": "Mỗi đơn tuyển có đầu mối MS rõ ràng",
+      "t4_deadline": "2026-03-13",
+      "t5_tieu_chuan": "",
+      "loai": "bo_sung",
+      "nhom": "2",
+      "hm50_match": null,
+      "why_quote": "cho anh đầu mối của MS để báo về các phương án tăng hiệu quả phát sinh",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 9,
+      "title": "Lên kế hoạch sớm 6 tháng cho đơn tuyển đặc thù",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn",
+        "Trần Ngọc Như Trang"
+      ],
+      "t2_nhiem_vu": "Các đơn tuyển đặc thù (GA, ô tô, xây dựng) cần kế hoạch trước 6 tháng. Phân bổ chỉ tiêu theo TT liên kết theo ngành.",
+      "t3_muc_tieu": "Kế hoạch 6 tháng cho đơn tuyển dài hạn",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "3",
+      "hm50_match": null,
+      "why_quote": "",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 10,
+      "title": "Giao chỉ tiêu tuyển dụng ngành Điện cho các TT liên kết",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn",
+        "các đội trưởng TT liên kết"
+      ],
+      "t2_nhiem_vu": "Ngành Điện nhu cầu lớn (Denso, Renmei). Rà soát TT liên kết có SV ngành Điện → giao chỉ tiêu.",
+      "t3_muc_tieu": "Mỗi TT liên kết có chỉ tiêu ngành Điện",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "3",
+      "hm50_match": null,
+      "why_quote": "",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 11,
+      "title": "Từng TT liên kết lập danh mục nghề đào tạo + số SV tốt nghiệp 2026",
+      "t1_dau_moi": [
+        "Tất cả đội trưởng TT liên kết",
+        "Đặng Tiến Dũng"
+      ],
+      "t2_nhiem_vu": "Mỗi TT liên kết lập danh mục: nghề đào tạo tại trường + số SV dự kiến tốt nghiệp 2026 từng nghề. Tổng hợp gửi MSA.",
+      "t3_muc_tieu": "Dữ liệu nền tảng để đặt mục tiêu tuyển dụng",
+      "t4_deadline": "2026-03-10",
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "thầy cho các em lập danh mục các nghề đào tạo... dự kiến số lượng ra trường năm 2026 từng nghề",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 12,
+      "title": "Đặt mục tiêu tuyển dụng theo % SV tốt nghiệp từng khoa",
+      "t1_dau_moi": [
+        "Đặng Tiến Dũng",
+        "Bùi Thị Thanh Hiếu"
+      ],
+      "t2_nhiem_vu": "Dựa trên danh mục nghề (#11), đặt mục tiêu tuyển theo tỷ lệ %. Ví dụ: ô tô 70 em → mục tiêu 20% = 14 em.",
+      "t3_muc_tieu": "Mục tiêu có cơ sở dữ liệu, không đặt số cơ học",
+      "t4_deadline": "2026-03-13",
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "mình đặt ra mục tiêu là 20%... trên một cái nền tảng cơ sở",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 13,
+      "title": "Mỗi đơn tuyển phải có nội dung chi tiết + deadline giao hàng (QCD)",
+      "t1_dau_moi": [
+        "Lê Anh Tuấn",
+        "tất cả đầu mối đơn tuyển"
+      ],
+      "t2_nhiem_vu": "Mỗi đơn tuyển phải có: nội dung chi tiết (ưu điểm DN, phát triển nghề), đầu mối chịu trách nhiệm, deadline giao hàng. KHÔNG nói chung chung.",
+      "t3_muc_tieu": "QCD mỗi đơn tuyển: Quality + Cost + Delivery",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "cháo lòng / bánh xèo\" — \"phải nhớ cháo lòng phải gắn thêm topping... thiếu deadline giao hàng thì không ra được",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 14,
+      "title": "Phân công 4 đầu mối cho 2 đơn tuyển ưu tiên tuần này",
+      "t1_dau_moi": [
+        "Ân",
+        "Thư",
+        "Thúy",
+        "Huy"
+      ],
+      "t2_nhiem_vu": "4 đầu mối ưu tiên 2 đơn tuyển: (1) Agency — cơ khí, (2) One Star — thực phẩm. Tập trung nguồn nữ.",
+      "t3_muc_tieu": "Có ứng viên đăng ký cho 2 đơn tuyển",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "moi",
+      "nhom": "CEO",
+      "hm50_match": null,
+      "why_quote": "",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    },
+    {
+      "local_id": 15,
+      "title": "Tăng học viên nhập học tại TT liên kết ít người + bổ sung giáo viên",
+      "t1_dau_moi": [
+        "Phạm Thị Ngọc Hân",
+        "Đặng Tiến Dũng"
+      ],
+      "t2_nhiem_vu": "TT liên kết ít học viên (An Giang 14, Bến Tre 12, Huế 22) cần chiến lược tăng nhập học. Bổ sung giáo viên cơ hữu cho Hà Nội và An Giang.",
+      "t3_muc_tieu": "Tăng số học viên đặt học tại các TT ít người",
+      "t4_deadline": null,
+      "t5_tieu_chuan": "",
+      "loai": "leo_thang",
+      "nhom": "4",
+      "hm50_match": null,
+      "why_quote": "",
+      "why_line": null,
+      "notion_id": null,
+      "status": "pending_review"
+    }
+  ],
+  "analysis": {
+    "by_nhom": {
+      "1": {
+        "count": 2,
+        "label": "MSA"
+      },
+      "2": {
+        "count": 6,
+        "label": "ONETEAM"
+      },
+      "3": {
+        "count": 2,
+        "label": "BAN ĐỐI NGOẠI"
+      },
+      "4": {
+        "count": 1,
+        "label": "KAIZEN"
+      },
+      "CEO": {
+        "count": 4,
+        "label": "CHỈ ĐẠO TỪ CEO"
+      }
+    },
+    "by_loai": {
+      "leo_thang": 7,
+      "moi": 6,
+      "bo_sung": 2
+    },
+    "hm_escalation_count": {},
+    "risk_signals": [],
+    "deadline_this_week": [
+      3,
+      6,
+      8,
+      11,
+      12
+    ],
+    "deadline_today": [],
+    "high_confidence_matches": []
+  },
+  "created_at": "2026-03-17T04:34:58.147Z"
+}

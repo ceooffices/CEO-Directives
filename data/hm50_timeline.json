@@ -1,0 +1,522 @@
+{
+  "generated_at": "2026-03-16T17:13:39.431Z",
+  "meetings": [
+    {
+      "meeting_id": "BOD_16032026",
+      "date": "2026-03-16",
+      "total_directives": 25,
+      "hm_affected": 14,
+      "risk_signals": [
+        {
+          "hm_tt": 44,
+          "reason": "Leo thang 4 lần, status ⚠️ Chưa có chủ"
+        },
+        {
+          "hm_tt": 19,
+          "reason": "Leo thang 1 lần, status ❌ Blind spot"
+        },
+        {
+          "hm_tt": 14,
+          "reason": "Bổ sung 1 lần, status ❌ Blind spot"
+        }
+      ]
+    }
+  ],
+  "hm_items": [
+    {
+      "hm_tt": 40,
+      "title": "4 kênh tạo nguồn",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 4,
+          "directives": [
+            {
+              "id": "#1",
+              "title": "Khai thác kênh nguồn lạnh (data cũ 2 năm) tại Đà Nẵng",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#2",
+              "title": "Đặt mục tiêu MS dựa trên SV tốt nghiệp thực tế 2024-2026 (3-5% chuyển đổi)",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#5",
+              "title": "Chuẩn bị tài liệu + kế hoạch tư vấn trực tiếp tại 3 trường Huế tuần này",
+              "loai": "moi"
+            },
+            {
+              "id": "#14",
+              "title": "Đề xuất kế hoạch tiếp cận nguồn lao động nữ tại xã",
+              "loai": "moi"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 4,
+      "total_escalations": 4,
+      "trend": "critical",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 4,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 44,
+      "title": "8 cụm CSDL chiến lược",
+      "phan_cl": "VII — Công nghệ & Dữ liệu",
+      "current_status": "⚠️ Chưa có chủ",
+      "t1_dau_moi": "NGUYỄN THÀNH TRUNG (IDS)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 4,
+          "directives": [
+            {
+              "id": "#7",
+              "title": "Lập danh sách 100% HV tại Vĩnh Long (từng em, chương trình, lớp, GV, MS)",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#9",
+              "title": "Thống kê danh sách T3 tốt nghiệp theo từng TTLK (BD, ĐN, LA, HN)",
+              "loai": "bo_sung"
+            },
+            {
+              "id": "#17",
+              "title": "Hoàn chỉnh quy trình quản lý data HV — phân quyền, chống tuồn nguồn",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#19",
+              "title": "Họp khẩn kiểm soát hành vi NV + data HV tuần này",
+              "loai": "moi"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 4,
+      "total_escalations": 4,
+      "trend": "critical",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 4,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 18,
+      "title": "Tái cấu trúc MSA 9 đội hình",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 3,
+          "directives": [
+            {
+              "id": "#4",
+              "title": "Khai giảng 4 lớp tại Huế + Quảng Trị tháng 4 (25 em/lớp = 100 HV)",
+              "loai": "moi"
+            },
+            {
+              "id": "#6",
+              "title": "Mở lớp offline tại trường TC số 10 Huế bằng mọi giá",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#13",
+              "title": "Nhân rộng mô hình chuyến xe ra Tiền Giang, Long An",
+              "loai": "moi"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 3,
+      "total_escalations": 3,
+      "trend": "worsening",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 3,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 21,
+      "title": "3 mắt xích: KOKA→MSA→JPC",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "SHIMIZU HIROKO (Phó TGĐ)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 2,
+          "directives": [
+            {
+              "id": "#8",
+              "title": "Kế hoạch chuyển đổi việc làm cho toàn bộ HV T3 tốt nghiệp 2026",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#15",
+              "title": "Triển khai nguồn SV kỹ thuật (điện/cơ khí) cho đơn hàng JR — mở lớp 60 HV trước tháng 4",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 2,
+      "total_escalations": 2,
+      "trend": "worsening",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 2,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 31,
+      "title": "Mỗi cuộc gọi = 1 cuộc đời",
+      "phan_cl": "V — Văn hóa & Con người",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 2,
+          "directives": [
+            {
+              "id": "#22",
+              "title": "Xử lý 81 HV bảo lưu/nghỉ học — giao GV liên hệ từng em, báo cáo tuần này",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#23",
+              "title": "Báo cáo kết quả liên hệ 180 HV nghỉ học 2025",
+              "loai": "bo_sung"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 2,
+      "total_escalations": 2,
+      "trend": "worsening",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 2,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 42,
+      "title": "ĐT + Kỹ năng = sản phẩm cốt lõi",
+      "phan_cl": "VI — Chiến lược KD & MKT",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "SHIMIZU HIROKO (Phó TGĐ)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 2,
+          "directives": [
+            {
+              "id": "#20",
+              "title": "Xây dựng chuẩn đầu ra đồng bộ cho JBC (N4/N5, kỹ năng nói, thái độ, hướng nghiệp, pro skill)",
+              "loai": "leo_thang"
+            },
+            {
+              "id": "#21",
+              "title": "Bám sát nâng chất lượng nhóm 21-22 HV có nguy cơ",
+              "loai": "bo_sung"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 2,
+      "total_escalations": 2,
+      "trend": "worsening",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 2,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 14,
+      "title": "Họp tháng Pipeline toàn hệ thống",
+      "phan_cl": "II — Quản trị kết quả",
+      "current_status": "❌ Blind spot",
+      "t1_dau_moi": "CEO — LÊ LONG SƠN",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#10",
+              "title": "Tổng hợp danh mục ngành + SV tốt nghiệp từ tất cả trường → in ra bàn CEO",
+              "loai": "bo_sung"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 16,
+      "title": "Sơ đồ tổ chức = khung xương",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "MASUDA TAKEHIKO (GĐ vận hành Esutech)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#24",
+              "title": "Thành lập đội tác chiến liên phòng ban giữ nguồn HV",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 19,
+      "title": "Phân loại NS 4 nhóm A-B-C-D",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "current_status": "❌ Blind spot",
+      "t1_dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#18",
+              "title": "Sàng lọc + kiểm soát nhân sự (chuyển từ \"kêu gọi\" sang \"sàng lọc\")",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 22,
+      "title": "Vai trò Ban Cố vấn",
+      "phan_cl": "III — Tổ chức & Nhân sự",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "ĐẶNG TIẾN DŨNG (Trưởng phòng MSA)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#3",
+              "title": "Ban huấn luyện giám sát kết quả kênh hàng tuần/tháng tại Đà Nẵng",
+              "loai": "bo_sung"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 27,
+      "title": "400 NS × 1 HV/tháng",
+      "phan_cl": "IV — Lương 3P & Đầu mối",
+      "current_status": "⚠️ Chưa có chủ",
+      "t1_dau_moi": "CEO — LÊ LONG SƠN (TikMe)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#12",
+              "title": "Chốt chuyến xe 36 SV Bình Dương tháng 3",
+              "loai": "moi"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 30,
+      "title": "Thụ động → Chiến binh chủ động",
+      "phan_cl": "V — Văn hóa & Con người",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#16",
+              "title": "MS chủ động đặt hàng đơn tuyển phù hợp nguồn (không chỉ chờ ONETEAM giao)",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 32,
+      "title": "Quan liêu → Quản trị",
+      "phan_cl": "V — Văn hóa & Con người",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "LÊ ANH TUẤN (Phó TGĐ)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#11",
+              "title": "Xác thực số liệu ứng viên + đẩy 65 UV vào sự kiện CEO",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    },
+    {
+      "hm_tt": 49,
+      "title": "Kaizen + PDCA",
+      "phan_cl": "VIII — Học tập & Tương lai",
+      "current_status": "✅ Có chủ",
+      "t1_dau_moi": "MASUDA TAKEHIKO (GĐ vận hành Esutech)",
+      "escalation_history": [
+        {
+          "meeting": "BOD_16032026",
+          "date": "2026-03-16",
+          "count": 1,
+          "directives": [
+            {
+              "id": "#25",
+              "title": "Thay đổi tư duy: hệ thống hóa giải quyết vấn đề, trách nhiệm trước-trong-sau",
+              "loai": "leo_thang"
+            }
+          ]
+        }
+      ],
+      "total_mentions": 1,
+      "total_escalations": 1,
+      "trend": "stable",
+      "snapshots": [
+        {
+          "date": "2026-03-16",
+          "directive_count": 1,
+          "completion_rate": 0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_hm_affected": 14,
+    "critical": 2,
+    "worsening": 4,
+    "stable": 8
+  }
+}
