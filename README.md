@@ -1,19 +1,48 @@
-# 📋 CEO Directives — Hệ Thống Quản Trị Chỉ Đạo CEO
+# 📋 CEO Directives — Hệ Thống Nhận Diện & Hỗ Trợ Tuân Thủ Chỉ Đạo CEO
 
-> **EsuhaiGroup S2** — Theo dõi chỉ đạo CEO từ cuộc họp BOD đến hoàn thành, tự động nhắc nhở & leo thang
+> **EsuhaiGroup S2** — Theo dõi hành vi tuân thủ chỉ đạo CEO một cách tinh tế, phát hiện rủi ro sớm, đồng hành cùng đầu mối hành động
+
+---
+
+## Triết Lý Hệ Thống
+
+> *"Tôi đang làm việc này cho ai?"*
+
+Hệ thống này **không phải để nhắc việc hay gây áp lực**. Nó được xây dựng với tinh thần **Cố Vấn Đồng Hành (Advisor)** — ứng dụng tâm lý học quản lý vào mọi điểm chạm:
+
+- **Nhận diện hành vi**, không phán xét con người — Tracking pixel và metadata cho biết email đã được mở chưa, biên bản đã đọc hết chưa, mà không tạo cảm giác bị giám sát
+- **Phát hiện "chỉ đạo trôi"** — Khi một chỉ đạo không có tương tác nào trong nhiều ngày, hệ thống nhận biết qua dữ liệu, không qua phàn nàn
+- **Hỗ trợ thay vì đe dọa** — Hỏi "Anh/chị có khó khăn gì không?", gợi ý cách xử lý, đưa CTA (Call-to-Action) rõ ràng thay vì email nhắc nhở khô khan
+- **Động viên bằng dữ liệu** — Hiển thị tiến độ tích cực, công nhận nỗ lực, tạo cảm giác "mình đang đi đúng hướng"
+
+### 10 Bài Học Tâm Lý Được Ứng Dụng
+
+| # | Nguyên tắc | Cách hệ thống áp dụng |
+|---|------------|------------------------|
+| 1 | **Tôn trọng** — Không ai muốn bị nhắc nhở công khai | Email gửi riêng, ngôn ngữ mềm mỏng, không CC nhiều người |
+| 2 | **Rõ ràng** — Không biết bắt đầu từ đâu = không hành động | CTA cụ thể: "Nhấn nút này để xác nhận" thay vì "Xin hãy phản hồi" |
+| 3 | **Sự lựa chọn** — Con người hành động tốt hơn khi có quyền chọn | Nút "Đã xử lý", "Cần thêm thời gian", "Cần hỗ trợ" — không chỉ có 1 nút |
+| 4 | **Positive framing** — Ai cũng muốn biết mình đã làm tốt | "Anh đã hoàn thành 3/5 chỉ đạo ✅" thay vì "Anh còn 2 chỉ đạo chưa xong" |
+| 5 | **Giảm tải nhận thức** — Quá nhiều thông tin = tê liệt | Mỗi email chỉ 1 chỉ đạo, 1 CTA, thông tin vừa đủ |
+| 6 | **Social proof** — "Người khác cũng đang hành động" | Dashboard hiển thị tiến độ chung, tạo động lực nhóm |
+| 7 | **Urgency tinh tế** — Deadline nhẹ nhàng, không hăm dọa | "Còn 2 ngày để hoàn thành — anh có cần hỗ trợ gì không?" |
+| 8 | **Empathy** — Hiểu khó khăn thực tế | "Nếu thiếu nguồn lực, hãy cho chúng tôi biết — thầy sẵn sàng hỗ trợ" |
+| 9 | **Consistency** — Tạo thói quen nhất quán | Cùng format, cùng giờ, cùng cách trình bày — dễ đoán, dễ xử lý |
+| 10 | **Ownership** — Tạo cảm giác "đây là việc của mình" | Gọi tên cụ thể, xưng hô đúng, nội dung cá nhân hóa |
 
 ---
 
 ## Giới Thiệu Nhanh
 
-Hệ thống này giúp **CEO và Ban Giám Đốc** quản lý chỉ đạo một cách tự động:
+Hệ thống giúp **CEO và Ban Giám Đốc** điều hành chỉ đạo bằng dữ liệu:
 
-1. **CEO ra chỉ đạo** tại cuộc họp BOD
-2. Hệ thống **tự động giao việc** cho đầu mối phụ trách
-3. Đầu mối **xác nhận 5T** (ai làm, làm gì, đo gì, khi nào, ngân sách)
-4. Hệ thống **tự động nhắc nhở** nếu quá hạn
-5. **Leo thang tự động** lên Ban Giám Đốc nếu không xử lý
-6. CEO **duyệt kết quả** và đóng chỉ đạo
+1. **CEO ra chỉ đạo** tại cuộc họp BOD → Biên bản được số hóa
+2. Hệ thống **phân bổ 5T** cho đầu mối phụ trách (email chính thức)
+3. Đầu mối **xác nhận đã tiếp nhận** — hệ thống ghi nhận hành vi
+4. **Tracking tinh tế** — theo dõi email mở/chưa mở, biên bản đọc/chưa đọc
+5. **Phát hiện rủi ro sớm** — chỉ đạo không tương tác = cảnh báo cho Ban Cố Vấn
+6. **Hỗ trợ đầu mối** — gợi ý cách xử lý, hỏi khó khăn, đưa CTA
+7. CEO **duyệt kết quả** và đánh giá hiệu quả
 
 ![Kiến trúc hệ thống](docs/images/system-architecture.png)
 
@@ -47,18 +76,34 @@ Mỗi chỉ đạo đi qua 7 bước từ lúc CEO phát biểu đến lúc hoà
 
 ---
 
-## Hệ Thống Cảnh Báo Tự Động
+## Hệ Thống Nhận Diện Hành Vi & Cảnh Báo Rủi Ro
 
-Mỗi sáng 8h, hệ thống tự kiểm tra tất cả chỉ đạo và gửi cảnh báo theo 4 cấp:
+Hệ thống **không nhắc việc** — mà **theo dõi tín hiệu hành vi** để phát hiện sớm rủi ro:
+
+### Tín hiệu theo dõi
+
+| Tín hiệu | Cách thu thập | Ý nghĩa |
+|-----------|---------------|---------|
+| 📧 Email mở/chưa mở | Tracking pixel invisible | Đầu mối có quan tâm đến chỉ đạo hay không |
+| 📄 Biên bản đọc/chưa đọc | Route tracking | Nội dung chính thức có được tiếp nhận không |
+| ✅ Xác nhận 5T | Nút CTA trong email | Đầu mối có cam kết thực hiện không |
+| ⏱️ Thời gian phản hồi | Timestamp delta | Mức độ ưu tiên mà đầu mối dành cho chỉ đạo |
+| 🔄 Tần suất tương tác | Event log | Pattern hành vi — liên tục hay bỏ quên |
+
+### 4 Cấp Cảnh Báo Rủi Ro
+
+Mỗi sáng 8h, hệ thống phân tích tất cả tín hiệu và đưa ra đánh giá:
 
 ![Hệ thống cảnh báo 4 cấp](docs/images/escalation-levels.png)
 
-| Cấp | Quá hạn | Hệ thống tự động làm gì |
-|-----|---------|--------------------------|
-| ⚡ Nhắc nhở | 1 ngày | Gửi email nhắc đầu mối phụ trách |
-| 🔥 Leo thang | 3 ngày | Cảnh báo Phó TGĐ theo dõi |
-| 🚨 Nghiêm trọng | 7 ngày | Gửi báo cáo cho Ban Giám Đốc |
-| 💀 Mất kiểm soát | 14 ngày | CEO trực tiếp can thiệp |
+| Cấp | Tín hiệu | Hệ thống phản ứng |
+|-----|----------|---------------------|
+| 💚 Bình thường | Email đã mở, có tương tác | Không hành động — mọi thứ đang tốt |
+| ⚡ Quan tâm | Email chưa mở sau 1 ngày | Gửi email hỗ trợ: "Anh/chị cần chúng tôi hỗ trợ gì không?" |
+| 🔥 Rủi ro | Không tương tác sau 3 ngày | Thông báo Ban Cố Vấn — gợi ý cách tiếp cận đầu mối |
+| 🚨 Nghiêm trọng | Mất tín hiệu > 7 ngày | Báo cáo BOD kèm phân tích — đề xuất phương án xử lý |
+
+> **Lưu ý**: Ở mọi cấp, ngôn ngữ luôn mang tính **hỗ trợ và đồng hành**, không bao giờ đe dọa hay gây áp lực tiêu cực.
 
 ---
 
@@ -78,10 +123,10 @@ Hệ thống tự nhận biết 3 dạng chỉ đạo và xử lý khác nhau:
 
 | Thành phần | Công nghệ | Vai trò |
 |------------|-----------|---------|
-| 🌐 Dashboard | **Next.js 16** | Giao diện web theo dõi chỉ đạo |
-| 💾 Cơ sở dữ liệu | **Supabase (PostgreSQL)** | Lưu trữ chỉ đạo, nhân sự, events |
-| ⚡ Tự động hóa | **Supabase Edge Functions** | Cron job nhắc nhở & leo thang |
-| 📧 Email | **Node.js + SMTP** | Gửi email xác nhận, nhắc nhở |
+| 🌐 Dashboard | **Next.js 16** | Giao diện theo dõi hành vi tuân thủ |
+| 💾 Cơ sở dữ liệu | **Supabase (PostgreSQL)** | Lưu trữ chỉ đạo, nhân sự, engagement events |
+| ⚡ Tự động hóa | **Supabase Edge Functions** | Phân tích tín hiệu & cảnh báo rủi ro (8h sáng) |
+| 📧 Email | **Node.js + SMTP** | Email chính thức + tracking pixel |
 | 📱 Signal | **Signal REST API** | Báo cáo tuần cho CEO |
 | 🔄 Scripts | **Node.js** | Seed data, dedup, reporting |
 
@@ -93,7 +138,7 @@ Hệ thống tự nhận biết 3 dạng chỉ đạo và xử lý khác nhau:
 | Nhân sự Esuhai | **366** người |
 | Hạng mục BSC | **50** hạng mục chiến lược |
 | Email đã mapping | **52/52 (100%)** |
-| Cron job tự động | **1** (8h sáng hàng ngày) |
+| Cron job phân tích | **1** (8h sáng hàng ngày) |
 
 ---
 
@@ -112,24 +157,23 @@ npm run dev
 
 Mở trình duyệt: **http://localhost:3000**
 
-Dashboard hiển thị:
-- 📊 Tổng quan trạng thái chỉ đạo
-- ⚡ Alert Panel — cảnh báo quá hạn 3 cấp
-- 🗓️ Timeline — lịch sử sự kiện
-- 🌡️ Heatmap 50 Hạng Mục BSC
-- 📈 LELONGSON Pipeline — tiến độ 7 bước
+Dashboard 4 tab:
+- 📊 **Tổng quan** — Stats, Health Score, đầu mối chịu trách nhiệm
+- 🚨 **Hành động** — Chỉ đạo cần quan tâm, CTA nhắc/hỗ trợ
+- 🎯 **Chiến lược** — BSC Scorecard, LELONGSON Pipeline, nguồn gốc
+- 📈 **Diễn biến** — HM50 Heatmap, BOD Timeline
 
 ### 2. Các Trang Quan Trọng
 
 | Trang | URL | Ai dùng | Để làm gì |
 |-------|-----|---------|-----------|
-| Dashboard chính | `/` | CEO, Ban Cố Vấn | Xem tổng quan tất cả chỉ đạo |
-| Trợ lý CEO | `/dashboard/assistant` | Trợ lý CEO | Xem chi tiết + hành động |
+| Dashboard chính | `/` | CEO, Ban Cố Vấn | Xem tổng quan hành vi tuân thủ |
+| Trợ lý CEO | `/dashboard/assistant` | Trợ lý CEO | Chi tiết + hành động |
 | Chi tiết chỉ đạo | `/directive/[id]` | Tất cả | Xem chi tiết 1 chỉ đạo |
-| Xác nhận 5T | `/confirm/[id]` | Đầu mối | Xác nhận đã nhận chỉ đạo |
+| Xác nhận 5T | `/confirm/[id]` | Đầu mối | Xác nhận tiếp nhận chỉ đạo |
 | Duyệt kết quả | `/approve/[id]` | BOD Hosting | Duyệt/từ chối kết quả |
 
-### 3. Chạy Scripts Tự Động
+### 3. Chạy Scripts
 
 ```bash
 cd automation
@@ -141,19 +185,18 @@ node seed-emails.js
 node dedup-directives.js
 
 # Báo cáo tuần — gửi qua Signal
-node signal-briefing.js --dry-run    # Xem trước (không gửi)
+node signal-briefing.js --dry-run    # Xem trước
 node signal-briefing.js              # Gửi thật
 ```
 
-### 4. API cho Tích Hợp Bên Ngoài
+### 4. API
 
 | API | Phương thức | Chức năng |
 |-----|-------------|-----------|
-| `/api/status` | GET | Trạng thái hệ thống (health score, alerts) |
+| `/api/status` | GET | Health score, tín hiệu rủi ro, alerts |
 | `/api/confirm` | POST | Đầu mối xác nhận 5T |
-| `/api/approve` | POST | BOD duyệt/từ chối |
-| `/api/escalate` | POST | Leo thang lên CEO |
-| `/api/remind` | POST | Gửi nhắc nhở thủ công |
+| `/api/approve` | POST | BOD duyệt kết quả |
+| `/api/remind` | POST | Gửi email hỗ trợ (không phải nhắc nhở) |
 
 ---
 
@@ -164,51 +207,38 @@ CEO-Directives/
 │
 ├── 📂 web/                         ← Dashboard (Next.js)
 │   ├── src/app/
-│   │   ├── page.tsx                ← Trang chính
-│   │   ├── components/             ← Các component UI
-│   │   │   ├── alert-panel.tsx     ← Bảng cảnh báo 3 cấp
-│   │   │   ├── deadline-countdown  ← Đếm ngược deadline
-│   │   │   ├── engagement-activity ← Timeline sự kiện
+│   │   ├── page.tsx                ← Trang chính (4 tabs)
+│   │   ├── components/             ← UI Components
+│   │   │   ├── tab-navigation.tsx  ← Thanh tab điều hướng
+│   │   │   ├── dashboard-shell.tsx ← Khung hiển thị tab
+│   │   │   ├── alert-panel.tsx     ← Bảng cảnh báo rủi ro
+│   │   │   ├── engagement-activity ← Timeline hành vi
 │   │   │   ├── bsc-scorecard.tsx   ← Bảng điểm BSC
 │   │   │   ├── lelongson-pipeline  ← Pipeline 7 bước
 │   │   │   └── hm50-heatmap.tsx    ← Heatmap 50 hạng mục
 │   │   ├── api/                    ← API endpoints
-│   │   ├── dashboard/assistant/    ← Trang Trợ lý CEO
 │   │   ├── confirm/[id]/           ← Trang xác nhận 5T
 │   │   ├── approve/[id]/           ← Trang duyệt kết quả
 │   │   └── directive/[id]/         ← Chi tiết chỉ đạo
 │   └── src/lib/supabase.ts         ← Kết nối database
 │
-├── 📂 automation/                   ← Scripts tự động (Node.js)
+├── 📂 automation/                   ← Scripts (Node.js)
 │   ├── seed-emails.js              ← Gắn email cho chỉ đạo
 │   ├── dedup-directives.js         ← Tìm chỉ đạo trùng lặp
 │   ├── signal-briefing.js          ← Báo cáo tuần qua Signal
-│   ├── wf1-approval.js             ← Email phê duyệt 2 bước
-│   ├── wf4-directive-escalation.js ← Leo thang quá hạn
-│   ├── wf5-reminders.js            ← Nhắc nhở thông minh
-│   └── lib/email-templates.js      ← Mẫu email
+│   └── lib/email-templates.js      ← Mẫu email (tâm lý học)
 │
 ├── 📂 supabase/                     ← Hạ tầng database
 │   └── functions/
-│       └── auto-escalation/        ← Cron job leo thang tự động
-│           └── index.ts            ← Edge Function (chạy 8h sáng)
+│       └── auto-escalation/        ← Phân tích tín hiệu (8h sáng)
 │
 ├── 📂 ban_chep_loi/                 ← Biên bản cuộc họp BOD
-│   ├── BOD_02032026.md
-│   ├── BOD_09032026.md
-│   └── BOD_16032026.md
-│
-├── 📂 docs/                         ← Tài liệu
-│   ├── images/                     ← Hình minh họa
-│   └── tasks/                      ← Task cho team
-│
-├── 📂 archive/                      ← Code cũ (lưu trữ)
+├── 📂 docs/                         ← Tài liệu + hình minh họa
 │
 ├── README.md                        ← 📖 File này
 ├── SYSTEM_AUDIT.md                  ← Trạng thái hệ thống
-├── CLAUDE.md                        ← Context cho AI agents
-├── changelog.md                     ← Nhật ký thay đổi
-└── CONTENT_BIBLE_AIGENT.md          ← Chuẩn giao tiếp AI
+├── CONTENT_BIBLE_AIGENT.md          ← Chuẩn giao tiếp (tâm lý học)
+└── changelog.md                     ← Nhật ký thay đổi
 ```
 
 ---
@@ -250,7 +280,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 |---------|-----|-----------|
 | 🎯 CEO / Chủ dự án | Thầy Lê Long Sơn | Ra quyết định, định hướng |
 | 🎯 PM / Director | Anh Kha | Quản lý, duyệt, điều phối |
-| 🎨 UI / QC | Gravity (Antigravity AI) | Giao diện, tài liệu, kiểm tra |
+| 🎨 UI / QC | Gravity (Antigravity AI) | Giao diện, tài liệu, tâm lý UX |
 | ⚙️ Backend / Infra | ClaudeCode (Claude AI) | Database, API, automation |
 
 ---
@@ -262,43 +292,37 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 | v1.0 | 27/12/2025 | Khởi tạo — Notion + n8n |
 | v2.0 | 10/03/2026 | Chuyển sang Node.js automation |
 | v2.5 | 14/03/2026 | Telegram Bot + AI Analyzer |
-| v3.0 | 15/03/2026 | **Chuyển sang Supabase**, Dashboard Next.js mới |
+| v3.0 | 15/03/2026 | **Chuyển sang Supabase**, Dashboard Next.js |
 | v3.5 | 16/03/2026 | BSC Scorecard, LELONGSON Pipeline, HM50 Heatmap |
-| **v4.0** | **17/03/2026** | **Auto-Escalation Cron, 52/52 email mapped, phân loại 3 tầng** |
+| v4.0 | 17/03/2026 | Auto-Escalation, 52/52 email mapped, phân loại 3 tầng |
+| **v5.0** | **17/03/2026** | **Tái cấu trúc: 4 tab, triết lý Advisor, Content Bible tâm lý học** |
 
 ---
 
 ## Câu Hỏi Thường Gặp
 
-### Hệ thống chạy tự động không cần ai làm gì hết sao?
+### Hệ thống này có "nhắc việc" không?
 
-Gần như vậy! Sau khi thiết lập, hệ thống tự:
-- ✅ Gửi email nhắc nhở khi quá hạn
-- ✅ Leo thang lên Ban Giám Đốc nếu không xử lý
-- ✅ Ghi lại mọi sự kiện (ai mở email, ai xác nhận, ai duyệt)
+**Không.** Hệ thống **nhận diện** chứ không **nhắc nhở**:
+- ✅ Phát hiện email chưa được mở → biết đầu mối chưa tiếp nhận thông tin
+- ✅ Phát hiện biên bản chưa đọc → biết nội dung chưa được quán triệt
+- ✅ Ghi nhận hành vi tương tác → đánh giá mức độ quan tâm với chỉ đạo
+- ✅ Gợi ý cách tiếp cận phù hợp → hỗ trợ đầu mối hành động
 
-Chỉ cần làm thủ công: **nhập biên bản cuộc họp BOD mới** → hệ thống tự phân tách chỉ đạo.
+Khi cần can thiệp, ngôn ngữ luôn mang tính **hỗ trợ**: "Chúng tôi nhận thấy anh/chị có thể cần hỗ trợ thêm..." chứ không bao giờ "Anh/chị đã quá hạn..."
 
 ### Nếu thêm cuộc họp BOD mới thì sao?
 
 1. Thêm biên bản vào `ban_chep_loi/`
 2. Chạy script parse → chỉ đạo mới được thêm vào database
 3. Chạy `node seed-emails.js` → tự gắn email cho đầu mối
-4. Cron job sáng mai sẽ bắt đầu theo dõi
+4. Sáng hôm sau hệ thống bắt đầu theo dõi tín hiệu
 
 ### Dashboard truy cập ở đâu?
 
 - **Local**: `npm run dev` → http://localhost:3000
 - **Production**: Deploy lên Vercel (đã cấu hình `vercel.json`)
 
-### Muốn xem API status nhanh?
-
-```bash
-curl https://your-domain.com/api/status | jq
-```
-
-Trả về: health score, số quá hạn, alerts, top 5 hạng mục nóng nhất.
-
 ---
 
-> 💡 **Có thắc mắc?** Liên hệ team qua Signal hoặc xem `docs/` để biết thêm chi tiết.
+> 💡 **Triết lý cốt lõi**: Mọi điểm chạm với người dùng đều trả lời câu hỏi *"Tôi đang làm việc này cho ai?"* — để nội dung chỉn chu, tôn trọng, và tạo động lực hành động.
