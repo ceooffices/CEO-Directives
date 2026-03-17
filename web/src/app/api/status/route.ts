@@ -9,6 +9,18 @@ import { getServiceClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
+// CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function GET() {
   try {
     const db = getServiceClient();
@@ -103,32 +115,35 @@ export async function GET() {
     }));
 
     // 5. Health score (0-100)
-    // Công thức: 100 - (overdue_pct * 50) - (critical_pct * 30) - (no_confirm_pct * 20)
-    const totalActive = all.filter(
-      (d) => d.tinh_trang !== "hoan_thanh" && d.tinh_trang !== "tu_choi"
-    ).length;
-    const withDeadline = all.filter(
+    // Công thức: 100 - (overdue*5) - (critical*15) + (confirmed*2), clamped [0,100]
+    const confirmedCount = all.filter(
       (d) =>
-        d.t4_thoi_han &&
+        d.confirmed_at &&
         d.tinh_trang !== "hoan_thanh" &&
         d.tinh_trang !== "tu_choi"
     ).length;
+    // "critical" ở đây = lost_control (≥14 ngày)
+    const lostControlCount = alerts.filter(
+      (a) => a.level === "lost_control"
+    ).length;
 
     let healthScore = 100;
-    if (withDeadline > 0) {
-      healthScore -= Math.round((overdueCount / withDeadline) * 50);
-      healthScore -= Math.round((criticalCount / withDeadline) * 30);
-    }
-    if (totalActive > 0) {
-      const noConfirm = all.filter(
-        (d) =>
-          !d.confirmed_at &&
-          d.tinh_trang !== "hoan_thanh" &&
-          d.tinh_trang !== "tu_choi"
-      ).length;
-      healthScore -= Math.round((noConfirm / totalActive) * 20);
-    }
+    healthScore -= overdueCount * 5;
+    healthScore -= lostControlCount * 15;
+    healthScore += confirmedCount * 2;
     healthScore = Math.max(0, Math.min(100, healthScore));
+
+    // 5b. Top 5 HM nóng nhất (directive_count cao nhất)
+    const { data: hm50Hot } = await db
+      .from("hm50")
+      .select("hm_number, ten, directive_count")
+      .order("directive_count", { ascending: false })
+      .limit(5);
+    const hm50_hot = (hm50Hot || []).map((h) => ({
+      hm_number: h.hm_number,
+      ten: h.ten,
+      directive_count: h.directive_count,
+    }));
 
     // 6. Response
     const timestamp = now.toLocaleString("vi-VN", {
@@ -141,19 +156,28 @@ export async function GET() {
       second: "2-digit",
     });
 
-    return NextResponse.json({
-      status: "ok",
-      timestamp,
-      summary: {
-        total_directives: all.length,
-        by_status: byStatus,
-        overdue_count: overdueCount,
-        critical_count: criticalCount,
+    return NextResponse.json(
+      {
+        status: "ok",
+        timestamp,
+        summary: {
+          total_directives: all.length,
+          by_status: byStatus,
+          overdue_count: overdueCount,
+          critical_count: criticalCount,
+        },
+        alerts,
+        recent_events: recentEvents,
+        health_score: healthScore,
+        hm50_hot,
       },
-      alerts,
-      recent_events: recentEvents,
-      health_score: healthScore,
-    });
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=60",
+        },
+      }
+    );
   } catch (err) {
     return NextResponse.json(
       {

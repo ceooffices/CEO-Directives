@@ -50,7 +50,13 @@
     "import:kpi:dry": "node import-commitments.js --dry-run",
     "test:email": "node lib/email-sender.js --test",
     "escalation": "node auto-escalation.js",
-    "escalation:dry": "node auto-escalation.js --dry-run"
+    "escalation:dry": "node auto-escalation.js --dry-run",
+    "seed:email": "node seed-emails.js",
+    "seed:email:dry": "node seed-emails.js --dry-run",
+    "dedup": "node dedup-directives.js",
+    "dedup:apply": "node dedup-directives.js --apply",
+    "signal:brief": "node signal-briefing.js",
+    "signal:brief:dry": "node signal-briefing.js --dry-run"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.0",
