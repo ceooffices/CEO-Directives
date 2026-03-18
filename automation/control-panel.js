@@ -70,7 +70,6 @@ const SERVICES = {
     color: '#af52de',
   },
 };
-
 // ===== PROCESS MANAGER =====
 const processes = {};
 const startTimes = {};
@@ -86,9 +85,19 @@ function addLog(id, text) {
   });
 }
 
+function isAlive(id) {
+  const child = processes[id];
+  if (!child) return false;
+  try {
+    process.kill(child.pid, 0); // signal 0 = check if alive
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function startService(id) {
-  const existing = processes[id];
-  if (existing && !existing.killed && existing.exitCode === null) {
+  if (isAlive(id)) {
     return { ok: false, msg: 'Already running' };
   }
 
@@ -99,18 +108,17 @@ function startService(id) {
     const child = spawn(svc.exe, svc.args, {
       cwd: svc.cwd,
       env: { ...process.env, FORCE_COLOR: '0' },
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ['ignore', 'pipe', 'pipe'],
       windowsHide: true,
+      detached: false,
     });
 
     child.stdout.on('data', d => addLog(id, d));
     child.stderr.on('data', d => addLog(id, d));
     child.on('close', (code) => {
-      addLog(id, `[SYSTEM] Process exited with code ${code}`);
-      if (processes[id] === child) {
-        processes[id] = null;
-        delete startTimes[id];
-      }
+      addLog(id, `[SYSTEM] Exited (code ${code})`);
+      processes[id] = null;
+      delete startTimes[id];
     });
     child.on('error', (err) => {
       addLog(id, `[ERROR] ${err.message}`);
@@ -121,19 +129,19 @@ function startService(id) {
     processes[id] = child;
     startTimes[id] = Date.now();
     addLog(id, `[SYSTEM] Started ${svc.name} (PID: ${child.pid})`);
-    return { ok: true, msg: `${svc.name} started` };
+    return { ok: true, msg: `${svc.name} started (PID: ${child.pid})` };
   } catch (err) {
-    addLog(id, `[ERROR] Failed to start: ${err.message}`);
+    addLog(id, `[ERROR] ${err.message}`);
     return { ok: false, msg: `Failed: ${err.message}` };
   }
 }
 
 function stopService(id) {
-  const child = processes[id];
-  if (!child || child.killed || child.exitCode !== null) {
+  if (!isAlive(id)) {
     processes[id] = null;
     return { ok: false, msg: 'Not running' };
   }
+  const child = processes[id];
   try {
     execSync(`taskkill /pid ${child.pid} /f /t`, { stdio: 'ignore' });
   } catch (e) {
@@ -148,18 +156,19 @@ function stopService(id) {
 function restartService(id) {
   stopService(id);
   setTimeout(() => startService(id), 1500);
-  return { ok: true, msg: 'Đang restart...' };
+  return { ok: true, msg: 'Restarting...' };
 }
 
 function getServiceStatus(id) {
+  const alive = isAlive(id);
   const child = processes[id];
-  const alive = child && !child.killed && child.exitCode === null;
+  const uptime = startTimes[id] ? Math.floor((Date.now() - startTimes[id]) / 1000) : 0;
   return {
     id,
     ...SERVICES[id],
     alive,
     pid: child?.pid || null,
-    uptime: child?._startTime ? Date.now() - child._startTime : 0,
+    uptime,
     recentLogs: (logs[id] || []).slice(-30),
   };
 }
