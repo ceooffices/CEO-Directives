@@ -15,100 +15,39 @@
  */
 
 require('dotenv').config();
-const OpenAI = require('openai');
+const { aiCall, MODEL, PROVIDER } = require('./lib/ai-router');
 
-// ===== AI ROUTER: Gemini (rẻ hơn) → fallback OpenAI =====
-let openai;
-let MODEL;
-
-if (process.env.GEMINI_API_KEY) {
-  // Gemini API tương thích OpenAI SDK qua base URL
-  openai = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-  });
-  MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-pro';
-  console.log('[AI] ☑ Router: Gemini (' + MODEL + ')');
-} else if (process.env.OPENAI_API_KEY) {
-  openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  MODEL = 'gpt-4o-mini';
-  console.log('[AI] ☑ Router: OpenAI (' + MODEL + ')');
-} else {
-  // Không crash — cho phép bot chạy, chỉ AI commands sẽ báo lỗi
-  console.warn('[AI] ⚠ Không có GEMINI_API_KEY hoặc OPENAI_API_KEY — AI commands sẽ không hoạt động');
-}
-
-// ===== AI CALL WRAPPER: Retry + Rate Limit Handling =====
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [5000, 15000, 30000]; // 5s, 15s, 30s
-
-async function aiCall(messages, options = {}) {
-  if (!openai) {
-    throw new Error('AI chưa cấu hình — cần GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env');
-  }
-  const { temperature = 0.3, max_tokens = 1000 } = options;
-
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const response = await openai.chat.completions.create({
-        model: MODEL,
-        messages,
-        temperature,
-        max_tokens,
-      });
-      return response;
-    } catch (err) {
-      const isRateLimit = err.status === 429 || (err.message && err.message.includes('rate'));
-      const isLast = attempt >= MAX_RETRIES;
-      
-      if (isRateLimit && !isLast) {
-        const delay = RETRY_DELAYS[attempt] || 30000;
-        console.log(`[AI] ⏳ Rate limit — retry ${attempt + 1}/${MAX_RETRIES} sau ${delay/1000}s...`);
-        await new Promise(r => setTimeout(r, delay));
-        continue;
-      }
-      
-      // Không phải rate limit, hoặc đã hết retry
-      throw err;
-    }
-  }
-}
-
-// ===== NOTION DATA LOADER =====
+// ===== SUPABASE DATA LOADER =====
 async function loadDirectiveData() {
   const {
-    queryClarificationsStep1,
+    queryPendingApproval,
     queryConfirmed5T,
-    queryOverdueClarifications,
-    queryActiveClarifications,
-    safeText, safeDate
-  } = require('./lib/notion-client');
+    queryOverdueDirectives,
+    queryActiveDirectives,
+  } = require('./lib/supabase-client');
 
   const [pending, confirmed, overdue, active] = await Promise.all([
-    queryClarificationsStep1().catch(() => []),
+    queryPendingApproval().catch(() => []),
     queryConfirmed5T().catch(() => []),
-    queryOverdueClarifications().catch(() => []),
-    queryActiveClarifications().catch(() => []),
+    queryOverdueDirectives().catch(() => []),
+    queryActiveDirectives().catch(() => []),
   ]);
 
-  const parsePages = (pages, label) => pages.map(page => {
-    const props = page.properties || {};
-    return {
-      label,
-      title: safeText(props['Tiêu đề']?.title) || '',
-      status: props['TINH_TRANG']?.select?.name || '',
-      dauMoi: safeText(props['T1 - Đầu mối']?.rich_text) || '',
-      nhiemVu: safeText(props['T2 - Nhiệm vụ']?.rich_text) || '',
-      deadline: safeDate(props['T4 - Thời hạn']?.date) || '',
-      created: page.created_time?.slice(0, 10) || '',
-    };
-  });
+  const parseRows = (rows, label) => rows.map(row => ({
+    label,
+    title: row.t2_nhiem_vu || row.directive_code || '',
+    status: row.tinh_trang || '',
+    dauMoi: row.t1_dau_moi || '',
+    nhiemVu: row.t2_nhiem_vu || '',
+    deadline: row.t4_thoi_han || '',
+    created: row.created_at?.slice(0, 10) || '',
+  }));
 
   return [
-    ...parsePages(pending, 'pending'),
-    ...parsePages(confirmed, 'confirmed'),
-    ...parsePages(overdue, 'overdue'),
-    ...parsePages(active, 'active'),
+    ...parseRows(pending, 'pending'),
+    ...parseRows(confirmed, 'confirmed'),
+    ...parseRows(overdue, 'overdue'),
+    ...parseRows(active, 'active'),
   ];
 }
 

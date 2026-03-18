@@ -13,54 +13,12 @@
 require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const fs = require('fs');
 const path = require('path');
-const OpenAI = require('openai');
+const { aiCall, MODEL, PROVIDER } = require('./lib/ai-router');
 const { logExecution } = require('./lib/logger');
 
 // ===== CONFIG =====
 const DRY_RUN = process.argv.includes('--dry-run');
 const MAX_CHUNK_CHARS = 12000; // Chars per AI chunk — nhỏ hơn để AI có đủ output tokens
-
-// ===== AI ROUTER (giống ai-analyzer.js) =====
-let openai, MODEL;
-if (process.env.GEMINI_API_KEY) {
-  openai = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-  });
-  MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-pro';
-} else if (process.env.OPENAI_API_KEY) {
-  openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  MODEL = 'gpt-4o-mini';
-}
-
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [5000, 15000, 30000];
-
-async function aiCall(messages, options = {}) {
-  if (!openai) throw new Error('AI chưa cấu hình — cần GEMINI_API_KEY hoặc OPENAI_API_KEY');
-  const { temperature = 0.2, max_tokens = 4000 } = options;
-
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const response = await openai.chat.completions.create({
-        model: MODEL,
-        messages,
-        temperature,
-        max_tokens,
-      });
-      return response;
-    } catch (err) {
-      const isRateLimit = err.status === 429 || (err.message && err.message.includes('rate'));
-      if (isRateLimit && attempt < MAX_RETRIES) {
-        const delay = RETRY_DELAYS[attempt] || 30000;
-        console.log(`[TRANSCRIPT] ⏳ Rate limit — retry ${attempt + 1}/${MAX_RETRIES} sau ${delay / 1000}s...`);
-        await new Promise(r => setTimeout(r, delay));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
 
 // ===== TRANSCRIPT PARSER =====
 
@@ -341,8 +299,8 @@ async function run() {
   if (MEETING_CONTEXT) console.log(`[TRANSCRIPT] Context: ${contextPath}`);
   console.log('==========================================');
 
-  if (!openai) {
-    console.error('❌ AI chưa cấu hình — cần GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env');
+  if (!PROVIDER) {
+    console.error('❌ AI chưa cấu hình — cần ANTHROPIC_API_KEY, GEMINI_API_KEY, hoặc OPENAI_API_KEY trong .env');
     process.exit(1);
   }
 

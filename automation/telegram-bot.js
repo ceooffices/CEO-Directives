@@ -668,7 +668,7 @@ bot.on('callback_query', async (query) => {
       } catch (aiErr) {
         notifyAdmin(aiErr, 'callback:cmd_phantich');
         const friendlyMsg = aiErr.message.includes('AI chưa cấu hình')
-          ? 'Cần cấu hình GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env'
+          ? 'Cần cấu hình ANTHROPIC_API_KEY, GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env'
           : aiErr.message.includes('404')
           ? 'Không kết nối được Notion. Kiểm tra NOTION_API_KEY.'
           : `Lỗi AI: ${aiErr.message}`;
