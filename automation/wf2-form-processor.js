@@ -1,13 +1,14 @@
 /**
  * wf2-form-processor.js
  * CEO Directive WF2: Xử lý Form Response từ Google Sheets
- * 
- * Flow: Google Form submit → Google Sheets → Poll this script → Update Notion
- * 
+ *
+ * Flow: Google Form submit → Google Sheets → Poll this script → Update Supabase
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Google Sheets columns (from Form):
  *   [0] Timestamp
  *   [1] Email Address
- *   [2] Mã Clarification
+ *   [2] Mã Clarification (= directive_code)
  *   [3] Nguồn chỉ đạo
  *   [4] Ngày nhận chỉ đạo
  *   [5] Nội dung chỉ đạo gốc
@@ -17,7 +18,7 @@
  *   [9] T4 - Thời hạn
  *   [10] Ghi chú
  *   [11] Xác nhận
- * 
+ *
  * Usage:
  *   node wf2-form-processor.js            # Process new responses
  *   node wf2-form-processor.js --dry-run  # Dry run
@@ -27,10 +28,9 @@ require('dotenv').config();
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const { notion, DB, safeText, safeSelect, updatePage, queryDatabase } = require('./lib/notion-client');
+const { updateDirectiveByCode, logEvent } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
 const { buildProgressNotifyEmail } = require('./lib/email-templates');
-const { logExecution } = require('./lib/logger');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const ALWAYS_CC = (process.env.ALWAYS_CC || '').split(',').map(e => e.trim()).filter(Boolean);
@@ -135,7 +135,7 @@ function extractFormData(row) {
   const timestamp = row['Timestamp'] || row['Dấu thời gian'] || '';
   const email = row['Email Address'] || row['Địa chỉ email'] || '';
   const clarificationId = findField(row, ['mã clarification', 'clarification id', 'mã chỉ đạo']);
-  
+
   const nguonChiDao = findField(row, ['nguồn chỉ đạo', 'nguồn']);
   const ngayNhanChiDao = findField(row, ['ngày nhận']);
   const noiDungChiDaoGoc = findField(row, ['nội dung chỉ đạo gốc', 'nội dung chỉ đạo']);
@@ -163,7 +163,7 @@ function extractFormData(row) {
 
   const has4T = Boolean(noiDungChiDaoGoc && t2NhiemVu && t3ChiTieu && t4ThoiHan);
   const isConfirmed = Boolean(xacNhanDoc || camKetThucHien);
-  const hasId = Boolean(clarificationId && clarificationId.length > 10);
+  const hasId = Boolean(clarificationId && clarificationId.length > 5);
 
   return {
     timestamp, email, clarificationId: (clarificationId || '').trim(),
@@ -175,37 +175,25 @@ function extractFormData(row) {
   };
 }
 
-// ===== UPDATE NOTION =====
-async function updateNotionFromForm(formData) {
-  const pageId = formData.clarificationId;
-  
-  const properties = {
-    'TINH_TRANG': { select: { name: 'Đã xác nhận 5T' } },
+// ===== UPDATE SUPABASE =====
+async function updateSupabaseFromForm(formData) {
+  const directiveCode = formData.clarificationId;
+
+  const fields = {
+    tinh_trang: 'da_xac_nhan',
   };
 
   // Update T2/T3/T4 if provided by form
-  if (formData.t2NhiemVu) {
-    properties['T2 - NHIỆM VỤ'] = {
-      rich_text: [{ text: { content: formData.t2NhiemVu } }],
-    };
-  }
-  if (formData.t3ChiTieu) {
-    properties['T3 - CHỈ TIÊU'] = {
-      rich_text: [{ text: { content: formData.t3ChiTieu } }],
-    };
-  }
-  if (formData.t4ThoiHan) {
-    properties['T4 - THỜI HẠN'] = {
-      date: { start: formData.t4ThoiHan },
-    };
-  }
+  if (formData.t2NhiemVu) fields.t2_nhiem_vu = formData.t2NhiemVu;
+  if (formData.t3ChiTieu) fields.t3_chi_tieu = formData.t3ChiTieu;
+  if (formData.t4ThoiHan) fields.t4_thoi_han = formData.t4ThoiHan;
 
   if (DRY_RUN) {
-    console.log(`  [DRY-RUN] Would update Notion page ${pageId}:`, JSON.stringify(properties));
-    return { id: pageId, dryRun: true };
+    console.log(`  [DRY-RUN] Would update directive ${directiveCode}:`, JSON.stringify(fields));
+    return { directive_code: directiveCode, dryRun: true };
   }
 
-  return await updatePage(pageId, properties);
+  return await updateDirectiveByCode(directiveCode, fields);
 }
 
 // ===== MAIN =====
@@ -214,6 +202,7 @@ async function run() {
   console.log('==========================================');
   console.log(`[WF2-FORM] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[WF2-FORM] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log('[WF2-FORM] Source: Supabase');
   console.log('==========================================');
 
   if (!FORM_RESPONSE_SHEET_URL) {
@@ -271,17 +260,22 @@ async function run() {
     console.log(`     ✅ Confirmed: ${formData.isConfirmed}`);
 
     try {
-      // Update Notion
-      await updateNotionFromForm(formData);
-      console.log(`     ✅ Notion updated`);
+      // Update Supabase
+      const result = await updateSupabaseFromForm(formData);
+      console.log(`     ✅ Supabase updated`);
 
       // Track as processed
       processed.processedIds.push(formData.clarificationId);
       processed.lastTimestamp = formData.timestamp;
       successCount++;
 
-      // Log to WF_LOGS
-      await logExecution(`WF2 - Form Processed - ${formData.clarificationId}`, '✅ Success');
+      // Log event
+      await logEvent(
+        result?.id || null,
+        'wf2_form_processed',
+        { directiveCode: formData.clarificationId, email: formData.email },
+        DRY_RUN
+      );
     } catch (err) {
       console.error(`     ❌ Error: ${err.message}`);
       failCount++;

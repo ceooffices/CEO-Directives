@@ -1,14 +1,20 @@
 /**
  * wf6-dashboard-sync.js
  * CEO Directive WF6: Dashboard Data Sync
- * 
- * Flow:
- *   Query Notion DBs → Transform → Write JSON → Next.js Dashboard đọc Notion trực tiếp
- * 
+ *
+ * ⚠️ DEPRECATED — Dashboard đọc Supabase trực tiếp (2026-03-18)
+ * Xem: web/src/lib/supabase.ts
+ *
+ * Flow cũ:
+ *   Query Notion DBs → Transform → Write JSON → Next.js Dashboard đọc JSON
+ *
  * Usage:
- *   node wf6-dashboard-sync.js              # Chạy thật
- *   node wf6-dashboard-sync.js --dry-run    # Chỉ log, không ghi file
+ *   node wf6-dashboard-sync.js              # Exit ngay với warning
  */
+
+console.warn('[WF6] ⚠️ DEPRECATED — Dashboard đọc Supabase trực tiếp. File này không còn cần thiết.');
+console.warn('[WF6] Xem: web/src/lib/supabase.ts');
+process.exit(0);
 
 const fs = require('fs');
 const path = require('path');

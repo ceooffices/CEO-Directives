@@ -1,14 +1,12 @@
 /**
  * wf3-directive-status.js (formerly wf3-status-tracker.js)
  * CEO Directive WF3: Directive Status Monitor
- * 
- * Logic mới (bỏ DB_TASK):
- *   Snapshot CLARIFICATION statuses → So sánh → Phát hiện thay đổi
- *   → Gửi email thông báo → Cập nhật snapshot
- * 
- * Track trực tiếp TINH_TRANG chỉ đạo: Chờ làm rõ → Đã xác nhận 5T → Hoàn thành
- * Anh sẽ biết: chỉ đạo nào thay đổi trạng thái, từ trạng thái nào sang trạng thái nào.
- * 
+ *
+ * Logic mới: Dùng lls_step_history từ Supabase (thay snapshot file)
+ *   → Detect status changes → Gửi email thông báo
+ *
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Usage:
  *   node wf3-directive-status.js              # Chạy thật
  *   node wf3-directive-status.js --dry-run    # Chỉ log
@@ -16,17 +14,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const { queryClarificationsForSnapshot, safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle } = require('./lib/notion-client');
+const { getRecentStatusChanges, getDirectiveStatusSnapshot,
+        logEvent, getStaffEmail, directiveUrl,
+        ALWAYS_CC } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
-const { logExecution } = require('./lib/logger');
 const { buildStatusChangeEmail } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const SNAPSHOT_FILE = path.join(__dirname, '..', 'data', 'directive_snapshot.json');
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
-// ===== SNAPSHOT =====
+// ===== SNAPSHOT (fallback khi lls_step_history chưa đủ data) =====
 
 function loadSnapshot() {
   try {
@@ -52,91 +49,114 @@ async function run() {
   console.log('==========================================');
   console.log(`[WF3] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[WF3] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
-  console.log('[WF3] Directive Status Monitor');
+  console.log('[WF3] Directive Status Monitor — Supabase');
   console.log('==========================================');
 
-  // 1. Load old snapshot
-  console.log('\n[1/4] Loading previous snapshot...');
-  const oldSnapshot = loadSnapshot();
-  console.log(`  Previous: ${Object.keys(oldSnapshot).length} directives`);
+  // Thử approach 1: lls_step_history (ưu tiên)
+  console.log('\n[1/3] Checking lls_step_history for recent changes...');
+  const lastCheck = loadSnapshot().__lastCheck || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  let changes = [];
+  let usedHistory = false;
 
-  // 2. Query current directives
-  console.log('\n[2/4] Querying current directives...');
-  const directives = await queryClarificationsForSnapshot();
-  console.log(`  Current: ${directives.length} directives`);
+  try {
+    const recentChanges = await getRecentStatusChanges(lastCheck);
+    if (recentChanges.length > 0) {
+      console.log(`  Found ${recentChanges.length} changes từ lls_step_history`);
+      usedHistory = true;
 
-  // 3. Compare
-  console.log('\n[3/4] Detecting changes...');
-  const newSnapshot = {};
-  const changes = [];
+      for (const change of recentChanges) {
+        const dir = change.directives;
+        if (!dir) continue;
 
-  for (const page of directives) {
-    const props = page.properties || {};
-    const id = page.id;
+        const email = dir.t1_email || await getStaffEmail(dir.t1_dau_moi);
 
-    const title = safeText(props['Tiêu đề']?.title);
-    const tinhTrang = safeSelect(props['TINH_TRANG']?.select);
-    const duyet = safeSelect(props['✅ Đã duyệt bởi người chỉ đạo']?.select);
-    const dauMoi = safeText(props['T1 - Đầu mối']?.rich_text);
-    const nguoiChiDao = safeText(props['Người chỉ đạo']?.rich_text);
-    const thoiHan = safeDate(props['T4 - Thời hạn']?.date);
+        changes.push({
+          id: change.directive_id,
+          title: dir.directive_code,
+          oldStatus: `Bước ${change.step_number - 1}`,
+          newStatus: change.step_name || `Bước ${change.step_number}`,
+          email,
+          dauMoi: dir.t1_dau_moi,
+          url: directiveUrl(change.directive_id),
+        });
+      }
+    } else {
+      console.log('  Không có changes từ lls_step_history.');
+    }
+  } catch (e) {
+    console.warn(`  ⚠️ lls_step_history query failed: ${e.message}`);
+    console.log('  Falling back to snapshot approach...');
+  }
 
-    // Try to get email
-    let email = '';
-    for (const [key, value] of Object.entries(props)) {
-      if (key.toLowerCase().includes('email') && value.type === 'rollup') {
-        email = safeRollupEmail(value.rollup);
-        if (email) break;
+  // Approach 2: Snapshot fallback
+  if (!usedHistory) {
+    console.log('\n[2/3] Using snapshot approach...');
+    const oldSnapshot = loadSnapshot();
+    console.log(`  Previous: ${Object.keys(oldSnapshot).length - 1} directives`);
+
+    const directives = await getDirectiveStatusSnapshot();
+    console.log(`  Current: ${directives.length} directives`);
+
+    const newSnapshot = { __lastCheck: new Date().toISOString() };
+
+    for (const row of directives) {
+      const id = row.id;
+      newSnapshot[id] = {
+        title: row.directive_code,
+        status: row.tinh_trang,
+        approved: row.approved_by,
+        email: row.t1_email,
+        dauMoi: row.t1_dau_moi,
+      };
+
+      // Detect status change
+      if (oldSnapshot[id] && oldSnapshot[id].status &&
+          oldSnapshot[id].status !== row.tinh_trang) {
+        const email = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+        changes.push({
+          id,
+          title: row.directive_code,
+          oldStatus: oldSnapshot[id].status,
+          newStatus: row.tinh_trang,
+          email,
+          dauMoi: row.t1_dau_moi,
+          url: directiveUrl(id),
+        });
       }
     }
 
-    newSnapshot[id] = { title, status: tinhTrang, duyet, email, dauMoi };
-
-    // Detect TINH_TRANG change
-    if (oldSnapshot[id] && oldSnapshot[id].status && tinhTrang &&
-        oldSnapshot[id].status !== tinhTrang) {
-      changes.push({
-        id, title,
-        oldStatus: oldSnapshot[id].status,
-        newStatus: tinhTrang,
-        email: email || oldSnapshot[id].email,
-        dauMoi, nguoiChiDao, thoiHan,
-        url: page.url || `https://www.notion.so/${id.replace(/-/g, '')}`,
-      });
+    // Count new directives
+    const newDirectives = Object.keys(newSnapshot).filter(k => k !== '__lastCheck' && !oldSnapshot[k]);
+    if (newDirectives.length > 0) {
+      console.log(`  🆕 New directives: ${newDirectives.length}`);
     }
 
-    // Detect Duyệt change
-    if (oldSnapshot[id] && oldSnapshot[id].duyet && duyet &&
-        oldSnapshot[id].duyet !== duyet) {
-      changes.push({
-        id, title,
-        oldStatus: `Duyệt: ${oldSnapshot[id].duyet}`,
-        newStatus: `Duyệt: ${duyet}`,
-        email: email || oldSnapshot[id].email,
-        dauMoi, nguoiChiDao, thoiHan,
-        url: page.url || `https://www.notion.so/${id.replace(/-/g, '')}`,
-      });
+    // Save snapshot
+    if (!DRY_RUN) {
+      saveSnapshot(newSnapshot);
+      console.log(`  💾 Snapshot saved: ${directives.length} directives`);
+    }
+  } else {
+    // Update lastCheck timestamp
+    if (!DRY_RUN) {
+      const snapshot = loadSnapshot();
+      snapshot.__lastCheck = new Date().toISOString();
+      saveSnapshot(snapshot);
     }
   }
 
-  // Count new directives (not in old snapshot)
-  const newDirectives = Object.keys(newSnapshot).filter(id => !oldSnapshot[id]);
-  if (newDirectives.length > 0) {
-    console.log(`  🆕 New directives: ${newDirectives.length}`);
-  }
+  console.log(`\n  📊 Status changes: ${changes.length}`);
 
-  console.log(`  📊 Status changes: ${changes.length}`);
-
-  // 4. Notify
-  console.log('\n[4/4] Sending notifications...');
+  // 3. Notify
+  console.log('\n[3/3] Sending notifications...');
   let notified = 0;
 
   for (const change of changes) {
     console.log(`  📊 "${change.title}": ${change.oldStatus} → ${change.newStatus}`);
 
-    const recipients = ALWAYS_CC.slice(); // Always CC leadership
+    const recipients = ALWAYS_CC.slice();
     if (change.email && !recipients.includes(change.email)) {
-      recipients.unshift(change.email); // Email to đầu mối first
+      recipients.unshift(change.email);
     }
 
     const sendTo = recipients[0];
@@ -153,7 +173,7 @@ async function run() {
             oldStatus: change.oldStatus,
             newStatus: change.newStatus,
             tenDauMoi: change.dauMoi,
-            t4ThoiHan: change.thoiHan,
+            t4ThoiHan: '',
             url: change.url,
           }),
           cc: ccList,
@@ -166,33 +186,22 @@ async function run() {
       console.error(`    ❌ Email failed: ${e.message}`);
     }
 
-    await logExecution({
-      workflow: 'WF3 - Directive Status',
-      step: `${change.oldStatus} → ${change.newStatus}`,
-      status: '✅ Success',
-      clarificationId: change.id,
-      details: `"${change.title}": ${change.oldStatus} → ${change.newStatus}`,
+    await logEvent(change.id, 'wf3_status_change', {
+      oldStatus: change.oldStatus,
+      newStatus: change.newStatus,
       emailTo: sendTo,
-      dryRun: DRY_RUN,
-    });
-  }
-
-  // Save snapshot
-  if (!DRY_RUN) {
-    saveSnapshot(newSnapshot);
-    console.log(`  💾 Snapshot saved: ${Object.keys(newSnapshot).length} directives`);
+    }, DRY_RUN);
   }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log('\n==========================================');
   console.log('[WF3] SUMMARY:');
   console.log(`  📊 Changes: ${changes.length}`);
-  console.log(`  🆕 New: ${newDirectives.length}`);
   console.log(`  📧 Notified: ${notified}`);
   console.log(`  ⏱️ Time: ${elapsed}s`);
   console.log('==========================================');
 
-  return { changes: changes.length, newDirectives: newDirectives.length, notified };
+  return { changes: changes.length, notified };
 }
 
 if (require.main === module) {

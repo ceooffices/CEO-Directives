@@ -1,9 +1,10 @@
 /**
  * scheduler.js
  * CEO Directive Automation — Entry Point
- * 
+ *
  * Chạy tất cả workflows theo lịch, thay n8n scheduler.
- * 
+ * WF6 đã deprecated (dashboard đọc Supabase trực tiếp).
+ *
  * Usage:
  *   node scheduler.js                        # Chạy daemon (cron jobs)
  *   node scheduler.js --run-now wf1          # Chạy WF1 ngay lập tức
@@ -11,7 +12,6 @@
  *   node scheduler.js --run-now wf3          # Chạy WF3 ngay lập tức
  *   node scheduler.js --run-now wf4          # Chạy WF4 ngay lập tức
  *   node scheduler.js --run-now wf5          # Chạy WF5 ngay lập tức
- *   node scheduler.js --run-now wf6          # Chạy WF6 ngay lập tức
  *   node scheduler.js --run-now all          # Chạy tất cả ngay
  *   node scheduler.js --dry-run              # Chạy tất cả (dry-run)
  */
@@ -23,7 +23,6 @@ const { run: runWF2 } = require('./wf2-directive-progress');
 const { run: runWF3 } = require('./wf3-directive-status');
 const { run: runWF4 } = require('./wf4-directive-escalation');
 const { run: runWF5 } = require('./wf5-reminders');
-const { run: runWF6 } = require('./wf6-dashboard-sync');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
@@ -50,11 +49,7 @@ const SCHEDULES = {
   // WF5: 1 lần/ngày (08:30)
   wf5_morning:   '30 8 * * 1-5',
 
-  // WF6: 4 lần/ngày (07:30, 11:30, 14:30, 17:30)
-  wf6_early:     '30 7 * * 1-5',
-  wf6_midday:    '30 11 * * 1-5',
-  wf6_afternoon: '30 14 * * 1-5',
-  wf6_evening:   '30 17 * * 1-5',
+  // WF6: DEPRECATED — dashboard đọc Supabase trực tiếp
 };
 
 // ===== RUN WRAPPER =====
@@ -86,7 +81,10 @@ if (runNowIdx > -1) {
     if (target === 'wf3' || target === 'all') await safeRun('WF3-DirectiveStatus', runWF3);
     if (target === 'wf4' || target === 'all') await safeRun('WF4-DirectiveEscalation', runWF4);
     if (target === 'wf5' || target === 'all') await safeRun('WF5-Reminders', runWF5);
-    if (target === 'wf6' || target === 'all') await safeRun('WF6-DashboardSync', runWF6);
+
+    if (target === 'wf6') {
+      console.log('\n[scheduler] ⚠️ WF6 DEPRECATED — dashboard đọc Supabase trực tiếp.');
+    }
 
     console.log('\n[scheduler] Done. Exiting.');
     process.exit(0);
@@ -96,7 +94,8 @@ if (runNowIdx > -1) {
   // ===== DAEMON MODE: Setup cron jobs =====
 
   console.log('==========================================');
-  console.log('🤖 CEO Directive Automation Engine v2.0');
+  console.log('🤖 CEO Directive Automation Engine v3.0');
+  console.log('   Source: Supabase (Notion deprecated)');
   console.log(`   Started: ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`   Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
   console.log('==========================================');
@@ -110,11 +109,11 @@ if (runNowIdx > -1) {
   cron.schedule(SCHEDULES.wf1_evening,   () => safeRun('WF1-Evening',   runWF1), TZ);
   console.log(`  📧 WF1 Approval:     08:00 | 13:00 | 17:00`);
 
-  // WF2: Task Creator (3x/day, 15min after WF1)
+  // WF2: Directive Progress (3x/day, 15min after WF1)
   cron.schedule(SCHEDULES.wf2_morning,   () => safeRun('WF2-Morning',   runWF2), TZ);
   cron.schedule(SCHEDULES.wf2_afternoon, () => safeRun('WF2-Afternoon', runWF2), TZ);
   cron.schedule(SCHEDULES.wf2_evening,   () => safeRun('WF2-Evening',   runWF2), TZ);
-  console.log(`  📋 WF2 TaskCreator:  08:15 | 13:15 | 17:15`);
+  console.log(`  📋 WF2 Progress:     08:15 | 13:15 | 17:15`);
 
   // WF3: Status Tracker (2x/day)
   cron.schedule(SCHEDULES.wf3_morning,   () => safeRun('WF3-Morning',   runWF3), TZ);
@@ -129,12 +128,8 @@ if (runNowIdx > -1) {
   cron.schedule(SCHEDULES.wf5_morning, () => safeRun('WF5-Reminders', runWF5), TZ);
   console.log(`  🦉 WF5 Reminders:   08:30`);
 
-  // WF6: Dashboard Sync (4x/day)
-  cron.schedule(SCHEDULES.wf6_early,     () => safeRun('WF6-Early',     runWF6), TZ);
-  cron.schedule(SCHEDULES.wf6_midday,    () => safeRun('WF6-Midday',    runWF6), TZ);
-  cron.schedule(SCHEDULES.wf6_afternoon, () => safeRun('WF6-Afternoon', runWF6), TZ);
-  cron.schedule(SCHEDULES.wf6_evening,   () => safeRun('WF6-Evening',   runWF6), TZ);
-  console.log(`  🔄 WF6 Sync:        07:30 | 11:30 | 14:30 | 17:30`);
+  // WF6: DEPRECATED
+  console.log(`  ⚠️  WF6 Sync:        DEPRECATED — Supabase trực tiếp`);
 
   console.log(`\n  Total: ${Object.keys(SCHEDULES).length} scheduled runs/day`);
   console.log('\n⏳ Waiting for scheduled time... (Ctrl+C to stop)');

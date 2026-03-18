@@ -1,30 +1,25 @@
 /**
  * wf2-directive-progress.js (formerly wf2-task-creator.js)
  * CEO Directive WF2: Directive Progress Tracker
- * 
+ *
  * Logic mới (bỏ DB_TASK):
- *   Query CLARIFICATION (Đã xác nhận 5T) → Gửi email xác nhận cho đầu mối
+ *   Query directives đã xác nhận 5T → Gửi email xác nhận cho đầu mối
  *   → Nhắc đầu mối cập nhật tiến độ qua form
  *   → Log kết quả
- * 
- * Anh chỉ cần biết: chỉ đạo nào xong/chưa xong, tới đâu, khó khăn gì.
- * Việc tạo task cụ thể là của đầu mối.
- * 
+ *
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Usage:
  *   node wf2-directive-progress.js              # Chạy thật
  *   node wf2-directive-progress.js --dry-run    # Chỉ log
  */
 
-const { queryConfirmed5T, safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle, resolveEmailFromRelation,
-        updatePage, DB } = require('./lib/notion-client');
+const { queryConfirmed5T, logEvent, getStaffEmail,
+        BOD_HOSTING_EMAIL, ALWAYS_CC, directiveUrl } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
-const { logExecution } = require('./lib/logger');
 const { buildProgressNotifyEmail } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
-const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== MAIN LOGIC =====
 
@@ -33,15 +28,15 @@ async function run() {
   console.log('==========================================');
   console.log(`[WF2] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[WF2] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
-  console.log('[WF2] Directive Progress Tracker');
+  console.log('[WF2] Directive Progress Tracker — Supabase');
   console.log('==========================================');
 
   // 1. Query confirmed directives
   console.log('\n[1/2] Querying confirmed 5T directives...');
-  const pages = await queryConfirmed5T();
-  console.log(`  Found: ${pages.length} directives confirmed 5T`);
+  const rows = await queryConfirmed5T();
+  console.log(`  Found: ${rows.length} directives confirmed 5T`);
 
-  if (pages.length === 0) {
+  if (rows.length === 0) {
     console.log('  → Không có chỉ đạo nào cần thông báo.');
     return { notified: 0, failed: 0 };
   }
@@ -50,40 +45,32 @@ async function run() {
   console.log('\n[2/2] Notifying assignees...');
   let notifiedCount = 0, failCount = 0;
 
-  for (const page of pages) {
-    const props = page.properties || {};
-
-    const tieuDe = safeText(props['Tiêu đề']?.title);
-    const t1DauMoi = safeText(props['T1 - Đầu mối']?.rich_text);
-    const t2NhiemVu = safeText(props['T2 - Nhiệm vụ']?.rich_text);
-    const t3ChiTieu = safeText(props['T3 - Chỉ tiêu']?.rich_text);
-    const t4ThoiHan = safeDate(props['T4 - Thời hạn']?.date);
-    const t5ThanhVien = safeText(props['T5 - Thành viên liên quan']?.rich_text);
-    const tenNguoiChiDao = safeText(props['Người chỉ đạo']?.rich_text);
+  for (const row of rows) {
+    const tieuDe = row.directive_code;
+    const t1DauMoi = row.t1_dau_moi;
+    const t2NhiemVu = row.t2_nhiem_vu;
+    const t3ChiTieu = row.t3_chi_tieu || '';
+    const t4ThoiHan = row.t4_thoi_han || '';
+    const t5ThanhVien = Array.isArray(row.t5_thanh_vien) ? row.t5_thanh_vien.join(', ') : '';
+    const tenNguoiChiDao = row.t1_dau_moi;
 
     // Resolve email
-    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
+    const emailDauMoiThucTe = row.t1_email || await getStaffEmail(row.t1_dau_moi);
     const emailDauMoi = BOD_HOSTING_EMAIL;
-
-    const tenDauMoi = safeRollupTitle(props['Tên đầu mối']?.rollup) || t1DauMoi;
+    const tenDauMoi = row.t1_dau_moi;
 
     const item = {
       tieuDe, t1DauMoi, t2NhiemVu, t3ChiTieu, t4ThoiHan, t5ThanhVien,
       tenDauMoi, tenNguoiChiDao, emailDauMoi,
-      url: page.url,
+      url: directiveUrl(row.id),
     };
 
     try {
       if (!emailDauMoi) {
         console.log(`  ⚠️ "${tieuDe}": Thiếu email đầu mối`);
-        await logExecution({
-          workflow: 'WF2 - Directive Progress',
-          step: 'Notify',
-          status: '⚠️ Warning',
-          clarificationId: page.id,
+        await logEvent(row.id, 'wf2_warning', {
           details: `Thiếu email đầu mối: ${tieuDe}`,
-          dryRun: DRY_RUN,
-        });
+        }, DRY_RUN);
         failCount++;
         continue;
       }
@@ -102,28 +89,18 @@ async function run() {
         console.log(`  [DRY-RUN] Would email ${emailDauMoi}: ${tieuDe}`);
       }
 
-      await logExecution({
-        workflow: 'WF2 - Directive Progress',
-        step: 'Notify',
-        status: '✅ Success',
-        clarificationId: page.id,
-        details: `"${tieuDe}" → ${emailDauMoi}`,
+      await logEvent(row.id, 'wf2_progress_sent', {
+        title: tieuDe,
         emailTo: emailDauMoi,
-        dryRun: DRY_RUN,
-      });
+      }, DRY_RUN);
 
       notifiedCount++;
     } catch (error) {
       failCount++;
       console.error(`  ❌ FAILED "${tieuDe}":`, error.message);
-      await logExecution({
-        workflow: 'WF2 - Directive Progress',
-        step: 'Notify',
-        status: '❌ Error',
-        clarificationId: page.id,
-        details: `Error: ${error.message}`,
-        dryRun: DRY_RUN,
-      });
+      await logEvent(row.id, 'wf2_error', {
+        error: error.message,
+      }, DRY_RUN);
     }
   }
 

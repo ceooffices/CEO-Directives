@@ -1,23 +1,22 @@
 /**
  * wf5-reminders.js
  * CEO Directive WF5: Duolingo-style Smart Reminders
- * 
- * Port từ: WF5_v2_FIXED.json (n8n workflow)
- * 
+ *
  * Flow:
- *   Query Active Tasks → Group by recipient → Build personalized email → Send
- * 
+ *   Query Active Directives → Group by recipient → Build personalized email → Send
+ *
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Usage:
  *   node wf5-reminders.js              # Chạy thật
  *   node wf5-reminders.js --dry-run    # Chỉ log, không gửi
  */
 
-const { queryActiveClarifications, safeText, safeDate, resolveEmailFromRelation, safeRollupEmail } = require('./lib/notion-client');
+const { queryActiveDirectives, logEvent, getStaffEmail, directiveUrl,
+        BOD_HOSTING_EMAIL, ALWAYS_CC, DASHBOARD_URL } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
 
 const DRY_RUN = process.argv.includes('--dry-run');
-const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== THƯ VIỆN TIN NHẮN (from n8n code node) =====
 
@@ -108,8 +107,8 @@ function buildReminderEmail(recipient) {
       ${recipient.stats.dueToday > 0 ? `<div style="flex: 1;"><div style="font-size: 28px; font-weight: bold; color: #f39c12;">${recipient.stats.dueToday}</div><div style="font-size: 12px; color: #7f8c8d;">Hôm nay</div></div>` : ''}
     </div>
     <div style="text-align: center; margin: 25px 0 10px 0;">
-      <a href="https://www.notion.so/${(process.env.NOTION_DB_TASK || '').replace(/-/g, '')}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-        📋 Xem Tasks trong Notion
+      <a href="${DASHBOARD_URL}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+        📋 Xem Dashboard
       </a>
     </div>
   </div>
@@ -131,11 +130,12 @@ async function run() {
   console.log('==========================================');
   console.log(`[WF5] ${now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[WF5] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log('[WF5] Smart Reminders — Supabase');
   console.log('==========================================');
 
-  // 1. Query active tasks
-  console.log('\n[1/3] Querying active commands...');
-  const tasks = await queryActiveClarifications();
+  // 1. Query active directives
+  console.log('\n[1/3] Querying active directives...');
+  const tasks = await queryActiveDirectives();
   console.log(`  Found: ${tasks.length} active directives`);
 
   // 2. Group by recipient
@@ -143,41 +143,20 @@ async function run() {
   const tasksByRecipient = {};
 
   for (const task of tasks) {
-    const props = task.properties || {};
+    const title = task.directive_code || task.t2_nhiem_vu;
+    const deadlineStr = task.t4_thoi_han;
+    const recipientEmail = task.bod_hosting_email || BOD_HOSTING_EMAIL;
+    const recipientName = task.t1_dau_moi || 'BOD Hosting';
 
-    // Extract title
-    let title = '';
-    for (const [key, value] of Object.entries(props)) {
-      if (value.type === 'title' && value.title?.[0]) {
-        title = value.title[0].plain_text || '';
-        break;
-      }
-    }
-
-    // Extract deadline
-    let deadline = null, deadlineStr = '';
-    for (const [key, value] of Object.entries(props)) {
-      const kl = key.toLowerCase();
-      if (kl.includes('thời hạn') || kl.includes('t4')) {
-        if (value.date?.start) {
-          deadline = new Date(value.date.start);
-          deadlineStr = value.date.start;
-        }
-        break;
-      }
-    }
-
-    // Extract recipient email (Actual assignee) and override to BOD_HOSTING
-    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
-    
-    let recipientEmail = BOD_HOSTING_EMAIL;
-    let recipientName = safeText(props['T1 - Đầu mối']?.rich_text) || 'BOD Hosting';
+    // Resolve actual email cho CC
+    const emailDauMoiThucTe = task.t1_email || await getStaffEmail(task.t1_dau_moi);
 
     if (!recipientEmail) continue;
 
     // Calculate days left
     let daysLeft = null, status = 'normal';
-    if (deadline) {
+    if (deadlineStr) {
+      const deadline = new Date(deadlineStr);
       daysLeft = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
       if (daysLeft < 0) status = 'overdue';
       else if (daysLeft === 0) status = 'today';
@@ -198,8 +177,9 @@ async function run() {
     }
 
     tasksByRecipient[recipientEmail].tasks.push({
-      title, deadline: deadlineStr, daysLeft, status, actualAssignee: emailDauMoiThucTe,
-      url: task.url || 'https://www.notion.so/' + task.id.replace(/-/g, ''),
+      title, deadline: deadlineStr, daysLeft, status,
+      actualAssignee: emailDauMoiThucTe,
+      url: directiveUrl(task.id),
     });
 
     if (status === 'overdue') tasksByRecipient[recipientEmail].hasOverdue = true;

@@ -1,64 +1,58 @@
 /**
  * wf1-approval.js
  * CEO Directive WF1: 2-Step Approval Email Workflow
- * 
+ *
  * Port từ: WF1_v14_NEW_DB_IDS.json (n8n workflow v13.4)
- * 
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Flow:
  *   STEP1: Chỉ đạo mới → Email người chỉ đạo → "Xin duyệt"
  *   STEP2: Đã duyệt → Email đầu mối → "Xác nhận 4T"
- * 
+ *
  * Usage:
  *   node wf1-approval.js              # Chạy thật
  *   node wf1-approval.js --dry-run    # Chỉ log, không gửi/update
  */
 
-const { queryClarificationsStep1, queryClarificationsStep2,
-        safeText, safeSelect, safeDate, safeRelation, safeRollupEmail, safeRollupTitle,
-        resolveEmailFromRelation, updatePage } = require('./lib/notion-client');
+const { queryPendingApproval, queryApprovedPendingConfirm,
+        updateDirective, logEvent, getStaffEmail,
+        BOD_HOSTING_EMAIL, ALWAYS_CC, directiveUrl } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
-const { logExecution } = require('./lib/logger');
 const { buildStep1Email, buildStep2Email } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
-const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
 
 // ===== MAIN LOGIC =====
 
-async function extractAndProcess(pages) {
+async function extractAndProcess(rows) {
   const results = [];
 
-  for (const page of pages) {
-    const props = page.properties || {};
-    const id = page.id;
+  for (const row of rows) {
+    const id = row.id;
+    const tieuDe = row.directive_code;
+    const nguon = row.meeting_source || '';
+    const ngayNhan = row.created_at ? row.created_at.split('T')[0] : '';
+    const noiDung = row.t2_nhiem_vu;
+    const tinhTrang = row.tinh_trang;
+    const daDuyet = row.approved_by;
 
-    const tieuDe = safeText(props['Tiêu đề']?.title);
-    const nguon = safeSelect(props['Nguồn']?.select);
-    const ngayNhan = safeDate(props['Ngày nhận']?.date);
-    const noiDung = safeText(props['Nội dung gốc']?.rich_text);
-    const tinhTrang = safeSelect(props['TÌNH TRẠNG']?.select) || safeSelect(props['TINH_TRANG']?.select);
-    const daDuyet = safeSelect(props['✅ Đã duyệt bởi người chỉ đạo']?.select);
-    const lenhGuiLoiNhac = safeSelect(props['LỆNH GỬI LỜI NHẮC']?.select) || safeSelect(props['LENH_GUI_LOI_NHAC']?.select);
+    // Người chỉ đạo — resolve email từ staff table
+    const emailNguoiChiDao = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+    const tenNguoiChiDao = row.t1_dau_moi;
 
-    // Người chỉ đạo
-    const emailNguoiChiDao = await resolveEmailFromRelation(props['Email người chỉ đạo']) || safeRollupEmail(props['Email người chỉ đạo']?.rollup);
-    const tenNguoiChiDao = safeRollupTitle(props['Tên người chỉ đạo']?.rollup);
-
-    // Đầu mối
-    const actualEmailDauMoi = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup);
-    // BOD Hosting là chủ theo yêu cầu của Thầy (Tháng 3/2026: Lê Anh Tuấn)
+    // Đầu mối — BOD Hosting là chủ theo yêu cầu của Thầy
+    const actualEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
     const emailDauMoi = BOD_HOSTING_EMAIL;
-    const tenDauMoi = safeRollupTitle(props['Tên đầu mối']?.rollup);
+    const tenDauMoi = row.t1_dau_moi;
 
-    const t2NhiemVu = safeText(props['T2 - NHIỆM VỤ']?.rich_text);
-    const t3ChiTieu = safeText(props['T3 - CHỈ TIÊU']?.rich_text);
-    const t4ThoiHan = safeDate(props['T4 - THỜI HẠN']?.date);
+    const t2NhiemVu = row.t2_nhiem_vu;
+    const t3ChiTieu = row.t3_chi_tieu || '';
+    const t4ThoiHan = row.t4_thoi_han || '';
 
     // Determine step
     let step, sendTo, emailSubject, ccTo;
 
-    if (!daDuyet || daDuyet === '' || daDuyet === 'Chưa duyệt') {
+    if (!daDuyet) {
       // STEP 1: Gửi cho người chỉ đạo duyệt
       if (!emailNguoiChiDao) {
         results.push({
@@ -73,7 +67,7 @@ async function extractAndProcess(pages) {
       emailSubject = `[Cần Duyệt] ${tieuDe || 'Chỉ đạo mới'}`;
       ccTo = ALWAYS_CC.filter(e => e !== sendTo).join(', ');
 
-    } else if (daDuyet === 'Đã duyệt') {
+    } else {
       // STEP 2: Gửi cho đầu mối xác nhận 4T
       if (!emailDauMoi) {
         results.push({
@@ -91,9 +85,6 @@ async function extractAndProcess(pages) {
       if (actualEmailDauMoi && actualEmailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(actualEmailDauMoi);
       ccSet.delete(sendTo);
       ccTo = Array.from(ccSet).join(', ');
-
-    } else {
-      continue;
     }
 
     results.push({
@@ -101,9 +92,9 @@ async function extractAndProcess(pages) {
       emailNguoiChiDao, tenNguoiChiDao,
       emailDauMoi, tenDauMoi,
       sendTo, emailSubject, ccTo,
-      tinhTrang, daDuyet, lenhGuiLoiNhac,
+      tinhTrang, daDuyet,
       t2NhiemVu, t3ChiTieu, t4ThoiHan,
-      url: page.url,
+      url: directiveUrl(id),
     });
   }
 
@@ -113,23 +104,24 @@ async function extractAndProcess(pages) {
 async function run() {
   const startTime = Date.now();
   console.log('==========================================');
-  console.log(`[WF1 v14] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
-  console.log(`[WF1 v14] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log(`[WF1 v15] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
+  console.log(`[WF1 v15] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log('[WF1 v15] Source: Supabase');
   console.log('==========================================');
 
   // 1. Query both steps
-  console.log('\n[1/4] Querying Notion...');
-  const [step1Pages, step2Pages] = await Promise.all([
-    queryClarificationsStep1(),
-    queryClarificationsStep2(),
+  console.log('\n[1/4] Querying Supabase...');
+  const [step1Rows, step2Rows] = await Promise.all([
+    queryPendingApproval(),
+    queryApprovedPendingConfirm(),
   ]);
-  console.log(`  STEP1 (Chờ duyệt): ${step1Pages.length} items`);
-  console.log(`  STEP2 (Đã duyệt): ${step2Pages.length} items`);
+  console.log(`  STEP1 (Chờ duyệt): ${step1Rows.length} items`);
+  console.log(`  STEP2 (Đã duyệt): ${step2Rows.length} items`);
 
   // 2. Extract data
   console.log('\n[2/4] Extracting data...');
-  const allPages = [...step1Pages, ...step2Pages];
-  const items = await extractAndProcess(allPages);
+  const allRows = [...step1Rows, ...step2Rows];
+  const items = await extractAndProcess(allRows);
 
   const emails = items.filter(i => !i.warning);
   const warnings = items.filter(i => i.warning);
@@ -154,42 +146,34 @@ async function run() {
         dryRun: DRY_RUN,
       });
 
-      // Update Notion status
+      // Update Supabase status
       if (!DRY_RUN) {
-        const updateProps = {};
         if (item.step === 'STEP1') {
-          updateProps['TINH_TRANG'] = { select: { name: 'Đã gửi email' } };
+          await updateDirective(item.id, { tinh_trang: 'da_gui_email' });
         } else {
-          updateProps['LENH_GUI_LOI_NHAC'] = { select: { name: 'Đã nhắc' } };
-          updateProps['TINH_TRANG'] = { select: { name: 'Đã gửi email' } };
+          await updateDirective(item.id, {
+            tinh_trang: 'da_gui_email',
+            reminder_status: 'da_nhac',
+          });
         }
-        await updatePage(item.id, updateProps);
       }
 
-      // Log to Notion
-      await logExecution({
-        workflow: 'WF1 - Gửi email',
-        step: item.step,
-        status: '✅ Success',
-        clarificationId: item.id,
-        details: `Title: ${item.tieuDe}\nTo: ${item.sendTo}`,
+      // Log event
+      await logEvent(item.id, item.step === 'STEP1' ? 'wf1_step1_sent' : 'wf1_step2_sent', {
+        title: item.tieuDe,
         emailTo: item.sendTo,
-        dryRun: DRY_RUN,
-      });
+      }, DRY_RUN);
 
       sentCount++;
     } catch (error) {
       failCount++;
       console.error(`  ❌ FAILED ${item.tieuDe}:`, error.message);
 
-      await logExecution({
-        workflow: 'WF1 - Gửi email',
+      await logEvent(item.id, 'wf1_error', {
         step: item.step,
-        status: '❌ Error',
-        clarificationId: item.id,
-        details: `Error: ${error.message}\nTo: ${item.sendTo}`,
-        dryRun: DRY_RUN,
-      });
+        error: error.message,
+        emailTo: item.sendTo,
+      }, DRY_RUN);
     }
   }
 
@@ -197,20 +181,15 @@ async function run() {
   console.log('\n[4/4] Processing warnings...');
   for (const w of warnings) {
     console.log(`  ⚠️ ${w.message}`);
-    await logExecution({
-      workflow: 'WF1 - Gửi email',
-      step: 'Warning',
-      status: '⚠️ Warning',
-      clarificationId: w.id,
+    await logEvent(w.id, 'wf1_warning', {
       details: w.message,
-      dryRun: DRY_RUN,
-    });
+    }, DRY_RUN);
   }
 
   // Summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log('\n==========================================');
-  console.log('[WF1 v14] SUMMARY:');
+  console.log('[WF1 v15] SUMMARY:');
   console.log(`  ✅ Sent: ${sentCount}`);
   console.log(`  ❌ Failed: ${failCount}`);
   console.log(`  ⚠️ Warnings: ${warnings.length}`);

@@ -1,30 +1,26 @@
 /**
  * wf4-directive-escalation.js (formerly wf4-escalation.js)
  * CEO Directive WF4: Directive Escalation Engine
- * 
- * Logic mới (bỏ DB_TASK):
- *   Query CLARIFICATION có T4-Thời hạn → Check tiến độ → Phân loại → Email
+ *
+ * Logic:
+ *   Query directives quá hạn → Phân loại → Email
  *   - 3-7 ngày: 📋 Cần quan tâm → hỏi đầu mối có cần hỗ trợ
  *   - 7-14 ngày: 🔶 Tín hiệu rủi ro → tìm hiểu khó khăn
  *   - >14 ngày: 📋 Cần hỗ trợ đặc biệt → Ban Cố Vấn can thiệp
- * 
- * Track trực tiếp từ chỉ đạo, không cần task riêng.
- * 
+ *
+ * Migrated: Notion → Supabase (2026-03-18)
+ *
  * Usage:
  *   node wf4-directive-escalation.js              # Chạy thật
  *   node wf4-directive-escalation.js --dry-run    # Chỉ log
  */
 
-const { queryOverdueClarifications, safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle, resolveEmailFromRelation } = require('./lib/notion-client');
+const { queryOverdueDirectives, getStaffEmail, logEvent, directiveUrl,
+        BOD_HOSTING_EMAIL, ALWAYS_CC, CEO_EMAIL } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
-const { logExecution } = require('./lib/logger');
 const { buildEscalationEmail: buildEscalationHtml } = require('./lib/email-templates');
 
 const DRY_RUN = process.argv.includes('--dry-run');
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com').split(',').map(e => e.trim());
-const CEO_EMAIL = process.env.CEO_EMAIL || 'hoangkha@esuhai.com';
-const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
 
 // ===== ESCALATION LEVELS =====
 
@@ -43,27 +39,24 @@ async function run() {
   console.log('==========================================');
   console.log(`[WF4] ${now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`[WF4] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
-  console.log('[WF4] Directive Escalation Engine');
+  console.log('[WF4] Directive Escalation Engine — Supabase');
   console.log('==========================================');
 
-  // 1. Query directives with deadlines
-  console.log('\n[1/3] Querying directives with deadlines...');
-  const directives = await queryOverdueClarifications();
-  console.log(`  Found: ${directives.length} active directives with deadlines`);
+  // 1. Query overdue directives (đã filter >= 3 ngày trong supabase-client)
+  console.log('\n[1/3] Querying overdue directives...');
+  const directives = await queryOverdueDirectives();
+  console.log(`  Found: ${directives.length} overdue directives`);
 
-  // 2. Classify overdue items
+  // 2. Classify
   console.log('\n[2/3] Classifying overdue directives...');
   const escalations = [];
 
-  for (const page of directives) {
-    const props = page.properties || {};
-
-    const title = safeText(props['Tiêu đề']?.title);
-    const tinhTrang = safeSelect(props['TINH_TRANG']?.select);
-    const dauMoi = safeText(props['T1 - Đầu mối']?.rich_text);
-    const nhiemVu = safeText(props['T2 - Nhiệm vụ']?.rich_text);
-    const nguoiChiDao = safeText(props['Người chỉ đạo']?.rich_text);
-    const deadlineStr = safeDate(props['T4 - Thời hạn']?.date);
+  for (const row of directives) {
+    const title = row.directive_code;
+    const tinhTrang = row.tinh_trang;
+    const dauMoi = row.t1_dau_moi;
+    const nhiemVu = row.t2_nhiem_vu;
+    const deadlineStr = row.t4_thoi_han;
 
     if (!deadlineStr) continue;
 
@@ -71,25 +64,23 @@ async function run() {
     const daysOverdue = Math.ceil((now - deadline) / (1000 * 60 * 60 * 24));
     if (daysOverdue < 3) continue;
 
-    // Resolve email
-    let emailDauMoiThucTe = await resolveEmailFromRelation(props['Email đầu mối']) || safeRollupEmail(props['Email đầu mối']?.rollup) || '';
-    let emailDauMoi = BOD_HOSTING_EMAIL;
+    // Resolve emails
+    const emailDauMoiThucTe = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+    const emailDauMoi = BOD_HOSTING_EMAIL;
+    const emailNguoiChiDao = row.t1_email || await getStaffEmail(row.t1_dau_moi);
 
-    let emailNguoiChiDaoThucTe = await resolveEmailFromRelation(props['Email người chỉ đạo']) || safeRollupEmail(props['Email người chỉ đạo']?.rollup) || '';
-    let emailNguoiChiDao = emailNguoiChiDaoThucTe;
-
-    // Classify
+    // Classify level
     let level;
     if (daysOverdue >= LEVELS.ALERT.min) level = 'ALERT';
     else if (daysOverdue >= LEVELS.ESCALATE.min) level = 'ESCALATE';
     else level = 'WARNING';
 
     escalations.push({
-      id: page.id, title, daysOverdue, deadline: deadlineStr,
-      tinhTrang, dauMoi, nhiemVu, nguoiChiDao, level,
-      emailDauMoiThucTe, emailNguoiChiDaoThucTe,
-      emailDauMoi, emailNguoiChiDao,
-      url: page.url || `https://www.notion.so/${page.id.replace(/-/g, '')}`,
+      id: row.id, title, daysOverdue, deadline: deadlineStr,
+      tinhTrang, dauMoi, nhiemVu, level,
+      emailDauMoiThucTe, emailNguoiChiDao,
+      emailDauMoi,
+      url: directiveUrl(row.id),
     });
   }
 
@@ -120,10 +111,10 @@ async function run() {
       ccList = [...ALWAYS_CC, esc.emailDauMoiThucTe];
     } else if (esc.level === 'ESCALATE') {
       sendTo = esc.emailNguoiChiDao || CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailDauMoi, esc.emailDauMoiThucTe, esc.emailNguoiChiDaoThucTe];
+      ccList = [...ALWAYS_CC, esc.emailDauMoi, esc.emailDauMoiThucTe];
     } else {
       sendTo = CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi, esc.emailDauMoiThucTe, esc.emailNguoiChiDaoThucTe];
+      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi, esc.emailDauMoiThucTe];
     }
 
     ccList = [...new Set(ccList)].filter(e => e && e !== sendTo);
@@ -149,27 +140,20 @@ async function run() {
         console.log(`  [DRY-RUN] ${esc.level}: "${esc.title}" (${esc.daysOverdue}d) → ${sendTo}`);
       }
 
-      await logExecution({
-        workflow: 'WF4 - Directive Escalation',
-        step: esc.level,
-        status: '✅ Success',
-        clarificationId: esc.id,
-        details: `${esc.level}: "${esc.title}" chưa cập nhật ${esc.daysOverdue} ngày`,
+      await logEvent(esc.id, 'wf4_escalation', {
+        level: esc.level,
+        daysOverdue: esc.daysOverdue,
+        title: esc.title,
         emailTo: sendTo,
-        dryRun: DRY_RUN,
-      });
+      }, DRY_RUN);
 
       sentCount++;
     } catch (error) {
       console.error(`  ❌ FAILED "${esc.title}":`, error.message);
-      await logExecution({
-        workflow: 'WF4 - Directive Escalation',
-        step: esc.level,
-        status: '❌ Error',
-        clarificationId: esc.id,
-        details: `Error: ${error.message}`,
-        dryRun: DRY_RUN,
-      });
+      await logEvent(esc.id, 'wf4_error', {
+        level: esc.level,
+        error: error.message,
+      }, DRY_RUN);
     }
   }
 
