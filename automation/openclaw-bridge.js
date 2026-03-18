@@ -29,16 +29,18 @@ const workflows = {
   hm50: () => require('./hm50-linker').run,
 };
 
-// ===== NOTION STATUS QUERY =====
+// ===== SUPABASE DATA QUERIES =====
 async function getStatus() {
-  const { queryClarificationsStep1, queryConfirmed5T, queryOverdueClarifications,
-          queryActiveClarifications } = require('./lib/notion-client');
+  const {
+    queryPendingApproval, queryConfirmed5T,
+    queryOverdueDirectives, queryActiveDirectives
+  } = require('./lib/supabase-client');
 
   const [pending, confirmed, overdue, active] = await Promise.all([
-    queryClarificationsStep1().then(p => p.length).catch(() => '?'),
+    queryPendingApproval().then(p => p.length).catch(() => '?'),
     queryConfirmed5T().then(p => p.length).catch(() => '?'),
-    queryOverdueClarifications().then(p => p.length).catch(() => '?'),
-    queryActiveClarifications().then(p => p.length).catch(() => '?'),
+    queryOverdueDirectives().then(p => p.length).catch(() => '?'),
+    queryActiveDirectives().then(p => p.length).catch(() => '?'),
   ]);
 
   return {
@@ -56,45 +58,49 @@ async function getStatus() {
 
 // ===== OVERDUE LIST =====
 async function getOverdueList(limit = 5) {
-  const { queryOverdueClarifications, safeText, safeDate } = require('./lib/notion-client');
-  const pages = await queryOverdueClarifications();
+  const { queryOverdueDirectives } = require('./lib/supabase-client');
+  const rows = await queryOverdueDirectives();
   const now = new Date();
 
-  const items = pages
-    .map(page => {
-      const props = page.properties || {};
-      const title = safeText(props['Tiêu đề']?.title);
-      const deadline = safeDate(props['T4 - Thời hạn']?.date);
-      const dauMoi = safeText(props['T1 - Đầu mối']?.rich_text);
+  const items = rows
+    .map(row => {
+      const deadline = row.t4_thoi_han;
       if (!deadline) return null;
       const daysOverdue = Math.ceil((now - new Date(deadline)) / (1000 * 60 * 60 * 24));
       if (daysOverdue < 1) return null;
-      return { title, deadline, dauMoi, daysOverdue, url: page.url };
+      return {
+        title: row.t2_nhiem_vu || row.directive_code || 'Không tên',
+        deadline,
+        dauMoi: row.t1_dau_moi || 'N/A',
+        daysOverdue,
+        url: null,
+      };
     })
     .filter(Boolean)
     .sort((a, b) => b.daysOverdue - a.daysOverdue)
     .slice(0, limit);
 
-  return { count: items.length, total: pages.length, items };
+  return { count: items.length, total: rows.length, items };
 }
 
 // ===== SEARCH =====
 async function searchDirectives(keyword) {
-  const { queryActiveClarifications, safeText } = require('./lib/notion-client');
-  const pages = await queryActiveClarifications();
+  const { queryActiveDirectives } = require('./lib/supabase-client');
+  const rows = await queryActiveDirectives();
   const kw = keyword.toLowerCase();
 
-  return pages
-    .filter(page => {
-      const title = safeText(page.properties?.['Tiêu đề']?.title) || '';
-      const nhiemVu = safeText(page.properties?.['T2 - Nhiệm vụ']?.rich_text) || '';
-      return title.toLowerCase().includes(kw) || nhiemVu.toLowerCase().includes(kw);
+  return rows
+    .filter(row => {
+      const nhiemVu = (row.t2_nhiem_vu || '').toLowerCase();
+      const dauMoi = (row.t1_dau_moi || '').toLowerCase();
+      const code = (row.directive_code || '').toLowerCase();
+      return nhiemVu.includes(kw) || dauMoi.includes(kw) || code.includes(kw);
     })
     .slice(0, 10)
-    .map(page => ({
-      title: safeText(page.properties?.['Tiêu đề']?.title),
-      status: page.properties?.['TINH_TRANG']?.select?.name || '',
-      url: page.url,
+    .map(row => ({
+      title: row.t2_nhiem_vu || row.directive_code || '',
+      status: row.tinh_trang || '',
+      url: null,
     }));
 }
 
