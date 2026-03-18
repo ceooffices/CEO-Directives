@@ -227,25 +227,49 @@ module.exports = { analyzePatterns, predictRisks, askQuestion, loadDirectiveData
 
 // ===== CLI =====
 if (require.main === module) {
-  const cmd = process.argv[2] || 'patterns';
+  const args = process.argv.slice(2);
+  const cmd = args.find(a => !a.startsWith('--')) || 'patterns';
+  
+  // Parse --format html|pdf|both
+  const fmtIdx = args.indexOf('--format');
+  const format = fmtIdx >= 0 ? args[fmtIdx + 1] : null;
+  const sendTG = args.includes('--tg');
   
   (async () => {
     try {
+      let content = '';
+      let title = '';
+
       if (cmd === 'patterns') {
         console.log('🧠 Analyzing patterns...\n');
         const result = await analyzePatterns();
-        console.log(result.analysis);
+        content = result.analysis;
+        title = 'Phân tích xu hướng chỉ đạo CEO';
+        console.log(content);
         console.log(`\n📊 Tokens: ${result.tokens?.total_tokens || '?'}`);
       } else if (cmd === 'risks') {
         console.log('⚠️ Predicting risks...\n');
         const result = await predictRisks();
-        console.log(result.prediction);
+        content = result.prediction;
+        title = 'Dự đoán rủi ro chỉ đạo CEO';
+        console.log(content);
         console.log(`\n📊 Tokens: ${result.tokens?.total_tokens || '?'}`);
       } else {
         console.log(`💬 Asking: "${cmd}"...\n`);
         const result = await askQuestion(cmd);
-        console.log(result.answer);
+        content = result.answer;
+        title = `Trả lời — ${cmd.slice(0, 40)}`;
+        console.log(content);
         console.log(`\n📊 Tokens: ${result.tokens?.total_tokens || '?'}`);
+      }
+
+      // Export to HTML/PDF if --format specified
+      if (format && content) {
+        const { generateReport } = require('./lib/report-generator');
+        console.log(`\n📄 Xuất ${format.toUpperCase()}...`);
+        const report = await generateReport(title, content, { format, sendTG });
+        if (report.htmlPath) console.log(`  ✅ HTML: ${report.htmlPath}`);
+        if (report.pdfPath)  console.log(`  ✅ PDF:  ${report.pdfPath}`);
       }
     } catch (err) {
       console.error('❌ Error:', err.message);
