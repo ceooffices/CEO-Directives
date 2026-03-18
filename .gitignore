@@ -16,13 +16,20 @@ desktop.ini
 .vscode/
 .idea/
 
-# Sensitive
+# Sensitive / Credentials
 .env
 .env.local
 .env*.local
 automation/.env
 web/.env*
 *.key
+.clasprc.json
+
+# Google Apps Script
+.clasp_cache/
+
+# Log files
+*.log
 
 # Next.js build output
 web/.next/

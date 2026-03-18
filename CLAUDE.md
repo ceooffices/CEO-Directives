@@ -1,12 +1,13 @@
 # CEO Directive Automation — ClaudeCode Context
 
-> Cập nhật: 2026-03-17
-> Phiên bản: v3.0 — Supabase migration (Notion = deprecated)
+> Cập nhật: 2026-03-18
+> Phiên bản: v3.1 — Supabase migration + BOD Meeting GAS restored
 
 ## Tổng quan dự án
 Hệ thống tự động hóa quản lý chỉ đạo CEO cho EsuhaiGroup (Giáo dục & Nhân lực Việt-Nhật).
 - **Frontend:** Next.js 16 (Turbopack) dashboard → `web/`
-- **Database:** Supabase PostgreSQL (source of truth)
+- **BOD Meeting:** Google Apps Script dashboard → `bod_meeting/` (thu đăng ký & quản lý BOD)
+- **Database:** Supabase PostgreSQL (source of truth cho web/)
 - **Backend:** Node.js automation scripts → `automation/`
 - **AI:** Gemini 2.5 Pro (primary) + OpenAI (fallback)
 - **Ngôn ngữ:** Node.js, tiếng Việt có dấu
@@ -29,6 +30,18 @@ JSON files trong data/ — DEPRECATED (thay bằng Supabase queries)
 
 ```
 CEO-Directives/
+├── bod_meeting/              # 🔵 GAS: Thu đăng ký & Quản lý BOD Meeting
+│   ├── Mã.js                 # Main: Menu, Triggers, Approval
+│   ├── v800_server_api.js    # Server API + Dashboard routing
+│   ├── v810_admin_api.js     # Admin API
+│   ├── v820_email_templates.js # Email HTML song ngữ VN/JP
+│   ├── v850_config.js        # CONFIG + loadConfigFromSheet
+│   ├── v851_helpers.js       # Helpers, format, date, stats
+│   ├── v852_email_router.js  # Email router (N8N/Gmail)
+│   ├── v853_schedule.js      # Schedule generation
+│   ├── Dashboard.html + modules # Dashboard UI
+│   ├── AdminPage.html + modules # Admin UI
+│   └── docs/                 # Docs (DEV_RULES, CORE_RULES, etc.)
 ├── automation/               # ⚙️ CLAUDECODE ZONE — Backend logic
 │   ├── transcript-parser.js  # BOD transcript → 5T → Supabase
 │   ├── telegram-bot.js       # Telegram Bot
@@ -37,28 +50,27 @@ CEO-Directives/
 │   ├── wf2-*.js              # Notify + form processor
 │   ├── hm50-linker.js        # Match chỉ đạo → 50 HM
 │   └── lib/                  # Shared modules
-│       ├── email-sender.js   # SMTP sender
-│       ├── email-templates.js # Email HTML + Google Form prefill URLs
-│       └── logger.js         # Logging utility
 ├── supabase/                 # 📦 Schema + Seed scripts
 │   ├── migration.sql         # 5 tables + RLS + indexes
 │   ├── seed-hm50.js          # Seed 50 HM từ JSON
 │   └── seed-staff.js         # Seed 366 staff từ CSV
-├── web/                      # 🎨 GRAVITY ZONE — Next.js Dashboard
-│   ├── src/app/page.tsx      # Dashboard chính (6 sections BSC)
+├── web/                      # 🎨 GRAVITY ZONE — Next.js CEO Strategic Cockpit
+│   ├── src/app/page.tsx      # Dashboard chính (4 tabs)
 │   ├── src/app/dashboard/assistant/ # P1: Bảng điều khiển buổi sáng
 │   ├── src/app/approve/[id]/ # P2: Duyệt chỉ đạo (BOD Hosting)
 │   ├── src/app/confirm/[id]/ # P3: Xác nhận đầu mối
 │   ├── src/app/directive/[id]/ # Chi tiết chỉ đạo
-│   ├── src/app/api/          # 4 API routes: approve, confirm, remind, escalate
-│   ├── src/lib/supabase.ts   # Supabase client + dashboard queries
-│   ├── src/lib/supabase-types.ts # TypeScript types cho 5 tables
-│   └── .env.local            # Supabase + Notion credentials
+│   ├── src/app/api/          # 4 API routes
+│   ├── src/lib/supabase.ts   # Supabase client
+│   └── .env.local            # Supabase credentials
 ├── ban_chep_loi/             # Transcripts cuộc họp BOD (source of truth)
-├── archive/                  # 📦 Files lỗi thời (GAS, old Supabase, Notion code)
+├── archive/                  # 📦 Files lỗi thời (prototype, old code)
 ├── CONTENT_BIBLE_AIGENT.md   # ⭐ ĐỌC TRƯỚC KHI CODE — Quy tắc content
 └── .env.example → .env       # Environment config (automation/)
 ```
+
+> ⚠️ **QUAN TRỌNG:** `bod_meeting/` là GAS project ĐANG HOẠT ĐỘNG, KHÔNG phải archive.
+> Phục vụ pipeline thu đăng ký báo cáo BOD Meeting. KHÔNG được di chuyển hay xóa.
 
 ## Supabase Project
 

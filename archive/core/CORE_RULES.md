@@ -1,3 +1,6 @@
+> ⚠️ **DEPRECATED:** Bản chính thức đã chuyển sang `bod_meeting/docs/CORE_RULES.md`.
+> File này giữ lại làm bản lưu lịch sử. KHÔNG chỉnh sửa tại đây.
+
 # CORE RULES - HỆ THỐNG XỬ LÝ CHỈ ĐẠO CEO
 
 **Version:** 1.5  

@@ -1,0 +1,38 @@
+# Documentation
+docs/**
+
+# Archive — all old/backup files
+_archive/**
+
+# Backup patterns
+*_backup*
+*_bak*
+
+# Component HTML files — only build output (Dashboard.html) is pushed
+# If using include() pattern, comment these out
+Css_Base.html
+Css_Components.html
+Css_Extras.html
+Css_Modal.html
+Css_Responsive.html
+Css_Timeline.html
+Html_Body.html
+Js_Helpers.html
+Js_Process.html
+Js_Core.html
+Js_Approval.html
+Js_DeptSchedule.html
+Js_Email.html
+Js_Toast.html
+
+# Docs, scripts, non-GAS files
+*.txt
+*.md
+*.py
+*.ps1
+*.pdf
+*.json
+!appsscript.json
+
+# IDE settings
+.vscode/

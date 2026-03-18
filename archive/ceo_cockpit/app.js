@@ -18,8 +18,7 @@
     meetings: DATA_BASE + 'meetings.json',
     outcomes: DATA_BASE + 'outcomes.json',
     people: DATA_BASE + 'people.json',
-    statusLog: DATA_BASE + 'status_log.json',
-    kpiTargets: DATA_BASE + 'kpi_targets.json'
+    statusLog: DATA_BASE + 'status_log.json'
   };
 
   const STATUS_LABELS = {
@@ -100,10 +99,9 @@
   // ===== INIT =====
   async function init() {
     try {
-      const [dir, meet, out, ppl, log, kpi] = await Promise.all([
+      const [dir, meet, out, ppl, log] = await Promise.all([
         fetchJSON(FILES.directives), fetchJSON(FILES.meetings), fetchJSON(FILES.outcomes),
-        fetchJSON(FILES.people), fetchJSON(FILES.statusLog),
-        fetchJSON(FILES.kpiTargets).catch(() => ({ targets: {}, weekly_actuals: [] }))
+        fetchJSON(FILES.people), fetchJSON(FILES.statusLog)
       ]);
       data.directives = dir.directives || [];
       data.meetings = meet.meetings || [];
@@ -112,8 +110,6 @@
       data.statusLog = log.log || [];
       data.outcomesSummary = out.summary || {};
       data.outcomesSections = out.sections || [];
-      data.kpiTargets = kpi.targets || {};
-      data.kpiWeekly = kpi.weekly_actuals || [];
       renderAll();
       setupEvents();
       hideSplash();
@@ -155,7 +151,6 @@
 
   // ===== RENDER ALL =====
   function renderAll() {
-    renderKPITargets();
     renderHealthScore();
     renderTrafficLights();
     renderPillarsGrid();
@@ -167,82 +162,13 @@
     renderEscalationTimeline();
     // Tab 3: Chiến lược
     renderStrategyMap();
-    // Tab 4: Lãnh đạo
-    renderLeadersSummary();
-    renderLeadersDetail();
-    renderLeadersFlow();
-    // Tab 5: Hành động
+    // Tab 4: Hành động
     renderUrgentActions();
     renderActionsByStatus();
     renderProgressTracking();
   }
 
   // ===== TAB 1: BỨC TRANH TỔNG =====
-
-  function renderKPITargets() {
-    const el = $('#kpiTargets');
-    const kpi = data.kpiTargets;
-    const weekly = data.kpiWeekly || [];
-    if (!kpi || Object.keys(kpi).length === 0) {
-      el.innerHTML = '<div class="esc-ratio-card" style="border-left:3px solid var(--text-tertiary)"><div style="font-size:0.78rem;color:var(--text-secondary)">Chưa có dữ liệu KPI. Cập nhật file kpi_targets.json</div></div>';
-      return;
-    }
-
-    const now = new Date();
-    const yearStart = new Date('2026-01-01');
-    const yearEnd = new Date('2026-12-31');
-    const totalWeeks = 52;
-    const elapsedWeeks = weekly.length;
-    const remainingWeeks = totalWeeks - elapsedWeeks;
-
-    const renderKPI = (key) => {
-      const meta = kpi[key];
-      if (!meta) return '';
-      const actual = weekly.reduce((sum, w) => sum + (w[key] || 0), 0);
-      const pct = Math.round((actual / meta.target) * 100);
-      const avgPerWeek = elapsedWeeks > 0 ? Math.round(actual / elapsedWeeks) : 0;
-      const forecast = actual + (avgPerWeek * remainingWeeks);
-      const forecastPct = Math.round((forecast / meta.target) * 100);
-      const onTrack = forecast >= meta.target;
-      const lastWeek = weekly.length > 0 ? weekly[weekly.length - 1][key] || 0 : 0;
-      const prevWeek = weekly.length > 1 ? weekly[weekly.length - 2][key] || 0 : 0;
-      const trend = lastWeek > prevWeek ? '📈' : lastWeek < prevWeek ? '📉' : '➡️';
-      const barColor = pct >= 70 ? '#34c759' : pct >= 40 ? '#ff9500' : '#ff3b30';
-
-      return `
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-icon">${meta.icon}</span>
-            <span class="kpi-title">${meta.label}</span>
-            <span class="kpi-pct" style="color:${barColor}">${pct}%</span>
-          </div>
-          <div class="kpi-bar-track">
-            <div class="kpi-bar-fill" style="width:${Math.min(pct, 100)}%;background:${barColor}"></div>
-          </div>
-          <div class="kpi-stats">
-            <span><strong>${actual.toLocaleString()}</strong> / ${meta.target.toLocaleString()} ${meta.unit}</span>
-            <span>${trend} ${lastWeek}/tuần</span>
-          </div>
-          <div class="kpi-forecast">
-            <span>Tốc độ: ${avgPerWeek}/${Math.ceil(meta.target / totalWeeks)} cần/tuần</span>
-            <span style="color:${onTrack ? '#34c759' : '#ff3b30'};font-weight:600">
-              Dự báo cuối năm: ${forecast.toLocaleString()} ${onTrack ? '✅' : '⚠️'}
-            </span>
-          </div>
-        </div>
-      `;
-    };
-
-    el.innerHTML = `
-      <div class="kpi-grid">
-        ${renderKPI('tuyen_sinh')}
-        ${renderKPI('xuat_canh')}
-      </div>
-      <div class="kpi-week-info">
-        Tuần ${elapsedWeeks}/${totalWeeks} | Còn ${remainingWeeks} tuần
-      </div>
-    `;
-  }
 
   function renderHealthScore() {
     const total = data.outcomes.length || 50;
@@ -685,159 +611,7 @@
     }).join('');
   }
 
-  // ===== TAB 4: LÃNH ĐẠO =====
-
-  function renderLeadersSummary() {
-    const el = $('#leadersSummary');
-    const leaders = {};
-    data.directives.forEach(d => {
-      const name = d.chi_dao_boi || 'Không rõ';
-      if (!leaders[name]) leaders[name] = { total: 0, done: 0, overdue: 0, linked: 0, unlinked: 0, dau_moi_set: new Set() };
-      leaders[name].total++;
-      if (d.trang_thai === 'hoan_thanh') leaders[name].done++;
-      const lvl = getUrgencyLevel(d);
-      if (lvl === 'red' || lvl === 'black') leaders[name].overdue++;
-      if (d.hm50_ref) leaders[name].linked++;
-      else leaders[name].unlinked++;
-      if (d.dau_moi) leaders[name].dau_moi_set.add(d.dau_moi);
-    });
-
-    const sorted = Object.entries(leaders).sort((a, b) => b[1].total - a[1].total);
-    const totalDirs = data.directives.length;
-
-    el.innerHTML = `
-      <div class="esc-summary-grid">
-        <div class="esc-summary-card">
-          <div class="esc-summary-num" style="color:#007aff">${sorted.length}</div>
-          <div class="esc-summary-label">Người chỉ đạo</div>
-        </div>
-        <div class="esc-summary-card">
-          <div class="esc-summary-num" style="color:#34c759">${totalDirs}</div>
-          <div class="esc-summary-label">Tổng chỉ đạo</div>
-        </div>
-        <div class="esc-summary-card">
-          <div class="esc-summary-num" style="color:#ff9500">${data.directives.filter(d => d.trang_thai === 'hoan_thanh').length}</div>
-          <div class="esc-summary-label">Hoàn thành</div>
-        </div>
-        <div class="esc-summary-card">
-          <div class="esc-summary-num" style="color:#ff3b30">${data.directives.filter(d => { const l = getUrgencyLevel(d); return l === 'red' || l === 'black'; }).length}</div>
-          <div class="esc-summary-label">Quá hạn</div>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderLeadersDetail() {
-    const el = $('#leadersDetail');
-    const leaders = {};
-    data.directives.forEach(d => {
-      const name = d.chi_dao_boi || 'Không rõ';
-      if (!leaders[name]) leaders[name] = { total: 0, done: 0, overdue: 0, linked: 0, unlinked: 0, dirs: [], dau_moi_set: new Set() };
-      leaders[name].total++;
-      if (d.trang_thai === 'hoan_thanh') leaders[name].done++;
-      const lvl = getUrgencyLevel(d);
-      if (lvl === 'red' || lvl === 'black') leaders[name].overdue++;
-      if (d.hm50_ref) leaders[name].linked++;
-      else leaders[name].unlinked++;
-      if (d.dau_moi) leaders[name].dau_moi_set.add(d.dau_moi);
-      leaders[name].dirs.push(d);
-    });
-
-    const sorted = Object.entries(leaders).sort((a, b) => b[1].total - a[1].total);
-    const totalDirs = data.directives.length;
-    const leaderColors = ['#007aff', '#af52de', '#ff9500', '#34c759', '#ff2d55', '#5856d6'];
-
-    el.innerHTML = sorted.map(([name, ldr], i) => {
-      const color = leaderColors[i % leaderColors.length];
-      const donePct = ldr.total > 0 ? Math.round((ldr.done / ldr.total) * 100) : 0;
-      const sharePct = Math.round((ldr.total / totalDirs) * 100);
-      const linkedPct = ldr.total > 0 ? Math.round((ldr.linked / ldr.total) * 100) : 0;
-
-      return `
-        <div class="leader-card">
-          <div class="leader-header">
-            <div class="leader-avatar" style="background:${color}">${name.charAt(0)}</div>
-            <div class="leader-info">
-              <div class="leader-name">${name}</div>
-              <div class="leader-sub">${ldr.total} chỉ đạo · ${sharePct}% tổng · ${ldr.dau_moi_set.size} đầu mối</div>
-            </div>
-            <div class="leader-score" style="color:${donePct >= 50 ? '#34c759' : donePct > 0 ? '#ff9500' : '#ff3b30'}">${donePct}%</div>
-          </div>
-          <div class="leader-bars">
-            <div class="leader-bar-row">
-              <span class="leader-bar-label">Hoàn thành</span>
-              <div class="leader-bar-track"><div class="leader-bar-fill" style="width:${donePct}%;background:#34c759"></div></div>
-              <span class="leader-bar-count">${ldr.done}/${ldr.total}</span>
-            </div>
-            <div class="leader-bar-row">
-              <span class="leader-bar-label">Chiến lược</span>
-              <div class="leader-bar-track"><div class="leader-bar-fill" style="width:${linkedPct}%;background:#007aff"></div></div>
-              <span class="leader-bar-count">${ldr.linked}/${ldr.total}</span>
-            </div>
-            ${ldr.overdue > 0 ? `
-            <div class="leader-bar-row">
-              <span class="leader-bar-label" style="color:var(--red)">Quá hạn</span>
-              <div class="leader-bar-track"><div class="leader-bar-fill" style="width:${Math.round(ldr.overdue/ldr.total*100)}%;background:#ff3b30"></div></div>
-              <span class="leader-bar-count" style="color:var(--red)">${ldr.overdue}</span>
-            </div>` : ''}
-          </div>
-          <div class="leader-dau-moi">
-            ${[...ldr.dau_moi_set].map(dm => `<span class="leader-tag">${dm}</span>`).join('')}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function renderLeadersFlow() {
-    const el = $('#leadersFlow');
-    const leaders = {};
-    data.directives.forEach(d => {
-      const name = d.chi_dao_boi || 'Không rõ';
-      if (!leaders[name]) leaders[name] = { hmRefs: {}, unlinked: 0 };
-      if (d.hm50_ref) {
-        if (!leaders[name].hmRefs[d.hm50_ref]) leaders[name].hmRefs[d.hm50_ref] = { name: d.hm50_name || d.hm50_ref, count: 0 };
-        leaders[name].hmRefs[d.hm50_ref].count++;
-      } else {
-        leaders[name].unlinked++;
-      }
-    });
-
-    el.innerHTML = Object.entries(leaders).map(([name, flow]) => {
-      const hmEntries = Object.entries(flow.hmRefs).sort((a, b) => b[1].count - a[1].count);
-      return `
-        <div class="esc-ratio-card">
-          <div style="font-size:0.82rem;font-weight:700;color:var(--text-primary);margin-bottom:10px">
-            ${name} → đổ vào HM nào?
-          </div>
-          <div class="leader-flow-items">
-            ${hmEntries.map(([hmId, hm]) => {
-              const outcome = data.outcomes.find(o => o.id === hmId);
-              const si = outcome ? (STATUS_ICONS[outcome.status] || STATUS_ICONS['❌']) : { color: '#8e8e93' };
-              return `
-                <div class="leader-flow-item">
-                  <div class="leader-flow-dot" style="background:${si.color}"></div>
-                  <span class="leader-flow-hm">${hmId}</span>
-                  <span class="leader-flow-name">${hm.name}</span>
-                  <span class="leader-flow-count">${hm.count}×</span>
-                </div>
-              `;
-            }).join('')}
-            ${flow.unlinked > 0 ? `
-              <div class="leader-flow-item">
-                <div class="leader-flow-dot" style="background:#ff9500"></div>
-                <span class="leader-flow-hm" style="color:#ff9500">MỚI</span>
-                <span class="leader-flow-name">Phát sinh ngoài chiến lược</span>
-                <span class="leader-flow-count">${flow.unlinked}×</span>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // ===== TAB 5: HÀNH ĐỘNG =====
+  // ===== TAB 4: HÀNH ĐỘNG =====
 
   function renderUrgentActions() {
     const el = $('#urgentActions');
@@ -1116,11 +890,10 @@
       const btn = $('#btnRefresh');
       btn.textContent = '...';
       try {
-        const [dir, meet, out, ppl, log, kpi] = await Promise.all([
+        const [dir, meet, out, ppl, log] = await Promise.all([
           fetchJSON(FILES.directives + '?t=' + Date.now()), fetchJSON(FILES.meetings + '?t=' + Date.now()),
           fetchJSON(FILES.outcomes + '?t=' + Date.now()), fetchJSON(FILES.people + '?t=' + Date.now()),
-          fetchJSON(FILES.statusLog + '?t=' + Date.now()),
-          fetchJSON(FILES.kpiTargets + '?t=' + Date.now()).catch(() => ({ targets: {}, weekly_actuals: [] }))
+          fetchJSON(FILES.statusLog + '?t=' + Date.now())
         ]);
         data.directives = dir.directives || [];
         data.meetings = meet.meetings || [];
@@ -1129,8 +902,6 @@
         data.statusLog = log.log || [];
         data.outcomesSummary = out.summary || {};
         data.outcomesSections = out.sections || [];
-        data.kpiTargets = kpi.targets || {};
-        data.kpiWeekly = kpi.weekly_actuals || [];
         renderAll();
       } catch (err) { console.error('Lỗi làm mới:', err); }
       btn.textContent = 'Làm mới';

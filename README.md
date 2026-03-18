@@ -205,6 +205,13 @@ node signal-briefing.js              # Gửi thật
 ```
 CEO-Directives/
 │
+├── 📂 bod_meeting/                  ← GAS: Thu đăng ký & Quản lý BOD Meeting
+│   ├── Mã.js                        ← Main: Menu, Triggers, Approval
+│   ├── v800–v853_*.js               ← Server API, Admin, Email, Config
+│   ├── Dashboard.html + modules     ← Dashboard UI
+│   ├── AdminPage.html + modules     ← Admin UI
+│   └── docs/                        ← DEV_RULES, CORE_RULES, Full_Flows
+│
 ├── 📂 web/                         ← Dashboard (Next.js)
 │   ├── src/app/
 │   │   ├── page.tsx                ← Trang chính (4 tabs)
@@ -233,6 +240,7 @@ CEO-Directives/
 │       └── auto-escalation/        ← Phân tích tín hiệu (8h sáng)
 │
 ├── 📂 ban_chep_loi/                 ← Biên bản cuộc họp BOD
+├── 📂 archive/                      ← Files lỗi thời, prototype cũ
 ├── 📂 docs/                         ← Tài liệu + hình minh họa
 │
 ├── README.md                        ← 📖 File này

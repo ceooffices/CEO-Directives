@@ -10,17 +10,17 @@
 
 | Property | Loại | Workflow sử dụng | Ghi chú |
 |---|---|---|---|
-| `Tiêu đề` | Title | WF1, WF2 | Tên chỉ đạo |
-| `TINH_TRANG` | Select | WF1 | Trạng thái: Chờ làm rõ, Đã gửi email, Đã tạo task |
+| `Tiêu đề` | Title | WF1 | Tên chỉ đạo |
+| `TINH_TRANG` | Select | WF1 | Trạng thái: Chờ làm rõ, Đã gửi email, **Đã xác nhận 5T** |
 | `✅ Đã duyệt bởi người chỉ đạo` | Select | WF1 | Chưa duyệt / Đã duyệt |
 | `LENH_GUI_LOI_NHAC` | Select | WF1 | Gửi lời nhắc / Đã nhắc |
 | `Nguồn` | Select | WF1 | CEO / BOD / GM |
 | `Ngày nhận` | Date | WF1 | Ngày nhận chỉ đạo |
 | `Nội dung gốc` | Rich Text | WF1 | Nội dung chỉ đạo gốc |
 | `T1 - ĐẦU MỐI` | Relation | WF1 | Link đến HR DB |
-| `T2 - NHIỆM VỤ` | Rich Text | WF1, WF2 | Mô tả nhiệm vụ |
-| `T3 - CHỈ TIÊU` | Rich Text | WF1, WF2 | Đo lường kết quả |
-| `T4 - THỜI HẠN` | Date | WF1, WF2 | Deadline |
+| `T2 - NHIỆM VỤ` | Rich Text | WF1 | Mô tả nhiệm vụ |
+| `T3 - CHỈ TIÊU` | Rich Text | WF1 | Đo lường kết quả |
+| `T4 - THỜI HẠN` | Date | WF1 | Deadline |
 | `Email đầu mối` | Rollup | WF1 | Từ T1-ĐẦU MỐI → Email |
 | `Email người chỉ đạo` | Rollup | WF1 | Từ Người chỉ đạo → Email |
 | `Tên người chỉ đạo` | Rollup | WF1 | Từ Người chỉ đạo → Name |
@@ -28,7 +28,7 @@
 | `Công việc (sau khi rõ)` | Relation | WF1 | Link sang Tasks DB |
 | `Người chỉ đạo` | Relation | WF1 | Link đến HR DB |
 
-## Database: TASKS (Công việc)
+## Database: TASKS (Công việc) — ⚠️ ARCHIVE từ v1.5, WF2 đã deprecated
 
 | Property | Loại | Workflow sử dụng |
 |---|---|---|

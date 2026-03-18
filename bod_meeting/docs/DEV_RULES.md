@@ -1,7 +1,7 @@
 # QUY TẮC KỸ THUẬT — BOD MEETING DASHBOARD
 
-**Version:** 1.1  
-**Updated:** 08/03/2026  
+**Version:** 1.2  
+**Updated:** 18/03/2026  
 **By:** Antigravity + Anh Kha  
 **Status:** APPROVED — SOURCE OF TRUTH  
 
@@ -75,32 +75,60 @@ HtmlService.createHtmlOutputFromFile("AdminPage")
 
 ## 4. CẤU TRÚC FILE DỰ ÁN
 
+```text
+bod_meeting/                     ← 🔵 GAS: Thu đăng ký & Quản lý BOD Meeting
+│
+├── .clasp.json                  ← Config clasp (script ID, rootDir)
+├── .claspignore                 ← Danh sách file bị bỏ qua khi push
+├── appsscript.json              ← GAS manifest
+├── build_dashboard.ps1          ← Script build Dashboard (gộp modules → 1 file)
+│
+│── ─── SERVER-SIDE CODE (.js) ──────────────────
+├── Mã.js                        ← Main: Menu, Triggers, Approval, Test
+├── v800_server_api.js           ← SERVER API + routing (Web Dashboard)
+├── v810_admin_api.js            ← ADMIN API
+├── v820_email_templates.js      ← Email HTML templates (song ngữ VN/JP)
+├── v850_config.js               ← CONFIG object + loadConfigFromSheet
+├── v851_helpers.js              ← Helpers, format, date, stats, lookup
+├── v852_email_router.js         ← Email router (N8N/Gmail), plain text templates, log
+├── v853_schedule.js             ← Schedule generation, refresh Dashboard Sheet
+│
+│── ─── DASHBOARD UI (.html) ───────────────────
+├── Dashboard.html               ← Entry point Dashboard (pre-built)
+├── Html_Body.html               ← HTML layout Dashboard
+├── Css_Base.html                ← CSS base styles
+├── Css_Components.html          ← CSS components
+├── Css_Extras.html              ← CSS extras
+├── Css_Modal.html               ← CSS modal dialogs
+├── Css_Responsive.html          ← CSS responsive/mobile
+├── Css_Timeline.html            ← CSS timeline
+├── Js_Core.html                 ← JS core logic
+├── Js_Approval.html             ← JS approval flow
+├── Js_DeptSchedule.html         ← JS department schedule
+├── Js_Email.html                ← JS email preview
+├── Js_Helpers.html              ← JS helper functions
+├── Js_Process.html              ← JS process flow
+├── Js_Toast.html                ← JS toast notifications
+│
+│── ─── ADMIN UI (.html) ───────────────────────
+├── AdminPage.html               ← Admin entry point (self-contained)
+├── Admin_Css.html               ← Admin CSS
+├── Admin_Html.html              ← Admin HTML layout
+├── Admin_Js.html                ← Admin JS logic
+│
+└── docs/                        ← Documentation (ignored by clasp)
+    ├── DEV_RULES.md             ← Quy tắc kỹ thuật (FILE NÀY)
+    ├── CORE_RULES.md            ← Quy tắc nghiệp vụ
+    ├── Full_Flows.md            ← Luồng xử lý đầy đủ
+    ├── TEST_PLAN.md             ← Kế hoạch test
+    ├── content_bible.md         ← Nội dung chuẩn
+    └── n8n_bod_email_workflow.json ← WF email tham khảo
 ```
-bod_meeting/
-├── .clasp.json          ← Config clasp (script ID)
-├── .claspignore         ← Danh sách file bị bỏ qua khi push
-├── appsscript.json      ← GAS manifest
-│
-├── Mã.js                ← Code gốc (CONFIG, menu, helpers)
-├── v800_server_api.js   ← SERVER API + routing
-├── v810_admin_api.js    ← ADMIN API
-├── v820_email_templates.js ← Email HTML templates
-│
-├── Dashboard.html       ← Entry point Dashboard (include pattern)
-├── Css_*.html           ← CSS modules cho Dashboard
-├── Html_Body.html       ← HTML layout Dashboard
-├── Js_*.html            ← JS modules cho Dashboard
-│
-├── AdminPage.html       ← Trang quản trị (self-contained)
-├── Admin_Css.html       ← CSS module (source cho AdminPage)
-├── Admin_Html.html      ← HTML module (source cho AdminPage)
-├── Admin_Js.html        ← JS module (source cho AdminPage)
-│
-├── _archive/            ← Backup cũ
-├── CORE___RULES.md      ← Quy tắc nghiệp vụ
-├── DEV_RULES.md         ← Quy tắc kỹ thuật (FILE NÀY)
-└── content_bible.md     ← Nội dung chuẩn
-```
+
+> **Lưu ý:** Ngoài `bod_meeting/`, repo còn có:
+> - `web/` — Next.js CEO Strategic Cockpit (tracking chỉ đạo, tiến độ LLS Master)
+> - `supabase/` — Backend cho web dashboard
+> - `automation/` — Telegram Bot + n8n workflows
 
 ---
 

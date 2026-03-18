@@ -1,5 +1,5 @@
 # SYSTEM AUDIT
-*Cập nhật: 17/03/2026 — Gravity*
+*Cập nhật: 18/03/2026 — Gravity*
 
 ## TRẠNG THÁI HỆ THỐNG
 
@@ -8,6 +8,7 @@
 | Layer | Component | Trạng thái |
 | --- | --- | --- |
 | **Frontend** | Next.js 16 (`web/`) | 🟢 12 routes, build pass |
+| **BOD Meeting** | GAS Dashboard (`bod_meeting/`) | 🟢 ACTIVE — Thu đăng ký & quản lý BOD |
 | **Database** | Supabase (PostgreSQL) | 🟢 52 directives, 366 staff, 50 hm50 |
 | **Cron** | Edge Function `auto-escalation` | 🟢 ACTIVE — 8h sáng hàng ngày |
 | **API** | 5 endpoints (status, confirm, approve, escalate, remind) | 🟢 All working |
@@ -18,7 +19,7 @@
 ### Dữ liệu Supabase (17/03/2026)
 
 | Metric | Giá trị | Ghi chú |
-|--------|---------|---------|
+|--------|---------|---------
 | `directives` | 52 rows | 25 BOD 16/03 + 15 BOD 09/03 + 12 BOD 02/03 |
 | `staff` | 366 rows | Nhân sự Esuhai, có email + department |
 | `hm50` | 50 rows | BSC classified, directive_count đã seed |
@@ -29,13 +30,18 @@
 | `confirmed_at` | 0/52 | ❌ Chưa ai xác nhận 5T |
 | `approved_at` | 0/52 | ❌ Chưa ai duyệt |
 
-### Đã archive (16/03/2026)
+### Active Components (18/03/2026)
 
-- `apps-script/` → GAS form creator (1 lần, đã tạo xong)
-- `bod_meeting/` → GAS Dashboard cũ (vẫn live trên GAS)
-- `dashboard/` → HTML Dashboard cũ
-- `core/` → Docs cũ
-- `supabase.ts`, `supabase-client.js`, `supabase-schema.sql` → Đã chuyển Supabase
+- `bod_meeting/` → 🟢 GAS Dashboard **ĐANG HOẠT ĐỘNG** (thu đăng ký, form, email BOD)
+- `web/` → 🟢 Next.js CEO Strategic Cockpit (tracking chỉ đạo, LELONGSON)
+- `automation/` → 🟢 Node.js scripts (transcript parser, workflows, AI)
+
+### Đã archive
+
+- `archive/apps-script/` → GAS form creator (1 lần, đã tạo xong)
+- `archive/automation_n8n/` → n8n workflows cũ (chuyển sang Node.js)
+- `archive/ceo_cockpit/` → Dashboard prototype (thay bởi web/)
+- `archive/core/` → Docs cũ v1.x
 
 ### Environment
 
