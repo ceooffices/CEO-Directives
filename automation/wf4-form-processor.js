@@ -13,7 +13,7 @@ require('dotenv').config();
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const { updatePage } = require('./lib/notion-client');
+const { updateDirective } = require('./lib/supabase-client');
 const { logExecution } = require('./lib/logger');
 
 const DRY_RUN = process.argv.includes('--dry-run');
@@ -101,24 +101,20 @@ function extractData(row) {
   };
 }
 
-async function updateNotion(data) {
-  const props = {};
-  if (data.tienDo) {
-    const pct = parseInt(data.tienDo) || 0;
-    props['Tiến độ (%)'] = { number: pct };
-  }
+async function updateDirectiveFromForm(data) {
+  const fields = {};
   if (data.ngayDuKien) {
-    props['T4 - THỜI HẠN'] = { date: { start: data.ngayDuKien } };
+    fields.t4_thoi_han = data.ngayDuKien;
   }
   if (data.lyDoTre || data.moTa) {
     const note = `[Tín hiệu rủi ro] ${data.lyDoTre}${data.moTa ? ' - ' + data.moTa : ''}`;
-    props['Ghi chú leo thang'] = { rich_text: [{ text: { content: note.substring(0, 2000) } }] };
+    fields.ghi_chu_leo_thang = note.substring(0, 2000);
   }
   if (DRY_RUN) {
-    console.log(`  [DRY-RUN] Would update ${data.clarificationId}:`, JSON.stringify(props));
+    console.log(`  [DRY-RUN] Would update ${data.clarificationId}:`, JSON.stringify(fields));
     return { id: data.clarificationId, dryRun: true };
   }
-  return await updatePage(data.clarificationId, props);
+  return await updateDirective(data.clarificationId, fields);
 }
 
 async function run() {
@@ -156,7 +152,7 @@ async function run() {
   for (const row of newRows) {
     const d = extractData(row);
     try {
-      await updateNotion(d);
+      await updateDirectiveFromForm(d);
       processed.processedIds.push(d.clarificationId);
       ok++;
       await logExecution(`WF4-Form: ${d.clarificationId}`, `✅ ${d.lyDoTre} | ${d.tienDo}`);

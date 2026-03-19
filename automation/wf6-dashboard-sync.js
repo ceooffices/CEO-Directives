@@ -16,12 +16,15 @@ console.warn('[WF6] ⚠️ DEPRECATED — Dashboard đọc Supabase trực tiế
 console.warn('[WF6] Xem: web/src/lib/supabase.ts');
 process.exit(0);
 
+// === DEAD CODE — giữ lại để tham khảo, không chạy ===
 const fs = require('fs');
 const path = require('path');
-const { queryAllClarifications, queryActiveClarifications, queryAllHR, queryAllHM50,
-        safeText, safeSelect, safeDate,
-        safeRollupEmail, safeRollupTitle } = require('./lib/notion-client');
-const { logExecution } = require('./lib/logger');
+// notion-client đã bị loại bỏ (isolation plan GĐ3)
+const safeText = () => ''; const safeSelect = () => ''; const safeDate = () => '';
+const safeRollupEmail = () => ''; const safeRollupTitle = () => '';
+const queryAllClarifications = async () => []; const queryActiveClarifications = async () => [];
+const queryAllHR = async () => []; const queryAllHM50 = async () => [];
+const logExecution = async () => {};
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const DATA_DIR = path.join(__dirname, '..', 'data');

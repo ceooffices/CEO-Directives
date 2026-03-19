@@ -15,9 +15,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { queryAllClarifications, queryAllHM50, updatePage,
-        safeText, safeSelect, safeDate,
-        DB } = require('./lib/notion-client');
+const { queryAllDirectives, queryAllHM50, updateDirective,
+        db } = require('./lib/supabase-client');
 const { logExecution } = require('./lib/logger');
 
 const DRY_RUN = process.argv.includes('--dry-run');
@@ -133,66 +132,56 @@ function findBestMatch(directiveTitle, directiveContent, keywordIndex, threshold
 
 // ===== HM50 DATA READER =====
 
-function parseHM50Pages(pages) {
-  return pages.map(p => {
-    const props = p.properties || {};
-    return {
-      id: p.id,
-      tt: props['TT']?.number || 0,
-      hang_muc: safeText(props['Hạng mục']?.title),
-      phan_cl: props['Phần CL']?.select?.name || '',
-      status: props['Status']?.select?.name || '',
-      t1_dau_moi: safeText(props['T1: Đầu mối']?.rich_text),
-      t2_task: safeText(props['T2: Task']?.rich_text),
-      t3_target: safeText(props['T3: Target']?.rich_text),
-      kpi_daily: safeText(props['KPI_Daily']?.rich_text),
-      impact_score: props['Impact_Score']?.number || 0,
-    };
-  }).sort((a, b) => a.tt - b.tt);
+// Supabase trả flat rows — parse trực tiếp
+function parseHM50Rows(rows) {
+  return rows.map(r => ({
+    id: r.id,
+    tt: r.hm_number || 0,
+    hang_muc: r.ten || '',
+    phan_cl: r.phan_cl || '',
+    status: r.status || '',
+    t1_dau_moi: r.t1_dau_moi || '',
+    t2_task: r.t2_task || '',
+    t3_target: r.t3_target || '',
+    kpi_daily: r.kpi_daily || '',
+    impact_score: r.impact_score || 0,
+  })).sort((a, b) => a.tt - b.tt);
 }
 
 // ===== NOTION SYNC (Phase 2) =====
 
 /**
- * Task 2.1: Ghi HM50_Link relation lên Clarification page
+ * Task 2.1: Ghi hm50_id relation lên directive
  * KHÔNG override Directive_Type — giữ nguyên giá trị từ bod-import hoặc manual input
- * (BUG-2 fix: trước đây luôn gán cứng "Leo thang từ HM" cho mọi match → sai phân loại)
  */
-async function syncDirectiveToNotion(directiveId, match) {
-  const properties = {};
-
+async function syncDirectiveToSupabase(directiveId, match) {
   if (match) {
-    // Match thành công → chỉ link relation, KHÔNG set Directive_Type
-    properties['HM50_Link'] = {
-      relation: [{ id: match.id }],
-    };
-  }
-  // Không match → không thay đổi gì (bỏ logic gán "Mới phát sinh" cứng)
-
-  if (Object.keys(properties).length > 0) {
-    await updatePage(directiveId, properties);
+    await updateDirective(directiveId, { hm50_id: match.id });
   }
 }
 
 /**
- * Task 2.1: Cập nhật Directive_Count + Completion_Rate trên HM50 page
- * Task 2.2: Auto-set BSC_Perspective dựa trên Phần CL
+ * Task 2.1: Cập nhật directive_count + completion_rate trên bảng hm50
+ * Task 2.2: Auto-set bsc_perspective dựa trên Phần CL
  */
-async function syncHM50ToNotion(hmId, directiveCount, completionRate, phanCL) {
-  const properties = {
-    Directive_Count: { number: directiveCount },
-    Completion_Rate: { number: completionRate },
+async function syncHM50ToSupabase(hmId, directiveCount, completionRate, phanCL) {
+  const fields = {
+    directive_count: directiveCount,
+    completion_rate: completionRate,
   };
 
   // BSC auto-classify
   const bsc = classifyBSC(phanCL);
   if (bsc) {
-    properties['BSC_Perspective'] = {
-      select: { name: bsc },
-    };
+    fields.bsc_perspective = bsc;
   }
 
-  await updatePage(hmId, properties);
+  const { error } = await db
+    .from('hm50')
+    .update(fields)
+    .eq('id', hmId);
+
+  if (error) throw new Error(`syncHM50 ${hmId}: ${error.message}`);
 }
 
 // ===== TIMELINE BUILDER (Phase 4) =====
@@ -379,9 +368,9 @@ async function run() {
   console.log('\n[1/7] Loading 50 HM Chiến Lược...');
   let hm50Items;
   try {
-    const pages = await queryAllHM50();
-    hm50Items = parseHM50Pages(pages);
-    console.log(`  Loaded ${hm50Items.length} HM from Notion`);
+    const rows = await queryAllHM50();
+    hm50Items = parseHM50Rows(rows);
+    console.log(`  Loaded ${hm50Items.length} HM from Supabase`);
   } catch (e) {
     // Fallback to cached JSON
     const cachePath = path.join(DATA_DIR, 'hm50_master.json');
@@ -402,7 +391,7 @@ async function run() {
 
   // 3. Load daily directives
   console.log('\n[3/7] Loading daily directives...');
-  const directives = await queryAllClarifications();
+  const directives = await queryAllDirectives();
   console.log(`  Found: ${directives.length} directives`);
 
   // 4. Match
@@ -410,16 +399,15 @@ async function run() {
   const mapping = [];
   let matchedCount = 0, unmatchedCount = 0;
 
-  for (const page of directives) {
-    const props = page.properties || {};
-    const title = safeText(props['Tiêu đề']?.title);
-    const nhiemVu = safeText(props['T2 - Nhiệm vụ']?.rich_text);
-    const tinhTrang = safeSelect(props['TINH_TRANG']?.select);
+  for (const row of directives) {
+    const title = row.t2_nhiem_vu || row.directive_code || '';
+    const nhiemVu = row.t2_nhiem_vu || '';
+    const tinhTrang = row.tinh_trang || '';
 
     const match = findBestMatch(title, nhiemVu, keywordIndex);
 
     const entry = {
-      directive_id: page.id,
+      directive_id: row.id,
       directive_title: title,
       directive_status: tinhTrang,
       hm_match: match ? {
@@ -451,10 +439,10 @@ async function run() {
   if (!DRY_RUN) {
     let syncOk = 0, syncErr = 0;
 
-    // 5a. Sync directive → HM50_Link + Directive_Type
+    // 5a. Sync directive → hm50_id
     for (const m of mapping) {
       try {
-        await syncDirectiveToNotion(m.directive_id, m.hm_match ? { id: m.hm_match.hm_id } : null);
+        await syncDirectiveToSupabase(m.directive_id, m.hm_match ? { id: m.hm_match.hm_id } : null);
         syncOk++;
       } catch (err) {
         syncErr++;
@@ -526,7 +514,7 @@ async function run() {
       const completionRate = agg.total > 0 ? agg.completed / agg.total : 0;
 
       try {
-        await syncHM50ToNotion(hm.id, agg.total, completionRate, hm.phan_cl);
+        await syncHM50ToSupabase(hm.id, agg.total, completionRate, hm.phan_cl);
         hmSyncOk++;
       } catch (err) {
         hmSyncErr++;
@@ -615,7 +603,7 @@ async function run() {
     // Update hm50_master.json cache
     const masterPath = path.join(DATA_DIR, 'hm50_master.json');
     const master = {
-      db_id: DB.HM50,
+      db_source: 'supabase:hm50',
       total: hm50Items.length,
       items: hm50Items,
       exported_at: new Date().toISOString(),

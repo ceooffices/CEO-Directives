@@ -13,7 +13,7 @@ require('dotenv').config();
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const { updatePage } = require('./lib/notion-client');
+const { updateDirective } = require('./lib/supabase-client');
 const { logExecution } = require('./lib/logger');
 
 const DRY_RUN = process.argv.includes('--dry-run');
@@ -93,32 +93,22 @@ function extractData(row) {
   };
 }
 
-async function updateNotion(data) {
-  const props = {};
-  if (data.tienDo) {
-    const pct = parseInt(data.tienDo) || 0;
-    props['Tiến độ (%)'] = { number: pct };
-  }
+async function updateDirectiveFromForm(data) {
+  const fields = {};
   if (data.noiDungDaLam) {
-    props['Báo cáo tiến độ'] = {
-      rich_text: [{ text: { content: data.noiDungDaLam.substring(0, 2000) } }],
-    };
+    fields.bao_cao_tien_do = data.noiDungDaLam.substring(0, 2000);
   }
   if (data.khoKhan) {
-    props['Khó khăn'] = {
-      rich_text: [{ text: { content: data.khoKhan.substring(0, 2000) } }],
-    };
+    fields.kho_khan = data.khoKhan.substring(0, 2000);
   }
   if (data.canHoTro) {
-    props['Cần hỗ trợ'] = {
-      rich_text: [{ text: { content: data.canHoTro.substring(0, 2000) } }],
-    };
+    fields.can_ho_tro = data.canHoTro.substring(0, 2000);
   }
   if (DRY_RUN) {
-    console.log(`  [DRY-RUN] Would update ${data.clarificationId}:`, JSON.stringify(props));
+    console.log(`  [DRY-RUN] Would update ${data.clarificationId}:`, JSON.stringify(fields));
     return { id: data.clarificationId, dryRun: true };
   }
-  return await updatePage(data.clarificationId, props);
+  return await updateDirective(data.clarificationId, fields);
 }
 
 async function run() {
@@ -156,7 +146,7 @@ async function run() {
   for (const row of newRows) {
     const d = extractData(row);
     try {
-      await updateNotion(d);
+      await updateDirectiveFromForm(d);
       processed.processedIds.push(d.clarificationId);
       ok++;
       await logExecution(`WF5-Form: ${d.clarificationId}`, `✅ ${d.tienDo} | ${d.noiDungDaLam?.substring(0,50)}`);

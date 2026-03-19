@@ -10,13 +10,23 @@ echo ==========================================
 echo.
 echo   [1] Telegram Bot (polling)
 echo   [2] Scheduler (WF1-5 cron daemon)
-echo   [3] OpenClaw Bridge (HTTP :3100)
-echo   [4] Static Dashboard (HTTP :8080)
+echo   [3] OpenClaw Bridge (HTTP :PORT_BRIDGE)
+echo   [4] Static Dashboard (HTTP :PORT_DASHBOARD)
 echo.
 echo ==========================================
 echo.
 
 cd /d "%~dp0"
+
+:: --- Load port từ .env (fallback mặc định) ---
+set PORT_BRIDGE=3101
+set PORT_DASHBOARD=8081
+if exist ".env" (
+  for /f "usebackq tokens=1,2 delims==" %%A in (".env") do (
+    if "%%A"=="PORT_BRIDGE" set PORT_BRIDGE=%%B
+    if "%%A"=="PORT_DASHBOARD" set PORT_DASHBOARD=%%B
+  )
+)
 
 :: --- Start Telegram Bot ---
 echo [START] Telegram Bot...
@@ -29,13 +39,13 @@ start "CEO-Scheduler" /min cmd /k "cd /d %~dp0 && node scheduler.js"
 timeout /t 1 /nobreak >nul
 
 :: --- Start OpenClaw Bridge ---
-echo [START] OpenClaw Bridge...
+echo [START] OpenClaw Bridge (port %PORT_BRIDGE%)...
 start "CEO-Bridge" /min cmd /k "cd /d %~dp0 && node openclaw-bridge.js"
 timeout /t 1 /nobreak >nul
 
 :: --- Start Static File Server for Dashboard ---
-echo [START] Dashboard Server (port 8080)...
-start "CEO-Dashboard" /min cmd /k "cd /d %~dp0\.. && python -m http.server 8080 --bind 127.0.0.1"
+echo [START] Dashboard Server (port %PORT_DASHBOARD%)...
+start "CEO-Dashboard" /min cmd /k "cd /d %~dp0\.. && python -m http.server %PORT_DASHBOARD% --bind 127.0.0.1"
 timeout /t 1 /nobreak >nul
 
 echo.
@@ -45,8 +55,8 @@ echo ==========================================
 echo.
 echo   Telegram Bot:    dang chay (polling)
 echo   Scheduler:       dang chay (WF1-5 cron)
-echo   Bridge:          http://localhost:3100
-echo   Dashboard:       http://127.0.0.1:8080/data/dashboard/
+echo   Bridge:          http://localhost:%PORT_BRIDGE%
+echo   Dashboard:       http://127.0.0.1:%PORT_DASHBOARD%/data/dashboard/
 echo.
 echo   De tat: dong tat ca cua so CMD hoac
 echo          chay stop-all.bat

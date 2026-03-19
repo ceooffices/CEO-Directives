@@ -26,6 +26,10 @@ const { run: runWF5 } = require('./wf5-reminders');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
+// ===== CRON NOTIFICATION GATE =====
+// Nếu false: cron trigger nhưng không thực sự chạy WF (tránh spam khi CEO_Office_Hub cũng hoạt động)
+const CRON_ENABLED = (process.env.ENABLE_CRON_NOTIFICATIONS || 'false').toLowerCase() === 'true';
+
 // ===== CRON SCHEDULES =====
 
 const SCHEDULES = {
@@ -54,8 +58,15 @@ const SCHEDULES = {
 
 // ===== RUN WRAPPER =====
 
-async function safeRun(name, fn) {
+async function safeRun(name, fn, { fromCron = false } = {}) {
   const ts = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+
+  // Cron trigger nhưng bị mute → chỉ log, không chạy WF
+  if (fromCron && !CRON_ENABLED) {
+    console.log(`[scheduler] ⏸ CRON triggered ${name} nhưng đã bị mute (ENABLE_CRON_NOTIFICATIONS=false)`);
+    return;
+  }
+
   console.log(`\n${'='.repeat(50)}`);
   console.log(`[scheduler] 🚀 Starting ${name} at ${ts}`);
   console.log(`${'='.repeat(50)}`);
@@ -94,38 +105,39 @@ if (runNowIdx > -1) {
   // ===== DAEMON MODE: Setup cron jobs =====
 
   console.log('==========================================');
-  console.log('🤖 CEO Directive Automation Engine v3.0');
+  console.log('🤖 CEO Directive Automation Engine v3.1');
   console.log('   Source: Supabase (Notion deprecated)');
   console.log(`   Started: ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`   Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log(`   Cron notifications: ${CRON_ENABLED ? '🔔 BẬT' : '🔇 TẮT (mute)'}`);
   console.log('==========================================');
   console.log('\nScheduled jobs:');
 
   const TZ = { timezone: 'Asia/Ho_Chi_Minh' };
 
   // WF1: Approval (3x/day)
-  cron.schedule(SCHEDULES.wf1_morning,   () => safeRun('WF1-Morning',   runWF1), TZ);
-  cron.schedule(SCHEDULES.wf1_afternoon, () => safeRun('WF1-Afternoon', runWF1), TZ);
-  cron.schedule(SCHEDULES.wf1_evening,   () => safeRun('WF1-Evening',   runWF1), TZ);
+  cron.schedule(SCHEDULES.wf1_morning,   () => safeRun('WF1-Morning',   runWF1, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf1_afternoon, () => safeRun('WF1-Afternoon', runWF1, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf1_evening,   () => safeRun('WF1-Evening',   runWF1, { fromCron: true }), TZ);
   console.log(`  📧 WF1 Approval:     08:00 | 13:00 | 17:00`);
 
   // WF2: Directive Progress (3x/day, 15min after WF1)
-  cron.schedule(SCHEDULES.wf2_morning,   () => safeRun('WF2-Morning',   runWF2), TZ);
-  cron.schedule(SCHEDULES.wf2_afternoon, () => safeRun('WF2-Afternoon', runWF2), TZ);
-  cron.schedule(SCHEDULES.wf2_evening,   () => safeRun('WF2-Evening',   runWF2), TZ);
+  cron.schedule(SCHEDULES.wf2_morning,   () => safeRun('WF2-Morning',   runWF2, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf2_afternoon, () => safeRun('WF2-Afternoon', runWF2, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf2_evening,   () => safeRun('WF2-Evening',   runWF2, { fromCron: true }), TZ);
   console.log(`  📋 WF2 Progress:     08:15 | 13:15 | 17:15`);
 
   // WF3: Status Tracker (2x/day)
-  cron.schedule(SCHEDULES.wf3_morning,   () => safeRun('WF3-Morning',   runWF3), TZ);
-  cron.schedule(SCHEDULES.wf3_afternoon, () => safeRun('WF3-Afternoon', runWF3), TZ);
+  cron.schedule(SCHEDULES.wf3_morning,   () => safeRun('WF3-Morning',   runWF3, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf3_afternoon, () => safeRun('WF3-Afternoon', runWF3, { fromCron: true }), TZ);
   console.log(`  📊 WF3 StatusTrack:  10:00 | 16:00`);
 
   // WF4: Escalation (1x/day)
-  cron.schedule(SCHEDULES.wf4_daily, () => safeRun('WF4-Escalation', runWF4), TZ);
+  cron.schedule(SCHEDULES.wf4_daily, () => safeRun('WF4-Escalation', runWF4, { fromCron: true }), TZ);
   console.log(`  🔴 WF4 Escalation:  09:00`);
 
   // WF5: Reminders (1x/day)
-  cron.schedule(SCHEDULES.wf5_morning, () => safeRun('WF5-Reminders', runWF5), TZ);
+  cron.schedule(SCHEDULES.wf5_morning, () => safeRun('WF5-Reminders', runWF5, { fromCron: true }), TZ);
   console.log(`  🦉 WF5 Reminders:   08:30`);
 
   // WF6: DEPRECATED

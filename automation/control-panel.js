@@ -18,7 +18,7 @@ const { spawn, execSync } = require('child_process');
 const path = require('path');
 const { URL } = require('url');
 
-const PORT = 9000;
+const PORT = parseInt(process.env.PORT_PANEL || '9001');
 const AUTO_DIR = __dirname;
 const ROOT_DIR = path.resolve(__dirname, '..');
 
@@ -53,20 +53,20 @@ const SERVICES = {
   },
   'bridge': {
     name: 'OpenClaw Bridge',
-    desc: 'HTTP API gateway — port 3100',
+    desc: `HTTP API gateway — port ${process.env.PORT_BRIDGE || '3101'}`,
     exe: NODE_EXE,
     args: [path.join(AUTO_DIR, 'openclaw-bridge.js')],
     cwd: AUTO_DIR,
-    healthCheck: 'http://localhost:3100/health',
+    healthCheck: `http://localhost:${process.env.PORT_BRIDGE || '3101'}/health`,
     color: '#ff9500',
   },
   'dashboard': {
     name: 'Dashboard Server',
-    desc: 'Static file server — port 8080',
+    desc: `Static file server — port ${process.env.PORT_DASHBOARD || '8081'}`,
     exe: PYTHON_EXE,
-    args: ['-m', 'http.server', '8080', '--bind', '127.0.0.1'],
+    args: ['-m', 'http.server', process.env.PORT_DASHBOARD || '8081', '--bind', '127.0.0.1'],
     cwd: ROOT_DIR,
-    healthCheck: 'http://127.0.0.1:8080/',
+    healthCheck: `http://127.0.0.1:${process.env.PORT_DASHBOARD || '8081'}/`,
     color: '#af52de',
   },
 };

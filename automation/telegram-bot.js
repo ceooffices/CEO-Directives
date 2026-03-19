@@ -28,9 +28,10 @@ const session = require('./session-manager');
 const bible = require('./content-bible');
 
 // ===== CONFIG =====
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
+// Ưu tiên CEO_DIR_BOT_TOKEN (token riêng) → fallback TELEGRAM_BOT_TOKEN / BOT_TOKEN
+const BOT_TOKEN = process.env.CEO_DIR_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
-const BRIDGE_URL = process.env.BRIDGE_URL || 'http://localhost:3100';
+const BRIDGE_URL = process.env.BRIDGE_URL || `http://localhost:${process.env.PORT_BRIDGE || '3101'}`;
 const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'ceo-directives-r8d-2026-esuhai-secure-token';
 
 // Allowed Telegram user IDs (security: only admin can use)
@@ -833,6 +834,15 @@ bot.on('message', async (msg) => {
 // ===== ERROR HANDLING =====
 bot.on('polling_error', (err) => {
   console.error('[BOT] Polling error:', err.message);
+  // Phát hiện xung đột 409 — token đang bị dùng bởi tiến trình khác
+  if (err.message && err.message.includes('409')) {
+    console.error('\x1b[31m' +
+      '══════════════════════════════════════════════════════════════\n' +
+      'CẢNH BÁO: Token Bot đang bị tranh chấp bởi một tiến trình khác!\n' +
+      'Vui lòng tạo Bot mới trên @BotFather và cập nhật CEO_DIR_BOT_TOKEN.\n' +
+      '══════════════════════════════════════════════════════════════' +
+      '\x1b[0m');
+  }
   notifyAdmin(err, 'polling_error');
 });
 

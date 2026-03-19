@@ -15,7 +15,7 @@ const http = require('http');
 const { URL } = require('url');
 
 // ===== CONFIG =====
-const PORT = parseInt(process.argv.find((a, i, arr) => arr[i - 1] === '--port') || '3100');
+const PORT = parseInt(process.argv.find((a, i, arr) => arr[i - 1] === '--port') || process.env.PORT_BRIDGE || '3101');
 const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'ceo-directives-r8d-2026-esuhai-secure-token';
 
 // ===== LAZY-LOAD WORKFLOWS =====
