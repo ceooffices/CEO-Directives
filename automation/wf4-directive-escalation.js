@@ -64,9 +64,9 @@ async function run() {
     const daysOverdue = Math.ceil((now - deadline) / (1000 * 60 * 60 * 24));
     if (daysOverdue < 3) continue;
 
-    // Resolve emails
-    const emailDauMoiThucTe = row.t1_email || await getStaffEmail(row.t1_dau_moi);
-    const emailDauMoi = BOD_HOSTING_EMAIL;
+    // Resolve email — lấy đúng email đầu mối, fallback BOD_HOSTING_EMAIL
+    const resolvedEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+    const emailDauMoi = resolvedEmailDauMoi || BOD_HOSTING_EMAIL;
     const emailNguoiChiDao = row.t1_email || await getStaffEmail(row.t1_dau_moi);
 
     // Classify level
@@ -78,7 +78,8 @@ async function run() {
     escalations.push({
       id: row.id, title, daysOverdue, deadline: deadlineStr,
       tinhTrang, dauMoi, nhiemVu, level,
-      emailDauMoiThucTe, emailNguoiChiDao,
+      tenDauMoi: dauMoi,
+      resolvedEmailDauMoi, emailNguoiChiDao,
       emailDauMoi,
       url: directiveUrl(row.id),
     });
@@ -108,13 +109,13 @@ async function run() {
 
     if (esc.level === 'WARNING') {
       sendTo = esc.emailDauMoi || CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailDauMoiThucTe];
+      ccList = [...ALWAYS_CC, esc.resolvedEmailDauMoi];
     } else if (esc.level === 'ESCALATE') {
       sendTo = esc.emailNguoiChiDao || CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailDauMoi, esc.emailDauMoiThucTe];
+      ccList = [...ALWAYS_CC, esc.emailDauMoi, esc.resolvedEmailDauMoi];
     } else {
       sendTo = CEO_EMAIL;
-      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi, esc.emailDauMoiThucTe];
+      ccList = [...ALWAYS_CC, esc.emailNguoiChiDao, esc.emailDauMoi, esc.resolvedEmailDauMoi];
     }
 
     ccList = [...new Set(ccList)].filter(e => e && e !== sendTo);

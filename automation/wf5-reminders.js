@@ -145,7 +145,9 @@ async function run() {
   for (const task of tasks) {
     const title = task.directive_code || task.t2_nhiem_vu;
     const deadlineStr = task.t4_thoi_han;
-    const recipientEmail = task.bod_hosting_email || BOD_HOSTING_EMAIL;
+    // Resolve email — lấy đúng email đầu mối, fallback BOD_HOSTING_EMAIL
+    const resolvedEmailDauMoi = task.t1_email || await getStaffEmail(task.t1_dau_moi);
+    const recipientEmail = resolvedEmailDauMoi || BOD_HOSTING_EMAIL;
     const recipientName = task.t1_dau_moi || 'BOD Hosting';
 
     // Resolve actual email cho CC

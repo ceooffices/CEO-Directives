@@ -267,8 +267,8 @@ function buildWF4PrefillUrl(data) {
   const base = `https://docs.google.com/forms/d/e/${FORM_WF4_ID}/viewform?usp=pp_url`;
   const params = [
     `entry.${E.maClarification}=${enc(data.id)}`,
-    `entry.${E.tieuDe}=${enc(data.tieuDe)}`,
-    `entry.${E.dauMoi}=${enc(data.tenDauMoi)}`,
+    `entry.${E.tieuDe}=${enc(data.nhiemVu || data.tieuDe)}`,
+    `entry.${E.dauMoi}=${enc(data.tenDauMoi || data.dauMoi)}`,
     `entry.${E.soNgayQuaHan}=${enc(data.overdueDays)}`,
   ].join('&');
   return `${base}&${params}`;
@@ -611,12 +611,11 @@ function buildEscalationEmail(data, level) {
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
     eInfoBox(
-      eRow('Chỉ đạo:', data.tieuDe || '') +
+      eRow('Nhiệm vụ:', data.nhiemVu || data.tieuDe || '') +
       eRow('Đầu mối:', data.tenDauMoi || '') +
       eRow('Thời hạn:', data.t4ThoiHan || '', BRAND_RED) +
       eRow('Chưa cập nhật:', (data.overdueDays || 0) + ' ngày', cfg.color) +
-      eRow('Trạng thái:', data.tinhTrang || '') +
-      eRow('Nguồn:', data.nguon || ''),
+      eRow('Trạng thái:', data.tinhTrang || ''),
       cfg.bgColor, cfg.borderColor
     ) + '</div>' +
     eText(

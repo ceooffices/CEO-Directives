@@ -54,9 +54,9 @@ async function run() {
     const t5ThanhVien = Array.isArray(row.t5_thanh_vien) ? row.t5_thanh_vien.join(', ') : '';
     const tenNguoiChiDao = row.t1_dau_moi;
 
-    // Resolve email
-    const emailDauMoiThucTe = row.t1_email || await getStaffEmail(row.t1_dau_moi);
-    const emailDauMoi = BOD_HOSTING_EMAIL;
+    // Resolve email — lấy đúng email đầu mối, fallback BOD_HOSTING_EMAIL
+    const resolvedEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+    const emailDauMoi = resolvedEmailDauMoi || BOD_HOSTING_EMAIL;
     const tenDauMoi = row.t1_dau_moi;
 
     const item = {
@@ -77,7 +77,8 @@ async function run() {
 
       if (!DRY_RUN) {
         const ccSet = new Set(ALWAYS_CC);
-        if (emailDauMoiThucTe && emailDauMoiThucTe !== BOD_HOSTING_EMAIL) ccSet.add(emailDauMoiThucTe);
+        // CC BOD Hosting nếu đầu mối không phải BOD
+        if (emailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(BOD_HOSTING_EMAIL);
 
         await sendEmail({
           to: emailDauMoi,
