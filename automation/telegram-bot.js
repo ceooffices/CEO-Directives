@@ -145,7 +145,6 @@ function notifyAdmin(err, context) {
 }
 
 // ===== CONSTANTS =====
-const NOTION_DB_URL = 'https://www.notion.so/317ce590e9e68150a14ecc16d23334ae';
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';
 
 // ===== INLINE KEYBOARD BUILDERS =====
@@ -159,7 +158,7 @@ function kbdMain() {
     [{ text: '📊 Dashboard CEO', url: DASHBOARD_URL }],
     [{ text: '☑ Trạng thái', callback_data: 'cmd_trangthai' }, { text: '📌 Cần quan tâm', callback_data: 'cmd_quahan' }],
     [{ text: '► AI Phân tích', callback_data: 'cmd_phantich' }, { text: '📌 Báo cáo', callback_data: 'cmd_baocao' }],
-    [{ text: '🔗 Notion DB', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
@@ -167,7 +166,7 @@ function kbdAfterStatus() {
   return kbd([
     [{ text: '📌 Xem cần quan tâm', callback_data: 'cmd_quahan' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
     [{ text: '🚀 Chạy WF1 (email duyệt)', callback_data: 'cmd_chay_wf1' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
-    [{ text: '📂 Mở Notion DB', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
@@ -175,14 +174,14 @@ function kbdAfterOverdue() {
   return kbd([
     [{ text: '🔶 Tín hiệu rủi ro (WF4)', callback_data: 'cmd_chay_wf4' }, { text: '📋 Đồng hành (WF5)', callback_data: 'cmd_chay_wf5' }],
     [{ text: '🧠 AI dự đoán rủi ro', callback_data: 'cmd_phantich' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
-    [{ text: '📂 Mở Notion DB', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
 function kbdAfterRun() {
   return kbd([
     [{ text: '📊 Xem trạng thái', callback_data: 'cmd_trangthai' }, { text: '📌 Cần quan tâm', callback_data: 'cmd_quahan' }],
-    [{ text: '📂 Mở Notion', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
@@ -190,14 +189,14 @@ function kbdAfterAI() {
   return kbd([
     [{ text: '💬 Hỏi thêm AI', callback_data: 'prompt_hoi' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
     [{ text: '📌 Xem cần quan tâm', callback_data: 'cmd_quahan' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
-    [{ text: '📂 Mở Notion', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
 function kbdAfterSearch() {
   return kbd([
     [{ text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
-    [{ text: '📂 Mở Notion DB', url: NOTION_DB_URL }],
+    [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
 
@@ -244,7 +243,7 @@ function formatOverdue(data) {
     msg += `   👤 Đầu mối: ${escMd(item.dauMoi || 'N/A')}\n`;
     msg += `   📅 Hạn: ${item.deadline || 'N/A'}\n`;
     msg += `   🔴 Quá *${item.daysOverdue}* ngày\n`;
-    if (item.url) msg += `   🔗 [Xem Notion](${item.url})\n`;
+    if (item.url) msg += `   🔗 [Xem chi tiết](${item.url})\n`;
     msg += '\n';
   });
 
@@ -262,7 +261,7 @@ function formatSearch(data) {
     const statusEmoji = getStatusEmoji(r.status);
     msg += `*${i + 1}.* ${statusEmoji} ${escMd(r.title || 'Không tên')}\n`;
     msg += `   Trạng thái: ${escMd(r.status || 'N/A')}\n`;
-    if (r.url) msg += `   🔗 [Notion](${r.url})\n`;
+    if (r.url) msg += `   🔗 [Xem chi tiết](${r.url})\n`;
     msg += '\n';
   });
 
@@ -387,7 +386,6 @@ Con là Gravity — bot quản lý chỉ đạo CEO EsuhaiGroup.
   /baocaotuan — Báo cáo tuần AI
 
 ► Dashboard: ${DASHBOARD_URL}
-► Notion: ${NOTION_DB_URL}
 
 ▫️ Hoặc Thầy chat tự nhiên, con sẽ hiểu ạ.`, kbdMain());
 });
@@ -671,7 +669,7 @@ bot.on('callback_query', async (query) => {
         const friendlyMsg = aiErr.message.includes('AI chưa cấu hình')
           ? 'Cần cấu hình ANTHROPIC_API_KEY, GEMINI_API_KEY hoặc OPENAI_API_KEY trong .env'
           : aiErr.message.includes('404')
-          ? 'Không kết nối được Notion. Kiểm tra NOTION_API_KEY.'
+          ? 'Không kết nối được dữ liệu. Kiểm tra SUPABASE_URL và SUPABASE_SERVICE_ROLE_KEY.'
           : `Lỗi AI: ${aiErr.message}`;
         bot.sendMessage(chatId, `Không thể phân tích.\n${friendlyMsg}\n\nThử /hoi để hỏi AI trực tiếp.`, kbdMain());
       }

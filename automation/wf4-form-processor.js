@@ -2,7 +2,7 @@
  * wf4-form-processor.js
  * CEO Directive WF4: Xử lý Phản hồi Tín hiệu rủi ro từ Google Form
  * 
- * Flow: Email tín hiệu rủi ro → Đầu mối click → Google Form → Sheets → Poll → Update Notion
+ * Flow: Email tín hiệu rủi ro → Đầu mối click → Google Form → Sheets → Poll → Update Supabase
  * 
  * Usage:
  *   node wf4-form-processor.js            # Process responses

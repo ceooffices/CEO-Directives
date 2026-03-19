@@ -1,436 +1,367 @@
 {
-  "317ce590-e9e6-8124-9875-ef7343bbef03": {
-    "title": "CLR-TEST-001: [TEST] Kiểm tra hệ thống WF1 mới",
-    "status": "Chờ làm rõ",
-    "duyet": "Chưa duyệt",
-    "email": "",
-    "dauMoi": "Anh Kha"
+  "__lastCheck": "2026-03-19T09:00:01.938Z",
+  "dc0846fe-e856-4d41-937c-98fc13a99c93": {
+    "title": "CD-2026-0316-11",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Thanh Hiếu"
   },
-  "320ce590-e9e6-8100-b62c-f009af65ae66": {
-    "title": "Báo cáo tương tác và chuyển đổi hàng ngày",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
+  "a8646b59-038c-48cd-8ba1-a9f09c28a6a6": {
+    "title": "CD-2026-0316-10",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng, Thanh Hiếu"
   },
-  "320ce590-e9e6-8104-b595-ec125c846b81": {
-    "title": "Tăng hiệu quả phát sinh ứng viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
+  "8e4d70fd-f8eb-496e-ae00-726e48450e75": {
+    "title": "CD-2026-0316-14",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng"
   },
-  "320ce590-e9e6-8109-9f08-c06abf6d9b38": {
-    "title": "Kết hợp với các huyện và bên thất nghiệp TP.HCM",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Bắc Lâm"
+  "815e6244-7af3-4e83-bc12-1ffb7dc84b3a": {
+    "title": "CD-2026-0316-07",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "anhthu@kaizen.edu.vn",
+    "dauMoi": "Cô Anh Thư, Thầy Huy, Cô Xuân"
   },
-  "320ce590-e9e6-810b-8779-fc9331aad62b": {
-    "title": "Gửi danh sách nghề đào tạo về MSA",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Trúc"
+  "f373be48-9b5e-49bc-846a-b36fe6f33366": {
+    "title": "CD-2026-0316-02",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "minh.leanh@esutech.vn",
+    "dauMoi": "Lê Anh Minh, Huỳnh Phước"
   },
-  "320ce590-e9e6-810c-9c49-c0fb3cdb78bf": {
-    "title": "Triển khai thông báo hoạt động kết hợp với thầy cô",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
+  "cac186c1-6282-4942-bc0e-464cb800dfd1": {
+    "title": "CD-2026-0316-13",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng"
   },
-  "320ce590-e9e6-810e-a00f-d60b4982a626": {
-    "title": "Hiếu tổng kết kết quả tuần đầu tháng 3",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
+  "a1df21ac-0f0e-41c9-a9e5-b8f7be1b8087": {
+    "title": "CD-2026-0316-05",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Thanh Hiếu, Thầy Nam, Lê Anh Tuấn"
   },
-  "320ce590-e9e6-8117-9363-e61b7b1ae20c": {
-    "title": "Kế hoạch triển khai với Monogatari",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8118-85b3-fe3df150ff21": {
-    "title": "Tăng cường học viên từ Trà Vinh",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8118-a64e-cb538e2d2459": {
-    "title": "Ưu tiên tuyển dụng cho công ty Agency và One Star",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-8118-b5b1-f58279a72c19": {
-    "title": "Triển khai hoạt động với trường Đại học An Hiến",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Anh Dũng"
-  },
-  "320ce590-e9e6-811d-bd18-e868039bb744": {
-    "title": "Tổ chức giải đấu chuyên nghiệp",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Ly"
-  },
-  "320ce590-e9e6-8120-9f00-d47c0cb349bb": {
-    "title": "Dũng chia sẻ kế hoạch triển khai tháng 3",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-8121-bb1f-fa43a228aab5": {
-    "title": "Triển khai phương án tuyển dụng",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-8123-b930-c0a83fcd91dd": {
-    "title": "Gửi danh sách ứng viên tiềm năng cho anh Tuấn",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8124-b385-dac696e76491": {
-    "title": "MS báo cáo kết quả tuyển dụng",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "MS"
-  },
-  "320ce590-e9e6-8127-9fd2-c34f0be64993": {
-    "title": "Đẩy mạnh tuyển dụng và truyền thông",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8127-b9c4-eb53f64769ab": {
-    "title": "Chuẩn bị nguồn cho nhà tuyển dụng Akita và Higa",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-812c-85e7-d1eb8c5bf538": {
-    "title": "Tìm giải pháp cho nhóm học viên tốt nghiệp",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8130-83a7-e2a1b809fdad": {
-    "title": "Triển khai hoạt động tại Bình Dương và Huế",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8131-96b6-c3ac0a24c0bb": {
-    "title": "Tăng số lượng học viên tại trung tâm liên kết",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8133-a09f-d7fdc64defca": {
-    "title": "Tăng số lượng học trò và đảm bảo giờ dạy cho giáo viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
-  },
-  "320ce590-e9e6-8136-80b2-e2d619742e15": {
-    "title": "Ưu tiên triển khai nguồn và đơn tuyển",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-8137-8ca5-d992eab19a21": {
-    "title": "Tổ chức các buổi webinar",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8138-85c6-ecaa62987230": {
-    "title": "Cải thiện và tiếp cận thị trường trong tháng 3",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8143-9320-d78368899c99": {
-    "title": "Đảm bảo đủ giáo viên cho các lớp học",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
-  },
-  "320ce590-e9e6-8144-94c2-ede2eda5a2af": {
-    "title": "Yêu cầu nhập học CGC trong tháng 3",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8153-912b-f87ec701e393": {
-    "title": "Lập kế hoạch tuyển dụng GA",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-8158-81a4-d72120d8b800": {
-    "title": "Xác nhận chi phí cho ứng viên đặc định",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-815a-9cdd-d8631fac35ae": {
-    "title": "Dũng nắm chi tiết phối hợp với các công ty",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-8160-a637-cffbd2b9bded": {
-    "title": "Rà soát sơ đồ MS",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-818c-87c1-c1086f13be98": {
-    "title": "Tổ chức tuyển dụng cho 22 vị trí",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-818f-a807-d5dc4ec1f00c": {
-    "title": "Chốt hồ sơ cho đơn tuyển ATC",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Ân"
-  },
-  "320ce590-e9e6-8191-94b6-f433be11a6c3": {
-    "title": "Đảm bảo đủ học viên cho các lớp học",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
-  },
-  "320ce590-e9e6-8196-bf17-cb3a4c129077": {
-    "title": "Đề xuất vị trí cho ứng viên không phù hợp",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-819a-b673-cb59da99fd39": {
-    "title": "Phối hợp triển khai với One Team",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Dũng"
-  },
-  "320ce590-e9e6-819b-91b1-eea8b8b026ce": {
-    "title": "Tạo điều kiện phỏng vấn online cho Đà Nẵng",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Chú Minh"
-  },
-  "320ce590-e9e6-819f-b0b2-ffa1b93bb753": {
-    "title": "Lập danh mục nghề đào tạo và dự kiến số lượng tốt nghiệp",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
-  },
-  "320ce590-e9e6-81a2-b4a3-d33d3a968851": {
-    "title": "Tăng số lượng ứng viên tiềm năng",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81a6-a8a1-f1cb61af7fc7": {
-    "title": "Rà soát ngành điện tại các trung tâm liên kết",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81a7-b49b-c7c7f2ed841a": {
-    "title": "Sắp xếp lớp online cho giáo viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81ac-b2fc-e69c3dc9c6a6": {
-    "title": "Tổ chức chương trình tuyển dụng tại các trung tâm",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Nhân sự"
-  },
-  "320ce590-e9e6-81ad-9f9e-d4bee4770b0f": {
-    "title": "Lập kế hoạch tuyển dụng và truyền thông",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Nhân sự"
-  },
-  "320ce590-e9e6-81b4-b899-d9cf0c192886": {
-    "title": "Triển khai nguồn cho công ty ưu tiên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Thúy"
-  },
-  "320ce590-e9e6-81b5-8b7b-ea80cbccd418": {
-    "title": "Tiếp cận và phân loại nhóm học viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81b8-9e33-ef09702b2d98": {
-    "title": "Tuyển dụng và đào tạo ngành ô tô",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81ba-b420-d8b974e4a1e3": {
-    "title": "Đề xuất mức phí cho học viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Mai Chi"
-  },
-  "320ce590-e9e6-81bd-9fac-eb1dce95c60b": {
-    "title": "Giao chỉ tiêu cho các trường về ngành điện",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81be-ab76-df245c095a2b": {
-    "title": "Lập danh mục nghề đào tạo",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Thầy"
-  },
-  "320ce590-e9e6-81c4-8585-da2b99adad18": {
-    "title": "Gửi đề xuất kết hợp doanh nghiệp Nhật với trường",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81c6-8c71-ec868776f1ec": {
-    "title": "Triển khai thông tin tuyển dụng từ tháng 8",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81d1-ac81-cb6ffbfedb62": {
-    "title": "Kéo khách hàng ra Đà Nẵng phỏng vấn",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Anh Tuấn"
-  },
-  "320ce590-e9e6-81d5-9404-e4862fe9c8f1": {
-    "title": "Thiết lập lại kế hoạch và đầu mối cho Kago",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81da-87f4-fd3bc30174b8": {
-    "title": "Bổ sung nguồn nhân lực MS",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Chị Lan Vy"
-  },
-  "320ce590-e9e6-81dd-8899-f2f303aaa0be": {
-    "title": "Kiểm soát team KGO và báo cáo",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Anh Tuấn"
-  },
-  "320ce590-e9e6-81df-a107-db92f6212032": {
-    "title": "Xác nhận chương trình KGO",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Chị Ly Mai Chi"
-  },
-  "320ce590-e9e6-81e2-99e9-d8178526a4be": {
-    "title": "Triển khai kế hoạch chi tiết cho từng địa phương",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
-  },
-  "320ce590-e9e6-81e3-bf18-c6efb5388db8": {
-    "title": "Kết hợp giữa One Team, Kaizen và MSA",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
+  "1120efba-5cf6-4727-a70e-d6ea9c56c5e3": {
+    "title": "CD-2026-0316-09",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thinhien@kaizen.edu.vn",
     "dauMoi": "Cô Nhiên"
   },
-  "320ce590-e9e6-81ee-9154-cbeb5ebf56be": {
-    "title": "Xác nhận danh sách học viên ngành ô tô",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
+  "79d77d4a-344f-4085-9248-1a9cb4f7ca9f": {
+    "title": "CD-2026-0316-08",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Thanh Hiếu, Lê Anh Tuấn, Cô Nhiên"
   },
-  "320ce590-e9e6-81f6-90dd-ef6136f85c53": {
-    "title": "Tổ chức buổi gặp riêng với anh Oanh và các team",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
+  "002d825a-5281-4190-bca6-203de060f99e": {
+    "title": "CD-2026-0316-04",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Thầy Nam, Lê Anh Tuấn"
   },
-  "320ce590-e9e6-81fc-867e-c6cdc081137c": {
-    "title": "Đẩy nhanh quá trình nhập học cho học viên",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "Hiếu"
+  "6a92f129-27ee-448e-b279-841fa23b5316": {
+    "title": "CD-2026-0316-12",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "trucly@esuhai.com",
+    "dauMoi": "Trúc, Thanh Hiếu"
   },
-  "320ce590-e9e6-81ff-a8ff-cc9f513a9059": {
-    "title": "Phối hợp triển khai đơn vị dựa vào nhu cầu tiêu chuẩn",
-    "status": "Chờ làm rõ",
-    "duyet": "",
-    "email": "",
-    "dauMoi": "⚠️ Cần làm rõ"
+  "8d462b49-c920-4f1d-8df0-63dd447632a7": {
+    "title": "CD-2026-0316-03",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "phuoch@esuhai.com",
+    "dauMoi": "Huỳnh Phước"
+  },
+  "1199bcac-cdb0-40e8-b8c4-573fcef25132": {
+    "title": "CD-2026-0316-24",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, Nguyễn Xuân Lanh"
+  },
+  "2ad6521e-1b48-46e8-9365-0cda4e3fecc4": {
+    "title": "CD-2026-0316-20",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "ngochan@kaizen.edu.vn",
+    "dauMoi": "Phạm Thị Ngọc Hân, Cô Anh Thư"
+  },
+  "64b24f08-8785-4440-9e04-1fd88c59dc34": {
+    "title": "CD-2026-0302-06",
+    "status": "da_gui_email",
+    "approved": "CEO",
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, Trúc Anh"
+  },
+  "e68e7d7a-7584-4462-bfaf-8920c03b6b14": {
+    "title": "CD-2026-0302-09",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "ngochan@kaizen.edu.vn",
+    "dauMoi": "Phạm Thị Ngọc Hân, cô Thư, Lê Anh Tuấn"
+  },
+  "be64bda9-173f-4240-9841-4df1687a298e": {
+    "title": "CD-2026-0302-04",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, Đặng Tiến Dũng"
+  },
+  "f443ff1d-e8f7-47d2-9898-9ccdaab7a49b": {
+    "title": "CD-2026-0316-21",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "ngochan@kaizen.edu.vn",
+    "dauMoi": "Phạm Thị Ngọc Hân"
+  },
+  "79e4ec62-5b53-4e02-8b5c-3b28f3a89f6d": {
+    "title": "CD-2026-0302-08",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, MSA team"
+  },
+  "276b876d-099f-4385-9881-f3488c939c47": {
+    "title": "CD-2026-0316-22",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thinhien@kaizen.edu.vn",
+    "dauMoi": "Cô Nhiên"
+  },
+  "05a3d9e4-f461-488e-8b2a-4927d5aded18": {
+    "title": "CD-2026-0302-05",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn"
+  },
+  "8c228c23-47b4-49ba-a240-55592f83c7ef": {
+    "title": "CD-2026-0316-23",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thinhien@kaizen.edu.vn",
+    "dauMoi": "Cô Nhiên"
+  },
+  "cbcb92b7-99f2-484c-8792-7d9343b51419": {
+    "title": "CD-2026-0309-06",
+    "status": "dang_thuc_hien",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, Trần Ngọc Như Trang"
+  },
+  "5c2677fe-67a5-48a7-b277-2935301ca914": {
+    "title": "CD-2026-0309-01",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "vynnl@esuhai.com",
+    "dauMoi": "Nguyễn Ngọc Lan Vy, Đặng Tiến Dũng"
+  },
+  "92a1f802-92cc-4aa2-be05-cbedcac4b800": {
+    "title": "CD-2026-0302-11",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Toàn hệ thống — đặc biệt BOD"
+  },
+  "61342daa-3d3a-4783-8ee7-9ae0248a9fad": {
+    "title": "CD-2026-0309-03",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu"
+  },
+  "835e37c4-5a5e-4330-b8cb-ae5962dba60d": {
+    "title": "CD-2026-0309-13",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, tất cả đầu mối đơn tuyển"
+  },
+  "60fc74a9-6473-4d5a-ac70-706f469bc5f6": {
+    "title": "CD-2026-0309-02",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, các MS phụ trách"
+  },
+  "bd2573ca-2cb1-46a7-8dc6-36f313ea9a9d": {
+    "title": "CD-2026-0309-08",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, Đặng Tiến Dũng"
+  },
+  "26a930e2-8ac5-48a9-80b5-30abb996fbc2": {
+    "title": "CD-2026-0309-12",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu"
+  },
+  "17d94fa4-ed67-49a4-83c4-9d025f521d53": {
+    "title": "CD-2026-0309-07",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "vynnl@esuhai.com",
+    "dauMoi": "Nguyễn Ngọc Lan Vy"
+  },
+  "4cd8a903-65fa-4734-b10e-a1c8249b224b": {
+    "title": "CD-2026-0309-05",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thanhhieu@esuhai.com",
+    "dauMoi": "Bùi Thị Thanh Hiếu, Nguyễn Thị Nhiên"
+  },
+  "e1c2934b-8246-4912-8443-be171b78a30a": {
+    "title": "CD-2026-0309-09",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, Trần Ngọc Như Trang"
+  },
+  "5533fcb4-6e78-4fce-828e-12be867b0269": {
+    "title": "CD-2026-0302-02",
+    "status": "da_gui_email",
+    "approved": "CEO",
+    "email": "thu.duonganh@esutech.vn",
+    "dauMoi": "Tất cả đội trưởng (Kiều My, Dương Anh Thư, Thúy, Ngọc Tuyết, Hồng Ngọc...)"
+  },
+  "7c02ce2a-b489-4e11-af70-501ed78e6277": {
+    "title": "CD-2026-0302-10",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "nhutrang@esuhai.com",
+    "dauMoi": "Trần Ngọc Như Trang"
+  },
+  "8c0aec8a-1274-4942-9322-2e309338a97b": {
+    "title": "CD-2026-0316-19",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng, Cô Anh Thư"
+  },
+  "ac04c5e7-3b83-4070-852a-5a6e65c9f31d": {
+    "title": "CD-2026-0316-01",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "minh.leanh@esutech.vn",
+    "dauMoi": "Lê Anh Minh, Hoàng, Thanh Hiếu"
+  },
+  "db98dd80-488c-47f2-a735-8865f3f2c37f": {
+    "title": "CD-2026-0309-14",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "ngochan@kaizen.edu.vn",
+    "dauMoi": "Ân, Thư, Thúy, Huy"
+  },
+  "f9966733-2f94-4690-82c7-dfc4f97fb5b6": {
+    "title": "CD-2026-0316-17",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Ban Giám Đốc"
+  },
+  "8810b849-c30c-4e7d-a53e-98f8b104945a": {
+    "title": "CD-2026-0316-18",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Ban Giám Đốc"
+  },
+  "98439139-3ba9-4cc3-bc5e-1fa0851ab035": {
+    "title": "CD-2026-0302-03",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Tất cả team MSA"
+  },
+  "d3566e9c-170d-480e-a32c-b7df88b5a519": {
+    "title": "CD-2026-0309-11",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Tất cả đội trưởng TT liên kết, Đặng Tiến Dũng"
+  },
+  "0199d554-dc41-426c-8294-d13dbc6e2b7d": {
+    "title": "CD-2026-0316-15",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Đặng Tiến Dũng, Lê Anh Tuấn, Thanh Hiếu"
+  },
+  "332abe10-385d-461e-86ee-5f99ec8319e6": {
+    "title": "CD-2026-0302-07",
+    "status": "da_gui_email",
+    "approved": "CEO",
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Tất cả thành viên One Team"
+  },
+  "0068d895-7f05-4bca-92c0-5228578bd35c": {
+    "title": "CD-2026-0309-15",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "ngochan@kaizen.edu.vn",
+    "dauMoi": "Phạm Thị Ngọc Hân, Đặng Tiến Dũng"
+  },
+  "d4d5086a-a2db-42fc-9e71-a17fdb22dd40": {
+    "title": "CD-2026-0309-10",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, các đội trưởng TT liên kết"
+  },
+  "404c81cd-8e80-459e-82c5-a8443cb3e1c8": {
+    "title": "CD-2026-0309-04",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Lê Anh Tuấn, các đội trưởng TT liên kết"
+  },
+  "e5a42c70-2cf8-43c7-8c00-f9ba14f8fddf": {
+    "title": "CD-2026-0302-12",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "letuan@esuhai.com",
+    "dauMoi": "Toàn hệ thống S2"
+  },
+  "e8687c96-739e-4a16-be0e-db4678d8a0ba": {
+    "title": "CD-2026-0316-16",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Toàn bộ MS"
+  },
+  "0207d8f3-3246-422c-9b3b-3561bbb6092e": {
+    "title": "CD-2026-0302-01",
+    "status": "hoan_thanh",
+    "approved": "CEO",
+    "email": "dungdt@esuhai.com",
+    "dauMoi": "Tất cả MS"
+  },
+  "09a7da2d-d09d-4deb-a8bd-1d692ef294f0": {
+    "title": "CD-2026-0316-25",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "thinhien@kaizen.edu.vn",
+    "dauMoi": "Cô Nhiên, toàn bộ MS"
+  },
+  "84d01fe5-7852-432d-ab21-8e205754fafd": {
+    "title": "CD-2026-0316-06",
+    "status": "da_gui_email",
+    "approved": null,
+    "email": "phuoch@esuhai.com",
+    "dauMoi": "Thầy Nam"
   }
 }

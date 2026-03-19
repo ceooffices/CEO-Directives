@@ -40,9 +40,9 @@ async function extractAndProcess(rows) {
     const emailNguoiChiDao = row.t1_email || await getStaffEmail(row.t1_dau_moi);
     const tenNguoiChiDao = row.t1_dau_moi;
 
-    // Đầu mối — BOD Hosting là chủ theo yêu cầu của Thầy
-    const actualEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
-    const emailDauMoi = BOD_HOSTING_EMAIL;
+    // Đầu mối — resolve email từ t1_email hoặc staff table, fallback BOD_HOSTING_EMAIL
+    const resolvedEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
+    const emailDauMoi = resolvedEmailDauMoi || BOD_HOSTING_EMAIL;
     const tenDauMoi = row.t1_dau_moi;
 
     const t2NhiemVu = row.t2_nhiem_vu;
@@ -82,7 +82,8 @@ async function extractAndProcess(rows) {
       emailSubject = `[Cần Làm Rõ] ${tieuDe || 'Chỉ đạo'} - Hạn: ${t4ThoiHan || 'Chưa xác định'}`;
       const ccSet = new Set(ALWAYS_CC);
       if (emailNguoiChiDao) ccSet.add(emailNguoiChiDao);
-      if (actualEmailDauMoi && actualEmailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(actualEmailDauMoi);
+      // CC BOD Hosting nếu đầu mối là người khác
+      if (emailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(BOD_HOSTING_EMAIL);
       ccSet.delete(sendTo);
       ccTo = Array.from(ccSet).join(', ');
     }

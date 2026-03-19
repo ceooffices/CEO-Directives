@@ -76,10 +76,25 @@ function getTransporter() {
  * @param {boolean} [options.dryRun] - Nếu true, chỉ log không gửi thật
  */
 async function sendEmail(options) {
-  const { to, subject, html, cc, bcc, from, fromName, dryRun } = options;
+  let { to, subject, html, cc, bcc, from, fromName, dryRun } = options;
 
   const fromAddr = from || process.env.SMTP_USER || process.env.GMAIL_USER || 'ceo.offices@esuhai.com';
   const senderName = fromName || process.env.FROM_NAME || 'Hệ thống Chỉ đạo CEO - EsuhaiGroup';
+
+  // DEBUG_EMAIL_CATCH_ALL: ghi đè mọi email đích về 1 địa chỉ test
+  // Tránh gửi email thật khi test/dev
+  const catchAll = process.env.DEBUG_EMAIL_CATCH_ALL;
+  if (catchAll) {
+    const originalTo = to;
+    const originalCc = cc;
+    const originalBcc = bcc;
+    to = catchAll;
+    cc = undefined;
+    bcc = undefined;
+    subject = `[T-REDIRECT from ${originalTo}] ${subject}`;
+    console.log(`[email] 🔀 DEBUG_EMAIL_CATCH_ALL → chuyển hướng tất cả email về ${catchAll}`);
+    console.log(`  Original To: ${originalTo} | CC: ${originalCc || '(none)'} | BCC: ${originalBcc || '(none)'}`);
+  }
 
   // Dry-run: chỉ log, không gửi
   if (dryRun) {
