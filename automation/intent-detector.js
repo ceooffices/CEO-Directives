@@ -200,7 +200,7 @@ function extractWorkflowName(text) {
     'wf3': ['wf3', 'trạng thái', 'status change'],
     'wf4': ['wf4', 'leo thang', 'escalation'],
     'wf5': ['wf5', 'nhắc nhở', 'reminder'],
-    'wf6': ['wf6', 'dashboard', 'sync'],
+    // wf6: DEPRECATED — dashboard reads from Supabase directly
     'hm50': ['hm50', '50 hạng mục', '50 hm'],
     'all': ['all', 'tất cả'],
   };
@@ -250,8 +250,8 @@ function getQuickReply(intent, context = {}) {
     case INTENT_TYPES.IDENTITY:
       return `Dạ thưa ${name}, con là Gravity Bot — hệ thống tự động quản lý chỉ đạo CEO của EsuhaiGroup.
 
-▫️ Theo dõi chỉ đạo qua Notion
-▫️ Gửi email duyệt, đồng hành, tín hiệu rủi ro (WF1-6)
+▫️ Theo dõi chỉ đạo qua Supabase (real-time database)
+▫️ Gửi email duyệt, đồng hành, tín hiệu rủi ro (WF1-5)
 ▫️ Phân tích AI — pattern, rủi ro, báo cáo
 ▫️ Kết nối Dashboard + Google Forms
 

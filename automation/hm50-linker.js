@@ -3,14 +3,14 @@
  * Auto-suggest + link chỉ đạo hàng ngày → 50 Hạng Mục Chiến Lược
  *
  * v2: BSC Strategic Tracking — Phase 2
- *   - Write Notion relation HM50_Link trên Clarification
- *   - Update Directive_Count + Completion_Rate trên HM50
+ *   - Write Supabase hm50_id relation on directive
+ *   - Update Directive_Count + Completion_Rate on HM50
  *   - Auto-classify Directive_Type + BSC_Perspective
  *
  * Usage:
- *   node hm50-linker.js              # Generate mapping + sync Notion
+ *   node hm50-linker.js              # Generate mapping + sync Supabase
  *   node hm50-linker.js --sync       # (legacy alias, same as default)
- *   node hm50-linker.js --dry-run    # Preview only, không ghi Notion
+ *   node hm50-linker.js --dry-run    # Preview only, không ghi DB
  */
 
 const fs = require('fs');
@@ -148,7 +148,7 @@ function parseHM50Rows(rows) {
   })).sort((a, b) => a.tt - b.tt);
 }
 
-// ===== NOTION SYNC (Phase 2) =====
+// ===== SUPABASE SYNC (Phase 2) =====
 
 /**
  * Task 2.1: Ghi hm50_id relation lên directive
@@ -434,8 +434,8 @@ async function run() {
     }
   }
 
-  // 5. Sync relations to Notion (Phase 2 — Task 2.1)
-  console.log('\n[5/7] Syncing to Notion...');
+  // 5. Sync relations to Supabase (Phase 2 — Task 2.1)
+  console.log('\n[5/7] Syncing to Supabase...');
   if (!DRY_RUN) {
     let syncOk = 0, syncErr = 0;
 
@@ -502,7 +502,7 @@ async function run() {
     }
   }
 
-  // 6. Sync HM50 counts + BSC to Notion (Phase 2 — Task 2.1 + 2.2)
+  // 6. Sync HM50 counts + BSC to Supabase (Phase 2 — Task 2.1 + 2.2)
   console.log('\n[6/7] Updating HM50 counts + BSC...');
   if (!DRY_RUN) {
     let hmSyncOk = 0, hmSyncErr = 0;

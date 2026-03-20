@@ -105,8 +105,8 @@ if (runNowIdx > -1) {
   // ===== DAEMON MODE: Setup cron jobs =====
 
   console.log('==========================================');
-  console.log('🤖 CEO Directive Automation Engine v3.1');
-  console.log('   Source: Supabase (Notion deprecated)');
+  console.log('🤖 CEO Directive Automation Engine v3.2');
+  console.log('   Source: Supabase (single source of truth)');
   console.log(`   Started: ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
   console.log(`   Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
   console.log(`   Cron notifications: ${CRON_ENABLED ? '🔔 BẬT' : '🔇 TẮT (mute)'}`);

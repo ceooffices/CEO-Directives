@@ -38,7 +38,7 @@ const CONTEXT_FILES = [
   { file: 'CLAUDE.md', weight: 1.0, label: 'Kiến trúc hệ thống' },
   { file: 'SYSTEM_AUDIT.md', weight: 0.9, label: 'System Audit' },
   { file: 'README.md', weight: 0.8, label: 'Tổng quan dự án' },
-  { file: 'notion_properties_lock.md', weight: 0.7, label: 'Notion schema' },
+  { file: 'notion_properties_lock.md', weight: 0.7, label: 'DB Schema (legacy ref)' },
   { file: 'changelog.md', weight: 0.6, label: 'Changelog' },
   // ===== Data files (JSON → đọc và chunk) =====
   { file: 'data/hm50_master.json', weight: 1.2, label: 'HM50 Master', isJSON: true },

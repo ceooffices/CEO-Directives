@@ -3,7 +3,7 @@
  * CEO Directive Automation — AI Pattern Analysis & Risk Prediction
  * 
  * Capabilities:
- *   1. Pattern Analysis — phát hiện xu hướng từ dữ liệu Notion
+ *   1. Pattern Analysis — phát hiện xu hướng từ dữ liệu Supabase
  *   2. Risk Prediction — dự đoán chỉ đạo nào có nguy cơ thất bại
  *   3. Natural Language Query — trả lời câu hỏi tự nhiên về chỉ đạo
  *   4. Weekly Insights — tổng hợp insights tự động

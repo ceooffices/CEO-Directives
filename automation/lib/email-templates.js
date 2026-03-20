@@ -28,7 +28,7 @@ const TRACKING_BASE_URL = process.env.TRACKING_BASE_URL || 'http://localhost:300
 /**
  * Build tracking pixel IMG tag cho email
  * Token format: base64url(directiveId:recipientEmail:timestamp)
- * @param {string} directiveId - Notion page ID
+ * @param {string} directiveId - Directive UUID (Supabase)
  * @param {string} recipientEmail - Email người nhận
  * @returns {string} HTML img tag 1x1 invisible
  */
