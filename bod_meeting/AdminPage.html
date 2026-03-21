@@ -1,1 +1,1266 @@
-﻿<!doctype html><html lang="vi">  <head>    <meta charset="UTF-8" />    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <title>Trang Quan Tri - BOD Meeting</title>    <link rel="preconnect" href="https://fonts.googleapis.com" />    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />    <style>/* ============================================ *//* RESET & BIẾN MÀU                            *//* ============================================ */* { margin: 0; padding: 0; box-sizing: border-box; }:root {  --font: "Inter", -apple-system, "Segoe UI", sans-serif;  --primary: #0f172a;  --primary-grad: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #2563eb 100%);  --bg: #f1f5f9;  --card-bg: #ffffff;  --text: #0f172a;  --text-secondary: #475569;  --border: #e2e8f0;  --shadow: 0 4px 16px rgba(0,0,0,0.08);  --radius: 16px;  --radius-sm: 10px;  --c-green: #10b981;  --c-red: #ef4444;  --c-amber: #f59e0b;  --c-blue: #3b82f6;}body {  font-family: var(--font);  font-size: 15px;  font-weight: 500;  background: var(--bg);  color: var(--text);  line-height: 1.6;  min-height: 100vh;  -webkit-font-smoothing: antialiased;}/* ============================================ *//* HEADER                                       *//* ============================================ */.header {  background: var(--primary-grad);  color: #fff;  padding: 24px 32px;  display: flex;  justify-content: center;  align-items: center;  flex-wrap: wrap;  gap: 16px;  position: sticky;  top: 0;  z-index: 100;  box-shadow: 0 4px 20px rgba(0,0,0,0.2);}.header-left {  display: flex;  align-items: center;  gap: 14px;  margin-right: auto;}.header-logo {  width: 40px; height: 40px;  background: rgba(255,255,255,0.15);  border-radius: 10px;  display: flex; align-items: center; justify-content: center;  font-size: 20px;}.header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }.header-sub { font-size: 12px; font-weight: 600; opacity: 0.7; }.header-nav { display: flex; gap: 8px; }.nav-btn {  padding: 8px 16px;  border-radius: var(--radius-sm);  border: 1.5px solid rgba(255,255,255,0.3);  background: rgba(255,255,255,0.1);  color: #fff;  font-size: 13px;  font-weight: 700;  cursor: pointer;  transition: all 0.15s;  text-decoration: none;}.nav-btn:hover { background: rgba(255,255,255,0.2); }.nav-btn.active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }/* ============================================ *//* LAYOUT                                       *//* ============================================ */.container {  max-width: 1100px;  margin: 0 auto;  padding: 28px;}/* ============================================ *//* TABS                                         *//* ============================================ */.tabs {  display: flex;  gap: 4px;  border-bottom: 2px solid var(--border);  margin-bottom: 28px;  overflow-x: auto;}.tab {  padding: 12px 20px;  font-size: 14px;  font-weight: 700;  color: var(--text-secondary);  cursor: pointer;  border-bottom: 3px solid transparent;  transition: all 0.15s;  white-space: nowrap;}.tab:hover { color: var(--text); background: #f8fafc; }.tab.active {  color: var(--c-blue);  border-bottom-color: var(--c-blue);}/* ============================================ *//* PANELS                                       *//* ============================================ */.panel { display: none; }.panel.active { display: block; }/* ============================================ *//* SECTION CARD                                 *//* ============================================ */.section-card {  background: var(--card-bg);  border-radius: var(--radius);  box-shadow: var(--shadow);  margin-bottom: 24px;  overflow: hidden;}.section-card-header {  padding: 18px 24px;  border-bottom: 2px solid var(--border);  display: flex;  justify-content: space-between;  align-items: center;  flex-wrap: wrap;  gap: 8px;}.section-card-header h2 {  font-size: 18px;  font-weight: 800;}.section-card-body {  padding: 24px;}/* ============================================ *//* FORM ELEMENTS                                *//* ============================================ */.form-group { margin-bottom: 20px; }.form-group label {  display: block;  font-size: 13px;  font-weight: 700;  text-transform: uppercase;  color: var(--text-secondary);  margin-bottom: 6px;  letter-spacing: 0.5px;}.form-group .hint {  font-size: 12px;  font-style: italic;  color: #94a3b8;  margin-top: 4px;}.form-input {  width: 100%;  padding: 10px 14px;  border: 1.5px solid var(--border);  border-radius: var(--radius-sm);  font-size: 14px;  font-weight: 500;  font-family: var(--font);  transition: border-color 0.2s;}.form-input:focus {  border-color: var(--c-blue);  outline: none;  background: #eff6ff;}textarea.form-input {  min-height: 120px;  resize: vertical;  line-height: 1.6;}select.form-input {  cursor: pointer;  background: #fff;}/* ============================================ *//* BUTTONS                                      *//* ============================================ */.btn {  padding: 10px 20px;  border-radius: var(--radius-sm);  font-size: 14px;  font-weight: 700;  border: none;  cursor: pointer;  transition: all 0.15s;  display: inline-flex;  align-items: center;  gap: 6px;}.btn-primary { background: var(--c-blue); color: #fff; }.btn-primary:hover { background: #2563eb; }.btn-success { background: var(--c-green); color: #fff; }.btn-success:hover { background: #059669; }.btn-danger { background: var(--c-red); color: #fff; }.btn-danger:hover { background: #dc2626; }.btn-outline {  background: transparent;  border: 1.5px solid var(--border);  color: var(--text-secondary);}.btn-outline:hover { background: #f8fafc; border-color: #94a3b8; }.btn:disabled { opacity: 0.5; cursor: not-allowed; }/* ============================================ *//* TABLE                                        *//* ============================================ */.admin-table { width: 100%; border-collapse: collapse; }.admin-table th {  padding: 10px 16px;  text-align: left;  font-size: 12px;  font-weight: 800;  text-transform: uppercase;  letter-spacing: 0.5px;  color: var(--text-secondary);  background: #f8fafc;  border-bottom: 2px solid var(--border);}.admin-table td {  padding: 12px 16px;  font-size: 14px;  font-weight: 600;  border-bottom: 1px solid #f1f5f9;  vertical-align: middle;}.admin-table tr:hover { background: #f8fafc; }/* ============================================ *//* BADGES                                       *//* ============================================ */.badge {  display: inline-flex;  align-items: center;  gap: 4px;  padding: 4px 12px;  border-radius: 16px;  font-size: 12px;  font-weight: 800;  white-space: nowrap;}.badge-green { background: #d1fae5; color: #065f46; }.badge-red { background: #fee2e2; color: #991b1b; }.badge-amber { background: #fef3c7; color: #92400e; }.badge-blue { background: #dbeafe; color: #1e40af; }/* ============================================ *//* STATUS MSG                                   *//* ============================================ */.status-msg {  padding: 10px 16px;  border-radius: var(--radius-sm);  font-size: 13px;  font-weight: 700;  margin-top: 12px;  display: none;}.status-msg.show { display: block; }.status-msg.success { background: #d1fae5; color: #065f46; }.status-msg.error { background: #fee2e2; color: #991b1b; }/* ============================================ *//* TEMPLATE PREVIEW                             *//* ============================================ */.template-preview {  background: #f8fafc;  border: 1.5px solid var(--border);  border-radius: var(--radius-sm);  padding: 16px;  font-size: 13px;  line-height: 1.7;  color: var(--text-secondary);  white-space: pre-wrap;  margin-top: 8px;}/* ============================================ *//* VARIABLE TAG                                 *//* ============================================ */.var-tag {  display: inline-block;  padding: 2px 8px;  background: #dbeafe;  color: #1e40af;  border-radius: 4px;  font-size: 11px;  font-weight: 800;  font-family: monospace;  cursor: pointer;  margin: 2px 4px 2px 0;}.var-tag:hover { background: #bfdbfe; }/* ============================================ *//* TOGGLE SWITCH                                *//* ============================================ */.toggle-row {  display: flex;  align-items: center;  gap: 12px;  padding: 12px 0;}.toggle-label { font-weight: 600; font-size: 14px; }.toggle-switch {  position: relative;  width: 48px;  height: 26px;  flex-shrink: 0;}.toggle-switch input { opacity: 0; width: 0; height: 0; }.toggle-slider {  position: absolute;  cursor: pointer;  top: 0; left: 0; right: 0; bottom: 0;  background: #cbd5e1;  border-radius: 26px;  transition: 0.2s;}.toggle-slider:before {  content: '';  position: absolute;  height: 20px; width: 20px;  left: 3px; bottom: 3px;  background: #fff;  border-radius: 50%;  transition: 0.2s;}.toggle-switch input:checked + .toggle-slider {  background: var(--c-blue);}.toggle-switch input:checked + .toggle-slider:before {  transform: translateX(22px);}/* ============================================ *//* FOOTER                                       *//* ============================================ */.footer {  text-align: center;  padding: 24px;  font-size: 13px;  font-weight: 600;  color: #94a3b8;}/* ============================================ *//* RESPONSIVE                                   *//* ============================================ */@media (max-width: 768px) {  .container { padding: 16px; }  .header { padding: 16px; flex-direction: column; }  .header h1 { font-size: 18px; }  .tabs { gap: 0; }  .tab { padding: 10px 14px; font-size: 13px; }  .section-card-body { padding: 16px; }}    </style>  </head>  <body><!-- ======== HEADER ======== --><header class="header">  <div class="header-left">    <div class="header-logo">&#9881;</div>    <div>      <h1>TRANG QUẢN TRỊ</h1>      <div class="header-sub">ESUHAI GROUP — Quản trị hệ thống BOD Meeting</div>    </div>  </div>  <div class="header-nav">    <a class="nav-btn" href="#" onclick="goToDashboard()">Về Dashboard</a>  </div></header><!-- ======== MAIN CONTENT ======== --><div class="container">  <!-- TABS — Ghi tiếng Việt dễ hiểu -->  <div class="tabs" id="tabBar">    <div class="tab active" data-tab="meeting" onclick="switchTab('meeting')">QUY ĐỊNH CUỘC HỌP</div>    <div class="tab" data-tab="system" onclick="switchTab('system')">KẾT NỐI & HỆ THỐNG</div>    <div class="tab" data-tab="email" onclick="switchTab('email')">MẪU EMAIL</div>    <div class="tab" data-tab="access" onclick="switchTab('access')">PHÂN QUYỀN</div>  </div>  <!-- ======================================== -->  <!-- TAB 1: QUY ĐỊNH CUỘC HỌP               -->  <!-- ======================================== -->  <div class="panel active" id="panel-meeting">    <!-- BOD Hosting — Người chủ trì -->    <div class="section-card">      <div class="section-card-header">        <h2>Người chủ trì cuộc họp (BOD Hosting)</h2>        <span class="badge badge-green" id="hostingStatusBadge">Đang đương nhiệm</span>      </div>      <div class="section-card-body">        <div class="hint" style="margin-bottom:16px">          Mỗi kỳ, một thành viên Ban Điều Hành sẽ được phân công chủ trì cuộc họp BOD hàng tuần. Nhiệm kỳ mặc định là 1 tháng.        </div>        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">          <div class="form-group">            <label>Họ tên người chủ trì</label>            <input type="text" class="form-input" id="hostingName" placeholder="VD: Lê Tuấn">          </div>          <div class="form-group">            <label>Email người chủ trì</label>            <input type="email" class="form-input" id="hostingEmail" placeholder="letuan@esuhai.com">          </div>        </div>        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">          <div class="form-group">            <label>Nhiệm kỳ từ ngày</label>            <input type="date" class="form-input" id="hostingFrom">          </div>          <div class="form-group">            <label>Nhiệm kỳ đến ngày</label>            <input type="date" class="form-input" id="hostingTo">            <div class="hint">Mặc định 1 tháng kể từ ngày bắt đầu</div>          </div>        </div>        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px">          <button class="btn btn-primary" onclick="saveBodHosting()">Lưu người chủ trì</button>          <button class="btn btn-outline" onclick="autoSetNextMonth()">Tự động gia hạn thêm 1 tháng</button>        </div>        <div class="status-msg" id="hostingMsg"></div>        <!-- Lịch sử chủ trì -->        <div style="margin-top:20px">          <label style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; display:block; margin-bottom:8px">Lịch sử người chủ trì</label>          <table class="admin-table">            <thead>              <tr>                <th>Họ tên</th>                <th>Email</th>                <th>Từ ngày</th>                <th>Đến ngày</th>                <th>Trạng thái</th>              </tr>            </thead>            <tbody id="hostingHistoryBody">              <tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Đang tải...</td></tr>            </tbody>          </table>        </div>      </div>    </div>    <!-- Thời gian & Hạn chót -->    <div class="section-card">      <div class="section-card-header">        <h2>Thời gian & Hạn chót</h2>      </div>      <div class="section-card-body">        <div class="form-group">          <label>Giờ bắt đầu họp</label>          <input type="time" class="form-input" id="settingStartTime" value="08:30" style="max-width:200px">          <div class="hint">Giờ bắt đầu tính thời gian lịch trình (mặc định 08:30)</div>        </div>        <div class="form-group">          <label>Hạn chót nộp đăng ký nội dung (thứ mấy trong tuần)</label>          <select class="form-input" id="settingRegDeadline" style="max-width:300px">            <option value="3">Thứ 4</option>            <option value="4">Thứ 5</option>            <option value="5" selected>Thứ 6</option>            <option value="6">Thứ 7</option>          </select>          <div class="hint">Sau ngày này, bộ phận không thể gửi nội dung đăng ký</div>        </div>        <div class="form-group">          <label>Hạn chót phê duyệt nội dung</label>          <select class="form-input" id="settingApprDeadline" style="max-width:300px">            <option value="5">Thứ 6</option>            <option value="6" selected>Thứ 7</option>            <option value="0">Chủ nhật</option>          </select>          <div class="hint">Sau ngày này, các nội dung chưa được duyệt sẽ bị bỏ qua</div>        </div>        <div class="form-group">          <label>Thời điểm gửi lịch trình cho thành viên</label>          <input type="text" class="form-input" id="settingScheduleSend" value="Chủ nhật 20:00" style="max-width:300px">          <div class="hint">Ví dụ: Chủ nhật 20:00</div>        </div>        <div class="form-group">          <label>Thời lượng trình bày tối đa mỗi nội dung (phút)</label>          <input type="number" class="form-input" id="settingMaxPresentation" value="20" min="5" max="60" step="5" style="max-width:200px">          <div class="hint">Giới hạn số phút trên Form đăng ký. Mặc định 20 phút.</div>        </div>        <div class="form-group">          <label>Thời lượng chỉ đạo mặc định (phút)</label>          <input type="number" class="form-input" id="settingDefaultCD" value="10" min="5" max="120" step="5" style="max-width:200px">          <div class="hint">Thời gian dành cho lãnh đạo chỉ đạo sau mỗi nội dung trình bày</div>        </div>        <button class="btn btn-primary" onclick="saveSettings()">Lưu tất cả Thiết lập</button>        <div class="status-msg" id="settingsMsg"></div>      </div>    </div>  </div>  <!-- ======================================== -->  <!-- TAB 2: KẾT NỐI & HỆ THỐNG              -->  <!-- ======================================== -->  <div class="panel" id="panel-system">    <!-- Cấu hình gửi Email -->    <div class="section-card">      <div class="section-card-header">        <h2>Cách thức gửi Email</h2>      </div>      <div class="section-card-body">        <div class="hint" style="margin-bottom:16px">          Hệ thống hỗ trợ 2 cách gửi email. Cách đề xuất là dùng "Hệ thống tự động" (N8N) để email ít bị vào spam.          Nếu chưa kết nối hệ thống tự động, có thể chọn "Gmail trực tiếp" (email sẽ gửi từ tài khoản Google của bạn).        </div>        <div class="form-group">          <label>Phương thức gửi Email</label>          <select class="form-input" id="cfgEmailMethod" style="max-width:400px">            <option value="n8n">Hệ thống tự động (N8N) — Đề xuất dùng cách này</option>            <option value="gmail">Gmail trực tiếp — Gửi từ tài khoản Google của bạn</option>          </select>          <div class="hint">Nếu chọn "Hệ thống tự động", cần điền Đường dẫn kết nối bên dưới.</div>        </div>        <div class="form-group" id="webhookUrlGroup">          <label>Đường dẫn kết nối hệ thống Email tự động (Webhook URL)</label>          <input type="text" class="form-input" id="cfgWebhookUrl" placeholder="https://esuhai.app.n8n.cloud/webhook/bod-send-email">          <div class="hint">Đường dẫn này do bộ phận kỹ thuật cung cấp. Không cần sửa gì nếu hệ thống vẫn chạy bình thường.</div>        </div>        <div class="form-group">          <label>Tên hiển thị khi gửi Email</label>          <input type="text" class="form-input" id="cfgSenderName" placeholder="BTC MEETING BOD - ESUHAIGROUP" style="max-width:400px">          <div class="hint">Người nhận sẽ thấy tên này trong hộp thư (VD: "BTC MEETING BOD - ESUHAIGROUP")</div>        </div>        <div class="form-group">          <label>Địa chỉ Email gửi đi</label>          <input type="email" class="form-input" id="cfgSenderEmail" placeholder="ceo.offices@esuhai.com" style="max-width:400px">          <div class="hint">Địa chỉ email sẽ được dùng làm người gửi (chỉ có hiệu lực với phương thức N8N)</div>        </div>        <button class="btn btn-primary" onclick="saveSystemConfig()">Lưu cấu hình Email</button>        <div class="status-msg" id="systemEmailMsg"></div>      </div>    </div>    <!-- Link kết nối hệ thống -->    <div class="section-card">      <div class="section-card-header">        <h2>Đường dẫn kết nối</h2>      </div>      <div class="section-card-body">        <div class="form-group">          <label>🔗 Link Dashboard (CTA trong email)</label>          <input type="text" class="form-input" id="settingDashboardLink" placeholder="Tự động — để trống nếu không cần override">          <div class="hint">            Link này sẽ gắn vào nút CTA "MỞ DASHBOARD" trong tất cả email gửi đi.            <strong>Để trống</strong> = tự động dùng URL phiên bản deploy mới nhất.            Chỉ điền khi muốn trỏ tới URL cố định (VD: sau khi deploy mới mà muốn giữ URL cũ).          </div>        </div>        <div class="form-group">          <label>Link Form Đăng ký nội dung (Google Form)</label>          <input type="text" class="form-input" id="settingFormLink" placeholder="https://docs.google.com/forms/d/...">          <div class="hint">Link bảng đăng ký nội dung trình bày mà các bộ phận sẽ điền vào</div>        </div>        <div class="form-group">          <label>Link Trang tính dữ liệu (Google Sheet)</label>          <input type="text" class="form-input" id="settingSheetLink" placeholder="https://docs.google.com/spreadsheets/d/...">          <div class="hint">Link trang tính chứa toàn bộ dữ liệu đăng ký và lịch trình</div>        </div>        <div class="form-group">          <label>Email Ban Tổ Chức (BTC)</label>          <textarea class="form-input" id="settingBtcEmails" rows="3" placeholder="email1@esuhai.com&#10;email2@esuhai.com"></textarea>          <div class="hint">Mỗi dòng 1 email. Nhóm này sẽ nhận tất cả thông báo nhắc phê duyệt.</div>        </div>        <div class="form-group">          <label>Email người luôn được CC khi gửi thông báo</label>          <input type="text" class="form-input" id="settingCcEmail" placeholder="email@esuhai.com">          <div class="hint">Thường là email người chủ trì. Sẽ nhận CC trong mọi email gửi đi.</div>        </div>        <button class="btn btn-primary" onclick="saveSettings()">Lưu đường dẫn</button>        <div class="status-msg" id="systemLinksMsg"></div>      </div>    </div>    <!-- Thông tin hệ thống (readonly) -->    <div class="section-card">      <div class="section-card-header">        <h2>Thông tin hệ thống</h2>      </div>      <div class="section-card-body">        <table class="admin-table">          <tbody>            <tr><td style="width:200px; font-weight:700; color:#94a3b8">PHIÊN BẢN</td><td>v8.5 — Admin Module</td></tr>            <tr><td style="font-weight:700; color:#94a3b8">NỀN TẢNG</td><td>Google Apps Script + HTML Service</td></tr>            <tr><td style="font-weight:700; color:#94a3b8">NGƯỜI QUẢN TRỊ</td><td id="sysAdmin">Đang tải...</td></tr>            <tr><td style="font-weight:700; color:#94a3b8">DỮ LIỆU</td><td>Google Sheets</td></tr>            <tr><td style="font-weight:700; color:#94a3b8">CẬP NHẬT</td><td>05/03/2026</td></tr>          </tbody>        </table>      </div>    </div>  </div>  <!-- ======================================== -->  <!-- TAB 3: MẪU EMAIL                         -->  <!-- ======================================== -->  <div class="panel" id="panel-email">    <div class="section-card">      <div class="section-card-header">        <h2>Quản lý Mẫu nội dung Email</h2>      </div>      <div class="section-card-body">        <div class="hint" style="margin-bottom:16px">          Mỗi loại email đều có một mẫu nội dung riêng. Bạn có thể chỉnh sửa tiêu đề và nội dung, sau đó bấm "Lưu mẫu" để áp dụng.          Để chèn các thông tin tự động (tên bộ phận, ngày họp...), hãy bấm vào các thẻ bên dưới.        </div>        <div class="form-group">          <label>Chọn loại Email cần chỉnh sửa</label>          <select class="form-input" id="templateSelect" onchange="loadTemplate()">            <option value="reminder">Nhắc nhở đăng ký (1 bộ phận)</option>            <option value="bulk_reminder">Nhắc nhở hàng loạt (tất cả bộ phận chưa đăng ký)</option>            <option value="approval_reminder">Nhắc phê duyệt (Ban Tổ Chức)</option>            <option value="approval_result">Thông báo kết quả duyệt (người đăng ký)</option>            <option value="schedule">Gửi lịch trình (thành viên BOD)</option>          </select>        </div>        <div class="form-group">          <label>Tiêu đề Email</label>          <input type="text" class="form-input" id="tplSubject" placeholder="Nhập tiêu đề email...">          <div class="hint">Bấm vào các thẻ bên dưới để chèn thông tin tự động vào tiêu đề hoặc nội dung</div>        </div>        <div class="form-group">          <label>Các thẻ thông tin có thể chèn (bấm để chèn)</label>          <div id="tplVars">            <span class="var-tag" onclick="insertVar('{{ten_bp}}')" title="Tên bộ phận đăng ký">{{ten_bp}} Tên bộ phận</span>            <span class="var-tag" onclick="insertVar('{{ngay_hop}}')" title="Ngày họp">{{ngay_hop}} Ngày họp</span>            <span class="var-tag" onclick="insertVar('{{ho_ten}}')" title="Họ tên người nhận">{{ho_ten}} Họ tên</span>            <span class="var-tag" onclick="insertVar('{{trang_thai}}')" title="Kết quả phê duyệt">{{trang_thai}} Trạng thái</span>            <span class="var-tag" onclick="insertVar('{{noi_dung}}')" title="Nội dung đăng ký">{{noi_dung}} Nội dung</span>            <span class="var-tag" onclick="insertVar('{{link_form}}')" title="Link Google Form">{{link_form}} Link Form</span>            <span class="var-tag" onclick="insertVar('{{link_sheet}}')" title="Link Google Sheet">{{link_sheet}} Link Sheet</span>            <span class="var-tag" onclick="insertVar('{{so_cho}}')" title="Số nội dung chờ duyệt">{{so_cho}} Số chờ duyệt</span>          </div>        </div>        <div class="form-group">          <label>Nội dung Email</label>          <textarea class="form-input" id="tplBody" rows="10" placeholder="Nhập nội dung email..."></textarea>        </div>        <div style="display:flex; gap:12px; flex-wrap:wrap">          <button class="btn btn-primary" onclick="saveTemplate()">Lưu mẫu này</button>          <button class="btn btn-outline" onclick="previewTemplate()">Xem trước mẫu</button>          <button class="btn btn-outline" onclick="resetTemplate()">Khôi phục mặc định</button>        </div>        <div class="status-msg" id="tplMsg"></div>        <div id="tplPreviewArea" style="margin-top:16px; display:none">          <label style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase">Xem trước nội dung:</label>          <div class="template-preview" id="tplPreview"></div>        </div>      </div>    </div>  </div>  <!-- ======================================== -->  <!-- TAB 4: PHÂN QUYỀN                        -->  <!-- ======================================== -->  <div class="panel" id="panel-access">    <div class="section-card">      <div class="section-card-header">        <h2>Quản lý người dùng & Phân quyền</h2>        <button class="btn btn-primary" onclick="addAccessUser()">Thêm người dùng</button>      </div>      <div class="section-card-body">        <div class="hint" style="margin-bottom:16px">          Chỉ người dùng được duyệt mới truy cập được Dashboard.          Các trạng thái: <b>Chờ duyệt</b> (chưa được cấp quyền) / <b>Đã duyệt</b> (có quyền truy cập) / <b>Bị khóa</b> (tạm dừng quyền).        </div>        <table class="admin-table">          <thead>            <tr>              <th>Email</th>              <th>Họ tên</th>              <th>Vai trò</th>              <th>Trạng thái</th>              <th>Hành động</th>            </tr>          </thead>          <tbody id="accessTableBody">            <tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">Đang tải...</td></tr>          </tbody>        </table>        <div class="status-msg" id="accessMsg"></div>      </div>    </div>    <!-- Form thêm người dùng mới -->    <div class="section-card" id="addUserForm" style="display:none">      <div class="section-card-header">        <h2>Thêm người dùng mới</h2>        <button class="btn btn-outline" onclick="document.getElementById('addUserForm').style.display='none'">Đóng</button>      </div>      <div class="section-card-body">        <div class="form-group">          <label>Email</label>          <input type="email" class="form-input" id="newUserEmail" placeholder="email@esuhai.com">        </div>        <div class="form-group">          <label>Họ tên</label>          <input type="text" class="form-input" id="newUserName" placeholder="Nguyễn Văn A">        </div>        <div class="form-group">          <label>Vai trò</label>          <select class="form-input" id="newUserRole">            <option value="viewer">Chỉ xem (Viewer) — Xem Dashboard nhưng không duyệt</option>            <option value="editor">Có quyền duyệt (Editor) — Xem và phê duyệt nội dung</option>            <option value="admin">Toàn quyền (Admin) — Quản trị toàn bộ hệ thống</option>          </select>        </div>        <div class="form-group">          <label>Trạng thái</label>          <select class="form-input" id="newUserStatus">            <option value="approved">Cấp quyền ngay (Đã duyệt)</option>            <option value="pending">Chờ duyệt</option>          </select>        </div>        <button class="btn btn-success" onclick="saveNewUser()">Lưu người dùng mới</button>        <div class="status-msg" id="addUserMsg"></div>      </div>    </div>  </div></div><!-- FOOTER --><footer class="footer">  BTC Meeting BOD — Trang Quản Trị v8.5 — ESUHAI GROUP</footer>    <script>// ========================================// TAB SWITCHING// ========================================function switchTab(tabId) {  var tabs = document.querySelectorAll('.tab');  for (var i = 0; i < tabs.length; i++) {    tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);  }  var panels = document.querySelectorAll('.panel');  for (var i = 0; i < panels.length; i++) {    panels[i].classList.toggle('active', panels[i].id === 'panel-' + tabId);  }}// ========================================// UTILITY// ========================================function showStatus(id, msg, type) {  var el = document.getElementById(id);  if (!el) return;  el.textContent = msg;  el.className = 'status-msg show ' + type;  setTimeout(function() { el.className = 'status-msg'; }, 5000);}function formatDateISO(date) {  var y = date.getFullYear();  var m = ('0' + (date.getMonth() + 1)).slice(-2);  var d = ('0' + date.getDate()).slice(-2);  return y + '-' + m + '-' + d;}function formatDateVN(dateStr) {  if (!dateStr) return '';  var parts = dateStr.split('-');  if (parts.length !== 3) return dateStr;  return parts[2] + '/' + parts[1] + '/' + parts[0];}function goToDashboard() {  try {    google.script.run      .withSuccessHandler(function(url) {        if (url) window.open(url, '_self');      })      .withFailureHandler(function() {        var baseUrl = window.location.href.split('?')[0];        window.location.href = baseUrl;      })      .getScriptAppUrl();  } catch(e) {    var baseUrl = window.location.href.split('?')[0];    window.location.href = baseUrl;  }}// ========================================// EMAIL TEMPLATES// ========================================var defaultTemplates = {  reminder: {    subject: '[BOD Meeting] Nhắc nhở đăng ký nội dung họp {{ngay_hop}}',    body: 'Kính gửi {{ten_bp}},\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày {{ngay_hop}}.\n\nVui lòng truy cập Google Form và hoàn tất trước 17:00 Thứ Sáu:\n{{link_form}}\n\nTrân trọng,\nBan Tổ Chức'  },  bulk_reminder: {    subject: '[BOD Meeting] Nhắc nhở đăng ký nội dung họp {{ngay_hop}}',    body: 'Kính gửi Trưởng bộ phận,\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày {{ngay_hop}}.\n\nVui lòng truy cập Google Form và hoàn tất trước hạn:\n{{link_form}}\n\nHạn chót: Thứ Sáu 17:00.\nEmail này CC Ban Tổ Chức.\n\nTrân trọng,\nBan Tổ Chức'  },  approval_reminder: {    subject: '[BOD Meeting] Nhắc phê duyệt — Còn {{so_cho}} nội dung chờ',    body: 'Kính gửi Ban Tổ Chức,\n\nHiện còn {{so_cho}} nội dung đăng ký chưa được phê duyệt cho cuộc họp BOD sắp tới.\n\nVui lòng vào Dashboard để xử lý:\n{{link_sheet}}\n\nTrân trọng.'  },  approval_result: {    subject: '[BOD Meeting] Kết quả phê duyệt nội dung của bạn',    body: 'Kính gửi {{ho_ten}},\n\nNội dung đăng ký: "{{noi_dung}}"\nKết quả: {{trang_thai}}\n\nNếu có thắc mắc, vui lòng liên hệ Ban Tổ Chức.\n\nTrân trọng.'  },  schedule: {    subject: '[BOD Meeting] Lịch trình làm việc BOD {{ngay_hop}}',    body: 'Kính gửi Anh/Chị,\n\nGửi đến Anh/Chị lịch trình làm việc BOD ngày {{ngay_hop}}.\n\n(Lịch trình chi tiết kèm theo.)\n\nVui lòng chuẩn bị nội dung theo đúng thời lượng đã phân bổ.\n\nTrân trọng,\nBan Tổ Chức'  }};var currentTemplates = JSON.parse(JSON.stringify(defaultTemplates));function loadTemplate() {  var key = document.getElementById('templateSelect').value;  var tpl = currentTemplates[key] || defaultTemplates[key];  document.getElementById('tplSubject').value = tpl.subject;  document.getElementById('tplBody').value = tpl.body;  document.getElementById('tplPreviewArea').style.display = 'none';}function saveTemplate() {  var key = document.getElementById('templateSelect').value;  currentTemplates[key] = {    subject: document.getElementById('tplSubject').value,    body: document.getElementById('tplBody').value  };  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('tplMsg', 'Đã lưu mẫu "' + key + '" thành công!', 'success');      })      .withFailureHandler(function(e) {        showStatus('tplMsg', 'Lỗi: ' + e.message, 'error');      })      .saveEmailTemplate(key, JSON.stringify(currentTemplates[key]));  } catch(e) {    localStorage.setItem('bodTpl_' + key, JSON.stringify(currentTemplates[key]));    showStatus('tplMsg', 'Đã lưu (cục bộ). Lưu ý: Sẽ mất khi xóa cache.', 'success');  }}function resetTemplate() {  var key = document.getElementById('templateSelect').value;  if (!confirm('Bạn muốn khôi phục mẫu "' + key + '" về nội dung mặc định?')) return;  currentTemplates[key] = JSON.parse(JSON.stringify(defaultTemplates[key]));  loadTemplate();  showStatus('tplMsg', 'Đã khôi phục về mặc định.', 'success');}function previewTemplate() {  var body = document.getElementById('tplBody').value;  var sampleData = {    '{{ten_bp}}': 'Phòng Kinh Doanh',    '{{ngay_hop}}': 'Thứ 2, 09/03/2026',    '{{ho_ten}}': 'Nguyễn Văn A',    '{{trang_thai}}': 'Duyệt',    '{{noi_dung}}': 'Báo cáo doanh số tháng 2',    '{{link_form}}': 'https://forms.gle/xxxxx',    '{{link_sheet}}': 'https://docs.google.com/spreadsheets/d/xxxxx',    '{{so_cho}}': '5'  };  var preview = body;  for (var k in sampleData) {    preview = preview.split(k).join(sampleData[k]);  }  document.getElementById('tplPreview').textContent = preview;  document.getElementById('tplPreviewArea').style.display = 'block';}function insertVar(varName) {  var textarea = document.getElementById('tplBody');  var start = textarea.selectionStart;  var end = textarea.selectionEnd;  var text = textarea.value;  textarea.value = text.substring(0, start) + varName + text.substring(end);  textarea.focus();  textarea.selectionStart = textarea.selectionEnd = start + varName.length;}// ========================================// ACCESS CONTROL (PHÂN QUYỀN)// ========================================var accessUsers = [];function loadAccessUsers() {  try {    google.script.run      .withSuccessHandler(renderAccessTable)      .withFailureHandler(function(e) {        document.getElementById('accessTableBody').innerHTML =          '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444">Lỗi: '+e.message+'</td></tr>';      })      .getAccessUsers();  } catch(e) {    renderAccessTable([      {email: 'kha@esuhai.com', name: 'Anh Kha', role: 'admin', status: 'approved'},      {email: 'hieu@esuhai.com', name: 'Hieu', role: 'editor', status: 'approved'}    ]);  }}function renderAccessTable(users) {  accessUsers = users || [];  var tbody = document.getElementById('accessTableBody');  if (users.length === 0) {    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">Chưa có người dùng nào</td></tr>';    return;  }  var roleMap = {admin: 'Toàn quyền', editor: 'Có quyền duyệt', viewer: 'Chỉ xem'};  var statusMap = {    approved: '<span class="badge badge-green">Đã duyệt</span>',    pending: '<span class="badge badge-amber">Chờ duyệt</span>',    blocked: '<span class="badge badge-red">Bị khóa</span>'  };  var html = '';  for (var i = 0; i < users.length; i++) {    var u = users[i];    var actions = '';    if (u.status === 'pending') {      actions = '<button class="btn btn-success" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'approved\')">Duyệt</button> ';      actions += '<button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'blocked\')">Từ chối</button>';    } else if (u.status === 'approved') {      actions = '<button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'blocked\')">Khóa</button>';    } else {      actions = '<button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'approved\')">Mở khóa</button>';    }    html += '<tr>'      + '<td>' + u.email + '</td>'      + '<td style="font-weight:700">' + u.name + '</td>'      + '<td><span class="badge badge-blue">' + (roleMap[u.role]||u.role) + '</span></td>'      + '<td>' + (statusMap[u.status]||u.status) + '</td>'      + '<td>' + actions + '</td>'      + '</tr>';  }  tbody.innerHTML = html;}function updateAccess(index, newStatus) {  if (index < 0 || index >= accessUsers.length) return;  accessUsers[index].status = newStatus;  renderAccessTable(accessUsers);  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('accessMsg', 'Đã cập nhật: ' + accessUsers[index].name + ' → ' + newStatus, 'success');      })      .withFailureHandler(function(e) {        showStatus('accessMsg', 'Lỗi: ' + e.message, 'error');      })      .updateUserAccess(accessUsers[index].email, newStatus);  } catch(e) {    showStatus('accessMsg', 'Đã cập nhật (cục bộ).', 'success');  }}function addAccessUser() {  document.getElementById('addUserForm').style.display = 'block';  document.getElementById('addUserForm').scrollIntoView({behavior:'smooth'});}function saveNewUser() {  var email = document.getElementById('newUserEmail').value.trim();  var name = document.getElementById('newUserName').value.trim();  var role = document.getElementById('newUserRole').value;  var status = document.getElementById('newUserStatus').value;  if (!email || !name) {    showStatus('addUserMsg', 'Vui lòng nhập đầy đủ email và họ tên.', 'error');    return;  }  var newUser = {email: email, name: name, role: role, status: status};  accessUsers.push(newUser);  renderAccessTable(accessUsers);  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('addUserMsg', 'Đã thêm: ' + name, 'success');      })      .withFailureHandler(function(e) {        showStatus('addUserMsg', 'Lỗi: ' + e.message, 'error');      })      .addUserAccess(JSON.stringify(newUser));  } catch(e) {    showStatus('addUserMsg', 'Đã thêm (cục bộ).', 'success');  }  document.getElementById('newUserEmail').value = '';  document.getElementById('newUserName').value = '';}// ========================================// SETTINGS (THIẾT LẬP CUỘC HỌP)// ========================================function loadSettings() {  try {    google.script.run      .withSuccessHandler(function(data) {        if (!data) return;        if (data.startTime) document.getElementById('settingStartTime').value = data.startTime;        if (data.regDeadline) document.getElementById('settingRegDeadline').value = data.regDeadline;        if (data.apprDeadline) document.getElementById('settingApprDeadline').value = data.apprDeadline;        if (data.scheduleSend) document.getElementById('settingScheduleSend').value = data.scheduleSend;        if (data.maxPresentation) document.getElementById('settingMaxPresentation').value = data.maxPresentation;        if (data.defaultCD) document.getElementById('settingDefaultCD').value = data.defaultCD;        if (data.ccEmail) document.getElementById('settingCcEmail').value = data.ccEmail;        if (data.btcEmails) document.getElementById('settingBtcEmails').value = data.btcEmails;        if (data.dashboardLink) document.getElementById('settingDashboardLink').value = data.dashboardLink;        if (data.formLink) document.getElementById('settingFormLink').value = data.formLink;        if (data.sheetLink) document.getElementById('settingSheetLink').value = data.sheetLink;        if (data.admin) document.getElementById('sysAdmin').textContent = data.admin;      })      .withFailureHandler(function(e) {})      .getAdminSettings();  } catch(e) {}}function saveSettings() {  var settings = {    startTime: document.getElementById('settingStartTime').value,    regDeadline: document.getElementById('settingRegDeadline').value,    apprDeadline: document.getElementById('settingApprDeadline').value,    scheduleSend: document.getElementById('settingScheduleSend').value,    maxPresentation: document.getElementById('settingMaxPresentation').value,    defaultCD: document.getElementById('settingDefaultCD').value,    ccEmail: document.getElementById('settingCcEmail').value,    btcEmails: document.getElementById('settingBtcEmails').value,    dashboardLink: document.getElementById('settingDashboardLink').value,    formLink: document.getElementById('settingFormLink').value,    sheetLink: document.getElementById('settingSheetLink').value  };  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('settingsMsg', 'Đã lưu thiết lập thành công!', 'success');        showStatus('systemLinksMsg', 'Đã lưu!', 'success');      })      .withFailureHandler(function(e) {        showStatus('settingsMsg', 'Lỗi: ' + e.message, 'error');      })      .saveAdminSettings(JSON.stringify(settings));  } catch(e) {    localStorage.setItem('bodSettings', JSON.stringify(settings));    showStatus('settingsMsg', 'Đã lưu (cục bộ).', 'success');  }}// ========================================// SYSTEM CONFIG (CẤU HÌNH EMAIL N8N)// ========================================function loadSystemConfig() {  try {    google.script.run      .withSuccessHandler(function(data) {        if (!data) return;        if (data.emailMethod) document.getElementById('cfgEmailMethod').value = data.emailMethod;        if (data.webhookUrl) document.getElementById('cfgWebhookUrl').value = data.webhookUrl;        if (data.senderName) document.getElementById('cfgSenderName').value = data.senderName;        if (data.senderEmail) document.getElementById('cfgSenderEmail').value = data.senderEmail;      })      .withFailureHandler(function(e) {})      .getSystemConfig();  } catch(e) {    // Offline: set defaults    document.getElementById('cfgEmailMethod').value = 'n8n';    document.getElementById('cfgWebhookUrl').value = 'https://esuhai.app.n8n.cloud/webhook/bod-send-email';    document.getElementById('cfgSenderName').value = 'BTC MEETING BOD - ESUHAIGROUP';    document.getElementById('cfgSenderEmail').value = 'ceo.offices@esuhai.com';  }}function saveSystemConfig() {  var config = {    emailMethod: document.getElementById('cfgEmailMethod').value,    webhookUrl: document.getElementById('cfgWebhookUrl').value,    senderName: document.getElementById('cfgSenderName').value,    senderEmail: document.getElementById('cfgSenderEmail').value  };  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('systemEmailMsg', 'Đã lưu cấu hình Email thành công!', 'success');      })      .withFailureHandler(function(e) {        showStatus('systemEmailMsg', 'Lỗi: ' + e.message, 'error');      })      .saveSystemConfig(JSON.stringify(config));  } catch(e) {    localStorage.setItem('bodSystemConfig', JSON.stringify(config));    showStatus('systemEmailMsg', 'Đã lưu (cục bộ).', 'success');  }}// ========================================// BOD HOSTING (NGƯỜI CHỦ TRÌ)// ========================================function loadBodHosting() {  try {    google.script.run      .withSuccessHandler(function(data) {        if (!data) return;        if (data.name) document.getElementById('hostingName').value = data.name;        if (data.email) document.getElementById('hostingEmail').value = data.email;        if (data.from) document.getElementById('hostingFrom').value = data.from;        if (data.to) document.getElementById('hostingTo').value = data.to;        updateHostingStatus(data.to);        if (data.history) renderHostingHistory(data.history);      })      .withFailureHandler(function(e) {        document.getElementById('hostingName').value = 'Lê Tuấn';        document.getElementById('hostingEmail').value = 'letuan@esuhai.com';        var today = new Date();        document.getElementById('hostingFrom').value = formatDateISO(today);        var nextMonth = new Date(today);        nextMonth.setMonth(nextMonth.getMonth() + 1);        document.getElementById('hostingTo').value = formatDateISO(nextMonth);        updateHostingStatus(formatDateISO(nextMonth));      })      .getBodHosting();  } catch(e) {    document.getElementById('hostingName').value = 'Lê Tuấn';    document.getElementById('hostingEmail').value = 'letuan@esuhai.com';    var today = new Date();    document.getElementById('hostingFrom').value = formatDateISO(today);    var nextMonth = new Date(today);    nextMonth.setMonth(nextMonth.getMonth() + 1);    document.getElementById('hostingTo').value = formatDateISO(nextMonth);    updateHostingStatus(formatDateISO(nextMonth));  }}function updateHostingStatus(toDate) {  var badge = document.getElementById('hostingStatusBadge');  if (!toDate || !badge) return;  var endDate = new Date(toDate);  var today = new Date();  today.setHours(0,0,0,0);  if (endDate >= today) {    var daysLeft = Math.ceil((endDate - today) / (1000*60*60*24));    badge.className = 'badge badge-green';    badge.textContent = 'Đang đương nhiệm — còn ' + daysLeft + ' ngày';  } else {    badge.className = 'badge badge-red';    badge.textContent = 'Đã hết nhiệm kỳ!';  }}function renderHostingHistory(history) {  var tbody = document.getElementById('hostingHistoryBody');  if (!history || history.length === 0) {    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Chưa có lịch sử</td></tr>';    return;  }  var html = '';  for (var i = 0; i < history.length; i++) {    var h = history[i];    var statusBadge = h.status === 'active'      ? '<span class="badge badge-green">Đương nhiệm</span>'      : '<span class="badge badge-red">Đã hết hạn</span>';    html += '<tr>'      + '<td style="font-weight:700">' + (h.name || '') + '</td>'      + '<td>' + (h.email || '') + '</td>'      + '<td>' + formatDateVN(h.from) + '</td>'      + '<td>' + formatDateVN(h.to) + '</td>'      + '<td>' + statusBadge + '</td>'      + '</tr>';  }  tbody.innerHTML = html;}function saveBodHosting() {  var data = {    name: document.getElementById('hostingName').value,    email: document.getElementById('hostingEmail').value,    from: document.getElementById('hostingFrom').value,    to: document.getElementById('hostingTo').value  };  if (!data.name || !data.email) {    showStatus('hostingMsg', 'Vui lòng nhập đầy đủ họ tên và email.', 'error');    return;  }  try {    google.script.run      .withSuccessHandler(function(r) {        showStatus('hostingMsg', 'Đã lưu thông tin người chủ trì thành công!', 'success');        updateHostingStatus(data.to);      })      .withFailureHandler(function(e) {        showStatus('hostingMsg', 'Lỗi: ' + e.message, 'error');      })      .saveBodHosting(JSON.stringify(data));  } catch(e) {    localStorage.setItem('bodHosting', JSON.stringify(data));    showStatus('hostingMsg', 'Đã lưu (cục bộ). Server chưa kết nối.', 'success');    updateHostingStatus(data.to);  }}function autoSetNextMonth() {  var fromInput = document.getElementById('hostingFrom');  var toInput = document.getElementById('hostingTo');  var today = new Date();  fromInput.value = formatDateISO(today);  var nextMonth = new Date(today);  nextMonth.setMonth(nextMonth.getMonth() + 1);  toInput.value = formatDateISO(nextMonth);  updateHostingStatus(toInput.value);}// ========================================// INIT — Khởi chạy khi trang tải xong// ========================================function init() {  loadTemplate();  loadAccessUsers();  loadSettings();  loadBodHosting();  loadSystemConfig();}init();    </script>  </body></html>
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Quan Tri - BOD Meeting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+/* ============================================ */
+/* RESET & BIẾN MÀU                            */
+/* ============================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --primary: #0f172a;
+  --primary-grad: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #2563eb 100%);
+  --bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --border: #e2e8f0;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --c-green: #10b981;
+  --c-red: #ef4444;
+  --c-amber: #f59e0b;
+  --c-blue: #3b82f6;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================ */
+/* HEADER                                       */
+/* ============================================ */
+.header {
+  background: var(--primary-grad);
+  color: #fff;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-right: auto;
+}
+.header-logo {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+.header-sub { font-size: 12px; font-weight: 600; opacity: 0.7; }
+.header-nav { display: flex; gap: 8px; }
+.nav-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.2); }
+.nav-btn.active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+
+/* ============================================ */
+/* LAYOUT                                       */
+/* ============================================ */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px;
+}
+
+/* ============================================ */
+/* TABS                                         */
+/* ============================================ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 28px;
+  overflow-x: auto;
+}
+.tab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text); background: #f8fafc; }
+.tab.active {
+  color: var(--c-blue);
+  border-bottom-color: var(--c-blue);
+}
+
+/* ============================================ */
+/* PANELS                                       */
+/* ============================================ */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ============================================ */
+/* SECTION CARD                                 */
+/* ============================================ */
+.section-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.section-card-header {
+  padding: 18px 24px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.section-card-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+.section-card-body {
+  padding: 24px;
+}
+
+/* ============================================ */
+/* FORM ELEMENTS                                */
+/* ============================================ */
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.form-group .hint {
+  font-size: 12px;
+  font-style: italic;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font);
+  transition: border-color 0.2s;
+}
+.form-input:focus {
+  border-color: var(--c-blue);
+  outline: none;
+  background: #eff6ff;
+}
+textarea.form-input {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+select.form-input {
+  cursor: pointer;
+  background: #fff;
+}
+
+/* ============================================ */
+/* BUTTONS                                      */
+/* ============================================ */
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--c-blue); color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.btn-success { background: var(--c-green); color: #fff; }
+.btn-success:hover { background: #059669; }
+.btn-danger { background: var(--c-red); color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-secondary);
+}
+.btn-outline:hover { background: #f8fafc; border-color: #94a3b8; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ============================================ */
+/* TABLE                                        */
+/* ============================================ */
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border);
+}
+.admin-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.admin-table tr:hover { background: #f8fafc; }
+
+/* ============================================ */
+/* BADGES                                       */
+/* ============================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-blue { background: #dbeafe; color: #1e40af; }
+
+/* ============================================ */
+/* STATUS MSG                                   */
+/* ============================================ */
+.status-msg {
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 12px;
+  display: none;
+}
+.status-msg.show { display: block; }
+.status-msg.success { background: #d1fae5; color: #065f46; }
+.status-msg.error { background: #fee2e2; color: #991b1b; }
+
+/* ============================================ */
+/* TEMPLATE PREVIEW                             */
+/* ============================================ */
+.template-preview {
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  margin-top: 8px;
+}
+
+/* ============================================ */
+/* VARIABLE TAG                                 */
+/* ============================================ */
+.var-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: monospace;
+  cursor: pointer;
+  margin: 2px 4px 2px 0;
+}
+.var-tag:hover { background: #bfdbfe; }
+
+/* ============================================ */
+/* TOGGLE SWITCH                                */
+/* ============================================ */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.toggle-label { font-weight: 600; font-size: 14px; }
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #cbd5e1;
+  border-radius: 26px;
+  transition: 0.2s;
+}
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  height: 20px; width: 20px;
+  left: 3px; bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--c-blue);
+}
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+}
+
+/* ============================================ */
+/* FOOTER                                       */
+/* ============================================ */
+.footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
+@media (max-width: 768px) {
+  .container { padding: 16px; }
+  .header { padding: 16px; flex-direction: column; }
+  .header h1 { font-size: 18px; }
+  .tabs { gap: 0; }
+  .tab { padding: 10px 14px; font-size: 13px; }
+  .section-card-body { padding: 16px; }
+}
+
+    </style>
+  </head>
+  <body>
+<!-- ======== HEADER ======== -->
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">&#9881;</div>
+    <div>
+      <h1>TRANG QUẢN TRỊ</h1>
+      <div class="header-sub">ESUHAI GROUP — Quản trị hệ thống BOD Meeting</div>
+    </div>
+  </div>
+  <div class="header-nav">
+    <a class="nav-btn" href="#" onclick="goToDashboard()">Về Dashboard</a>
+  </div>
+</header>
+
+<!-- ======== MAIN CONTENT ======== -->
+<div class="container">
+
+  <!-- TABS — Ghi tiếng Việt dễ hiểu -->
+  <div class="tabs" id="tabBar">
+    <div class="tab active" data-tab="meeting" onclick="switchTab('meeting')">QUY ĐỊNH CUỘC HỌP</div>
+    <div class="tab" data-tab="system" onclick="switchTab('system')">KẾT NỐI & HỆ THỐNG</div>
+    <div class="tab" data-tab="email" onclick="switchTab('email')">MẪU EMAIL</div>
+    <div class="tab" data-tab="access" onclick="switchTab('access')">PHÂN QUYỀN</div>
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB 1: QUY ĐỊNH CUỘC HỌP               -->
+  <!-- ======================================== -->
+  <div class="panel active" id="panel-meeting">
+
+    <!-- BOD Hosting — Người chủ trì -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Người chủ trì cuộc họp (BOD Hosting)</h2>
+        <span class="badge badge-green" id="hostingStatusBadge">Đang đương nhiệm</span>
+      </div>
+      <div class="section-card-body">
+        <div class="hint" style="margin-bottom:16px">
+          Mỗi kỳ, một thành viên Ban Điều Hành sẽ được phân công chủ trì cuộc họp BOD hàng tuần. Nhiệm kỳ mặc định là 1 tháng.
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+          <div class="form-group">
+            <label>Họ tên người chủ trì</label>
+            <input type="text" class="form-input" id="hostingName" placeholder="VD: Lê Tuấn">
+          </div>
+          <div class="form-group">
+            <label>Email người chủ trì</label>
+            <input type="email" class="form-input" id="hostingEmail" placeholder="letuan@esuhai.com">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+          <div class="form-group">
+            <label>Nhiệm kỳ từ ngày</label>
+            <input type="date" class="form-input" id="hostingFrom">
+          </div>
+          <div class="form-group">
+            <label>Nhiệm kỳ đến ngày</label>
+            <input type="date" class="form-input" id="hostingTo">
+            <div class="hint">Mặc định 1 tháng kể từ ngày bắt đầu</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px">
+          <button class="btn btn-primary" onclick="saveBodHosting()">Lưu người chủ trì</button>
+          <button class="btn btn-outline" onclick="autoSetNextMonth()">Tự động gia hạn thêm 1 tháng</button>
+        </div>
+        <div class="status-msg" id="hostingMsg"></div>
+
+        <!-- Lịch sử chủ trì -->
+        <div style="margin-top:20px">
+          <label style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; display:block; margin-bottom:8px">Lịch sử người chủ trì</label>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Từ ngày</th>
+                <th>Đến ngày</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="hostingHistoryBody">
+              <tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Đang tải...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thời gian & Hạn chót -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Thời gian & Hạn chót</h2>
+      </div>
+      <div class="section-card-body">
+        <div class="form-group">
+          <label>Giờ bắt đầu họp</label>
+          <input type="time" class="form-input" id="settingStartTime" value="08:30" style="max-width:200px">
+          <div class="hint">Giờ bắt đầu tính thời gian lịch trình (mặc định 08:30)</div>
+        </div>
+        <div class="form-group">
+          <label>Hạn chót nộp đăng ký nội dung (thứ mấy trong tuần)</label>
+          <select class="form-input" id="settingRegDeadline" style="max-width:300px">
+            <option value="3">Thứ 4</option>
+            <option value="4">Thứ 5</option>
+            <option value="5" selected>Thứ 6</option>
+            <option value="6">Thứ 7</option>
+          </select>
+          <div class="hint">Sau ngày này, bộ phận không thể gửi nội dung đăng ký</div>
+        </div>
+        <div class="form-group">
+          <label>Hạn chót phê duyệt nội dung</label>
+          <select class="form-input" id="settingApprDeadline" style="max-width:300px">
+            <option value="5">Thứ 6</option>
+            <option value="6" selected>Thứ 7</option>
+            <option value="0">Chủ nhật</option>
+          </select>
+          <div class="hint">Sau ngày này, các nội dung chưa được duyệt sẽ bị bỏ qua</div>
+        </div>
+        <div class="form-group">
+          <label>Thời điểm gửi lịch trình cho thành viên</label>
+          <input type="text" class="form-input" id="settingScheduleSend" value="Chủ nhật 20:00" style="max-width:300px">
+          <div class="hint">Ví dụ: Chủ nhật 20:00</div>
+        </div>
+        <div class="form-group">
+          <label>Thời lượng trình bày tối đa mỗi nội dung (phút)</label>
+          <input type="number" class="form-input" id="settingMaxPresentation" value="20" min="5" max="60" step="5" style="max-width:200px">
+          <div class="hint">Giới hạn số phút trên Form đăng ký. Mặc định 20 phút.</div>
+        </div>
+        <div class="form-group">
+          <label>Thời lượng chỉ đạo mặc định (phút)</label>
+          <input type="number" class="form-input" id="settingDefaultCD" value="10" min="5" max="120" step="5" style="max-width:200px">
+          <div class="hint">Thời gian dành cho lãnh đạo chỉ đạo sau mỗi nội dung trình bày</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Lưu tất cả Thiết lập</button>
+        <div class="status-msg" id="settingsMsg"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB 2: KẾT NỐI & HỆ THỐNG              -->
+  <!-- ======================================== -->
+  <div class="panel" id="panel-system">
+
+    <!-- Cấu hình gửi Email -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Cách thức gửi Email</h2>
+      </div>
+      <div class="section-card-body">
+        <div class="hint" style="margin-bottom:16px">
+          Hệ thống hỗ trợ 2 cách gửi email. Cách đề xuất là dùng "Hệ thống tự động" (N8N) để email ít bị vào spam.
+          Nếu chưa kết nối hệ thống tự động, có thể chọn "Gmail trực tiếp" (email sẽ gửi từ tài khoản Google của bạn).
+        </div>
+
+        <div class="form-group">
+          <label>Phương thức gửi Email</label>
+          <select class="form-input" id="cfgEmailMethod" style="max-width:400px">
+            <option value="n8n">Hệ thống tự động (N8N) — Đề xuất dùng cách này</option>
+            <option value="gmail">Gmail trực tiếp — Gửi từ tài khoản Google của bạn</option>
+          </select>
+          <div class="hint">Nếu chọn "Hệ thống tự động", cần điền Đường dẫn kết nối bên dưới.</div>
+        </div>
+        <div class="form-group" id="webhookUrlGroup">
+          <label>Đường dẫn kết nối hệ thống Email tự động (Webhook URL)</label>
+          <input type="text" class="form-input" id="cfgWebhookUrl" placeholder="https://esuhai.app.n8n.cloud/webhook/bod-send-email">
+          <div class="hint">Đường dẫn này do bộ phận kỹ thuật cung cấp. Không cần sửa gì nếu hệ thống vẫn chạy bình thường.</div>
+        </div>
+        <div class="form-group">
+          <label>Tên hiển thị khi gửi Email</label>
+          <input type="text" class="form-input" id="cfgSenderName" placeholder="BTC MEETING BOD - ESUHAIGROUP" style="max-width:400px">
+          <div class="hint">Người nhận sẽ thấy tên này trong hộp thư (VD: "BTC MEETING BOD - ESUHAIGROUP")</div>
+        </div>
+        <div class="form-group">
+          <label>Địa chỉ Email gửi đi</label>
+          <input type="email" class="form-input" id="cfgSenderEmail" placeholder="ceo.offices@esuhai.com" style="max-width:400px">
+          <div class="hint">Địa chỉ email sẽ được dùng làm người gửi (chỉ có hiệu lực với phương thức N8N)</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSystemConfig()">Lưu cấu hình Email</button>
+        <div class="status-msg" id="systemEmailMsg"></div>
+      </div>
+    </div>
+
+    <!-- Link kết nối hệ thống -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Đường dẫn kết nối</h2>
+      </div>
+      <div class="section-card-body">
+        <div class="form-group">
+          <label>🔗 Link Dashboard (CTA trong email)</label>
+          <input type="text" class="form-input" id="settingDashboardLink" placeholder="Tự động — để trống nếu không cần override">
+          <div class="hint">
+            Link này sẽ gắn vào nút CTA "MỞ DASHBOARD" trong tất cả email gửi đi.
+            <strong>Để trống</strong> = tự động dùng URL phiên bản deploy mới nhất.
+            Chỉ điền khi muốn trỏ tới URL cố định (VD: sau khi deploy mới mà muốn giữ URL cũ).
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Link Form Đăng ký nội dung (Google Form)</label>
+          <input type="text" class="form-input" id="settingFormLink" placeholder="https://docs.google.com/forms/d/...">
+          <div class="hint">Link bảng đăng ký nội dung trình bày mà các bộ phận sẽ điền vào</div>
+        </div>
+        <div class="form-group">
+          <label>Link Trang tính dữ liệu (Google Sheet)</label>
+          <input type="text" class="form-input" id="settingSheetLink" placeholder="https://docs.google.com/spreadsheets/d/...">
+          <div class="hint">Link trang tính chứa toàn bộ dữ liệu đăng ký và lịch trình</div>
+        </div>
+        <div class="form-group">
+          <label>Email Ban Tổ Chức (BTC)</label>
+          <textarea class="form-input" id="settingBtcEmails" rows="3" placeholder="email1@esuhai.com&#10;email2@esuhai.com"></textarea>
+          <div class="hint">Mỗi dòng 1 email. Nhóm này sẽ nhận tất cả thông báo nhắc phê duyệt.</div>
+        </div>
+        <div class="form-group">
+          <label>Email người luôn được CC khi gửi thông báo</label>
+          <input type="text" class="form-input" id="settingCcEmail" placeholder="email@esuhai.com">
+          <div class="hint">Thường là email người chủ trì. Sẽ nhận CC trong mọi email gửi đi.</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Lưu đường dẫn</button>
+        <div class="status-msg" id="systemLinksMsg"></div>
+      </div>
+    </div>
+
+    <!-- Thông tin hệ thống (readonly) -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Thông tin hệ thống</h2>
+      </div>
+      <div class="section-card-body">
+        <table class="admin-table">
+          <tbody>
+            <tr><td style="width:200px; font-weight:700; color:#94a3b8">PHIÊN BẢN</td><td>v8.5 — Admin Module</td></tr>
+            <tr><td style="font-weight:700; color:#94a3b8">NỀN TẢNG</td><td>Google Apps Script + HTML Service</td></tr>
+            <tr><td style="font-weight:700; color:#94a3b8">NGƯỜI QUẢN TRỊ</td><td id="sysAdmin">Đang tải...</td></tr>
+            <tr><td style="font-weight:700; color:#94a3b8">DỮ LIỆU</td><td>Google Sheets</td></tr>
+            <tr><td style="font-weight:700; color:#94a3b8">CẬP NHẬT</td><td>05/03/2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB 3: MẪU EMAIL                         -->
+  <!-- ======================================== -->
+  <div class="panel" id="panel-email">
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Quản lý Mẫu nội dung Email</h2>
+      </div>
+      <div class="section-card-body">
+        <div class="hint" style="margin-bottom:16px">
+          Mỗi loại email đều có một mẫu nội dung riêng. Bạn có thể chỉnh sửa tiêu đề và nội dung, sau đó bấm "Lưu mẫu" để áp dụng.
+          Để chèn các thông tin tự động (tên bộ phận, ngày họp...), hãy bấm vào các thẻ bên dưới.
+        </div>
+        <div class="form-group">
+          <label>Chọn loại Email cần chỉnh sửa</label>
+          <select class="form-input" id="templateSelect" onchange="loadTemplate()">
+            <option value="reminder">Nhắc nhở đăng ký (1 bộ phận)</option>
+            <option value="bulk_reminder">Nhắc nhở hàng loạt (tất cả bộ phận chưa đăng ký)</option>
+            <option value="approval_reminder">Nhắc phê duyệt (Ban Tổ Chức)</option>
+            <option value="approval_result">Thông báo kết quả duyệt (người đăng ký)</option>
+            <option value="schedule">Gửi lịch trình (thành viên BOD)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tiêu đề Email</label>
+          <input type="text" class="form-input" id="tplSubject" placeholder="Nhập tiêu đề email...">
+          <div class="hint">Bấm vào các thẻ bên dưới để chèn thông tin tự động vào tiêu đề hoặc nội dung</div>
+        </div>
+
+        <div class="form-group">
+          <label>Các thẻ thông tin có thể chèn (bấm để chèn)</label>
+          <div id="tplVars">
+            <span class="var-tag" onclick="insertVar('{{ten_bp}}')" title="Tên bộ phận đăng ký">{{ten_bp}} Tên bộ phận</span>
+            <span class="var-tag" onclick="insertVar('{{ngay_hop}}')" title="Ngày họp">{{ngay_hop}} Ngày họp</span>
+            <span class="var-tag" onclick="insertVar('{{ho_ten}}')" title="Họ tên người nhận">{{ho_ten}} Họ tên</span>
+            <span class="var-tag" onclick="insertVar('{{trang_thai}}')" title="Kết quả phê duyệt">{{trang_thai}} Trạng thái</span>
+            <span class="var-tag" onclick="insertVar('{{noi_dung}}')" title="Nội dung đăng ký">{{noi_dung}} Nội dung</span>
+            <span class="var-tag" onclick="insertVar('{{link_form}}')" title="Link Google Form">{{link_form}} Link Form</span>
+            <span class="var-tag" onclick="insertVar('{{link_sheet}}')" title="Link Google Sheet">{{link_sheet}} Link Sheet</span>
+            <span class="var-tag" onclick="insertVar('{{so_cho}}')" title="Số nội dung chờ duyệt">{{so_cho}} Số chờ duyệt</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Nội dung Email</label>
+          <textarea class="form-input" id="tplBody" rows="10" placeholder="Nhập nội dung email..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="saveTemplate()">Lưu mẫu này</button>
+          <button class="btn btn-outline" onclick="previewTemplate()">Xem trước mẫu</button>
+          <button class="btn btn-outline" onclick="resetTemplate()">Khôi phục mặc định</button>
+        </div>
+        <div class="status-msg" id="tplMsg"></div>
+
+        <div id="tplPreviewArea" style="margin-top:16px; display:none">
+          <label style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase">Xem trước nội dung:</label>
+          <div class="template-preview" id="tplPreview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB 4: PHÂN QUYỀN                        -->
+  <!-- ======================================== -->
+  <div class="panel" id="panel-access">
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Quản lý người dùng & Phân quyền</h2>
+        <button class="btn btn-primary" onclick="addAccessUser()">Thêm người dùng</button>
+      </div>
+      <div class="section-card-body">
+        <div class="hint" style="margin-bottom:16px">
+          Chỉ người dùng được duyệt mới truy cập được Dashboard.
+          Các trạng thái: <b>Chờ duyệt</b> (chưa được cấp quyền) / <b>Đã duyệt</b> (có quyền truy cập) / <b>Bị khóa</b> (tạm dừng quyền).
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Họ tên</th>
+              <th>Vai trò</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="accessTableBody">
+            <tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">Đang tải...</td></tr>
+          </tbody>
+        </table>
+        <div class="status-msg" id="accessMsg"></div>
+      </div>
+    </div>
+
+    <!-- Form thêm người dùng mới -->
+    <div class="section-card" id="addUserForm" style="display:none">
+      <div class="section-card-header">
+        <h2>Thêm người dùng mới</h2>
+        <button class="btn btn-outline" onclick="document.getElementById('addUserForm').style.display='none'">Đóng</button>
+      </div>
+      <div class="section-card-body">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-input" id="newUserEmail" placeholder="email@esuhai.com">
+        </div>
+        <div class="form-group">
+          <label>Họ tên</label>
+          <input type="text" class="form-input" id="newUserName" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="form-group">
+          <label>Vai trò</label>
+          <select class="form-input" id="newUserRole">
+            <option value="viewer">Chỉ xem (Viewer) — Xem Dashboard nhưng không duyệt</option>
+            <option value="editor">Có quyền duyệt (Editor) — Xem và phê duyệt nội dung</option>
+            <option value="admin">Toàn quyền (Admin) — Quản trị toàn bộ hệ thống</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Trạng thái</label>
+          <select class="form-input" id="newUserStatus">
+            <option value="approved">Cấp quyền ngay (Đã duyệt)</option>
+            <option value="pending">Chờ duyệt</option>
+          </select>
+        </div>
+        <button class="btn btn-success" onclick="saveNewUser()">Lưu người dùng mới</button>
+        <div class="status-msg" id="addUserMsg"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  BTC Meeting BOD — Trang Quản Trị v8.5 — ESUHAI GROUP
+</footer>
+
+    <script>
+// ========================================
+// TAB SWITCHING
+// ========================================
+function switchTab(tabId) {
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);
+  }
+  var panels = document.querySelectorAll('.panel');
+  for (var i = 0; i < panels.length; i++) {
+    panels[i].classList.toggle('active', panels[i].id === 'panel-' + tabId);
+  }
+}
+
+// ========================================
+// UTILITY
+// ========================================
+function showStatus(id, msg, type) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'status-msg show ' + type;
+  setTimeout(function() { el.className = 'status-msg'; }, 5000);
+}
+
+function formatDateISO(date) {
+  var y = date.getFullYear();
+  var m = ('0' + (date.getMonth() + 1)).slice(-2);
+  var d = ('0' + date.getDate()).slice(-2);
+  return y + '-' + m + '-' + d;
+}
+
+function formatDateVN(dateStr) {
+  if (!dateStr) return '';
+  var parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  return parts[2] + '/' + parts[1] + '/' + parts[0];
+}
+
+function goToDashboard() {
+  try {
+    google.script.run
+      .withSuccessHandler(function(url) {
+        if (url) window.open(url, '_self');
+      })
+      .withFailureHandler(function() {
+        var baseUrl = window.location.href.split('?')[0];
+        window.location.href = baseUrl;
+      })
+      .getScriptAppUrl();
+  } catch(e) {
+    var baseUrl = window.location.href.split('?')[0];
+    window.location.href = baseUrl;
+  }
+}
+
+// ========================================
+// EMAIL TEMPLATES
+// ========================================
+var defaultTemplates = {
+  reminder: {
+    subject: '[BOD Meeting] Nhắc nhở đăng ký nội dung họp {{ngay_hop}}',
+    body: 'Kính gửi {{ten_bp}},\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày {{ngay_hop}}.\n\nVui lòng truy cập Google Form và hoàn tất trước 17:00 Thứ Sáu:\n{{link_form}}\n\nTrân trọng,\nBan Tổ Chức'
+  },
+  bulk_reminder: {
+    subject: '[BOD Meeting] Nhắc nhở đăng ký nội dung họp {{ngay_hop}}',
+    body: 'Kính gửi Trưởng bộ phận,\n\nBộ phận chưa gửi đăng ký nội dung cho cuộc họp BOD ngày {{ngay_hop}}.\n\nVui lòng truy cập Google Form và hoàn tất trước hạn:\n{{link_form}}\n\nHạn chót: Thứ Sáu 17:00.\nEmail này CC Ban Tổ Chức.\n\nTrân trọng,\nBan Tổ Chức'
+  },
+  approval_reminder: {
+    subject: '[BOD Meeting] Nhắc phê duyệt — Còn {{so_cho}} nội dung chờ',
+    body: 'Kính gửi Ban Tổ Chức,\n\nHiện còn {{so_cho}} nội dung đăng ký chưa được phê duyệt cho cuộc họp BOD sắp tới.\n\nVui lòng vào Dashboard để xử lý:\n{{link_sheet}}\n\nTrân trọng.'
+  },
+  approval_result: {
+    subject: '[BOD Meeting] Kết quả phê duyệt nội dung của bạn',
+    body: 'Kính gửi {{ho_ten}},\n\nNội dung đăng ký: "{{noi_dung}}"\nKết quả: {{trang_thai}}\n\nNếu có thắc mắc, vui lòng liên hệ Ban Tổ Chức.\n\nTrân trọng.'
+  },
+  schedule: {
+    subject: '[BOD Meeting] Lịch trình làm việc BOD {{ngay_hop}}',
+    body: 'Kính gửi Anh/Chị,\n\nGửi đến Anh/Chị lịch trình làm việc BOD ngày {{ngay_hop}}.\n\n(Lịch trình chi tiết kèm theo.)\n\nVui lòng chuẩn bị nội dung theo đúng thời lượng đã phân bổ.\n\nTrân trọng,\nBan Tổ Chức'
+  }
+};
+
+var currentTemplates = JSON.parse(JSON.stringify(defaultTemplates));
+
+function loadTemplate() {
+  var key = document.getElementById('templateSelect').value;
+  var tpl = currentTemplates[key] || defaultTemplates[key];
+  document.getElementById('tplSubject').value = tpl.subject;
+  document.getElementById('tplBody').value = tpl.body;
+  document.getElementById('tplPreviewArea').style.display = 'none';
+}
+
+function saveTemplate() {
+  var key = document.getElementById('templateSelect').value;
+  currentTemplates[key] = {
+    subject: document.getElementById('tplSubject').value,
+    body: document.getElementById('tplBody').value
+  };
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('tplMsg', 'Đã lưu mẫu "' + key + '" thành công!', 'success');
+      })
+      .withFailureHandler(function(e) {
+        showStatus('tplMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .saveEmailTemplate(key, JSON.stringify(currentTemplates[key]));
+  } catch(e) {
+    localStorage.setItem('bodTpl_' + key, JSON.stringify(currentTemplates[key]));
+    showStatus('tplMsg', 'Đã lưu (cục bộ). Lưu ý: Sẽ mất khi xóa cache.', 'success');
+  }
+}
+
+function resetTemplate() {
+  var key = document.getElementById('templateSelect').value;
+  if (!confirm('Bạn muốn khôi phục mẫu "' + key + '" về nội dung mặc định?')) return;
+  currentTemplates[key] = JSON.parse(JSON.stringify(defaultTemplates[key]));
+  loadTemplate();
+  showStatus('tplMsg', 'Đã khôi phục về mặc định.', 'success');
+}
+
+function previewTemplate() {
+  var body = document.getElementById('tplBody').value;
+  var sampleData = {
+    '{{ten_bp}}': 'Phòng Kinh Doanh',
+    '{{ngay_hop}}': 'Thứ 2, 09/03/2026',
+    '{{ho_ten}}': 'Nguyễn Văn A',
+    '{{trang_thai}}': 'Duyệt',
+    '{{noi_dung}}': 'Báo cáo doanh số tháng 2',
+    '{{link_form}}': 'https://forms.gle/xxxxx',
+    '{{link_sheet}}': 'https://docs.google.com/spreadsheets/d/xxxxx',
+    '{{so_cho}}': '5'
+  };
+  var preview = body;
+  for (var k in sampleData) {
+    preview = preview.split(k).join(sampleData[k]);
+  }
+  document.getElementById('tplPreview').textContent = preview;
+  document.getElementById('tplPreviewArea').style.display = 'block';
+}
+
+function insertVar(varName) {
+  var textarea = document.getElementById('tplBody');
+  var start = textarea.selectionStart;
+  var end = textarea.selectionEnd;
+  var text = textarea.value;
+  textarea.value = text.substring(0, start) + varName + text.substring(end);
+  textarea.focus();
+  textarea.selectionStart = textarea.selectionEnd = start + varName.length;
+}
+
+// ========================================
+// ACCESS CONTROL (PHÂN QUYỀN)
+// ========================================
+var accessUsers = [];
+
+function loadAccessUsers() {
+  try {
+    google.script.run
+      .withSuccessHandler(renderAccessTable)
+      .withFailureHandler(function(e) {
+        document.getElementById('accessTableBody').innerHTML =
+          '<tr><td colspan="5" style="text-align:center;padding:24px;color:#ef4444">Lỗi: '+e.message+'</td></tr>';
+      })
+      .getAccessUsers();
+  } catch(e) {
+    renderAccessTable([
+      {email: 'kha@esuhai.com', name: 'Anh Kha', role: 'admin', status: 'approved'},
+      {email: 'hieu@esuhai.com', name: 'Hieu', role: 'editor', status: 'approved'}
+    ]);
+  }
+}
+
+function renderAccessTable(users) {
+  accessUsers = users || [];
+  var tbody = document.getElementById('accessTableBody');
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#94a3b8">Chưa có người dùng nào</td></tr>';
+    return;
+  }
+  var roleMap = {admin: 'Toàn quyền', editor: 'Có quyền duyệt', viewer: 'Chỉ xem'};
+  var statusMap = {
+    approved: '<span class="badge badge-green">Đã duyệt</span>',
+    pending: '<span class="badge badge-amber">Chờ duyệt</span>',
+    blocked: '<span class="badge badge-red">Bị khóa</span>'
+  };
+  var html = '';
+  for (var i = 0; i < users.length; i++) {
+    var u = users[i];
+    var actions = '';
+    if (u.status === 'pending') {
+      actions = '<button class="btn btn-success" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'approved\')">Duyệt</button> ';
+      actions += '<button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'blocked\')">Từ chối</button>';
+    } else if (u.status === 'approved') {
+      actions = '<button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'blocked\')">Khóa</button>';
+    } else {
+      actions = '<button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="updateAccess('+i+',\'approved\')">Mở khóa</button>';
+    }
+    html += '<tr>'
+      + '<td>' + u.email + '</td>'
+      + '<td style="font-weight:700">' + u.name + '</td>'
+      + '<td><span class="badge badge-blue">' + (roleMap[u.role]||u.role) + '</span></td>'
+      + '<td>' + (statusMap[u.status]||u.status) + '</td>'
+      + '<td>' + actions + '</td>'
+      + '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function updateAccess(index, newStatus) {
+  if (index < 0 || index >= accessUsers.length) return;
+  accessUsers[index].status = newStatus;
+  renderAccessTable(accessUsers);
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('accessMsg', 'Đã cập nhật: ' + accessUsers[index].name + ' → ' + newStatus, 'success');
+      })
+      .withFailureHandler(function(e) {
+        showStatus('accessMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .updateUserAccess(accessUsers[index].email, newStatus);
+  } catch(e) {
+    showStatus('accessMsg', 'Đã cập nhật (cục bộ).', 'success');
+  }
+}
+
+function addAccessUser() {
+  document.getElementById('addUserForm').style.display = 'block';
+  document.getElementById('addUserForm').scrollIntoView({behavior:'smooth'});
+}
+
+function saveNewUser() {
+  var email = document.getElementById('newUserEmail').value.trim();
+  var name = document.getElementById('newUserName').value.trim();
+  var role = document.getElementById('newUserRole').value;
+  var status = document.getElementById('newUserStatus').value;
+  if (!email || !name) {
+    showStatus('addUserMsg', 'Vui lòng nhập đầy đủ email và họ tên.', 'error');
+    return;
+  }
+  var newUser = {email: email, name: name, role: role, status: status};
+  accessUsers.push(newUser);
+  renderAccessTable(accessUsers);
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('addUserMsg', 'Đã thêm: ' + name, 'success');
+      })
+      .withFailureHandler(function(e) {
+        showStatus('addUserMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .addUserAccess(JSON.stringify(newUser));
+  } catch(e) {
+    showStatus('addUserMsg', 'Đã thêm (cục bộ).', 'success');
+  }
+  document.getElementById('newUserEmail').value = '';
+  document.getElementById('newUserName').value = '';
+}
+
+// ========================================
+// SETTINGS (THIẾT LẬP CUỘC HỌP)
+// ========================================
+function loadSettings() {
+  try {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data) return;
+        if (data.startTime) document.getElementById('settingStartTime').value = data.startTime;
+        if (data.regDeadline) document.getElementById('settingRegDeadline').value = data.regDeadline;
+        if (data.apprDeadline) document.getElementById('settingApprDeadline').value = data.apprDeadline;
+        if (data.scheduleSend) document.getElementById('settingScheduleSend').value = data.scheduleSend;
+        if (data.maxPresentation) document.getElementById('settingMaxPresentation').value = data.maxPresentation;
+        if (data.defaultCD) document.getElementById('settingDefaultCD').value = data.defaultCD;
+        if (data.ccEmail) document.getElementById('settingCcEmail').value = data.ccEmail;
+        if (data.btcEmails) document.getElementById('settingBtcEmails').value = data.btcEmails;
+        if (data.dashboardLink) document.getElementById('settingDashboardLink').value = data.dashboardLink;
+        if (data.formLink) document.getElementById('settingFormLink').value = data.formLink;
+        if (data.sheetLink) document.getElementById('settingSheetLink').value = data.sheetLink;
+        if (data.admin) document.getElementById('sysAdmin').textContent = data.admin;
+      })
+      .withFailureHandler(function(e) {})
+      .getAdminSettings();
+  } catch(e) {}
+}
+
+function saveSettings() {
+  var settings = {
+    startTime: document.getElementById('settingStartTime').value,
+    regDeadline: document.getElementById('settingRegDeadline').value,
+    apprDeadline: document.getElementById('settingApprDeadline').value,
+    scheduleSend: document.getElementById('settingScheduleSend').value,
+    maxPresentation: document.getElementById('settingMaxPresentation').value,
+    defaultCD: document.getElementById('settingDefaultCD').value,
+    ccEmail: document.getElementById('settingCcEmail').value,
+    btcEmails: document.getElementById('settingBtcEmails').value,
+    dashboardLink: document.getElementById('settingDashboardLink').value,
+    formLink: document.getElementById('settingFormLink').value,
+    sheetLink: document.getElementById('settingSheetLink').value
+  };
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('settingsMsg', 'Đã lưu thiết lập thành công!', 'success');
+        showStatus('systemLinksMsg', 'Đã lưu!', 'success');
+      })
+      .withFailureHandler(function(e) {
+        showStatus('settingsMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .saveAdminSettings(JSON.stringify(settings));
+  } catch(e) {
+    localStorage.setItem('bodSettings', JSON.stringify(settings));
+    showStatus('settingsMsg', 'Đã lưu (cục bộ).', 'success');
+  }
+}
+
+// ========================================
+// SYSTEM CONFIG (CẤU HÌNH EMAIL N8N)
+// ========================================
+function loadSystemConfig() {
+  try {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data) return;
+        if (data.emailMethod) document.getElementById('cfgEmailMethod').value = data.emailMethod;
+        if (data.webhookUrl) document.getElementById('cfgWebhookUrl').value = data.webhookUrl;
+        if (data.senderName) document.getElementById('cfgSenderName').value = data.senderName;
+        if (data.senderEmail) document.getElementById('cfgSenderEmail').value = data.senderEmail;
+      })
+      .withFailureHandler(function(e) {})
+      .getSystemConfig();
+  } catch(e) {
+    // Offline: set defaults
+    document.getElementById('cfgEmailMethod').value = 'n8n';
+    document.getElementById('cfgWebhookUrl').value = 'https://esuhai.app.n8n.cloud/webhook/bod-send-email';
+    document.getElementById('cfgSenderName').value = 'BTC MEETING BOD - ESUHAIGROUP';
+    document.getElementById('cfgSenderEmail').value = 'ceo.offices@esuhai.com';
+  }
+}
+
+function saveSystemConfig() {
+  var config = {
+    emailMethod: document.getElementById('cfgEmailMethod').value,
+    webhookUrl: document.getElementById('cfgWebhookUrl').value,
+    senderName: document.getElementById('cfgSenderName').value,
+    senderEmail: document.getElementById('cfgSenderEmail').value
+  };
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('systemEmailMsg', 'Đã lưu cấu hình Email thành công!', 'success');
+      })
+      .withFailureHandler(function(e) {
+        showStatus('systemEmailMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .saveSystemConfig(JSON.stringify(config));
+  } catch(e) {
+    localStorage.setItem('bodSystemConfig', JSON.stringify(config));
+    showStatus('systemEmailMsg', 'Đã lưu (cục bộ).', 'success');
+  }
+}
+
+// ========================================
+// BOD HOSTING (NGƯỜI CHỦ TRÌ)
+// ========================================
+function loadBodHosting() {
+  try {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data) return;
+        if (data.name) document.getElementById('hostingName').value = data.name;
+        if (data.email) document.getElementById('hostingEmail').value = data.email;
+        if (data.from) document.getElementById('hostingFrom').value = data.from;
+        if (data.to) document.getElementById('hostingTo').value = data.to;
+        updateHostingStatus(data.to);
+        if (data.history) renderHostingHistory(data.history);
+      })
+      .withFailureHandler(function(e) {
+        document.getElementById('hostingName').value = 'Lê Tuấn';
+        document.getElementById('hostingEmail').value = 'letuan@esuhai.com';
+        var today = new Date();
+        document.getElementById('hostingFrom').value = formatDateISO(today);
+        var nextMonth = new Date(today);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        document.getElementById('hostingTo').value = formatDateISO(nextMonth);
+        updateHostingStatus(formatDateISO(nextMonth));
+      })
+      .getBodHosting();
+  } catch(e) {
+    document.getElementById('hostingName').value = 'Lê Tuấn';
+    document.getElementById('hostingEmail').value = 'letuan@esuhai.com';
+    var today = new Date();
+    document.getElementById('hostingFrom').value = formatDateISO(today);
+    var nextMonth = new Date(today);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    document.getElementById('hostingTo').value = formatDateISO(nextMonth);
+    updateHostingStatus(formatDateISO(nextMonth));
+  }
+}
+
+function updateHostingStatus(toDate) {
+  var badge = document.getElementById('hostingStatusBadge');
+  if (!toDate || !badge) return;
+  var endDate = new Date(toDate);
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  if (endDate >= today) {
+    var daysLeft = Math.ceil((endDate - today) / (1000*60*60*24));
+    badge.className = 'badge badge-green';
+    badge.textContent = 'Đang đương nhiệm — còn ' + daysLeft + ' ngày';
+  } else {
+    badge.className = 'badge badge-red';
+    badge.textContent = 'Đã hết nhiệm kỳ!';
+  }
+}
+
+function renderHostingHistory(history) {
+  var tbody = document.getElementById('hostingHistoryBody');
+  if (!history || history.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Chưa có lịch sử</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < history.length; i++) {
+    var h = history[i];
+    var statusBadge = h.status === 'active'
+      ? '<span class="badge badge-green">Đương nhiệm</span>'
+      : '<span class="badge badge-red">Đã hết hạn</span>';
+    html += '<tr>'
+      + '<td style="font-weight:700">' + (h.name || '') + '</td>'
+      + '<td>' + (h.email || '') + '</td>'
+      + '<td>' + formatDateVN(h.from) + '</td>'
+      + '<td>' + formatDateVN(h.to) + '</td>'
+      + '<td>' + statusBadge + '</td>'
+      + '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function saveBodHosting() {
+  var data = {
+    name: document.getElementById('hostingName').value,
+    email: document.getElementById('hostingEmail').value,
+    from: document.getElementById('hostingFrom').value,
+    to: document.getElementById('hostingTo').value
+  };
+  if (!data.name || !data.email) {
+    showStatus('hostingMsg', 'Vui lòng nhập đầy đủ họ tên và email.', 'error');
+    return;
+  }
+  try {
+    google.script.run
+      .withSuccessHandler(function(r) {
+        showStatus('hostingMsg', 'Đã lưu thông tin người chủ trì thành công!', 'success');
+        updateHostingStatus(data.to);
+      })
+      .withFailureHandler(function(e) {
+        showStatus('hostingMsg', 'Lỗi: ' + e.message, 'error');
+      })
+      .saveBodHosting(JSON.stringify(data));
+  } catch(e) {
+    localStorage.setItem('bodHosting', JSON.stringify(data));
+    showStatus('hostingMsg', 'Đã lưu (cục bộ). Server chưa kết nối.', 'success');
+    updateHostingStatus(data.to);
+  }
+}
+
+function autoSetNextMonth() {
+  var fromInput = document.getElementById('hostingFrom');
+  var toInput = document.getElementById('hostingTo');
+  var today = new Date();
+  fromInput.value = formatDateISO(today);
+  var nextMonth = new Date(today);
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  toInput.value = formatDateISO(nextMonth);
+  updateHostingStatus(toInput.value);
+}
+
+// ========================================
+// INIT — Khởi chạy khi trang tải xong
+// ========================================
+function init() {
+  loadTemplate();
+  loadAccessUsers();
+  loadSettings();
+  loadBodHosting();
+  loadSystemConfig();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

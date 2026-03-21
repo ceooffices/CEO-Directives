@@ -71,7 +71,7 @@ function getMeetingConfig() {
 function buildEmailNewRegistration(data) {
   var tl = formatThoiLuong(data.thoiLuong);
   var dashboardUrl = '';
-  try { dashboardUrl = ScriptApp.getService().getUrl(); } catch(e) { dashboardUrl = data.sheetUrl; }
+  try { dashboardUrl = getDashboardUrl(); } catch(e) { dashboardUrl = data.sheetUrl || ''; }
   
   var htmlBody = 
     '<div style="max-width:640px;margin:0 auto;background:#f8fafc;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,.08)">' +

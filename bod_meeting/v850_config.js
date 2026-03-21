@@ -12,7 +12,7 @@ const CONFIG = {
   SHEET_REVIEW: "Dashboard",
   SHEET_SCHEDULE: "Lịch trình",
   SHEET_DIM_DEPT: "Dim bộ phận",
-  SHEET_CONFIG: "Cấu hình",
+  SHEET_CONFIG: "Settings",
   SHEET_HR: "Nhân sự bắt buộc",
   HR_COL_DEPT: 4,    // Cột D = Phòng ban (1-indexed)
   HR_COL_EMAIL: 6,   // Cột F = Email (1-indexed)
@@ -61,13 +61,13 @@ const CONFIG = {
 };
 
 /**
- * Nạp đè cấu hình từ Sheet 'Settings' (do AdminPage quản lý) vào CONFIG.
+ * Nạp đè cấu hình từ Sheet Settings (do AdminPage quản lý) vào CONFIG.
  * Được gọi đầu mỗi hàm gửi email để đảm bảo cài đặt mới nhất.
  */
 function loadConfigFromSheet() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName("Settings");
+    var sheet = ss.getSheetByName(CONFIG.SHEET_CONFIG);
     if (!sheet) return;
     var data = sheet.getDataRange().getValues();
     var mapping = {

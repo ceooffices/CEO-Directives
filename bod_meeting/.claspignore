@@ -36,3 +36,6 @@ Js_Toast.html
 
 # IDE settings
 .vscode/
+# Node modules & temp
+node_modules/**
+_format*.js
