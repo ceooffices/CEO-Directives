@@ -312,6 +312,144 @@ async function getDirectiveStatusSnapshot() {
   return data || [];
 }
 
+// ===== STEP 3 — CHATLONG ANALYSIS =====
+
+/**
+ * Query directives đã duyệt (step 2) chưa phân tích
+ * Cho wf3-chatlong-analysis.js
+ */
+async function queryDirectivesForAnalysis() {
+  const { data, error } = await db
+    .from('directives')
+    .select(`
+      *,
+      hm50:hm50_id ( hm_number, ten )
+    `)
+    .eq('lls_step', 2)
+    .not('approved_by', 'is', null)
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(`queryDirectivesForAnalysis: ${error.message}`);
+  return data || [];
+}
+
+// ===== DIRECTIVE VERSIONS =====
+
+/**
+ * Lưu phiên bản mới cho directive (AI analysis hoặc upgrade)
+ */
+async function saveDirectiveVersion(directiveId, versionData) {
+  // Get next version number
+  const { data: existing } = await db
+    .from('directive_versions')
+    .select('version_number')
+    .eq('directive_id', directiveId)
+    .order('version_number', { ascending: false })
+    .limit(1);
+
+  const nextVersion = (existing && existing.length > 0)
+    ? existing[0].version_number + 1
+    : 1;
+
+  const { data, error } = await db
+    .from('directive_versions')
+    .insert({
+      directive_id: directiveId,
+      version_number: nextVersion,
+      ...versionData,
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`saveDirectiveVersion: ${error.message}`);
+
+  // Update current_version on directive
+  await db
+    .from('directives')
+    .update({ current_version: nextVersion })
+    .eq('id', directiveId);
+
+  return data;
+}
+
+/**
+ * Lấy toàn bộ version history cho 1 directive
+ */
+async function getDirectiveVersions(directiveId) {
+  const { data, error } = await db
+    .from('directive_versions')
+    .select('*')
+    .eq('directive_id', directiveId)
+    .order('version_number', { ascending: true });
+
+  if (error) throw new Error(`getDirectiveVersions: ${error.message}`);
+  return data || [];
+}
+
+/**
+ * Lấy version mới nhất
+ */
+async function getLatestVersion(directiveId) {
+  const { data, error } = await db
+    .from('directive_versions')
+    .select('*')
+    .eq('directive_id', directiveId)
+    .order('version_number', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    throw new Error(`getLatestVersion: ${error.message}`);
+  }
+  return data || null;
+}
+
+/**
+ * Update version status (for upgrade review)
+ */
+async function updateVersionStatus(versionId, fields) {
+  const { data, error } = await db
+    .from('directive_versions')
+    .update(fields)
+    .eq('id', versionId)
+    .select()
+    .single();
+
+  if (error) throw new Error(`updateVersionStatus: ${error.message}`);
+  return data;
+}
+
+// ===== STEP TRANSITION =====
+
+/**
+ * Cập nhật lls_step + ghi lls_step_history
+ * Dùng cho mọi step transition (Step 2→3, 3→4, 5→6, etc.)
+ */
+async function updateDirectiveStep(directiveId, stepNumber, stepName, action, actor, detail) {
+  // Update directive
+  await db
+    .from('directives')
+    .update({ lls_step: stepNumber, updated_at: new Date().toISOString() })
+    .eq('id', directiveId);
+
+  // Insert history
+  const { data, error } = await db
+    .from('lls_step_history')
+    .insert({
+      directive_id: directiveId,
+      step_number: stepNumber,
+      step_name: stepName,
+      action,
+      actor: actor || 'system',
+      detail: detail || null,
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`updateDirectiveStep: ${error.message}`);
+  return data;
+}
+
 // ===== HM50 QUERIES (cho BSC nếu cần) =====
 
 async function queryAllHM50() {
@@ -347,10 +485,12 @@ module.exports = {
   queryConfirmed5T,
   updateDirective,
   updateDirectiveByCode,
-  // WF3
+  // WF3 — Status
   queryAllDirectives,
   getRecentStatusChanges,
   getDirectiveStatusSnapshot,
+  // WF3 — ChatLong Analysis (Step 3)
+  queryDirectivesForAnalysis,
   // WF4
   queryOverdueDirectives,
   // WF5
@@ -360,6 +500,13 @@ module.exports = {
   getStaffEmails,
   // HM50
   queryAllHM50,
+  // Directive Versions (Step 3 + Step 5-6)
+  saveDirectiveVersion,
+  getDirectiveVersions,
+  getLatestVersion,
+  updateVersionStatus,
+  // Step Transition
+  updateDirectiveStep,
   // Logging
   logEvent,
   // Utilities

@@ -9,7 +9,7 @@ echo   %date% %time%
 echo ==========================================
 echo.
 echo   [1] Telegram Bot (polling)
-echo   [2] Scheduler (WF1-5 cron daemon)
+echo   [2] AI Scheduler (Claude-powered)
 echo   [3] OpenClaw Bridge (HTTP :PORT_BRIDGE)
 echo   [4] Static Dashboard (HTTP :PORT_DASHBOARD)
 echo.
@@ -34,8 +34,8 @@ start "CEO-TelegramBot" /min cmd /k "cd /d %~dp0 && node telegram-bot.js"
 timeout /t 2 /nobreak >nul
 
 :: --- Start Scheduler ---
-echo [START] Scheduler (WF1-5)...
-start "CEO-Scheduler" /min cmd /k "cd /d %~dp0 && node scheduler.js"
+echo [START] AI Scheduler (Claude-powered)...
+start "CEO-Scheduler" /min cmd /k "cd /d %~dp0 && node ai-scheduler.js"
 timeout /t 1 /nobreak >nul
 
 :: --- Start OpenClaw Bridge ---
@@ -54,7 +54,7 @@ echo   TAT CA DA KHOI DONG!
 echo ==========================================
 echo.
 echo   Telegram Bot:    dang chay (polling)
-echo   Scheduler:       dang chay (WF1-5 cron)
+echo   AI Scheduler:    dang chay (Claude-powered)
 echo   Bridge:          http://localhost:%PORT_BRIDGE%
 echo   Dashboard:       http://127.0.0.1:%PORT_DASHBOARD%/data/dashboard/
 echo.

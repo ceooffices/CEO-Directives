@@ -734,7 +734,7 @@ bot.on('message', async (msg) => {
   const userId = String(msg.from?.id || 'unknown');
 
   // Bỏ qua commands đã handle ở trên
-  if (text.match(/^\/(start|help|healthcheck|trangthai|quahan|tim|chay|baocao|hoi|phantich|baocaotuan)/)) return;
+  if (text.match(/^\/(start|help|healthcheck|trangthai|quahan|tim|chay|baocao|hoi|phantich|baocaotuan|lichthongminh|forcescan)/)) return;
 
   // Unknown command → gợi ý
   if (text.startsWith('/')) {
@@ -826,6 +826,96 @@ bot.on('message', async (msg) => {
   } catch (err) {
     notifyAdmin(err, `free-text:${intent.type}`);
     bot.sendMessage(chatId, `✖ Lỗi: ${err.message}\n\n► /start để xem lệnh khả dụng`);
+  }
+});
+
+// ===== COMMAND: /lichthongminh — AI Scheduler status =====
+bot.onText(/\/lichthongminh/, async (msg) => {
+  if (!canProcess(msg)) return;
+
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, '🧠 Đang lấy trạng thái AI Scheduler...');
+
+  try {
+    const data = await bridgeRequest('/scheduler/status');
+
+    if (data.status === 'not_initialized') {
+      return bot.sendMessage(chatId, '🧠 AI Scheduler chưa chạy lần nào.\n\nGõ /forcescan để kích hoạt checkpoint đầu tiên.', kbdMain());
+    }
+
+    const lastCheck = data.lastCheck
+      ? new Date(data.lastCheck).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+      : 'Chưa có';
+
+    const wfRuns = data.lastWfRuns && Object.keys(data.lastWfRuns).length > 0
+      ? Object.entries(data.lastWfRuns).map(([wf, ts]) => {
+          const ago = Math.round((Date.now() - new Date(ts).getTime()) / 60000);
+          return `  ${wf}: ${ago} phút trước`;
+        }).join('\n')
+      : '  (Chưa chạy WF nào)';
+
+    const counts = data.counts || {};
+
+    bot.sendMessage(chatId,
+`🧠 *AI SCHEDULER STATUS*
+━━━━━━━━━━━━━━━━━━━━
+
+🕐 Check gần nhất: ${lastCheck}
+⏱ Check tiếp theo: ${data.nextCheckMinutes || 30} phút
+
+📊 *Snapshot hiện tại:*
+  Chờ duyệt: *${counts.pending ?? '?'}*
+  Confirmed 5T: *${counts.confirmed ?? '?'}*
+  Quá hạn: *${counts.overdue ?? '?'}*
+  Active: *${counts.active ?? '?'}*
+
+🔧 *WF đã chạy gần đây:*
+${wfRuns}`, { parse_mode: 'Markdown', ...kbdMain() });
+  } catch (err) {
+    notifyAdmin(err, '/lichthongminh');
+    bot.sendMessage(chatId, `✖ Lỗi: ${err.message}\n\nAI Scheduler có thể chưa được khởi động.`);
+  }
+});
+
+// ===== COMMAND: /forcescan — Force AI checkpoint =====
+bot.onText(/\/forcescan/, async (msg) => {
+  if (!canProcess(msg)) return;
+
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, '🧠 Đang chạy AI checkpoint... (15-30s)');
+
+  try {
+    const data = await bridgeRequest('/scheduler/force-check', 'POST');
+
+    if (data.error) {
+      return bot.sendMessage(chatId, `✖ Lỗi: ${escMd(data.error)}`, { parse_mode: 'Markdown' });
+    }
+
+    const decision = data.decision || {};
+    const ran = (decision.should_run || []).length > 0
+      ? decision.should_run.join(', ')
+      : 'Không có WF nào cần chạy';
+    const results = data.executionResults || {};
+    const resultSummary = Object.entries(results)
+      .map(([wf, r]) => `  ${r.error ? '✖' : '☑'} ${wf}: ${r.error || 'OK'}`)
+      .join('\n') || '  (không có)';
+
+    bot.sendMessage(chatId,
+`🧠 *AI CHECKPOINT HOÀN TẤT*
+━━━━━━━━━━━━━━━━━━━━
+
+🎯 *Quyết định:* ${ran}
+📝 *Lý do:* ${escMd(decision.reasoning || 'N/A')}
+⚡ *Priority:* ${decision.priority || 'N/A'}
+📎 *Tokens:* ${data.tokensUsed || '?'}
+
+📋 *Kết quả:*
+${resultSummary}
+
+⏰ Check lại sau: ${decision.next_check_minutes || 30} phút`, { parse_mode: 'Markdown', ...kbdMain() });
+  } catch (err) {
+    notifyAdmin(err, '/forcescan');
+    bot.sendMessage(chatId, `✖ Lỗi: ${err.message}\n\n💡 Kiểm tra bridge + AI Scheduler đang chạy?`);
   }
 });
 

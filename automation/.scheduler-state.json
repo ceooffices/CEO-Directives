@@ -1,0 +1,124 @@
+{
+  "timestamp": "2026-03-22T10:02:53.107Z",
+  "counts": {
+    "pending": 0,
+    "confirmed": 2,
+    "overdue": 7,
+    "active": 51
+  },
+  "directiveIds": {
+    "pending": [],
+    "confirmed": [
+      "8c228c23-47b4-49ba-a240-55592f83c7ef",
+      "dc0846fe-e856-4d41-937c-98fc13a99c93"
+    ],
+    "overdue": [
+      "e68e7d7a-7584-4462-bfaf-8920c03b6b14",
+      "d3566e9c-170d-480e-a32c-b7df88b5a519",
+      "bd2573ca-2cb1-46a7-8dc6-36f313ea9a9d",
+      "26a930e2-8ac5-48a9-80b5-30abb996fbc2",
+      "61342daa-3d3a-4783-8ee7-9ae0248a9fad",
+      "cbcb92b7-99f2-484c-8792-7d9343b51419",
+      "1199bcac-cdb0-40e8-b8c4-573fcef25132"
+    ],
+    "active": [
+      "0068d895-7f05-4bca-92c0-5228578bd35c",
+      "db98dd80-488c-47f2-a735-8865f3f2c37f",
+      "835e37c4-5a5e-4330-b8cb-ae5962dba60d",
+      "26a930e2-8ac5-48a9-80b5-30abb996fbc2",
+      "d3566e9c-170d-480e-a32c-b7df88b5a519",
+      "d4d5086a-a2db-42fc-9e71-a17fdb22dd40",
+      "e1c2934b-8246-4912-8443-be171b78a30a",
+      "bd2573ca-2cb1-46a7-8dc6-36f313ea9a9d",
+      "17d94fa4-ed67-49a4-83c4-9d025f521d53",
+      "cbcb92b7-99f2-484c-8792-7d9343b51419",
+      "4cd8a903-65fa-4734-b10e-a1c8249b224b",
+      "404c81cd-8e80-459e-82c5-a8443cb3e1c8",
+      "61342daa-3d3a-4783-8ee7-9ae0248a9fad",
+      "60fc74a9-6473-4d5a-ac70-706f469bc5f6",
+      "5c2677fe-67a5-48a7-b277-2935301ca914",
+      "e5a42c70-2cf8-43c7-8c00-f9ba14f8fddf",
+      "92a1f802-92cc-4aa2-be05-cbedcac4b800",
+      "7c02ce2a-b489-4e11-af70-501ed78e6277",
+      "e68e7d7a-7584-4462-bfaf-8920c03b6b14",
+      "79e4ec62-5b53-4e02-8b5c-3b28f3a89f6d",
+      "332abe10-385d-461e-86ee-5f99ec8319e6",
+      "64b24f08-8785-4440-9e04-1fd88c59dc34",
+      "05a3d9e4-f461-488e-8b2a-4927d5aded18",
+      "be64bda9-173f-4240-9841-4df1687a298e",
+      "98439139-3ba9-4cc3-bc5e-1fa0851ab035",
+      "5533fcb4-6e78-4fce-828e-12be867b0269",
+      "8c228c23-47b4-49ba-a240-55592f83c7ef",
+      "f9966733-2f94-4690-82c7-dfc4f97fb5b6",
+      "8810b849-c30c-4e7d-a53e-98f8b104945a",
+      "0199d554-dc41-426c-8294-d13dbc6e2b7d",
+      "8e4d70fd-f8eb-496e-ae00-726e48450e75",
+      "2ad6521e-1b48-46e8-9365-0cda4e3fecc4",
+      "e8687c96-739e-4a16-be0e-db4678d8a0ba",
+      "09a7da2d-d09d-4deb-a8bd-1d692ef294f0",
+      "1199bcac-cdb0-40e8-b8c4-573fcef25132",
+      "f443ff1d-e8f7-47d2-9898-9ccdaab7a49b",
+      "276b876d-099f-4385-9881-f3488c939c47",
+      "8c0aec8a-1274-4942-9322-2e309338a97b",
+      "84d01fe5-7852-432d-ab21-8e205754fafd",
+      "dc0846fe-e856-4d41-937c-98fc13a99c93",
+      "8d462b49-c920-4f1d-8df0-63dd447632a7",
+      "6a92f129-27ee-448e-b279-841fa23b5316",
+      "002d825a-5281-4190-bca6-203de060f99e",
+      "79d77d4a-344f-4085-9248-1a9cb4f7ca9f",
+      "1120efba-5cf6-4727-a70e-d6ea9c56c5e3",
+      "a1df21ac-0f0e-41c9-a9e5-b8f7be1b8087",
+      "cac186c1-6282-4942-bc0e-464cb800dfd1",
+      "ac04c5e7-3b83-4070-852a-5a6e65c9f31d",
+      "f373be48-9b5e-49bc-846a-b36fe6f33366",
+      "815e6244-7af3-4e83-bc12-1ffb7dc84b3a",
+      "a8646b59-038c-48cd-8ba1-a9f09c28a6a6"
+    ]
+  },
+  "overdueDetails": [
+    {
+      "title": "Ngồi lại thứ 5 chiều 14h: (1) Thống nhất thông tin tuyển dụn",
+      "dauMoi": "Phạm Thị Ngọc Hân, cô Thư, Lê Anh Tuấn",
+      "deadline": "2026-03-05",
+      "daysOverdue": 18
+    },
+    {
+      "title": "Mỗi TT liên kết lập danh mục: nghề đào tạo tại trường + số S",
+      "dauMoi": "Tất cả đội trưởng TT liên kết, Đặng Tiến Dũng",
+      "deadline": "2026-03-10",
+      "daysOverdue": 13
+    },
+    {
+      "title": "Cung cấp danh sách đầu mối MS phụ trách từng đơn tuyển cho O",
+      "dauMoi": "Bùi Thị Thanh Hiếu, Đặng Tiến Dũng",
+      "deadline": "2026-03-13",
+      "daysOverdue": 10
+    },
+    {
+      "title": "Dựa trên danh mục nghề (#11), đặt mục tiêu tuyển theo tỷ lệ ",
+      "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu",
+      "deadline": "2026-03-13",
+      "daysOverdue": 10
+    },
+    {
+      "title": "Lập kế hoạch chi tiết cho từng TT liên kết: Đồng Nai, Bình D",
+      "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu",
+      "deadline": "2026-03-13",
+      "daysOverdue": 10
+    },
+    {
+      "title": "Tổng hợp đề xuất từ MS + TT liên kết về hoạt động mời doanh ",
+      "dauMoi": "Bùi Thị Thanh Hiếu, Trần Ngọc Như Trang",
+      "deadline": "2026-03-13",
+      "daysOverdue": 10
+    },
+    {
+      "title": "Tổ chức đội tác chiến liên phòng ban: MS + GV + Ban quản lý.",
+      "dauMoi": "Lê Anh Tuấn, Nguyễn Xuân Lanh",
+      "deadline": "2026-03-16",
+      "daysOverdue": 7
+    }
+  ],
+  "pendingDetails": [],
+  "lastWfRuns": {}
+}

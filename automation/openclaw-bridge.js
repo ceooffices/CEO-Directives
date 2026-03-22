@@ -178,6 +178,39 @@ async function handleRequest(req, res) {
       return json(res, 200, { ran: wfName, result });
     }
 
+    // GET /scheduler/status — AI Scheduler state
+    if (path === '/scheduler/status' && method === 'GET') {
+      try {
+        const { loadState } = require('./lib/scheduler-state');
+        const state = loadState();
+        return json(res, 200, {
+          lastCheck: state.timestamp,
+          counts: state.counts,
+          lastWfRuns: state.lastWfRuns || {},
+          nextCheckMinutes: state.nextCheckMinutes || 30,
+        });
+      } catch (err) {
+        return json(res, 200, { status: 'not_initialized', message: 'AI Scheduler chưa chạy lần nào' });
+      }
+    }
+
+    // POST /scheduler/force-check — Trigger AI checkpoint ngay
+    if (path === '/scheduler/force-check' && method === 'POST') {
+      try {
+        const { runCheckpoint } = require('./ai-scheduler');
+        console.log('[BRIDGE] Force AI checkpoint...');
+        const result = await runCheckpoint();
+        return json(res, 200, {
+          status: 'ok',
+          decision: result.decision,
+          executionResults: result.executionResults,
+          tokensUsed: result.tokensUsed,
+        });
+      } catch (err) {
+        return json(res, 500, { error: `AI Scheduler error: ${err.message}` });
+      }
+    }
+
     // Not found
     return json(res, 404, {
       error: 'Not found',
@@ -187,6 +220,8 @@ async function handleRequest(req, res) {
         'GET  /overdue?limit=5',
         'GET  /search?q=keyword',
         'POST /run/:workflow (wf1-wf6, hm50, all)',
+        'GET  /scheduler/status',
+        'POST /scheduler/force-check',
       ],
     });
   } catch (err) {
@@ -212,5 +247,7 @@ server.listen(PORT, () => {
   console.log('  GET  /overdue?limit=5');
   console.log('  GET  /search?q=keyword');
   console.log('  POST /run/:workflow');
+  console.log('  GET  /scheduler/status');
+  console.log('  POST /scheduler/force-check');
   console.log('==========================================');
 });

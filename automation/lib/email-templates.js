@@ -672,6 +672,189 @@ function buildReminderEmail(data) {
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
 }
 
+/**
+ * WF3-CHATLONG: Kết quả phân tích AI Step 3
+ */
+function buildChatLongAnalysisEmail(data) {
+  const riskColor = data.riskScore >= 70 ? BRAND_RED
+    : data.riskScore >= 40 ? BRAND_AMBER : BRAND_GREEN;
+  const riskLabel = data.riskScore >= 70 ? 'CAO'
+    : data.riskScore >= 40 ? 'TRUNG BÌNH' : 'THẤP';
+
+  const header = eHdr(
+    '🧠 CHATLONG — KẾT QUẢ PHÂN TÍCH AI',
+    (data.tieuDe || '').substring(0, 60)
+  );
+
+  // Build analysis sections
+  const analysis = data.analysis || {};
+
+  // Executive summary
+  let summaryHtml = '';
+  if (analysis.executive_summary) {
+    summaryHtml = eSection('📋 TÓM TẮT CHO CEO', analysis.executive_summary, BRAND_PURPLE);
+  }
+
+  // Risk warnings
+  let riskHtml = '';
+  if (analysis.risk_warnings && analysis.risk_warnings.length > 0) {
+    const riskItems = analysis.risk_warnings.map(r =>
+      `<li style="margin:4px 0;"><strong>${r.risk || r}</strong>` +
+      (r.severity ? ` <span style="color:${r.severity === 'high' ? BRAND_RED : BRAND_AMBER};">[${r.severity}]</span>` : '') +
+      (r.mitigation ? `<br><span style="color:#64748b;font-size:12px;">→ ${r.mitigation}</span>` : '') +
+      '</li>'
+    ).join('');
+    riskHtml = eSection('⚠️ CẢNH BÁO RỦI RO', '<ul style="margin:0;padding-left:18px;">' + riskItems + '</ul>', riskColor);
+  }
+
+  // Improvement suggestions
+  let suggestHtml = '';
+  if (data.recommendations && data.recommendations.length > 0) {
+    const suggestItems = data.recommendations.map(s =>
+      `<li style="margin:4px 0;">${s}</li>`
+    ).join('');
+    suggestHtml = eSection('💡 GỢI Ý CẢI TIẾN', '<ul style="margin:0;padding-left:18px;">' + suggestItems + '</ul>', BRAND_BLUE);
+  }
+
+  // Alternative options
+  let altHtml = '';
+  if (analysis.alternative_options && analysis.alternative_options.length > 0) {
+    const altItems = analysis.alternative_options.map(a =>
+      `<li style="margin:6px 0;"><strong>${a.option || a}</strong>` +
+      (a.pros ? `<br><span style="color:${BRAND_GREEN};font-size:12px;">✓ ${a.pros}</span>` : '') +
+      (a.cons ? `<br><span style="color:${BRAND_RED};font-size:12px;">✗ ${a.cons}</span>` : '') +
+      '</li>'
+    ).join('');
+    altHtml = eSection('🔀 PHƯƠNG ÁN THAY THẾ', '<ul style="margin:0;padding-left:18px;">' + altItems + '</ul>', BRAND_PURPLE);
+  }
+
+  const body =
+    // Risk score badge
+    '<div style="text-align:center;padding:16px;background:#fff;">' +
+    '<div style="display:inline-block;padding:12px 24px;background:' + riskColor + ';border-radius:12px;">' +
+    '<span style="font-size:28px;font-weight:800;color:#fff;">' + data.riskScore + '/100</span>' +
+    '<br><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:600;">Rủi ro: ' + riskLabel + '</span>' +
+    '</div></div>' +
+    eGreeting(data.tenDauMoi) +
+    eText('<p style="margin:0 0 12px;">ChatLong đã hoàn tất phân tích chỉ đạo <strong>' + (data.tieuDe || '') + '</strong>. Dưới đây là kết quả:</p>') +
+    '<div style="padding:0 16px;background:#fff;">' +
+    summaryHtml + riskHtml + suggestHtml + altHtml +
+    '</div>' +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eBtn('▸ XEM CHI TIẾT', data.url || '#', BRAND_PURPLE) +
+    '</div>';
+
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
+}
+
+/**
+ * WF6: Thông báo bản nâng cấp mới → CEO/người chỉ đạo
+ */
+function buildUpgradeSubmittedEmail(data) {
+  const header = eHdr(
+    '📤 BẢN NÂNG CẤP v' + (data.versionNumber || '?'),
+    (data.tieuDe || '').substring(0, 60)
+  );
+
+  let aiReviewHtml = '';
+  if (data.aiReview) {
+    const riskColor = data.aiReview.riskScore >= 70 ? BRAND_RED
+      : data.aiReview.riskScore >= 40 ? BRAND_AMBER : BRAND_GREEN;
+    aiReviewHtml = eSection(
+      '🧠 ChatLong Auto-Review',
+      '<strong>Risk: ' + data.aiReview.riskScore + '/100</strong>' +
+      (data.aiReview.analysis?.recommendation
+        ? '<br>Khuyến nghị: <strong>' + data.aiReview.analysis.recommendation + '</strong>'
+        : '') +
+      (data.aiReview.analysis?.recommendation_reason
+        ? '<br><span style="color:#64748b;">' + data.aiReview.analysis.recommendation_reason + '</span>'
+        : ''),
+      riskColor
+    );
+  }
+
+  const body =
+    eGreeting('CEO') +
+    eText(
+      '<p style="margin:0 0 12px;"><strong>' + (data.tenDauMoi || 'Đầu mối') + '</strong> đã gửi ' +
+      '<strong style="color:' + BRAND_BLUE + ';">bản nâng cấp v' + (data.versionNumber || '?') + '</strong> ' +
+      'cho chỉ đạo <strong>' + (data.tieuDe || '') + '</strong>.</p>'
+    ) +
+    (data.upgradeNote
+      ? eSection('📝 GHI CHÚ NÂNG CẤP', data.upgradeNote, BRAND_BLUE)
+      : '') +
+    '<div style="padding:0 16px;background:#fff;">' +
+    aiReviewHtml +
+    '</div>' +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eBtn('▸ REVIEW & DUYỆT', data.url || '#', BRAND_GREEN) +
+    '</div>';
+
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
+}
+
+/**
+ * WF6: Feedback email → đầu mối (cần nâng cấp thêm)
+ */
+function buildUpgradeFeedbackEmail(data) {
+  const header = eHdr(
+    '🔄 CẦN NÂNG CẤP — v' + ((data.versionNumber || 0) + 1),
+    (data.tieuDe || '').substring(0, 60)
+  );
+
+  const body =
+    eGreeting(data.tenDauMoi) +
+    eText(
+      '<p style="margin:0 0 12px;">Bản nâng cấp <strong>v' + (data.versionNumber || '?') +
+      '</strong> đã được <strong>' + (data.reviewedBy || 'CEO') +
+      '</strong> xem xét và <strong style="color:' + BRAND_AMBER + ';">cần chỉnh sửa thêm</strong>.</p>'
+    ) +
+    eSection('💬 GÓP Ý TỪ ' + (data.reviewedBy || 'CEO').toUpperCase(),
+      data.feedbackNote || 'Cần bổ sung thêm chi tiết', BRAND_AMBER) +
+    eText(
+      '<div style="background:#eff6ff;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #bfdbfe;">' +
+      '<p style="margin:0;font-size:13px;color:#1e40af;">📌 Vui lòng gửi bản v' + ((data.versionNumber || 0) + 1) +
+      ' với các điều chỉnh theo góp ý trên. Hệ thống sẽ tự động review và thông báo.</p></div>'
+    ) +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eBtn('▸ GỬI BẢN NÂNG CẤP', data.url || '#', BRAND_BLUE) +
+    '</div>';
+
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
+}
+
+/**
+ * WF6: Email duyệt bản nâng cấp → đầu mối
+ */
+function buildUpgradeApprovedEmail(data) {
+  const header = eHdr(
+    '✅ DUYỆT — Bản v' + (data.versionNumber || '?') + ' đã được chấp nhận',
+    (data.tieuDe || '').substring(0, 60)
+  );
+
+  const body =
+    eGreeting(data.tenDauMoi) +
+    eText(
+      '<p style="margin:0 0 12px;">Bản nâng cấp <strong style="color:' + BRAND_GREEN + ';">v' +
+      (data.versionNumber || '?') + '</strong> cho chỉ đạo <strong>' + (data.tieuDe || '') +
+      '</strong> đã được <strong>' + (data.reviewedBy || 'CEO') + '</strong> ' +
+      '<strong style="color:' + BRAND_GREEN + ';">PHÊ DUYỆT</strong>.</p>'
+    ) +
+    (data.feedbackNote
+      ? eSection('💬 GHI CHÚ', data.feedbackNote, BRAND_GREEN)
+      : '') +
+    eText(
+      '<div style="background:#f0fdf4;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #bbf7d0;">' +
+      '<p style="margin:0;font-size:13px;color:#166534;">🎉 Chỉ đạo đã chuyển sang <strong>Bước 7 — Hoàn thành đánh giá</strong>. ' +
+      'Cảm ơn sự đóng góp của Anh/Chị!</p></div>'
+    ) +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eBtn('▸ XEM TRÊN DASHBOARD', data.url || '#', BRAND_GREEN) +
+    '</div>';
+
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
+}
+
 // =====================================================================
 // EXPORTS
 // =====================================================================
@@ -695,4 +878,9 @@ module.exports = {
   buildStatusChangeEmail,
   buildEscalationEmail,
   buildReminderEmail,
+  // Step 3 + Step 5-6 builders
+  buildChatLongAnalysisEmail,
+  buildUpgradeSubmittedEmail,
+  buildUpgradeFeedbackEmail,
+  buildUpgradeApprovedEmail,
 };

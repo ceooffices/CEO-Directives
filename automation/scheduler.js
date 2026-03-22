@@ -21,8 +21,10 @@ const cron = require('node-cron');
 const { run: runWF1 } = require('./wf1-approval');
 const { run: runWF2 } = require('./wf2-directive-progress');
 const { run: runWF3 } = require('./wf3-directive-status');
+const { run: runWF3C } = require('./wf3-chatlong-analysis');
 const { run: runWF4 } = require('./wf4-directive-escalation');
 const { run: runWF5 } = require('./wf5-reminders');
+const { run: runWF6 } = require('./wf6-upgrade-loop');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
@@ -53,7 +55,16 @@ const SCHEDULES = {
   // WF5: 1 lần/ngày (08:30)
   wf5_morning:   '30 8 * * 1-5',
 
-  // WF6: DEPRECATED — dashboard đọc Supabase trực tiếp
+  // WF3-CHATLONG: Chạy sau WF1 30 phút (08:30, 13:30, 17:30)
+  wf3c_morning:   '30 8 * * 1-5',
+  wf3c_afternoon: '30 13 * * 1-5',
+  wf3c_evening:   '30 17 * * 1-5',
+
+  // WF6-UPGRADE: 2 lần/ngày (10:30, 15:30)
+  wf6_morning:   '30 10 * * 1-5',
+  wf6_afternoon: '30 15 * * 1-5',
+
+  // WF6 (OLD): DEPRECATED — dashboard đọc Supabase trực tiếp
 };
 
 // ===== RUN WRAPPER =====
@@ -90,12 +101,10 @@ if (runNowIdx > -1) {
     if (target === 'wf1' || target === 'all') await safeRun('WF1-Approval', runWF1);
     if (target === 'wf2' || target === 'all') await safeRun('WF2-DirectiveProgress', runWF2);
     if (target === 'wf3' || target === 'all') await safeRun('WF3-DirectiveStatus', runWF3);
+    if (target === 'wf3c' || target === 'chatlong' || target === 'all') await safeRun('WF3C-ChatLongAnalysis', runWF3C);
     if (target === 'wf4' || target === 'all') await safeRun('WF4-DirectiveEscalation', runWF4);
     if (target === 'wf5' || target === 'all') await safeRun('WF5-Reminders', runWF5);
-
-    if (target === 'wf6') {
-      console.log('\n[scheduler] ⚠️ WF6 DEPRECATED — dashboard đọc Supabase trực tiếp.');
-    }
+    if (target === 'wf6' || target === 'upgrade' || target === 'all') await safeRun('WF6-UpgradeLoop', runWF6);
 
     console.log('\n[scheduler] Done. Exiting.');
     process.exit(0);
@@ -140,8 +149,16 @@ if (runNowIdx > -1) {
   cron.schedule(SCHEDULES.wf5_morning, () => safeRun('WF5-Reminders', runWF5, { fromCron: true }), TZ);
   console.log(`  🦉 WF5 Reminders:   08:30`);
 
-  // WF6: DEPRECATED
-  console.log(`  ⚠️  WF6 Sync:        DEPRECATED — Supabase trực tiếp`);
+  // WF3C: ChatLong AI Analysis (3x/day, 30min after WF1)
+  cron.schedule(SCHEDULES.wf3c_morning,   () => safeRun('WF3C-Morning',   runWF3C, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf3c_afternoon, () => safeRun('WF3C-Afternoon', runWF3C, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf3c_evening,   () => safeRun('WF3C-Evening',   runWF3C, { fromCron: true }), TZ);
+  console.log(`  🧠 WF3C ChatLong:   08:30 | 13:30 | 17:30`);
+
+  // WF6: Upgrade Loop (2x/day)
+  cron.schedule(SCHEDULES.wf6_morning,   () => safeRun('WF6-Morning',   runWF6, { fromCron: true }), TZ);
+  cron.schedule(SCHEDULES.wf6_afternoon, () => safeRun('WF6-Afternoon', runWF6, { fromCron: true }), TZ);
+  console.log(`  🔄 WF6 Upgrade:     10:30 | 15:30`);
 
   console.log(`\n  Total: ${Object.keys(SCHEDULES).length} scheduled runs/day`);
   console.log('\n⏳ Waiting for scheduled time... (Ctrl+C to stop)');
