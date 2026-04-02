@@ -20,8 +20,29 @@ let PROVIDER;
 if (process.env.ANTHROPIC_API_KEY) {
   // ===== PRIORITY 1: Claude (Anthropic) =====
   const Anthropic = require('@anthropic-ai/sdk');
-  client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+  const clientOpts = { apiKey: process.env.ANTHROPIC_API_KEY };
+
+  // Cost gateway: chỉ dùng nếu gateway đang chạy (check đồng bộ)
+  const gatewayUrl = process.env.CLAUDE_GATEWAY_URL || 'http://localhost:18800';
+  let gatewayAlive = false;
+  try {
+    require('child_process').execSync(
+      `node -e "const h=require('http');h.get('${gatewayUrl}/health',{timeout:800},r=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"`,
+      { timeout: 2000, stdio: 'ignore' }
+    );
+    gatewayAlive = true;
+  } catch (e) { /* gateway offline, sử dụng direct */ }
+
+  if (gatewayAlive) {
+    clientOpts.baseURL = gatewayUrl;
+    clientOpts.defaultHeaders = { 'X-Project-Name': process.env.X_PROJECT_NAME || 'CEO_DIRECTIVES' };
+    console.log(`[AI] ☑ Cost gateway: ${gatewayUrl}`);
+  } else {
+    console.log('[AI] ℹ Cost gateway offline — gọi Claude trực tiếp');
+  }
+
+  client = new Anthropic(clientOpts);
+  MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001';
   PROVIDER = 'Claude';
   console.log(`[AI] ☑ Router: Claude (${MODEL})`);
 

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-22T10:02:53.107Z",
+  "timestamp": "2026-03-24T11:10:38.455Z",
   "counts": {
     "pending": 0,
     "confirmed": 2,
@@ -75,50 +75,9 @@
       "a8646b59-038c-48cd-8ba1-a9f09c28a6a6"
     ]
   },
-  "overdueDetails": [
-    {
-      "title": "Ngồi lại thứ 5 chiều 14h: (1) Thống nhất thông tin tuyển dụn",
-      "dauMoi": "Phạm Thị Ngọc Hân, cô Thư, Lê Anh Tuấn",
-      "deadline": "2026-03-05",
-      "daysOverdue": 18
-    },
-    {
-      "title": "Mỗi TT liên kết lập danh mục: nghề đào tạo tại trường + số S",
-      "dauMoi": "Tất cả đội trưởng TT liên kết, Đặng Tiến Dũng",
-      "deadline": "2026-03-10",
-      "daysOverdue": 13
-    },
-    {
-      "title": "Cung cấp danh sách đầu mối MS phụ trách từng đơn tuyển cho O",
-      "dauMoi": "Bùi Thị Thanh Hiếu, Đặng Tiến Dũng",
-      "deadline": "2026-03-13",
-      "daysOverdue": 10
-    },
-    {
-      "title": "Dựa trên danh mục nghề (#11), đặt mục tiêu tuyển theo tỷ lệ ",
-      "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu",
-      "deadline": "2026-03-13",
-      "daysOverdue": 10
-    },
-    {
-      "title": "Lập kế hoạch chi tiết cho từng TT liên kết: Đồng Nai, Bình D",
-      "dauMoi": "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu",
-      "deadline": "2026-03-13",
-      "daysOverdue": 10
-    },
-    {
-      "title": "Tổng hợp đề xuất từ MS + TT liên kết về hoạt động mời doanh ",
-      "dauMoi": "Bùi Thị Thanh Hiếu, Trần Ngọc Như Trang",
-      "deadline": "2026-03-13",
-      "daysOverdue": 10
-    },
-    {
-      "title": "Tổ chức đội tác chiến liên phòng ban: MS + GV + Ban quản lý.",
-      "dauMoi": "Lê Anh Tuấn, Nguyễn Xuân Lanh",
-      "deadline": "2026-03-16",
-      "daysOverdue": 7
-    }
-  ],
-  "pendingDetails": [],
-  "lastWfRuns": {}
+  "lastWfRuns": {
+    "wf4": "2026-03-24T04:15:53.813Z",
+    "wf5": "2026-03-24T11:07:06.700Z"
+  },
+  "nextCheckMinutes": 45
 }

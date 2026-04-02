@@ -16,7 +16,11 @@ const { URL } = require('url');
 
 // ===== CONFIG =====
 const PORT = parseInt(process.argv.find((a, i, arr) => arr[i - 1] === '--port') || process.env.PORT_BRIDGE || '3101');
-const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'ceo-directives-r8d-2026-esuhai-secure-token';
+const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN;
+if (!AUTH_TOKEN) {
+  console.error('[BRIDGE] ❌ OPENCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
+  process.exit(1);
+}
 
 // ===== LAZY-LOAD WORKFLOWS =====
 const workflows = {
@@ -105,13 +109,23 @@ async function searchDirectives(keyword) {
 }
 
 // ===== HTTP HANDLER =====
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => resolve(body));
+    req.on('error', reject);
+  });
+}
+
 async function handleRequest(req, res) {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const path = url.pathname;
   const method = req.method;
 
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS — restrict to dashboard
+  const allowedOrigin = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   if (method === 'OPTIONS') { res.writeHead(204); return res.end(); }
 
@@ -211,6 +225,43 @@ async function handleRequest(req, res) {
       }
     }
 
+    // POST /telegram-hook — forward Telegram update to telegram-bot.js webhook
+    if (path === '/telegram-hook' && method === 'POST') {
+      const body = await readBody(req);
+      const hookPort = process.env.PORT_TELEGRAM_HOOK || '3102';
+      
+      try {
+        const result = await new Promise((resolve, reject) => {
+          const fwdReq = http.request({
+            hostname: 'localhost',
+            port: hookPort,
+            path: '/telegram-hook',
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${AUTH_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+          }, (fwdRes) => {
+            let data = '';
+            fwdRes.on('data', chunk => data += chunk);
+            fwdRes.on('end', () => {
+              try { resolve(JSON.parse(data)); }
+              catch { resolve({ raw: data }); }
+            });
+          });
+          fwdReq.on('error', reject);
+          fwdReq.setTimeout(10000, () => { fwdReq.destroy(); reject(new Error('Timeout forwarding to telegram-bot')); });
+          fwdReq.write(body);
+          fwdReq.end();
+        });
+        
+        return json(res, 200, { forwarded: true, result });
+      } catch (err) {
+        console.error('[BRIDGE] Failed to forward to telegram-bot:', err.message);
+        return json(res, 502, { error: `telegram-bot unreachable: ${err.message}` });
+      }
+    }
+
     // Not found
     return json(res, 404, {
       error: 'Not found',
@@ -222,6 +273,7 @@ async function handleRequest(req, res) {
         'POST /run/:workflow (wf1-wf6, hm50, all)',
         'GET  /scheduler/status',
         'POST /scheduler/force-check',
+        'POST /telegram-hook (forward to telegram-bot)',
       ],
     });
   } catch (err) {
@@ -249,5 +301,6 @@ server.listen(PORT, () => {
   console.log('  POST /run/:workflow');
   console.log('  GET  /scheduler/status');
   console.log('  POST /scheduler/force-check');
+  console.log(`  POST /telegram-hook → forward to telegram-bot:${process.env.PORT_TELEGRAM_HOOK || '3102'}`);
   console.log('==========================================');
 });

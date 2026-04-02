@@ -13,22 +13,8 @@
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '.env') });
-const { createClient } = require('@supabase/supabase-js');
+const { db } = require('./lib/supabase-client');
 const { sendEmail } = require('./lib/email-sender');
-
-// ===== CONFIG =====
-
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error('[ESCALATION] Thiếu SUPABASE_URL hoặc SUPABASE_SERVICE_ROLE_KEY trong .env');
-  process.exit(1);
-}
-
-const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession: false },
-});
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const MODULE = '[ESCALATION]';
@@ -281,7 +267,7 @@ async function handleCritical(directive, daysOverdue) {
 // ===== EMAIL TEMPLATES =====
 
 function buildRemindHtml(directive, daysOverdue) {
-  const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3000';
+  const dashboardUrl = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px;">
       <h3>⏳ Nhắc xác nhận chỉ đạo</h3>
@@ -299,7 +285,7 @@ function buildRemindHtml(directive, daysOverdue) {
 }
 
 function buildCriticalHtml(directive, daysOverdue) {
-  const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3000';
+  const dashboardUrl = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px;">
       <h3 style="color: #dc2626;">📌 Cần hỗ trợ đặc biệt — Chỉ đạo chưa có cập nhật ${daysOverdue} ngày</h3>
@@ -330,12 +316,16 @@ async function trySendEmail(options) {
 
 // ===== EXECUTE =====
 
-run()
-  .then((summary) => {
-    console.log(`${MODULE} Hoàn tất.`, DRY_RUN ? '(DRY-RUN)' : '');
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error(`${MODULE} Lỗi hệ thống:`, err);
-    process.exit(1);
-  });
+if (require.main === module) {
+  run()
+    .then((summary) => {
+      console.log(`${MODULE} Hoàn tất.`, DRY_RUN ? '(DRY-RUN)' : '');
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error(`${MODULE} Lỗi hệ thống:`, err);
+      process.exit(1);
+    });
+}
+
+module.exports = { run };

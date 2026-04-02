@@ -32,7 +32,12 @@ const bible = require('./content-bible');
 const BOT_TOKEN = process.env.CEO_DIR_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
 const BRIDGE_URL = process.env.BRIDGE_URL || `http://localhost:${process.env.PORT_BRIDGE || '3101'}`;
-const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'ceo-directives-r8d-2026-esuhai-secure-token';
+const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN;
+if (!AUTH_TOKEN) {
+  console.error('[BOT] ❌ OPENCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
+  process.exit(1);
+}
+const HOOK_PORT = parseInt(process.env.PORT_TELEGRAM_HOOK || '3102');
 
 // Allowed Telegram user IDs (security: only admin can use)
 const ALLOWED_USERS = (process.env.TELEGRAM_ALLOWED_USERS || process.env.ADMIN_USER_IDS || '')
@@ -354,11 +359,15 @@ function progressBar(pct) {
 }
 
 // ===== BOT SETUP =====
-const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+// ⚠ polling: false — OpenClaw Gateway là nơi duy nhất polling token này
+// telegram-bot.js nhận updates qua HTTP webhook từ OpenClaw/Bridge
+const bot = new TelegramBot(BOT_TOKEN, { polling: false });
 
 console.log('==========================================');
-console.log('[BOT] 🤖 CEO Directive Telegram Bot');
+console.log('[BOT] 🤖 CEO Directive Telegram Bot (WEBHOOK MODE)');
 console.log(`[BOT] ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
+console.log('[BOT] Mode: HTTP webhook (NO polling)');
+console.log(`[BOT] Hook port: ${HOOK_PORT}`);
 console.log(`[BOT] Bridge: ${BRIDGE_URL}`);
 console.log(`[BOT] Allowed users: ${ALLOWED_USERS.length > 0 ? ALLOWED_USERS.join(', ') : 'ALL'}`);
 console.log('==========================================');
@@ -635,6 +644,17 @@ bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
   
+  // Access control + rate limit (same as commands)
+  const userId = String(query.from?.id || '');
+  if (ALLOWED_USERS.length > 0 && !ALLOWED_USERS.includes(userId)) {
+    bot.answerCallbackQuery(query.id, { text: '🔒 Không có quyền', show_alert: true });
+    return;
+  }
+  if (!checkRateLimit(query.from?.id || 'unknown')) {
+    bot.answerCallbackQuery(query.id, { text: '⏳ Quá nhiều thao tác', show_alert: true });
+    return;
+  }
+
   // Acknowledge button press
   bot.answerCallbackQuery(query.id);
 
@@ -920,25 +940,73 @@ ${resultSummary}
 });
 
 // ===== ERROR HANDLING =====
+// Polling đã tắt — không còn polling_error.
+// Nếu ai đó bật polling lại nhầm, vẫn log cảnh báo.
 bot.on('polling_error', (err) => {
-  console.error('[BOT] Polling error:', err.message);
-  // Phát hiện xung đột 409 — token đang bị dùng bởi tiến trình khác
-  if (err.message && err.message.includes('409')) {
-    console.error('\x1b[31m' +
-      '══════════════════════════════════════════════════════════════\n' +
-      'CẢNH BÁO: Token Bot đang bị tranh chấp bởi một tiến trình khác!\n' +
-      'Vui lòng tạo Bot mới trên @BotFather và cập nhật CEO_DIR_BOT_TOKEN.\n' +
-      '══════════════════════════════════════════════════════════════' +
-      '\x1b[0m');
+  console.error('[BOT] ⚠ UNEXPECTED polling_error (polling should be OFF):', err.message);
+  notifyAdmin(err, 'unexpected_polling_error');
+});
+
+// ===== WEBHOOK HTTP SERVER =====
+// Nhận updates từ OpenClaw Gateway qua POST /telegram-hook
+const hookServer = http.createServer((req, res) => {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
+
+  // Health check
+  if (req.url === '/health' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ status: 'ok', mode: 'webhook', uptime: process.uptime() }));
   }
-  notifyAdmin(err, 'polling_error');
+
+  // Only accept POST /telegram-hook
+  if (req.url !== '/telegram-hook' || req.method !== 'POST') {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Not found. Use POST /telegram-hook' }));
+  }
+
+  // Auth check
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace('Bearer ', '');
+  if (token !== AUTH_TOKEN) {
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Unauthorized' }));
+  }
+
+  // Read body
+  let body = '';
+  req.on('data', chunk => body += chunk);
+  req.on('end', () => {
+    try {
+      const update = JSON.parse(body);
+      console.log('[BOT] 📩 Received webhook update:', JSON.stringify(update).slice(0, 200));
+
+      // Process the Telegram update via node-telegram-bot-api
+      bot.processUpdate(update);
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'ok', processed: true }));
+    } catch (err) {
+      console.error('[BOT] ✖ Webhook parse error:', err.message);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid JSON', details: err.message }));
+    }
+  });
+});
+
+hookServer.listen(HOOK_PORT, () => {
+  console.log(`[BOT] ☑ Webhook server listening on port ${HOOK_PORT}`);
+  console.log(`[BOT] ☑ Endpoint: POST http://localhost:${HOOK_PORT}/telegram-hook`);
+  console.log('[BOT] ☑ Waiting for updates from OpenClaw Gateway...');
 });
 
 // ===== TEST MODE =====
 if (process.argv.includes('--test')) {
   console.log('[BOT] Test mode — sending test message...');
   if (ADMIN_CHAT_ID) {
-    bot.sendMessage(ADMIN_CHAT_ID, '🧪 *TEST* — CEO Directive Bot hoạt động!', { parse_mode: 'Markdown' })
+    bot.sendMessage(ADMIN_CHAT_ID, '🧪 *TEST* — CEO Directive Bot (webhook mode) hoạt động!', { parse_mode: 'Markdown' })
       .then(() => {
         console.log('[BOT] ☑ Test message sent successfully');
         setTimeout(() => process.exit(0), 2000);
@@ -949,8 +1017,7 @@ if (process.argv.includes('--test')) {
       });
   } else {
     console.log('[BOT] ⚠️ ADMIN_CHAT_ID not set, cannot send test message');
-    console.log('[BOT] Bot is running. Send /start to the bot in Telegram.');
   }
 }
 
-console.log('[BOT] ☑ Bot đang polling... Gõ /start trên Telegram.');
+console.log('[BOT] ☑ Bot khởi động (webhook mode — KHÔNG polling).');

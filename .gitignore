@@ -24,6 +24,8 @@ automation/.env
 web/.env*
 *.key
 .clasprc.json
+sb_token.json
+running_processes.txt
 
 # Google Apps Script
 .clasp_cache/
