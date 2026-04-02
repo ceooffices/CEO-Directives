@@ -950,8 +950,9 @@ bot.on('polling_error', (err) => {
 // ===== WEBHOOK HTTP SERVER =====
 // Nhận updates từ OpenClaw Gateway qua POST /telegram-hook
 const hookServer = http.createServer((req, res) => {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS — chỉ cho phép từ OpenClaw Gateway (localhost)
+  const allowedOrigin = process.env.OPENCLAW_GATEWAY_ORIGIN || 'http://localhost:3100';
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
 
