@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NemoClaw CEO</title>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --glow-1: rgba(10, 132, 255, 0.3); 
+      --glow-2: rgba(191, 90, 242, 0.2);
+      
+      --glass-surface: rgba(28, 28, 30, 0.5);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(235, 235, 245, 0.6);
+      --text-tertiary: rgba(235, 235, 245, 0.3);
+      
+      --accent: #0A84FF;
+      --success: #32D74B;
+      --danger: #FF453A;
+      --warning: #FF9F0A;
+      
+      --radius-sm: 14px;
+      --radius-md: 20px;
+      --radius-lg: 32px;
+      --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) 120px env(safe-area-inset-left);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .ambient-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+      background: radial-gradient(circle at 10% 20%, var(--glow-1) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, var(--glow-2) 0%, transparent 40%);
+      animation: breathe 8s ease-in-out infinite alternate;
+      filter: blur(60px);
+    }
+    @keyframes breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.8; } 100% { transform: scale(1.1) translate(-2%, 2%); opacity: 1; } }
+
+    h1 { 
+      font-size: 38px; font-weight: 800; letter-spacing: -1.2px; 
+      margin-bottom: 8px; padding: 0 24px; margin-top: 24px; text-align: center;
+      background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .subtitle { text-align: center; color: var(--text-secondary); font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+    
+    .container { max-width: 100%; padding: 0 16px; margin: 0 auto; }
+    @media (min-width: 800px) { .container { max-width: 600px; } }
+
+    /* HEARTBEAT CORE (NHỊP ĐẬP SỐNG) */
+    .heart-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px 0 40px; position: relative;
+    }
+    .heart-orb {
+      width: 86px; height: 86px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--success) 40%, #004d00 80%);
+      box-shadow: 0 0 40px var(--success), inset 0 0 20px #fff;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      font-weight: 800; font-size: 26px; color: #fff; z-index: 10;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .heart-orb.err {
+      background: radial-gradient(circle at 30% 30%, #fff, var(--danger) 40%, #500000 80%);
+      box-shadow: 0 0 40px var(--danger), inset 0 0 20px #fff;
+      animation: heartbeat-err 0.5s ease-in-out infinite; /* Đập nhanh như hồi hộp */
+    }
+    .heart-orb span { font-size: 11px; font-weight: 600; opacity: 0.8; margin-top: -4px; letter-spacing: 1px;}
+    
+    .heart-ring {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 86px; height: 86px; border-radius: 50%;
+      border: 2px solid var(--success); opacity: 0;
+      animation: ripple 1.5s linear infinite; z-index: 1;
+    }
+    .heart-ring.err { border-color: var(--danger); animation-duration: 0.5s;}
+    .heart-ring.r2 { animation-delay: 0.5s; }
+    .heart-ring.r3 { animation-delay: 1.0s; }
+
+    @keyframes heartbeat {
+      0% { transform: scale(0.95); box-shadow: 0 0 20px var(--success); }
+      15% { transform: scale(1.1); box-shadow: 0 0 50px var(--success), 0 0 80px rgba(50,215,75,0.4); }
+      30% { transform: scale(1.0); box-shadow: 0 0 30px var(--success); }
+      45% { transform: scale(1.05); box-shadow: 0 0 40px var(--success); }
+      100% { transform: scale(0.95); box-shadow: 0 0 20px var(--success); }
+    }
+    @keyframes heartbeat-err {
+      0% { transform: scale(0.9); box-shadow: 0 0 20px var(--danger); }
+      50% { transform: scale(1.2); box-shadow: 0 0 80px var(--danger); }
+      100% { transform: scale(0.9); box-shadow: 0 0 20px var(--danger); }
+    }
+    @keyframes ripple {
+      0% { width: 86px; height: 86px; opacity: 0.8; border-width: 4px; }
+      100% { width: 200px; height: 200px; opacity: 0; border-width: 0px; }
+    }
+
+    /* GLOBAL LIVE FEED (DÒNG CHẢY HỆ THỐNG) */
+    .global-feed {
+      background: rgba(0,0,0,0.6); padding: 12px 14px; border-radius: var(--radius-md);
+      margin-bottom: 24px; font-family: 'SF Mono', Consolas, monospace; font-size: 11px;
+      height: 140px; overflow: hidden; position: relative;
+      border: 1px solid var(--glass-border);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    }
+    /* Fade out top and bottom for smooth scrolling illusion */
+    .global-feed::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 20px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 2;
+    }
+    .global-feed::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 30px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); z-index: 2;
+    }
+    .feed-content {
+      display: flex; flex-direction: column; gap: 6px; padding-top: 10px; padding-bottom: 30px;
+      transition: transform 0.3s ease-out;
+    }
+    .feed-line {
+      color: var(--success); text-shadow: 0 0 4px rgba(50,215,75,0.4);
+      opacity: 0; transform: translateY(10px);
+      animation: feed-in 0.4s forwards;
+      line-height: 1.4; word-break: break-all;
+    }
+    .feed-line.sys { color: #5AC8FA; text-shadow: 0 0 4px rgba(90,200,250,0.4); }
+    .feed-line.err { color: var(--danger); text-shadow: 0 0 6px var(--danger); font-weight: bold; }
+    .feed-line .time { color: var(--text-tertiary); margin-right: 6px; text-shadow: none; font-weight: normal; }
+    .feed-line .src { display: inline-block; padding: 1px 4px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-right: 6px; font-size: 9px; vertical-align: middle; }
+    @keyframes feed-in { to { opacity: 1; transform: translateY(0); } }
+
+    /* CARD LIST */
+    .services-grid { display: flex; flex-direction: column; gap: 20px; }
+    .service-card {
+      background: var(--glass-surface); border-radius: var(--radius-lg); padding: 20px;
+      backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border: 1px solid var(--glass-border); box-shadow: var(--glass-highlight), 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .service-card:active { transform: scale(0.98); }
+
+    .svc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    
+    .svc-badge {
+      font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    }
+    .svc-badge.on { color: var(--success); }
+    .svc-badge.off { color: var(--danger); }
+    .svc-id { font-size: 12px; font-family: 'SF Mono', monospace; color: var(--text-tertiary); }
+
+    .svc-icon-name { display: flex; align-items: center; gap: 16px; margin-bottom: 12px;}
+    .svc-icon { 
+      font-size: 28px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.06); border-radius: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .svc-name { font-size: 22px; font-weight: 700; letter-spacing: -0.6px; }
+    .svc-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; font-weight: 400;}
+    
+    /* TECH METRICS (Bands that flow data) */
+    .metrics-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .metric-row { display: flex; align-items: center; gap: 12px; }
+    .metric-lbl { width: 40px; font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px;}
+    .metric-bar-bg { flex: 1; height: 8px; background: rgba(0,0,0,0.5); border-radius: 100px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);}
+    
+    /* THE DATA FLOW EFFECT */
+    .metric-bar-fill { 
+      height: 100%; border-radius: 100px;
+      transition: width 0.5s ease-out;
+    }
+    .metric-bar-fill.flow {
+      background-image: linear-gradient(-45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent);
+      background-size: 20px 20px;
+      animation: data-stream 1s linear infinite;
+    }
+    @keyframes data-stream { 0% { background-position: 0 0; } 100% { background-position: 20px 0; } }
+    
+    .metric-val { width: 50px; text-align: right; font-size: 12px; font-family: 'SF Mono', monospace; font-weight: 600; }
+
+    /* ACTION BUTTONS */
+    .card-actions { display: flex; gap: 10px; margin-bottom: 8px;}
+    .btn-action {
+      flex: 1; height: 44px; border-radius: var(--radius-sm); border: none;
+      font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s; backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+    }
+    .btn-action:active { transform: scale(0.92); }
+    .btn-start { background: rgba(50, 215, 75, 0.15); color: var(--success); }
+    .btn-stop { background: rgba(255, 69, 58, 0.1); color: var(--danger); }
+    .btn-restart { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
+
+    /* BOTTOM GLASS ACTION BAR */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(50px) saturate(200%); -webkit-backdrop-filter: blur(50px) saturate(200%);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; gap: 12px; z-index: 100;
+    }
+    .btn-mega {
+      flex: 1; height: 56px; border-radius: 18px; border: none;
+      font-size: 17px; font-weight: 700; font-family: var(--font); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-mega:active { transform: scale(0.92); }
+    .btn-mega.primary { 
+      background: linear-gradient(135deg, var(--accent), #5E5CE6, #BF5AF2);
+      background-size: 200% 200%; animation: gradientBtn 3s ease infinite;
+      color: white; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 20px rgba(10,132,255,0.3);
+    }
+    @keyframes gradientBtn { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .btn-mega.danger { background: rgba(44, 44, 46, 0.8); color: var(--danger); border: 1px solid rgba(255,255,255,0.05); }
+
+    .loading-strip { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 1000; background: transparent; }
+    .loading-strip.active::after { content: ''; display: block; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: loading 1s infinite; }
+    @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
+
+    .toast-wrapper { position: fixed; top: calc(env(safe-area-inset-top) + 20px); left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2000; pointer-events: none; }
+    .toast { background: rgba(255,255,255,0.95); color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 600; font-size: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(20px); animation: dropIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), fadeOut 0.4s ease 3s forwards; }
+    @keyframes dropIn { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); } }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg"></div>
+  <div class="loading-strip" id="loader"></div>
+  <div class="toast-wrapper" id="toast-bin"></div>
+
+  <h1>Trái Tim NemoClaw</h1>
+  <div class="subtitle">Live System Monitor</div>
+  
+  <div class="container">
+    <!-- HEARTBEAT CORE -->
+    <div class="heart-container" id="hero">
+      <div class="heart-orb" id="heart-orb">
+        <span id="heart-count">0/0</span>
+        Core
+      </div>
+      <div class="heart-ring"></div>
+      <div class="heart-ring r2"></div>
+      <div class="heart-ring r3"></div>
+    </div>
+
+    <!-- GLOBAL LIVE FEED (MATRIX) -->
+    <div class="global-feed" id="feed-box">
+      <div class="feed-content" id="feed-content">
+        <div class="feed-line time">... đang đồng bộ dòng chảy dữ liệu ...</div>
+      </div>
+    </div>
+
+    <div class="services-grid" id="svcs"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="btn-mega danger" onclick="apiCall('/api/stop-all')" style="flex: 0.8;">Ngắt toàn bộ</button>
+    <button class="btn-mega primary" onclick="apiCall('/api/start-all')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      Truyền năng lượng
+    </button>
+  </div>
+
+  <script>
+    const POLL_INT = 1500; // Fast polling for true heartbeat
+    const STATE = { scopes: {}, knownLogs: new Set(), globalLogQueue: [] };
+
+    function toast(m) {
+      const b = document.getElementById("toast-bin");
+      const e = document.createElement("div"); e.className = "toast"; e.textContent = m;
+      b.appendChild(e); setTimeout(() => e.remove(), 4000);
+    }
+
+    function timeFmt(s) {
+      if(!s || s<60) return s+"s";
+      if(s<3600) return Math.floor(s/60)+"m "+(s%60)+"s";
+      const h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h+"h "+m+"m";
+    }
+
+    function extractNum(str) { const m = parseFloat(str); return isNaN(m) ? 0 : m; }
+
+    function apiCall(u) {
+      document.getElementById('loader').classList.add('active');
+      if(navigator.vibrate) navigator.vibrate(50);
+      fetch(u).then(r=>r.json()).then(d=>{toast(d.msg||"Thao tác thành công");setTimeout(fetchData,500)})
+      .catch(e=>toast("Lỗi mạng!")).finally(()=>document.getElementById('loader').classList.remove('active'));
+    }
+
+    function stopSvc(id) {
+      if(navigator.vibrate) navigator.vibrate([30, 50, 30]);
+      const warn = STATE.scopes[id] || "Dịch vụ sẽ bị ngắt.";
+      if(confirm("⚠️ TẠM DỪNG HỆ THỐNG:\n\n" + warn + "\n\nXác nhận ngắt?")) apiCall("/api/stop/"+id);
+    }
+
+    // Xử lý dòng chảy Log
+    function processLogs(svcs) {
+      let newLogs = [];
+      svcs.forEach(s => {
+        if(!s.recentLogs) return;
+        s.recentLogs.forEach(l => {
+          let hash = s.id + l.time + l.text;
+          if(!STATE.knownLogs.has(hash)) {
+            STATE.knownLogs.add(hash);
+            newLogs.push({ svc: s.id, time: l.time, text: l.text });
+          }
+        });
+      });
+      if(newLogs.length > 0) {
+        const fc = document.getElementById('feed-content');
+        newLogs.forEach(l => {
+          let c="feed-line"; if(l.text.includes("[PM2]")||l.text.includes("SYSTEM"))c+=" sys"; else if(l.text.includes("FAIL")||l.text.includes("ERROR"))c+=" err";
+          let line = document.createElement('div'); line.className = c;
+          let svcName = l.svc.replace('ceo-','');
+          line.innerHTML = `<span class="time">${l.time}</span><span class="src">${svcName}</span> ${l.text.replace(/</g,'&lt;')}`;
+          fc.appendChild(line);
+        });
+        // Scroll to bottom logically
+        const box = document.getElementById('feed-box');
+        box.scrollTop = box.scrollHeight;
+        
+        // Remove old logs to save memory
+        while(fc.childNodes.length > 50) fc.removeChild(fc.firstChild);
+      }
+    }
+
+    function renderData(data) {
+      const svcs = data.services;
+      const onCnt = svcs.filter(s=>s.alive).length, tot = svcs.length;
+      
+      // Update Heart Core
+      const orb = document.getElementById('heart-orb');
+      document.getElementById('heart-count').innerText = `${onCnt}/${tot}`;
+      if(onCnt < tot) {
+        orb.className = 'heart-orb err';
+        document.querySelectorAll('.heart-ring').forEach(r => r.className = r.className.replace('heart-ring', 'heart-ring err'));
+      } else {
+        orb.className = 'heart-orb';
+        document.querySelectorAll('.heart-ring').forEach(r => r.className = r.className.replace('err', ''));
+      }
+
+      // Process Live Logs
+      processLogs(svcs);
+
+      // Cards
+      document.getElementById('svcs').innerHTML = svcs.map((s, i) => {
+        const a = s.alive;
+        if(s.scope) STATE.scopes[s.id] = s.scope;
+        
+        let cCpu = extractNum(s.cpu), cRam = extractNum(s.memory);
+        const cpuColor = cCpu > 80 ? 'var(--danger)' : (cCpu > 40 ? 'var(--warning)' : 'var(--accent)');
+        const ramColor = cRam > 200 ? 'var(--danger)' : 'var(--accent)';
+
+        let mHtml = "";
+        if(a) {
+          mHtml = `
+            <div class="metrics-container">
+              <div class="metric-row">
+                <div class="metric-lbl">CPU</div>
+                <div class="metric-bar-bg"><div class="metric-bar-fill flow" style="width: ${Math.min(cCpu, 100)}%; background-color: ${cpuColor}"></div></div>
+                <div class="metric-val" style="color: ${cpuColor}">${s.cpu||'0%'}</div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-lbl">RAM</div>
+                <div class="metric-bar-bg"><div class="metric-bar-fill flow" style="width: ${Math.min((cRam/500)*100, 100)}%; background-color: ${ramColor}"></div></div>
+                <div class="metric-val">${s.memory||'0MB'}</div>
+              </div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;">
+              Uptime: <span style="color: var(--text-primary); font-family: 'SF Mono', monospace;">${timeFmt(s.uptime)}</span>
+              <span style="color: var(--text-tertiary); margin: 0 8px;">|</span>
+              PID: <span style="font-family: 'SF Mono', monospace;">${s.pid||'--'}</span>
+            </div>
+          `;
+        } else {
+           mHtml = `<div style="font-size: 13px; color: var(--danger); margin-bottom: 20px; padding: 10px; background: rgba(255, 69, 58, 0.1); border-radius: 8px;">Dịch vụ ngắt kết nối. Không có tiến trình hoạt động.</div>`;
+        }
+
+        return `
+          <div class="service-card">
+            <div class="svc-top">
+              <div class="svc-badge ${a?'on':'off'}"><span class="pulse-dot ${a?'on':'off'}"></span> ${a?'Online':'Offline'}</div>
+              <div class="svc-id">${s.id}</div>
+            </div>
+            <div class="svc-icon-name">
+              <div class="svc-icon">${s.icon||'⚡️'}</div>
+              <div class="svc-name">${s.name}</div>
+            </div>
+            <div class="svc-desc">${s.detail || s.desc}</div>
+            
+            ${mHtml}
+
+            <div class="card-actions">
+              ${!a ? `<button class="btn-action btn-start" onclick="apiCall('/api/start/${s.id}')">Kích hoạt</button>` : ''}
+              ${a ? `<button class="btn-action btn-stop" onclick="stopSvc('${s.id}')">Ngắt / Tắt</button>` : ''}
+              <button class="btn-action btn-restart" onclick="apiCall('/api/restart/${s.id}')">Khởi động lại</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function fetchData() { fetch('/api/status').then(r=>r.json()).then(renderData).catch(e=>{}); }
+    fetchData(); setInterval(fetchData, POLL_INT);
+  </script>
+</body>
+</html>

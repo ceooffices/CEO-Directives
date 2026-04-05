@@ -32,9 +32,9 @@ const bible = require('./content-bible');
 const BOT_TOKEN = process.env.CEO_DIR_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
 const BRIDGE_URL = process.env.BRIDGE_URL || `http://localhost:${process.env.PORT_BRIDGE || '3101'}`;
-const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN;
+const AUTH_TOKEN = process.env.NEMOCLAW_GATEWAY_TOKEN;
 if (!AUTH_TOKEN) {
-  console.error('[BOT] ❌ OPENCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
+  console.error('[BOT] ❌ NEMOCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
   process.exit(1);
 }
 const HOOK_PORT = parseInt(process.env.PORT_TELEGRAM_HOOK || '3102');
@@ -359,8 +359,8 @@ function progressBar(pct) {
 }
 
 // ===== BOT SETUP =====
-// ⚠ polling: false — OpenClaw Gateway là nơi duy nhất polling token này
-// telegram-bot.js nhận updates qua HTTP webhook từ OpenClaw/Bridge
+// ⚠ polling: false — NemoClaw Gateway là nơi duy nhất polling token này
+// telegram-bot.js nhận updates qua HTTP webhook từ NemoClaw/Bridge
 const bot = new TelegramBot(BOT_TOKEN, { polling: false });
 
 console.log('==========================================');
@@ -948,10 +948,10 @@ bot.on('polling_error', (err) => {
 });
 
 // ===== WEBHOOK HTTP SERVER =====
-// Nhận updates từ OpenClaw Gateway qua POST /telegram-hook
+// Nhận updates từ NemoClaw Gateway qua POST /telegram-hook
 const hookServer = http.createServer((req, res) => {
-  // CORS — chỉ cho phép từ OpenClaw Gateway (localhost)
-  const allowedOrigin = process.env.OPENCLAW_GATEWAY_ORIGIN || 'http://localhost:3100';
+  // CORS — chỉ cho phép từ NemoClaw Gateway (localhost)
+  const allowedOrigin = process.env.NEMOCLAW_GATEWAY_ORIGIN || 'http://localhost:3100';
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
@@ -1000,7 +1000,7 @@ const hookServer = http.createServer((req, res) => {
 hookServer.listen(HOOK_PORT, () => {
   console.log(`[BOT] ☑ Webhook server listening on port ${HOOK_PORT}`);
   console.log(`[BOT] ☑ Endpoint: POST http://localhost:${HOOK_PORT}/telegram-hook`);
-  console.log('[BOT] ☑ Waiting for updates from OpenClaw Gateway...');
+  console.log('[BOT] ☑ Waiting for updates from NemoClaw Gateway...');
 });
 
 // ===== TEST MODE =====

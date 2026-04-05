@@ -11,7 +11,7 @@
     "start:dry": "node scheduler.js --dry-run",
     "bot": "node telegram-bot.js",
     "bot:test": "node telegram-bot.js --test",
-    "bridge": "node openclaw-bridge.js",
+    "bridge": "node nemoclaw-bridge.js",
     "bridge:test": "node -e \"const http=require('http');http.get('http://localhost:3100/health',r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log(d))})\"",
     "wf1": "node wf1-approval.js",
     "wf1:dry": "node wf1-approval.js --dry-run",
@@ -67,6 +67,7 @@
     "nodemailer": "^6.9.0",
     "openai": "^4.0.0",
     "pg": "^8.20.0",
+    "pm2": "^6.0.14",
     "puppeteer": "^24.39.1"
   }
 }

@@ -9,9 +9,9 @@ echo   %date% %time%
 echo ==========================================
 echo.
 echo   [1] AI Scheduler (Claude-powered)
-echo   [2] OpenClaw Bridge (HTTP :PORT_BRIDGE)
+echo   [2] NemoClaw Bridge (HTTP :PORT_BRIDGE)
 echo   [3] Static Dashboard (HTTP :PORT_DASHBOARD)
-echo   NOTE: Telegram Bot = OpenClaw Gateway (token da chuyen sang OpenClaw)
+echo   NOTE: Telegram Bot = NemoClaw Gateway (token da chuyen sang NemoClaw)
 echo.
 echo ==========================================
 echo.
@@ -30,18 +30,18 @@ if exist ".env" (
   )
 )
 
-:: --- Telegram Bot: da chuyen sang OpenClaw Gateway ---
+:: --- Telegram Bot: da chuyen sang NemoClaw Gateway ---
 :: Khong start telegram-bot.js o day de tranh conflict bot token
-:: Bot token 8530719394 duoc quan ly boi OpenClaw (account: ceo-directives)
+:: Bot token 8530719394 duoc quan ly boi NemoClaw (account: ceo-directives)
 
 :: --- Start AI Scheduler ---
 echo [START] AI Scheduler (Claude-powered)...
 start "CEO-Scheduler" /min cmd /k "cd /d %~dp0 && node ai-scheduler.js"
 timeout /t 1 /nobreak >nul
 
-:: --- Start OpenClaw Bridge ---
-echo [START] OpenClaw Bridge (port %PORT_BRIDGE%)...
-start "CEO-Bridge" /min cmd /k "cd /d %~dp0 && node openclaw-bridge.js"
+:: --- Start NemoClaw Bridge ---
+echo [START] NemoClaw Bridge (port %PORT_BRIDGE%)...
+start "CEO-Bridge" /min cmd /k "cd /d %~dp0 && node nemoclaw-bridge.js"
 timeout /t 1 /nobreak >nul
 
 :: --- Start Static File Server for Dashboard ---
@@ -54,7 +54,7 @@ echo ==========================================
 echo   TAT CA DA KHOI DONG!
 echo ==========================================
 echo.
-echo   Telegram Bot:    OpenClaw Gateway (token quan ly boi OpenClaw)
+echo   Telegram Bot:    NemoClaw Gateway (token quan ly boi NemoClaw)
 echo   AI Scheduler:    dang chay (Claude-powered)
 echo   Bridge:          http://localhost:%PORT_BRIDGE%
 echo   Dashboard:       http://127.0.0.1:%PORT_DASHBOARD%/data/dashboard/

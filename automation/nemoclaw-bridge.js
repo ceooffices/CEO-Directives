@@ -1,13 +1,13 @@
 /**
- * openclaw-bridge.js
- * CEO Directive Automation — OpenClaw Bridge
+ * nemoclaw-bridge.js
+ * CEO Directive Automation — NemoClaw Bridge
  * 
- * HTTP server nhận lệnh từ OpenClaw gateway hoặc Telegram bot
+ * HTTP server nhận lệnh từ NemoClaw gateway hoặc Telegram bot
  * → Dispatch WF1-6, hm50-linker, status queries
  * 
  * Usage:
- *   node openclaw-bridge.js              # Start bridge on port 3100
- *   node openclaw-bridge.js --port 3200  # Custom port
+ *   node nemoclaw-bridge.js              # Start bridge on port 3100
+ *   node nemoclaw-bridge.js --port 3200  # Custom port
  */
 
 require('dotenv').config();
@@ -16,9 +16,9 @@ const { URL } = require('url');
 
 // ===== CONFIG =====
 const PORT = parseInt(process.argv.find((a, i, arr) => arr[i - 1] === '--port') || process.env.PORT_BRIDGE || '3101');
-const AUTH_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN;
+const AUTH_TOKEN = process.env.NEMOCLAW_GATEWAY_TOKEN;
 if (!AUTH_TOKEN) {
-  console.error('[BRIDGE] ❌ OPENCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
+  console.error('[BRIDGE] ❌ NEMOCLAW_GATEWAY_TOKEN chưa cấu hình trong .env');
   process.exit(1);
 }
 

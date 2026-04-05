@@ -193,7 +193,7 @@ function formatReportEmail(report) {
   </div>` : ''}
 
   <div class="footer">
-    CEO Directive Automation — OpenClaw R&D<br>
+    CEO Directive Automation — NemoClaw R&D<br>
     AI tokens: ${report.totalTokens || 0} | Model: gpt-4o-mini
   </div>
 </body>
