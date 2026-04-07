@@ -28,8 +28,8 @@ const session = require('./session-manager');
 const bible = require('./content-bible');
 
 // ===== CONFIG =====
-// Ưu tiên CEO_DIR_BOT_TOKEN (token riêng) → fallback TELEGRAM_BOT_TOKEN / BOT_TOKEN
-const BOT_TOKEN = process.env.CEO_DIR_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
+// ✅ Dùng chung token NemoClaw (8282...) — 1 bot duy nhất
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || process.env.ADMIN_USER_IDS;
 const BRIDGE_URL = process.env.BRIDGE_URL || `http://localhost:${process.env.PORT_BRIDGE || '3101'}`;
 const AUTH_TOKEN = process.env.NEMOCLAW_GATEWAY_TOKEN;
