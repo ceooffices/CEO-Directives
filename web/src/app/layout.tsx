@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -11,12 +11,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Bảng Điều Hành Chỉ Đạo — EsuhaiGroup",
   description: "Bảng điều hành chỉ đạo CEO. Theo dõi tiến độ, leo thang, chiến lược.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    viewportFit: "cover",
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
