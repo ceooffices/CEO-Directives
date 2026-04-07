@@ -56,13 +56,13 @@ test('web/.env* is in .gitignore', () => {
 console.log('\n▸ Hardcoded secrets:');
 
 const bridgeCode = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'automation', 'openclaw-bridge.js'), 'utf-8'
+  path.join(__dirname, '..', '..', 'automation', 'nemoclaw-bridge.js'), 'utf-8'
 );
 const botCode = fs.readFileSync(
   path.join(__dirname, '..', '..', 'automation', 'telegram-bot.js'), 'utf-8'
 );
 
-test('openclaw-bridge.js has NO hardcoded fallback token', () => {
+test('nemoclaw-bridge.js has NO hardcoded fallback token', () => {
   assert(!bridgeCode.includes('ceo-directives-r8d-2026-esuhai-secure-token'),
     'Hardcoded token still present in bridge!');
 });
@@ -72,29 +72,29 @@ test('telegram-bot.js has NO hardcoded fallback token', () => {
     'Hardcoded token still present in bot!');
 });
 
-test('openclaw-bridge.js requires OPENCLAW_GATEWAY_TOKEN from env', () => {
-  assert(bridgeCode.includes('process.env.OPENCLAW_GATEWAY_TOKEN'),
+test('nemoclaw-bridge.js requires NEMOCLAW_GATEWAY_TOKEN from env', () => {
+  assert(bridgeCode.includes('process.env.NEMOCLAW_GATEWAY_TOKEN'),
     'Missing env token read in bridge');
   assert(bridgeCode.includes("process.exit(1)"),
     'Missing process.exit on missing token');
 });
 
-test('telegram-bot.js requires OPENCLAW_GATEWAY_TOKEN from env', () => {
-  assert(botCode.includes('process.env.OPENCLAW_GATEWAY_TOKEN'),
+test('telegram-bot.js requires NEMOCLAW_GATEWAY_TOKEN from env', () => {
+  assert(botCode.includes('process.env.NEMOCLAW_GATEWAY_TOKEN'),
     'Missing env token read in bot');
 });
 
 // ===== 3. CORS restriction =====
 console.log('\n▸ CORS policy:');
 
-test('openclaw-bridge.js does NOT have CORS wildcard *', () => {
+test('nemoclaw-bridge.js does NOT have CORS wildcard *', () => {
   // Check that there's no `'*'` immediately after Allow-Origin
   const wildcardPattern = /Allow-Origin.*'\*'/;
   assert(!wildcardPattern.test(bridgeCode),
     'CORS wildcard still present!');
 });
 
-test('openclaw-bridge.js uses env-based CORS origin', () => {
+test('nemoclaw-bridge.js uses env-based CORS origin', () => {
   assert(bridgeCode.includes("process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app'"),
     'Should use env DASHBOARD_URL for CORS origin');
 });
