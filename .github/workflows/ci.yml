@@ -38,4 +38,4 @@ jobs:
           cache-dependency-path: automation/package-lock.json
       - run: npm ci
         working-directory: automation
-      - run: node tests/unit/run-all.js
+      - run: node tests/run-all.js
