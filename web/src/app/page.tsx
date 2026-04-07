@@ -1,9 +1,9 @@
-import { getDashboardStatsFromSupabase, getBSCFromSupabase, getDirectiveOriginsFromSupabase, getBODTimelineFromSupabase, getAlertDirectives, getAllDirectivesForDrilldown } from "@/lib/supabase";
+import { getDashboardStatsFromSupabase, getBSCFromSupabase, getDirectiveOriginsFromSupabase, getBODTimelineFromSupabase, getAlertDirectives, getAllDirectivesForDrilldown, getKPIActual } from "@/lib/supabase";
 import DirectiveTable from "@/app/components/directive-table";
 import HM50Heatmap from "@/app/components/hm50-heatmap";
 import BODTimeline from "@/app/components/bod-timeline";
 import BSCScorecard from "@/app/components/bsc-scorecard";
-import LELONGSONPipelineView from "@/app/components/lelongson-pipeline";
+import QuyTrinhPipeline from "@/app/components/quy-trinh-pipeline";
 import DirectiveOrigin from "@/app/components/directive-origin";
 import CompanyTargets from "@/app/components/company-targets";
 import AlertPanel from "@/app/components/alert-panel";
@@ -50,12 +50,13 @@ function getUrgency(d: DisplayDirective): "green" | "yellow" | "red" | "black" |
 
 export default async function DashboardPage() {
   const [
-    { stats, byDauMoi, directives, lelongsonPipeline },
+    { stats, byDauMoi, directives, lelongsonPipeline, quyTrinhPipeline },
     bodTimeline,
     { bscPerspectives, matchSummary },
     origins,
     alertDirectives,
     drilldownDirectives,
+    kpiActual,
   ] = await Promise.all([
     getDashboardStatsFromSupabase(),
     getBODTimelineFromSupabase(),
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
     getDirectiveOriginsFromSupabase(),
     getAlertDirectives(),
     getAllDirectivesForDrilldown(),
+    getKPIActual(),
   ]);
 
   const traffic = { green: 0, yellow: 0, red: 0, black: 0, done: 0 };
@@ -71,15 +73,17 @@ export default async function DashboardPage() {
     traffic[u]++;
   }
 
-  const completionRate = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
-  // Health Score mới — dựa trên tiến độ thực tế
-  // Mỗi directive được tính điểm: hoàn thành=100, đang thực hiện=60, xác nhận=30, chờ=5
+          const completionRate = stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
+  // Health Score mới — dựa trên tiến độ tổng thể và overdue
+  // Điểm cơ sở: Hoàn thành=1, Đang thực hiện=0.6, Chờ=0.3
   const progressPoints = stats.total > 0
-    ? ((stats.completed * 100) + (stats.active * 60) + (stats.confirmed * 30) + (stats.pending * 5)) / (stats.total * 100) * 100
+    ? ((stats.completed * 100) + (stats.active * 60) + (stats.confirmed * 60) + (stats.pending * 30)) / (stats.total * 100) * 100
     : 0;
-  // Trừ điểm overdue: mỗi directive quá hạn trừ 3 điểm
-  const overduePenalty = stats.total > 0 ? (stats.overdue / stats.total) * 30 : 0;
-  const healthScore = Math.max(0, Math.min(100, Math.round(progressPoints - overduePenalty)));
+  
+  // Phạt điểm: Mỗi directive bị quá hạn trừ 5 điểm, tối đa trừ 50 điểm
+  const overduePenalty = Math.min(stats.overdue * 5, 50);
+  
+  const healthScore = stats.total > 0 ? Math.max(0, Math.min(100, Math.round(progressPoints - overduePenalty))) : 0;
 
   const leaders = Object.entries(byDauMoi)
     .map(([name, data]) => ({ name, ...data, completionRate: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0 }))
@@ -113,28 +117,28 @@ export default async function DashboardPage() {
   const now = new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-[#F2F2F7]">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+      <header className="sticky top-0 z-50 border-b border-[#E5E5EA] bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3 sm:max-w-2xl lg:max-w-4xl sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-blue-500/25">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#007AFF] to-[#5AC8FA] text-sm font-bold text-white shadow-sm shadow-blue-500/20">
               CD
             </div>
             <div>
-              <h1 className="text-[17px] font-semibold tracking-tight text-white">
-                CEO Dashboard
+              <h1 className="text-[20px] font-semibold tracking-tight text-[#1C1C1E]">
+                Bảng Điều Hành Chỉ Đạo
               </h1>
-              <p className="text-[12px] text-zinc-500">EsuhaiGroup · {now}</p>
+              <p className="text-[15px] text-[#6C6C70]">EsuhaiGroup · {now}</p>
             </div>
           </div>
         </div>
-        {/* Target banner — lấy từ COMPANY_TARGETS config */}
-        <div className="border-t border-zinc-800/40 px-4 py-2 text-center text-[12px] text-zinc-500 sm:px-6">
+        {/* Target banner */}
+        <div className="bg-[#F9F9FB] border-t border-[#E5E5EA] px-4 py-3 text-center text-[15px] text-[#6C6C70] sm:px-6">
           Mục tiêu {COMPANY_TARGETS.year}:{" "}
-          <span className="font-bold text-emerald-400">{COMPANY_TARGETS.tuyen_sinh.toLocaleString("vi-VN")}</span> tuyển sinh ·{" "}
-          <span className="font-bold text-blue-400">{COMPANY_TARGETS.xuat_canh.toLocaleString("vi-VN")}</span> xuất cảnh ·{" "}
-          <span className="font-bold text-zinc-300">{COMPANY_TARGETS.hm_chien_luoc} HM</span> chiến lược
+          <span className="font-semibold text-[#34C759]">{COMPANY_TARGETS.tuyen_sinh.toLocaleString("vi-VN")}</span> tuyển sinh ·{" "}
+          <span className="font-semibold text-[#007AFF]">{COMPANY_TARGETS.xuat_canh.toLocaleString("vi-VN")}</span> xuất cảnh ·{" "}
+          <span className="font-semibold text-[#1C1C1E]">{COMPANY_TARGETS.hm_chien_luoc} HM</span> chiến lược
         </div>
       </header>
 
@@ -147,10 +151,10 @@ export default async function DashboardPage() {
               stats={[
                 { label: "Tổng chỉ đạo", value: stats.total, color: "blue", filterStatus: "all" },
                 { label: "Chờ duyệt", value: stats.pending, color: "yellow", filterStatus: "cho_xu_ly" },
-                { label: "Đã xác nhận", value: stats.confirmed, color: "cyan", filterStatus: "da_xac_nhan" },
+                { label: "Đã xác nhận 5T", value: stats.confirmed, color: "cyan", filterStatus: "da_xac_nhan" },
                 { label: "Đang thực hiện", value: stats.active, color: "blue", filterStatus: "dang_thuc_hien" },
                 { label: "Hoàn thành", value: stats.completed, color: "green", sub: `${Math.round(completionRate)}%`, filterStatus: "hoan_thanh" },
-                { label: "Cần quan tâm", value: stats.overdue, color: stats.overdue > 0 ? "red" : "green", pulse: stats.overdue > 3, filterStatus: "overdue" },
+                { label: "Đang đồng hành", value: stats.overdue, color: stats.overdue > 0 ? "red" : "green", pulse: stats.overdue > 3, filterStatus: "overdue" },
               ]}
               directives={drilldownDirectives}
             />
@@ -160,12 +164,13 @@ export default async function DashboardPage() {
               healthScore={healthScore}
               traffic={traffic}
               bscRates={bscRates}
+              kpiActual={kpiActual}
             />
 
             {/* Leader accountability table */}
             {leaders.length > 0 && (
               <div>
-                <h3 className="mb-4 text-[13px] font-medium text-zinc-500 uppercase tracking-wide">
+                <h3 className="mb-3 text-[15px] font-semibold text-[#6C6C70] uppercase tracking-wide px-1">
                   Đầu mối chịu trách nhiệm
                 </h3>
                 <div className="overflow-x-auto rounded-2xl bg-zinc-900 ring-1 ring-zinc-800">
@@ -238,18 +243,18 @@ export default async function DashboardPage() {
               <BSCScorecard perspectives={bscPerspectives} matchSummary={matchSummary} />
             </section>
 
-            {/* LELONGSON Pipeline */}
+            {/* Hành trình 7 bước */}
             <section>
               <h2 className="mb-4 text-[13px] font-medium text-zinc-500 uppercase tracking-wide">
-                Quy trình LELONGSON — Đang ở đâu
+                Hành trình 7 bước của chỉ đạo
               </h2>
-              <LELONGSONPipelineView pipeline={lelongsonPipeline} />
+              <QuyTrinhPipeline pipeline={quyTrinhPipeline} />
             </section>
 
             {/* Directive Origins */}
             <section>
               <h2 className="mb-4 text-[13px] font-medium text-zinc-500 uppercase tracking-wide">
-                Nguồn gốc chỉ đạo — Từ đâu đến
+                Nguồn gốc chỉ đạo — Từ đâu
               </h2>
               {origins.total > 0 ? (
                 <DirectiveOrigin origins={origins} />

@@ -51,7 +51,7 @@ async function queryPendingApproval() {
 }
 
 /**
- * WF1 STEP2: Đã duyệt, chờ đầu mối xác nhận 4T
+ * WF1 STEP2: Đã duyệt, chờ đầu mối xác nhận 5T
  * Notion equiv: queryClarificationsStep2()
  */
 async function queryApprovedPendingConfirm() {

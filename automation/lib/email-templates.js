@@ -157,6 +157,75 @@ function eDivider() {
   return '<div style="padding:0 16px;background:#fff;"><hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;"></div>';
 }
 
+/**
+ * Process Tracker UI — Hành trình 7 bước của chỉ đạo
+ * (Theo HUONG_DAN_QUY_TRINH — Mục 8: Sau buổi họp)
+ *
+ * Bước 1: Ghi nhận  — Thư ký ghi 5T tại cuộc họp
+ * Bước 2: Duyệt     — BOD Hosting xác nhận 5T
+ * Bước 3: Xác nhận  — Đầu mối xác nhận + kế hoạch
+ * Bước 4: Phân tích — AI rà soát rủi ro, khả thi
+ * Bước 5: Thực hiện — Đầu mối triển khai
+ * Bước 6: Đồng hành — Hệ thống nhắc nhở, phát hiện rủi ro
+ * Bước 7: Hoàn thành — Xác nhận kết quả đạt chỉ tiêu T3
+ */
+function eProcessTracker(currentStep) {
+  const steps = [
+    { num: 1, label: 'Ghi nhận',  desc: 'Thư ký ghi 5T tại cuộc họp' },
+    { num: 2, label: 'Duyệt',     desc: 'BOD Hosting xác nhận 5T' },
+    { num: 3, label: 'Xác nhận',  desc: 'Đầu mối xác nhận + kế hoạch' },
+    { num: 4, label: 'Phân tích', desc: 'AI rà soát rủi ro, khả thi' },
+    { num: 5, label: 'Thực hiện', desc: 'Đầu mối triển khai' },
+    { num: 6, label: 'Đồng hành', desc: 'Hệ thống nhắc nhở, phát hiện rủi ro' },
+    { num: 7, label: 'Hoàn thành', desc: 'Xác nhận kết quả đạt chỉ tiêu T3' }
+  ];
+
+  let html = '<div style="margin:16px;padding:18px 20px;background:#fff;border-radius:10px;border:1px solid #e2e8f0;">';
+  html += '<p style="margin:0 0 14px;font-size:12px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:0.5px;font-family:' + FONT + ';">HÀNH TRÌNH 7 BƯỚC CỦA CHỈ ĐẠO</p>';
+  html += '<table width="100%" cellpadding="0" cellspacing="0" border="0">';
+
+  steps.forEach((step, index) => {
+    const isPast = step.num < currentStep;
+    const isCurrent = step.num === currentStep;
+
+    const circleColor = isPast ? BRAND_GREEN : (isCurrent ? BRAND_BLUE : '#cbd5e1');
+    const circleBg = isPast ? '#f0fdf4' : (isCurrent ? '#eff6ff' : '#f8fafc');
+    const labelColor = isPast ? '#166534' : (isCurrent ? '#1e40af' : '#94a3b8');
+    const descColor = isPast ? '#64748b' : (isCurrent ? '#334155' : '#cbd5e1');
+    const labelWeight = isCurrent ? '700' : '600';
+    const circleChar = isPast ? '✓' : (step.num === 7 ? '★' : step.num);
+    const rowPadBottom = index < steps.length - 1 ? '0' : '0';
+
+    // --- Row start ---
+    html += '<tr><td style="padding:0;"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>';
+
+    // Left column: circle + connector
+    html += '<td style="width:36px;vertical-align:top;padding:0;"><div style="text-align:center;">';
+    html += '<div style="display:inline-block;width:24px;height:24px;line-height:24px;border-radius:50%;background:' + circleBg + ';color:' + circleColor + ';font-size:11px;font-weight:bold;text-align:center;border:2px solid ' + circleColor + ';">' + circleChar + '</div>';
+    html += '</div>';
+    // Connector line
+    if (index < steps.length - 1) {
+      const lineColor = isPast ? BRAND_GREEN : '#e2e8f0';
+      html += '<div style="width:2px;height:14px;background:' + lineColor + ';margin:2px auto;"></div>';
+    }
+    html += '</td>';
+
+    // Right column: label + badge + description
+    html += '<td style="vertical-align:top;padding:2px 0 ' + (index < steps.length - 1 ? '8' : '0') + 'px 10px;">';
+    html += '<span style="font-size:13px;font-weight:' + labelWeight + ';color:' + labelColor + ';font-family:' + FONT + ';">' + step.label + '</span>';
+    if (isCurrent) {
+      html += ' <span style="display:inline-block;padding:1px 8px;background:' + BRAND_BLUE + ';color:#fff;border-radius:10px;font-size:10px;font-weight:700;font-family:' + FONT + ';vertical-align:middle;">ĐANG Ở ĐÂY</span>';
+    }
+    html += '<br><span style="font-size:11px;color:' + descColor + ';font-family:' + FONT + ';">' + step.desc + '</span>';
+    html += '</td>';
+
+    html += '</tr></table></td></tr>';
+  });
+
+  html += '</table></div>';
+  return html;
+}
+
 // =====================================================================
 // PUBLIC BUILDERS — WF-specific templates
 // =====================================================================
@@ -186,6 +255,7 @@ function buildStep1Email(data) {
       eRow('T4 — Thời hạn:', data.t4ThoiHan || '<span style="color:' + BRAND_AMBER + ';">Cần xác nhận</span>', data.t4ThoiHan ? null : BRAND_AMBER),
       '#f0fdf4', '#bbf7d0'
     ) + '</div>' +
+    eProcessTracker(2) +
     eDivider() +
     eText(
       '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📌 TẠI SAO CẦN DUYỆT:</p>' +
@@ -329,6 +399,7 @@ function buildStep2Email(data) {
       eRow('T5 — Liên quan:', data.t5LienQuan || '<span style="color:#94a3b8;">Chưa xác định</span>'),
       '#eff6ff', '#bfdbfe'
     ) + '</div>' +
+    eProcessTracker(3) +
     eDivider() +
     eText(
       '<p style="margin:0 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📌 TẠI SAO CẦN XÁC NHẬN:</p>' +
@@ -375,8 +446,22 @@ function buildProgressNotifyEmail(data) {
       eRow('Nguồn:', data.nguon || ''),
       '#f0fdf4', '#bbf7d0'
     ) + '</div>' +
+    eProcessTracker(5) +
+    eText(
+      '<p style="margin:16px 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">📍 ANH/CHỊ ĐANG Ở BƯỚC 5 — THỰC HIỆN:</p>' +
+      '<ul style="margin:0;padding-left:18px;">' +
+      '<li style="margin:4px 0;"><strong>Bước 5 — Thực hiện:</strong> Triển khai công việc theo cam kết 5T đã xác nhận.</li>' +
+      '<li style="margin:4px 0;"><strong>Bước 6 — Đồng hành:</strong> Hệ thống sẽ tự động nhắc nhở khi sắp đến hạn và phát hiện rủi ro. Anh/Chị chỉ cần phản hồi: "Đang tốt" / "Cần thêm thời gian" / "Cần hỗ trợ".</li>' +
+      '<li style="margin:4px 0;"><strong>Bước 7 — Hoàn thành:</strong> Khi đạt chỉ tiêu T3, báo cáo kết quả để hệ thống ghi nhận và đóng chỉ đạo.</li></ul>'
+    ) +
+    eDivider() +
+    eText(
+      '<div style="background:#eff6ff;border-radius:8px;padding:12px 16px;margin:8px 0 16px;border:1px solid #bfdbfe;">' +
+      '<p style="margin:0;font-size:13px;color:#1e40af;">☑ <strong>3 câu hỏi luôn cần trả lời:</strong><br>' +
+      '① Ai đang giữ bóng? · ② Bước tiếp theo là gì? · ③ Nếu không phản hồi trong 3 ngày thì sao?</p></div>'
+    ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('▸ XEM CHI TIẾT', data.url || '#', BRAND_GREEN) +
+    eBtn('▸ CẬP NHẬT TIẾN ĐỘ', data.url || '#', BRAND_BLUE) +
     '</div>';
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.recipientEmail || data.emailDauMoi)));
@@ -552,6 +637,7 @@ function buildStatusChangeEmail(data) {
       eRow('Thời hạn:', data.t4ThoiHan || ''),
       '#f8fafc', '#e2e8f0'
     ) + '</div>' +
+    eProcessTracker(6) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ XEM CHI TIẾT', data.url || '#', color) +
     '</div>';
@@ -618,6 +704,7 @@ function buildEscalationEmail(data, level) {
       eRow('Trạng thái:', data.tinhTrang || ''),
       cfg.bgColor, cfg.borderColor
     ) + '</div>' +
+    eProcessTracker(6) +
     eText(
       (level === 'ALERT'
         ? '<div style="background:#fef2f2;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #fecaca;">' +
@@ -740,6 +827,7 @@ function buildChatLongAnalysisEmail(data) {
     '<div style="padding:0 16px;background:#fff;">' +
     summaryHtml + riskHtml + suggestHtml + altHtml +
     '</div>' +
+    eProcessTracker(4) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ XEM CHI TIẾT', data.url || '#', BRAND_PURPLE) +
     '</div>';
@@ -786,6 +874,7 @@ function buildUpgradeSubmittedEmail(data) {
     '<div style="padding:0 16px;background:#fff;">' +
     aiReviewHtml +
     '</div>' +
+    eProcessTracker(5) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ REVIEW & DUYỆT', data.url || '#', BRAND_GREEN) +
     '</div>';
@@ -816,6 +905,7 @@ function buildUpgradeFeedbackEmail(data) {
       '<p style="margin:0;font-size:13px;color:#1e40af;">📌 Vui lòng gửi bản v' + ((data.versionNumber || 0) + 1) +
       ' với các điều chỉnh theo góp ý trên. Hệ thống sẽ tự động review và thông báo.</p></div>'
     ) +
+    eProcessTracker(5) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ GỬI BẢN NÂNG CẤP', data.url || '#', BRAND_BLUE) +
     '</div>';
@@ -848,9 +938,71 @@ function buildUpgradeApprovedEmail(data) {
       '<p style="margin:0;font-size:13px;color:#166534;">🎉 Chỉ đạo đã chuyển sang <strong>Bước 7 — Hoàn thành đánh giá</strong>. ' +
       'Cảm ơn sự đóng góp của Anh/Chị!</p></div>'
     ) +
+    eProcessTracker(7) +
     '<div style="padding:0 16px;background:#fff;">' +
     eBtn('▸ XEM TRÊN DASHBOARD', data.url || '#', BRAND_GREEN) +
     '</div>';
+
+  return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
+}
+
+// =====================================================================
+// WF8: NKHĐS — Báo cáo cá nhân cho đầu mối
+// =====================================================================
+
+/**
+ * WF8: Email NKHĐS cá nhân — báo cáo trạng thái chỉ đạo quá hạn
+ * Tuân thủ Content Bible: Positive framing, 3 lựa chọn, tracking pixel
+ * 
+ * @param {Object} data
+ * @param {string} data.id - Directive ID (cho tracking, dùng ID đầu tiên)
+ * @param {string} data.tenDauMoi - Tên đầu mối
+ * @param {string} data.emailDauMoi - Email đầu mối
+ * @param {number} data.overdueCount - Số chỉ đạo cần quan tâm
+ * @param {Array<{title: string, deadline: string, daysOverdue: number}>} data.tasks - Danh sách
+ * @param {string} [data.url] - Dashboard URL
+ */
+function buildNkhdsEmail(data) {
+  const header = eHdr(
+    'ĐỒNG HÀNH — Cập nhật Nhật Ký Hoạt Động Sống',
+    'Tuần này có ' + (data.overdueCount || 0) + ' chỉ đạo cần quan tâm thêm'
+  );
+
+  // Build task list HTML — positive framing: nêu sự kiện, không phán xét
+  let taskRows = '';
+  for (const task of (data.tasks || [])) {
+    taskRows += eRow(
+      '📌 ' + (task.title || 'Chỉ đạo').substring(0, 60),
+      'Chưa cập nhật ' + (task.daysOverdue || 0) + ' ngày · Thời hạn: ' + (task.deadline || 'Chưa xác định'),
+      task.daysOverdue >= 14 ? BRAND_RED : task.daysOverdue >= 7 ? BRAND_AMBER : '#64748b'
+    );
+  }
+
+  const body =
+    eGreeting(data.tenDauMoi) +
+    eText(
+      '<p style="margin:0 0 12px;">Hệ thống ghi nhận ' +
+      '<strong>' + (data.overdueCount || 0) + ' chỉ đạo</strong> ' +
+      'của Anh/Chị hiện chưa có cập nhật gần đây. ' +
+      'Chúng tôi hiểu Anh/Chị có nhiều công việc đang xử lý.</p>'
+    ) +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eInfoBox(taskRows, '#fefce8', '#fde68a') +
+    '</div>' +
+    eText(
+      '<p style="margin:12px 0 6px;font-weight:700;color:' + BRAND_PURPLE + ';">Anh/Chị có thể cho chúng tôi biết tình hình:</p>' +
+      '<ul style="margin:0;padding-left:18px;">' +
+      '<li style="margin:4px 0;"><strong>▸ Đang xử lý tốt</strong> — chỉ chưa kịp cập nhật hệ thống</li>' +
+      '<li style="margin:4px 0;"><strong>▸ Cần thêm thời gian</strong> — cho chúng tôi biết thời hạn mới</li>' +
+      '<li style="margin:4px 0;"><strong>▸ Cần hỗ trợ</strong> — Ban Cố Vấn sẵn sàng phối hợp</li></ul>'
+    ) +
+    '<div style="padding:0 16px;background:#fff;">' +
+    eBtn('▸ CẬP NHẬT TÌNH HÌNH', data.url || '#', BRAND_BLUE) +
+    '</div>' +
+    eText(
+      '<div style="background:#eff6ff;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #bfdbfe;">' +
+      '<p style="margin:0;font-size:13px;color:#1e40af;">📌 Nếu cần trao đổi trực tiếp, Anh/Chị có thể reply email này hoặc liên hệ Ban Cố Vấn qua Signal.</p></div>'
+    );
 
   return eWrap(header + body + '<div style="background:#fff;padding-bottom:4px;"></div>' + eFtr(buildTrackingPixel(data.id, data.emailDauMoi)));
 }
@@ -861,7 +1013,7 @@ function buildUpgradeApprovedEmail(data) {
 
 module.exports = {
   // Helpers (for custom templates)
-  eWrap, eHdr, eFtr, eRow, eBadge, eBtn, eSection, eInfoBox, eGreeting, eText, eDivider,
+  eWrap, eHdr, eFtr, eRow, eBadge, eBtn, eSection, eInfoBox, eGreeting, eText, eDivider, eProcessTracker,
   // TrackChange Diff helpers
   eDiffRow, eDiffBlock,
   // Tracking
@@ -883,4 +1035,6 @@ module.exports = {
   buildUpgradeSubmittedEmail,
   buildUpgradeFeedbackEmail,
   buildUpgradeApprovedEmail,
+  // WF8 — NKHĐS
+  buildNkhdsEmail,
 };

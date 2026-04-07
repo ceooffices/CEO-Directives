@@ -63,19 +63,19 @@ export default function DirectiveTable({
               className="block rounded-3xl bg-white p-4 shadow-sm ring-1 ring-gray-200/50 transition-all hover:shadow-md active:scale-[0.98]"
             >
               <div className="flex items-start justify-between gap-2">
-                <p className="text-[14px] font-semibold text-gray-900 line-clamp-2 leading-tight">
+                <p className="text-[17px] font-semibold text-gray-900 line-clamp-2 leading-tight">
                   {d.title}
                 </p>
                 {showUrgency && (
-                  <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${URGENCY_STYLE[urgency]}`}>
+                  <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[14px] font-medium ${URGENCY_STYLE[urgency]}`}>
                     {URGENCY_LABEL[urgency]}
                   </span>
                 )}
               </div>
               {d.nhiem_vu && (
-                <p className="mt-1 text-[12px] text-gray-400 line-clamp-1">{d.nhiem_vu}</p>
+                <p className="mt-1 text-[15px] text-gray-400 line-clamp-1">{d.nhiem_vu}</p>
               )}
-              <div className="mt-3 flex items-center gap-4 text-[12px] text-gray-500">
+              <div className="mt-3 flex items-center gap-4 text-[15px] text-gray-500">
                 <span>{d.dau_moi || "—"}</span>
                 {d.deadline && (
                   <span className={urgency === "red" || urgency === "black" ? "font-medium text-red-500" : ""}>
@@ -86,7 +86,7 @@ export default function DirectiveTable({
                   </span>
                 )}
                 {d.hm50_ref && (
-                  <span className="ml-auto text-[11px] text-gray-300">{d.hm50_ref}</span>
+                  <span className="ml-auto text-[14px] text-gray-300">{d.hm50_ref}</span>
                 )}
               </div>
             </Link>
@@ -96,24 +96,24 @@ export default function DirectiveTable({
 
       {/* Desktop: Table layout */}
       <div className="hidden sm:block overflow-x-auto rounded-3xl bg-white shadow-sm ring-1 ring-gray-200/50">
-        <table className="w-full text-sm">
+        <table className="w-full text-base">
           <thead>
             <tr className="border-b border-gray-100">
-              <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-5 py-4 text-left text-[15px] font-medium uppercase tracking-wider text-gray-400">
                 Chỉ đạo
               </th>
-              <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-5 py-4 text-left text-[15px] font-medium uppercase tracking-wider text-gray-400">
                 Đầu mối
               </th>
-              <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-5 py-4 text-left text-[15px] font-medium uppercase tracking-wider text-gray-400">
                 Thời hạn
               </th>
               {showUrgency && (
-                <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">
+                <th className="px-5 py-4 text-left text-[15px] font-medium uppercase tracking-wider text-gray-400">
                   Mức độ
                 </th>
               )}
-              <th className="px-5 py-4 text-left text-[12px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-5 py-4 text-left text-[15px] font-medium uppercase tracking-wider text-gray-400">
                 Trạng thái
               </th>
             </tr>
@@ -131,7 +131,7 @@ export default function DirectiveTable({
                       {d.title}
                     </Link>
                     {d.nhiem_vu && (
-                      <p className="mt-0.5 truncate text-[12px] text-gray-400">
+                      <p className="mt-0.5 truncate text-[15px] text-gray-400">
                         {d.nhiem_vu}
                       </p>
                     )}
@@ -163,7 +163,7 @@ export default function DirectiveTable({
                   {showUrgency && (
                     <td className="whitespace-nowrap px-5 py-4">
                       <span
-                        className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${URGENCY_STYLE[urgency]}`}
+                        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${URGENCY_STYLE[urgency]}`}
                       >
                         {URGENCY_LABEL[urgency]}
                       </span>

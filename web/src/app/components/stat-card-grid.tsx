@@ -5,13 +5,13 @@ import DrilldownModal from "./drilldown-modal";
 import DirectiveDetailPopup from "./directive-detail-popup";
 import type { DrilldownDirective } from "./drilldown-modal";
 
-const COLOR_MAP: Record<string, { bg: string; text: string; dot: string }> = {
-  blue: { bg: "bg-blue-500/5", text: "text-blue-400", dot: "bg-blue-500" },
-  green: { bg: "bg-emerald-500/5", text: "text-emerald-400", dot: "bg-emerald-500" },
-  red: { bg: "bg-red-500/5", text: "text-red-400", dot: "bg-red-500" },
-  yellow: { bg: "bg-amber-500/5", text: "text-amber-400", dot: "bg-amber-500" },
-  cyan: { bg: "bg-cyan-500/5", text: "text-cyan-400", dot: "bg-cyan-500" },
-  default: { bg: "bg-zinc-800/50", text: "text-zinc-400", dot: "bg-zinc-500" },
+const COLOR_MAP: Record<string, { bg: string; text: string; dot: string; hover: string }> = {
+  blue: { bg: "bg-blue-50", text: "text-blue-600", dot: "bg-blue-500", hover: "hover:bg-blue-100/50 hover:border-blue-200" },
+  green: { bg: "bg-green-50", text: "text-green-600", dot: "bg-green-500", hover: "hover:bg-green-100/50 hover:border-green-200" },
+  red: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500", hover: "hover:bg-red-100/50 hover:border-red-200" },
+  yellow: { bg: "bg-amber-50", text: "text-amber-600", dot: "bg-amber-500", hover: "hover:bg-amber-100/50 hover:border-amber-200" },
+  cyan: { bg: "bg-cyan-50", text: "text-cyan-600", dot: "bg-cyan-500", hover: "hover:bg-cyan-100/50 hover:border-cyan-200" },
+  default: { bg: "bg-zinc-50", text: "text-zinc-700", dot: "bg-zinc-400", hover: "hover:bg-zinc-100 hover:border-zinc-300" },
 };
 
 interface StatDef {
@@ -92,16 +92,16 @@ export default function StatCardGrid({ stats, directives }: StatCardGridProps) {
             <button
               key={stat.label}
               onClick={() => handleCardClick(stat)}
-              className={`rounded-2xl ${c.bg} border border-zinc-800/50 p-4 text-left transition-all hover:border-zinc-700 hover:shadow-lg hover:shadow-black/20 cursor-pointer group`}
+              className={`rounded-[18px] ${c.bg} border border-[#E5E5EA] p-3 sm:p-4 text-left transition-all ${c.hover} shadow-sm group cursor-pointer`}
             >
               <div className="flex items-center gap-2">
                 <div className={`h-2 w-2 rounded-full ${c.dot} ${stat.pulse ? "animate-pulse" : ""}`} />
-                <p className="text-[11px] font-medium text-zinc-500 group-hover:text-zinc-400 transition-colors">{stat.label}</p>
+                <p className="text-[14px] font-semibold text-[#6C6C70] group-hover:text-[#1C1C1E] transition-colors">{stat.label}</p>
               </div>
-              <div className="mt-2 flex items-end gap-2">
-                <span className={`text-2xl font-bold tabular-nums ${c.text}`}>{stat.value}</span>
+              <div className="mt-2 flex items-end gap-1.5">
+                <span className={`text-[26px] sm:text-3xl font-black tabular-nums ${c.text}`}>{stat.value}</span>
                 {stat.sub && (
-                  <span className="mb-0.5 text-[11px] font-medium text-zinc-500">{stat.sub}</span>
+                  <span className="mb-0.5 text-[13px] sm:text-[14px] font-medium text-[#6C6C70]">{stat.sub}</span>
                 )}
               </div>
             </button>

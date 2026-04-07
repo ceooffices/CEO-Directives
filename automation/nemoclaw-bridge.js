@@ -25,11 +25,13 @@ if (!AUTH_TOKEN) {
 // ===== LAZY-LOAD WORKFLOWS =====
 const workflows = {
   wf1: () => require('./wf1-approval').run,
-  wf2: () => require('./wf2-directive-progress').run,
+  // WF2: DEPRECATED (xác nhận đã nhúng trong form WF1 Step2)
   wf3: () => require('./wf3-directive-status').run,
   wf4: () => require('./wf4-directive-escalation').run,
-  wf5: () => require('./wf5-reminders').run,
+  // WF5: DEPRECATED (gom vào WF4)
   wf6: () => require('./wf6-dashboard-sync').run,
+  wf7: () => require('./wf7-preflight-check').run,
+  // WF8: DEPRECATED (gom vào WF4)
   hm50: () => require('./hm50-linker').run,
 };
 

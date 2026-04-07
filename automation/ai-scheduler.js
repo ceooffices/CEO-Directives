@@ -35,12 +35,12 @@ const WORK_DAYS = [1, 2, 3, 4, 5]; // Thứ 2-6
 // ===== WORKFLOW LOADERS =====
 const workflows = {
   wf1: { loader: () => require('./wf1-approval').run, desc: 'Gửi email duyệt chỉ đạo mới' },
-  wf2: { loader: () => require('./wf2-directive-progress').run, desc: 'Notify chỉ đạo 5T confirmed' },
+  // WF2: DEPRECATED (xác nhận đã nhúng trong form WF1 Step2)
   wf3: { loader: () => require('./wf3-directive-status').run, desc: 'Detect thay đổi trạng thái' },
   wf3c: { loader: () => require('./wf3-chatlong-analysis').run, desc: 'AI phân tích sâu (ChatLong)' },
-  wf4: { loader: () => require('./wf4-directive-escalation').run, desc: 'Tín hiệu rủi ro / leo thang' },
-  wf5: { loader: () => require('./wf5-reminders').run, desc: 'Smart reminders nhắc đầu mối' },
+  wf4: { loader: () => require('./wf4-directive-escalation').run, desc: 'Đồng hành Engine: nhắc nhở + leo thang (hợp nhất WF4+WF8)' },
   wf6: { loader: () => require('./wf6-upgrade-loop').run, desc: 'Upgrade loop nâng cấp chỉ đạo' },
+  wf7: { loader: () => require('./wf7-preflight-check').run, desc: 'Pre-flight check trước họp BQT' },
 };
 
 // ===== AI DECISION PROMPT =====
@@ -56,9 +56,8 @@ Nhiệm vụ: Quyết định workflow nào cần chạy DỰA TRÊN DỮ LIỆU
 
 QUY TẮC:
 - Chỉ chạy WF khi CÓ LÝ DO cụ thể (dữ liệu thay đổi, deadline gần, v.v.)
-- WF5 (reminders): chỉ chạy 1 lần/ngày buổi sáng (8-9h), nếu hôm nay chưa chạy
+- WF4 (đồng hành): chỉ chạy 1 lần/ngày buổi sáng (8-9h), nếu hôm nay chưa chạy
 - WF3C (AI analysis): chỉ chạy khi có thay đổi đáng kể hoặc overdue tăng
-- WF4 (escalation): chỉ chạy khi overdue tăng hoặc có chỉ đạo mới quá hạn
 - Nếu không có thay đổi gì → trả về should_run = []
 - next_check_minutes: đề xuất 15-60 phút (ngắn hơn nếu nhiều thay đổi)
 
@@ -242,11 +241,7 @@ function fallbackDecision(snapshot, prevState, diff, now) {
     reasons.push(`${diff.newPendingCount} chỉ đạo mới chờ duyệt`);
   }
 
-  // WF2: Có confirmed mới
-  if (diff.newConfirmedCount > 0) {
-    shouldRun.push('wf2');
-    reasons.push(`${diff.newConfirmedCount} chỉ đạo mới confirmed`);
-  }
+  // WF2: DEPRECATED (xác nhận đã nhúng trong form WF1 Step2)
 
   // WF4: Overdue tăng
   if (diff.newOverdueCount > 0) {
@@ -254,12 +249,12 @@ function fallbackDecision(snapshot, prevState, diff, now) {
     reasons.push(`${diff.newOverdueCount} chỉ đạo mới quá hạn`);
   }
 
-  // WF5: 1x/sáng
-  const lastWf5 = prevState.lastWfRuns?.wf5;
-  const wf5Today = lastWf5 && new Date(lastWf5).toDateString() === now.toDateString();
-  if (hour >= 8 && hour < 10 && !wf5Today) {
-    shouldRun.push('wf5');
-    reasons.push('Morning reminder (chưa chạy hôm nay)');
+  // WF4: 1x/sáng (thay thế WF5)
+  const lastWf4 = prevState.lastWfRuns?.wf4;
+  const wf4Today = lastWf4 && new Date(lastWf4).toDateString() === now.toDateString();
+  if (hour >= 8 && hour < 10 && !wf4Today) {
+    shouldRun.push('wf4');
+    reasons.push('Đồng hành morning check (chưa chạy hôm nay)');
   }
 
   return {

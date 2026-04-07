@@ -27,17 +27,22 @@ export function getServiceClient() {
   });
 }
 
-// ===== STEP NAME MAPPING =====
+// ===== QUY TRÌNH 7 BƯỚC — Đồng bộ với email templates =====
 
-export const LLS_STEP_NAMES: Record<number, string> = {
-  1: "B1 Chuẩn bị",
-  2: "B2 Gửi CEO",
-  3: "B3 ChatLong phân tích",
-  4: "B4 Nghiên cứu sâu",
-  5: "B5 Nâng cấp đề xuất",
-  6: "B6 Gửi lại v2.0",
-  7: "B7 TGĐ duyệt",
+export const QUY_TRINH_7_BUOC: Record<number, { label: string; desc: string; icon: string }> = {
+  1: { label: 'Ghi nhận',  desc: 'Thư ký ghi 5T tại cuộc họp', icon: '📝' },
+  2: { label: 'Duyệt',     desc: 'BOD Hosting xác nhận 5T', icon: '✅' },
+  3: { label: 'Xác nhận',  desc: 'Đầu mối xác nhận + kế hoạch', icon: '🤝' },
+  4: { label: 'Phân tích', desc: 'AI rà soát rủi ro, khả thi', icon: '🧠' },
+  5: { label: 'Thực hiện', desc: 'Đầu mối triển khai', icon: '⚡' },
+  6: { label: 'Đồng hành', desc: 'Hệ thống nhắc nhở, phát hiện rủi ro', icon: '🔄' },
+  7: { label: 'Hoàn thành', desc: 'Xác nhận kết quả đạt chỉ tiêu T3', icon: '🏆' },
 };
+
+// Keep backward compat alias
+export const LLS_STEP_NAMES: Record<number, string> = Object.fromEntries(
+  Object.entries(QUY_TRINH_7_BUOC).map(([k, v]) => [k, `B${k} ${v.label}`])
+);
 
 // ===== STAFF EMAIL LOOKUP — 3-tier resolution =====
 
@@ -283,13 +288,29 @@ export interface SupabaseDirective {
   created_at: string;
 }
 
-type LELONGSONStage = "B1" | "B2" | "B3_B5" | "B7" | "done";
+// Bước quy trình: 1-7 (map với QUY_TRINH_7_BUOC)
+type BuocQuyTrinh = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+function deriveBuocQuyTrinh(tinh_trang: string, lls_step: number): BuocQuyTrinh {
+  if (tinh_trang === "hoan_thanh") return 7;
+  if (tinh_trang === "dang_thuc_hien") {
+    // Đang triển khai: nếu lls_step >= 6 thì đang ở bước Đồng hành
+    return lls_step >= 6 ? 6 : 5;
+  }
+  if (tinh_trang === "da_xac_nhan" || lls_step >= 3) return 4;
+  if (tinh_trang === "da_gui_email") return 3;
+  if (tinh_trang === "cho_duyet" || tinh_trang === "cho_xu_ly") return 2;
+  return 1;
+}
+
+// Backward compat
+type LELONGSONStage = "B1" | "B2" | "B3_B5" | "B7" | "done";
 function deriveLELONGSONStage(tinh_trang: string, lls_step: number): LELONGSONStage {
-  if (tinh_trang === "hoan_thanh") return "done";
-  if (tinh_trang === "dang_thuc_hien" || lls_step >= 7) return "B7";
-  if (tinh_trang === "da_xac_nhan" || lls_step >= 3) return "B3_B5";
-  if (tinh_trang === "cho_duyet" || lls_step >= 2) return "B2";
+  const buoc = deriveBuocQuyTrinh(tinh_trang, lls_step);
+  if (buoc === 7) return "done";
+  if (buoc >= 5) return "B7";
+  if (buoc >= 3) return "B3_B5";
+  if (buoc >= 2) return "B2";
   return "B1";
 }
 
@@ -306,6 +327,7 @@ export async function getDashboardStatsFromSupabase() {
       byDauMoi: {},
       directives: [],
       lelongsonPipeline: { stages: [], total: 0 },
+      quyTrinhPipeline: { steps: [], total: 0 },
     };
   }
 
@@ -336,21 +358,23 @@ export async function getDashboardStatsFromSupabase() {
     }
   }
 
-  // LELONGSON pipeline
-  const stageConfig: { key: LELONGSONStage; label: string; color: string }[] = [
-    { key: "B1", label: "B1 Chuẩn bị", color: "bg-blue-200" },
-    { key: "B2", label: "B2 Gửi CEO", color: "bg-blue-400" },
-    { key: "B3_B5", label: "B3-B5 Phân tích", color: "bg-amber-400" },
-    { key: "B7", label: "B7 Triển khai", color: "bg-emerald-400" },
-    { key: "done", label: "Hoàn thành", color: "bg-emerald-600" },
+  // Quy trình 7 bước pipeline
+  const buocConfig: { key: BuocQuyTrinh; label: string; desc: string; color: string; icon: string }[] = [
+    { key: 1, label: 'Ghi nhận',  desc: 'Thư ký ghi 5T tại cuộc họp', color: 'bg-slate-400', icon: '📝' },
+    { key: 2, label: 'Duyệt',     desc: 'BOD Hosting xác nhận 5T', color: 'bg-blue-400', icon: '✅' },
+    { key: 3, label: 'Xác nhận',  desc: 'Đầu mối xác nhận + kế hoạch', color: 'bg-cyan-400', icon: '🤝' },
+    { key: 4, label: 'Phân tích', desc: 'AI rà soát rủi ro, khả thi', color: 'bg-purple-400', icon: '🧠' },
+    { key: 5, label: 'Thực hiện', desc: 'Đầu mối triển khai', color: 'bg-amber-400', icon: '⚡' },
+    { key: 6, label: 'Đồng hành', desc: 'Hệ thống nhắc nhở, phát hiện rủi ro', color: 'bg-orange-400', icon: '🔄' },
+    { key: 7, label: 'Hoàn thành', desc: 'Xác nhận kết quả đạt chỉ tiêu T3', color: 'bg-emerald-500', icon: '🏆' },
   ];
 
-  const stageMap = new Map<LELONGSONStage, SupabaseDirective[]>();
-  for (const cfg of stageConfig) stageMap.set(cfg.key, []);
+  const buocMap = new Map<BuocQuyTrinh, SupabaseDirective[]>();
+  for (const cfg of buocConfig) buocMap.set(cfg.key, []);
 
   for (const d of directives) {
-    const stage = deriveLELONGSONStage(d.tinh_trang, d.lls_step);
-    stageMap.get(stage)!.push(d);
+    const buoc = deriveBuocQuyTrinh(d.tinh_trang, d.lls_step);
+    buocMap.get(buoc)!.push(d);
   }
 
   // Map SupabaseDirective → Directive-like for pipeline display
@@ -366,9 +390,34 @@ export async function getDashboardStatsFromSupabase() {
     nguon: d.meeting_source || "",
     url: "",
     created_at: d.created_at,
+    buoc_quy_trinh: deriveBuocQuyTrinh(d.tinh_trang, d.lls_step),
     lelongson_stage: deriveLELONGSONStage(d.tinh_trang, d.lls_step),
   });
 
+  // New 7-step pipeline
+  const quyTrinhPipeline = {
+    steps: buocConfig.map((cfg) => ({
+      ...cfg,
+      count: buocMap.get(cfg.key)!.length,
+      directives: buocMap.get(cfg.key)!.map(mapToDisplayDirective),
+    })),
+    total: directives.length,
+  };
+
+  // Backward compat: LELONGSON pipeline
+  const stageConfig: { key: LELONGSONStage; label: string; color: string }[] = [
+    { key: "B1", label: "B1 Chuẩn bị", color: "bg-blue-200" },
+    { key: "B2", label: "B2 Gửi CEO", color: "bg-blue-400" },
+    { key: "B3_B5", label: "B3-B5 Phân tích", color: "bg-amber-400" },
+    { key: "B7", label: "B7 Triển khai", color: "bg-emerald-400" },
+    { key: "done", label: "Hoàn thành", color: "bg-emerald-600" },
+  ];
+  const stageMap = new Map<LELONGSONStage, SupabaseDirective[]>();
+  for (const cfg of stageConfig) stageMap.set(cfg.key, []);
+  for (const d of directives) {
+    const stage = deriveLELONGSONStage(d.tinh_trang, d.lls_step);
+    stageMap.get(stage)!.push(d);
+  }
   const lelongsonPipeline = {
     stages: stageConfig.map((cfg) => ({
       ...cfg,
@@ -381,7 +430,7 @@ export async function getDashboardStatsFromSupabase() {
   // Map cho directive table display
   const displayDirectives = directives.map(mapToDisplayDirective);
 
-  return { stats, byDauMoi, directives: displayDirectives, lelongsonPipeline };
+  return { stats, byDauMoi, directives: displayDirectives, lelongsonPipeline, quyTrinhPipeline };
 }
 
 // ===== RAW DIRECTIVES FOR DRILLDOWN =====
@@ -692,4 +741,36 @@ export async function getStepHistory(directiveId: string) {
     .order("created_at", { ascending: false });
 
   return (data || []) as { step_number: number; step_name: string; action: string; actor: string | null; detail: string | null; created_at: string }[];
+}
+
+// ===== KPI THỰC TẾ — Nhập học & Matching =====
+/**
+ * Tổng hợp kết quả thực tế từ employee_commitments
+ * - nhapHoc: SUM commit_number WHERE target ILIKE '%nhập học%' OR '%tuyển sinh%'
+ * - matching: SUM commit_number WHERE target ILIKE '%matching%' OR '%xuất cảnh%'
+ */
+export async function getKPIActual(): Promise<{ nhapHoc: number; matching: number }> {
+  const { data, error } = await db
+    .from("employee_commitments")
+    .select("commit_number, target");
+
+  if (error || !data) {
+    // Bảng chưa có hoặc lỗi — trả về 0, không crash
+    return { nhapHoc: 0, matching: 0 };
+  }
+
+  let nhapHoc = 0;
+  let matching = 0;
+
+  for (const row of data) {
+    const t = (row.target || "").toLowerCase();
+    const v = Number(row.commit_number) || 0;
+    if (t.includes("nhập học") || t.includes("nhan hoc") || t.includes("tuyển sinh") || t.includes("tuyen sinh")) {
+      nhapHoc += v;
+    } else if (t.includes("matching") || t.includes("xuất cảnh") || t.includes("xuat canh")) {
+      matching += v;
+    }
+  }
+
+  return { nhapHoc, matching };
 }

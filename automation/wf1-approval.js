@@ -7,7 +7,7 @@
  *
  * Flow:
  *   STEP1: Chỉ đạo mới → Email người chỉ đạo → "Xin duyệt"
- *   STEP2: Đã duyệt → Email đầu mối → "Xác nhận 4T"
+ *   STEP2: Đã duyệt → Email đầu mối → "Xác nhận 5T"
  *
  * Usage:
  *   node wf1-approval.js              # Chạy thật
@@ -68,7 +68,7 @@ async function extractAndProcess(rows) {
       ccTo = ALWAYS_CC.filter(e => e !== sendTo).join(', ');
 
     } else {
-      // STEP 2: Gửi cho đầu mối xác nhận 4T
+      // STEP 2: Gửi cho đầu mối xác nhận 5T
       if (!emailDauMoi) {
         results.push({
           warning: true, id, tieuDe,

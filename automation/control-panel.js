@@ -5,7 +5,7 @@
  * Web UI để quản lý tất cả services thông qua PM2:
  *   - NemoClaw Bridge
  *   - Telegram Bot
- *   - Scheduler (WF1-6)
+ *   - Scheduler (WF1,3,4,6,7)
  *   - Cloudflare Tunnel
  *
  * Tất cả service được quản lý bởi PM2 (ecosystem.config.js)
@@ -54,7 +54,7 @@ const SERVICES = {
   'ceo-scheduler': {
     name: 'Lịch tự động (Scheduler)',
     desc: '16 lượt chạy/ngày — Thứ 2 đến Thứ 6',
-    detail: 'Tự động chạy 6 quy trình (WF1-WF6) theo lịch cố định: gửi email duyệt chỉ đạo, theo dõi tiến độ, phát hiện rủi ro, nhắc nhở đầu mối, phân tích AI.',
+    detail: 'Tự động chạy quy trình (WF1, WF3, WF4, WF6, WF7) theo lịch: gửi email duyệt chỉ đạo, phát hiện thay đổi, đồng hành nhắc nhở, nâng cấp, phân tích AI.',
     scope: 'Nếu tắt: Các quy trình tự động sẽ dừng (không gửi email, không nhắc nhở). Anh vẫn có thể chạy thủ công từng bước qua Bot hoặc Terminal.',
     pm2Name: 'ceo-scheduler',
     healthCheck: null,

@@ -4,10 +4,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useCallback } from "react";
 
 const TABS = [
-  { key: "tong-quan", label: "Tổng quan", icon: "📊" },
-  { key: "hanh-dong", label: "Hành động", icon: "🚨" },
-  { key: "chien-luoc", label: "Chiến lược", icon: "🎯" },
-  { key: "dien-bien", label: "Diễn biến", icon: "📈" },
+  { key: "tong-quan", label: "Tổng quan" },
+  { key: "hanh-dong", label: "Cần quan tâm" },
+  { key: "chien-luoc", label: "50 Hạng mục" },
+  { key: "dien-bien", label: "Hành trình" },
 ] as const;
 
 export type TabKey = (typeof TABS)[number]["key"];
@@ -32,8 +32,8 @@ function TabBar() {
   );
 
   return (
-    <nav className="border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center gap-1 px-4 sm:px-6">
+    <nav className="border-b border-[#E5E5EA] bg-white sticky top-[68px] z-40">
+      <div className="mx-auto flex max-w-lg items-center gap-1 px-4 sm:max-w-2xl lg:max-w-4xl sm:px-6 scroll-touch overflow-x-auto whitespace-nowrap hide-scrollbar">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
@@ -41,20 +41,19 @@ function TabBar() {
               key={tab.key}
               onClick={() => handleTabClick(tab.key)}
               className={`
-                relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium
+                relative flex items-center px-4 py-3 text-[16px] font-semibold
                 transition-all duration-200 whitespace-nowrap
                 ${
                   isActive
-                    ? "text-white"
-                    : "text-zinc-500 hover:text-zinc-300"
+                    ? "text-[#007AFF]"
+                    : "text-[#6C6C70]"
                 }
               `}
             >
-              <span className="text-[15px]">{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
+              {tab.label}
               {/* Active indicator */}
               {isActive && (
-                <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-blue-500 tab-indicator" />
+                <span className="absolute bottom-0 left-2 right-2 h-[3px] rounded-t-full bg-[#007AFF] tab-indicator" />
               )}
             </button>
           );
@@ -65,7 +64,7 @@ function TabBar() {
           <a
             href="/api/status"
             target="_blank"
-            className="rounded-full bg-zinc-800/60 px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition-all hover:bg-zinc-700/60 hover:text-zinc-300"
+            className="rounded-full bg-[#F2F2F7] px-3 py-1.5 text-[14px] font-medium text-[#6C6C70] transition-all hover:bg-[#E5E5EA] hover:text-[#1C1C1E]"
           >
             API
           </a>

@@ -18,11 +18,11 @@ function ShellInner({ tongQuan, hanhDong, chienLuoc, dienBien }: DashboardShellP
   return (
     <>
       <TabBar />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        {activeTab === "tong-quan" && <div className="tab-panel space-y-8">{tongQuan}</div>}
-        {activeTab === "hanh-dong" && <div className="tab-panel space-y-8">{hanhDong}</div>}
-        {activeTab === "chien-luoc" && <div className="tab-panel space-y-8">{chienLuoc}</div>}
-        {activeTab === "dien-bien" && <div className="tab-panel space-y-8">{dienBien}</div>}
+      <main className="mx-auto max-w-lg px-4 pt-4 pb-8 pb-safe sm:max-w-2xl lg:max-w-4xl sm:px-6">
+        {activeTab === "tong-quan" && <div className="tab-panel space-y-4">{tongQuan}</div>}
+        {activeTab === "hanh-dong" && <div className="tab-panel space-y-4">{hanhDong}</div>}
+        {activeTab === "chien-luoc" && <div className="tab-panel space-y-4">{chienLuoc}</div>}
+        {activeTab === "dien-bien" && <div className="tab-panel space-y-4">{dienBien}</div>}
       </main>
     </>
   );

@@ -177,7 +177,7 @@ function kbdAfterStatus() {
 
 function kbdAfterOverdue() {
   return kbd([
-    [{ text: '🔶 Tín hiệu rủi ro (WF4)', callback_data: 'cmd_chay_wf4' }, { text: '📋 Đồng hành (WF5)', callback_data: 'cmd_chay_wf5' }],
+    [{ text: '🔶 Đồng hành (WF4)', callback_data: 'cmd_chay_wf4' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
     [{ text: '🧠 AI dự đoán rủi ro', callback_data: 'cmd_phantich' }, { text: '📊 Trạng thái', callback_data: 'cmd_trangthai' }],
     [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
@@ -508,11 +508,9 @@ bot.onText(/^\/chay$/, (msg) => {
 
 Workflows khả dụng:
   /chay wf1 — Gửi email duyệt chỉ đạo
-  /chay wf2 — Notify chỉ đạo 5T confirmed
   /chay wf3 — Detect thay đổi trạng thái
-  /chay wf4 — Tín hiệu rủi ro
-  /chay wf5 — Smart reminders
-  /chay wf6 — Sync dashboard
+  /chay wf4 — Đồng hành (nhắc nhở + leo thang)
+  /chay wf6 — Nâng cấp chỉ đạo
   /chay hm50 — Match chỉ đạo → 50 HM
   /chay all — Chạy tất cả`);
 });
@@ -523,7 +521,7 @@ bot.onText(/\/chay\s+(\w+)/, (msg, match) => {
 
   const chatId = msg.chat.id;
   const wfName = match[1].toLowerCase();
-  const validWFs = ['wf1', 'wf2', 'wf3', 'wf4', 'wf5', 'wf6', 'hm50', 'all'];
+  const validWFs = ['wf1', 'wf3', 'wf4', 'wf6', 'wf7', 'hm50', 'all'];
 
   if (!validWFs.includes(wfName)) {
     return bot.sendMessage(chatId, `✖ Workflow không hợp lệ: ${wfName}\n\n☑ Hợp lệ: ${validWFs.join(', ')}`);

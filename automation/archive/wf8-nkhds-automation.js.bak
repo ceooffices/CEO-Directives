@@ -1,0 +1,210 @@
+/**
+ * wf8-nkhds-automation.js
+ * CEO Directive WF8: Nhật Ký Hoạt Động Sống (NKHĐS) Automation
+ *
+ * Logic:
+ *   1. Query tất cả directives quá hạn từ Supabase
+ *   2. Split multi-name t1_dau_moi → resolve email từng người
+ *   3. Group directives theo email đầu mối
+ *   4. Gửi email cá nhân hóa cho từng đầu mối (template chuẩn Content Bible)
+ *   5. Ghi logEvent cho mọi email gửi/fail
+ *
+ * Content Bible compliance:
+ *   - Positive framing: "cần quan tâm" thay vì "quá hạn"
+ *   - 3 lựa chọn trao quyền: Đang xử lý / Cần thêm thời gian / Cần hỗ trợ
+ *   - Tracking pixel cho mỗi email
+ *   - Không dùng emoji cấm (🔴 ⚠️ ❗)
+ *
+ * Migrated: WF8 v2 — 06/04/2026
+ *
+ * Usage:
+ *   node wf8-nkhds-automation.js              # Chạy thật
+ *   node wf8-nkhds-automation.js --dry-run    # Chỉ log
+ */
+
+const { queryOverdueDirectives, getStaffEmail, logEvent, directiveUrl,
+        BOD_HOSTING_EMAIL, ALWAYS_CC, CEO_EMAIL } = require('./lib/supabase-client');
+const { sendEmail } = require('./lib/email-sender');
+const { buildNkhdsEmail } = require('./lib/email-templates');
+
+const DRY_RUN = process.argv.includes('--dry-run');
+
+// ===== HELPERS =====
+
+/**
+ * Split multi-name t1_dau_moi thành danh sách tên riêng.
+ * Ví dụ: "Đặng Tiến Dũng, Bùi Thị Thanh Hiếu" → ["Đặng Tiến Dũng", "Bùi Thị Thanh Hiếu"]
+ * @param {string} dauMoiRaw
+ * @returns {string[]}
+ */
+function splitDauMoi(dauMoiRaw) {
+  if (!dauMoiRaw) return [];
+  return dauMoiRaw
+    .split(/[,;]/)
+    .map(n => n.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Resolve email cho 1 tên đầu mối.
+ * Ưu tiên: t1_email (nếu chỉ 1 người) → getStaffEmail → fallback BOD_HOSTING_EMAIL
+ */
+async function resolveEmail(name, t1EmailField) {
+  // Nếu t1_email có sẵn và chỉ 1 người → dùng luôn
+  if (t1EmailField && !t1EmailField.includes(',')) {
+    return t1EmailField;
+  }
+  // Resolve từ staff table
+  const email = await getStaffEmail(name);
+  return email || '';
+}
+
+// ===== MAIN =====
+
+async function run() {
+  const startTime = Date.now();
+  const now = new Date();
+
+  console.log('==========================================');
+  console.log(`[WF8] ${now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`);
+  console.log(`[WF8] Mode: ${DRY_RUN ? '🏜️ DRY-RUN' : '⚡ LIVE'}`);
+  console.log('[WF8] NKHĐS Automation Engine v2 — Supabase');
+  console.log('==========================================');
+
+  // 1. Query overdue directives
+  console.log('\n[1/4] Querying overdue directives...');
+  const directives = await queryOverdueDirectives();
+  console.log(`  Found: ${directives.length} overdue directives`);
+
+  if (directives.length === 0) {
+    console.log('  → Không có chỉ đạo nào cần quan tâm.');
+    return { total: 0, sent: 0, failed: 0, warnings: 0 };
+  }
+
+  // 2. Split multi-name + resolve emails + group by email
+  console.log('\n[2/4] Resolving emails and grouping by đầu mối...');
+  const byEmail = {}; // { email: { name, tasks: [{title, deadline, daysOverdue, id}] } }
+  let warningCount = 0;
+
+  for (const row of directives) {
+    const dauMoiRaw = row.t1_dau_moi || '';
+    const names = splitDauMoi(dauMoiRaw);
+
+    if (names.length === 0) {
+      console.log(`  ⚠️ [${row.directive_code}] Thiếu t1_dau_moi — skip`);
+      warningCount++;
+      continue;
+    }
+
+    const deadlineStr = row.t4_thoi_han;
+    const daysOverdue = deadlineStr
+      ? Math.ceil((now - new Date(deadlineStr)) / (1000 * 60 * 60 * 24))
+      : 0;
+
+    const taskInfo = {
+      title: row.t2_nhiem_vu || row.directive_code || 'Không tên',
+      deadline: deadlineStr || 'Chưa xác định',
+      daysOverdue,
+      id: row.id,
+    };
+
+    // Resolve cho TỪNG tên trong multi-name field
+    for (const name of names) {
+      const email = await resolveEmail(name, row.t1_email);
+
+      if (!email) {
+        console.log(`  ⚠️ [${row.directive_code}] Không tìm thấy email cho "${name}" — fallback BOD`);
+        warningCount++;
+        const fallbackEmail = BOD_HOSTING_EMAIL;
+        if (!byEmail[fallbackEmail]) {
+          byEmail[fallbackEmail] = { name: name, email: fallbackEmail, tasks: [] };
+        }
+        byEmail[fallbackEmail].tasks.push(taskInfo);
+        continue;
+      }
+
+      if (!byEmail[email]) {
+        byEmail[email] = { name, email, tasks: [] };
+      }
+      byEmail[email].tasks.push(taskInfo);
+    }
+  }
+
+  const recipients = Object.keys(byEmail);
+  console.log(`  Resolved: ${recipients.length} đầu mối riêng biệt`);
+
+  // 3. Send personal emails
+  console.log('\n[3/4] Sending personal NKHĐS emails...');
+  let sentCount = 0;
+  let failCount = 0;
+
+  for (const [email, stats] of Object.entries(byEmail)) {
+    const emailData = {
+      id: stats.tasks[0]?.id || null,
+      tenDauMoi: stats.name,
+      emailDauMoi: email,
+      overdueCount: stats.tasks.length,
+      tasks: stats.tasks,
+      url: stats.tasks[0]?.id ? directiveUrl(stats.tasks[0].id) : '#',
+    };
+
+    try {
+      const html = buildNkhdsEmail(emailData);
+
+      if (!DRY_RUN) {
+        await sendEmail({
+          to: email,
+          subject: `Đồng hành — ${stats.tasks.length} chỉ đạo cần quan tâm`,
+          html,
+          cc: ALWAYS_CC.filter(e => e !== email).join(', '),
+        });
+      } else {
+        console.log(`  [DRY-RUN] → ${email} (${stats.name}): ${stats.tasks.length} chỉ đạo cần quan tâm`);
+      }
+
+      // Log event cho từng directive liên quan
+      for (const task of stats.tasks) {
+        await logEvent(task.id, 'wf8_nkhds_sent', {
+          title: task.title,
+          emailTo: email,
+          daysOverdue: task.daysOverdue,
+        }, DRY_RUN);
+      }
+
+      sentCount++;
+    } catch (error) {
+      failCount++;
+      console.error(`  ❌ FAILED ${email} (${stats.name}):`, error.message);
+
+      for (const task of stats.tasks) {
+        await logEvent(task.id, 'wf8_nkhds_error', {
+          error: error.message,
+          emailTo: email,
+        }, DRY_RUN);
+      }
+    }
+  }
+
+  // 4. Summary
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.log('\n[4/4] Summary');
+  console.log('==========================================');
+  console.log('[WF8] SUMMARY:');
+  console.log(`  📌 Directives cần quan tâm: ${directives.length}`);
+  console.log(`  📧 Emails sent: ${sentCount}`);
+  console.log(`  ❌ Failed: ${failCount}`);
+  console.log(`  ⚠️ Warnings: ${warningCount}`);
+  console.log(`  ⏱️ Time: ${elapsed}s`);
+  console.log('==========================================');
+
+  return { total: directives.length, sent: sentCount, failed: failCount, warnings: warningCount };
+}
+
+if (require.main === module) {
+  run().catch(err => {
+    console.error('❌ FATAL:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { run };
