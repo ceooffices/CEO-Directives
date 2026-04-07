@@ -23,7 +23,7 @@ const CONFIG = {
     "dungntt@esuhai.com",
     "hoangkha@esuhai.com",
   ],
-  BOD_HOSTING_DEFAULT: "letuan@esuhai.com",
+  BOD_HOSTING_DEFAULT: "trucly@esuhai.com",
   N8N_WEBHOOK_URL: "https://esuhai.app.n8n.cloud/webhook/bod-send-email",
   EMAIL_SENDER_NAME: "BTC MEETING BOD - ESUHAIGROUP",
   EMAIL_SENDER_ADDRESS: "",

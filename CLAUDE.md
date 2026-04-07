@@ -81,8 +81,8 @@ Khi nhận callback_query dạng `cmd_*`, xử lý như sau:
 
 # CEO Directive Automation — ClaudeCode Context
 
-> Cập nhật: 2026-03-18
-> Phiên bản: v3.1 — Supabase migration + BOD Meeting GAS restored
+> Cập nhật: 2026-04-07
+> Phiên bản: v5.2 — Auth, CORS restrict, audit fix
 
 ## Tổng quan dự án
 Hệ thống tự động hóa quản lý chỉ đạo CEO cho EsuhaiGroup (Giáo dục & Nhân lực Việt-Nhật).
@@ -90,7 +90,7 @@ Hệ thống tự động hóa quản lý chỉ đạo CEO cho EsuhaiGroup (Giá
 - **BOD Meeting:** Google Apps Script dashboard → `bod_meeting/` (thu đăng ký & quản lý BOD)
 - **Database:** Supabase PostgreSQL (source of truth cho web/)
 - **Backend:** Node.js automation scripts → `automation/`
-- **AI:** Gemini 2.5 Pro (primary) + OpenAI (fallback)
+- **AI:** Claude API (primary) + Gemini 2.5 Pro (fallback) + OpenAI (fallback 2) — xem `automation/lib/ai-router.js`
 - **Ngôn ngữ:** Node.js, tiếng Việt có dấu
 
 ## Data Architecture
@@ -141,7 +141,8 @@ CEO-Directives/
 │   ├── src/app/approve/[id]/ # P2: Duyệt chỉ đạo (BOD Hosting)
 │   ├── src/app/confirm/[id]/ # P3: Xác nhận đầu mối
 │   ├── src/app/directive/[id]/ # Chi tiết chỉ đạo
-│   ├── src/app/api/          # 4 API routes
+│   ├── src/app/login/         # Trang đăng nhập (Supabase Auth)
+│   ├── src/app/api/          # 6 API routes (approve, confirm, escalate, remind, status, track)
 │   ├── src/lib/supabase.ts   # Supabase client
 │   └── .env.local            # Supabase credentials
 ├── ban_chep_loi/             # Transcripts cuộc họp BOD (source of truth)
@@ -213,7 +214,8 @@ SIGNAL_BOT_NUMBER=...
 SMTP_USER=... SMTP_PASS=...
 ```
 
-File `web/.env.local` chứa Supabase keys (anon + service_role) + Notion (legacy).
+File `web/.env.local` chứa Supabase keys (anon + service_role).
+**Auth:** Dashboard yêu cầu đăng nhập (Supabase Auth). Tạo user tại Supabase Console.
 
 ## Coding Standards
 - Comments tiếng Việt có dấu

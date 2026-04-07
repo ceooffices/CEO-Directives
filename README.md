@@ -44,7 +44,7 @@ Hệ thống giúp **CEO và Ban Giám Đốc** điều hành chỉ đạo bằn
 6. **Hỗ trợ đầu mối** — gợi ý cách xử lý, hỏi khó khăn, đưa CTA
 7. CEO **duyệt kết quả** và đánh giá hiệu quả
 
-![Kiến trúc hệ thống](docs/images/system-architecture.png)
+<!-- Hình minh họa kiến trúc (chưa có) -->
 
 ---
 
@@ -52,7 +52,7 @@ Hệ thống giúp **CEO và Ban Giám Đốc** điều hành chỉ đạo bằn
 
 Mỗi chỉ đạo đi qua 7 bước từ lúc CEO phát biểu đến lúc hoàn thành:
 
-![Quy trình 7 bước LELONGSON](docs/images/lelongson-pipeline.png)
+<!-- Hình minh họa pipeline (chưa có) -->
 
 | Bước | Tên | Người thực hiện |
 |------|-----|-----------------|
@@ -94,7 +94,7 @@ Hệ thống **không nhắc việc** — mà **theo dõi tín hiệu hành vi**
 
 Mỗi sáng 8h, hệ thống phân tích tất cả tín hiệu và đưa ra đánh giá:
 
-![Hệ thống cảnh báo 4 cấp](docs/images/escalation-levels.png)
+<!-- Hình minh họa cảnh báo (chưa có) -->
 
 | Cấp | Tín hiệu | Hệ thống phản ứng |
 |-----|----------|---------------------|
@@ -125,20 +125,21 @@ Hệ thống tự nhận biết 3 dạng chỉ đạo và xử lý khác nhau:
 |------------|-----------|---------|
 | 🌐 Dashboard | **Next.js 16** | Giao diện theo dõi hành vi tuân thủ |
 | 💾 Cơ sở dữ liệu | **Supabase (PostgreSQL)** | Lưu trữ chỉ đạo, nhân sự, engagement events |
-| ⚡ Tự động hóa | **Supabase Edge Functions** | Phân tích tín hiệu & cảnh báo rủi ro (8h sáng) |
+| ⚡ Tự động hóa | **Node.js + AI Scheduler** | Phân tích tín hiệu & cảnh báo rủi ro (cron thông minh) |
 | 📧 Email | **Node.js + SMTP** | Email chính thức + tracking pixel |
-| 📱 Signal | **Signal REST API** | Báo cáo tuần cho CEO |
-| 🔄 Scripts | **Node.js** | Seed data, dedup, reporting |
+| 📱 Telegram Bot | **node-telegram-bot-api** | Truy vấn trạng thái, chạy workflow |
+| 🔄 Process Manager | **PM2** | 5 services: bridge, bot, scheduler, panel, tunnel |
+| 🤖 AI | **Claude API + Gemini + OpenAI** | Phân tích, router 3-tier fallback |
 
-### Dữ Liệu Hiện Tại (17/03/2026)
+### Dữ Liệu
 
-| Dữ liệu | Số lượng |
-|----------|----------|
-| Chỉ đạo CEO | **52** (từ 3 cuộc BOD) |
-| Nhân sự Esuhai | **366** người |
-| Hạng mục BSC | **50** hạng mục chiến lược |
-| Email đã mapping | **52/52 (100%)** |
-| Cron job phân tích | **1** (8h sáng hàng ngày) |
+> Số liệu thay đổi liên tục. Xem dashboard hoặc gọi `GET /api/status` để lấy dữ liệu realtime.
+
+| Dữ liệu | Nguồn |
+|----------|-------|
+| Chỉ đạo CEO | Supabase `directives` |
+| Nhân sự Esuhai | Supabase `staff` (366+ người) |
+| Hạng mục BSC | Supabase `hm50` (50 hạng mục) |
 
 ---
 
@@ -197,6 +198,8 @@ node signal-briefing.js              # Gửi thật
 | `/api/confirm` | POST | Đầu mối xác nhận 5T |
 | `/api/approve` | POST | BOD duyệt kết quả |
 | `/api/remind` | POST | Gửi email hỗ trợ (không phải nhắc nhở) |
+| `/api/escalate` | POST | Báo cáo rủi ro lên CEO |
+| `/api/track/[token]` | GET | Tracking pixel email (invisible) |
 
 ---
 
@@ -229,15 +232,20 @@ CEO-Directives/
 │   │   └── directive/[id]/         ← Chi tiết chỉ đạo
 │   └── src/lib/supabase.ts         ← Kết nối database
 │
-├── 📂 automation/                   ← Scripts (Node.js)
-│   ├── seed-emails.js              ← Gắn email cho chỉ đạo
-│   ├── dedup-directives.js         ← Tìm chỉ đạo trùng lặp
-│   ├── signal-briefing.js          ← Báo cáo tuần qua Signal
-│   └── lib/email-templates.js      ← Mẫu email (tâm lý học)
+├── 📂 automation/                   ← Backend (Node.js + PM2)
+│   ├── scheduler.js                ← Cron orchestrator
+│   ├── ai-scheduler.js             ← AI-driven scheduling
+│   ├── telegram-bot.js             ← Telegram Bot
+│   ├── nemoclaw-bridge.js          ← API Gateway (port 3101)
+│   ├── control-panel.js            ← Web control panel (port 9001)
+│   ├── wf1-approval.js .. wf7      ← Workflow engines
+│   ├── transcript-parser.js        ← Parse biên bản BOD → Supabase
+│   ├── auto-escalation.js          ← Phát hiện rủi ro tự động
+│   ├── hm50-linker.js              ← Link chỉ đạo → 50 HM
+│   ├── ecosystem.config.js         ← PM2 config (5 services)
+│   └── lib/                        ← Shared: email, AI router, logger
 │
-├── 📂 supabase/                     ← Hạ tầng database
-│   └── functions/
-│       └── auto-escalation/        ← Phân tích tín hiệu (8h sáng)
+├── 📂 supabase/                     ← Schema + Seed scripts
 │
 ├── 📂 ban_chep_loi/                 ← Biên bản cuộc họp BOD
 ├── 📂 archive/                      ← Files lỗi thời, prototype cũ
@@ -303,7 +311,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 | v3.0 | 15/03/2026 | **Chuyển sang Supabase**, Dashboard Next.js |
 | v3.5 | 16/03/2026 | BSC Scorecard, LELONGSON Pipeline, HM50 Heatmap |
 | v4.0 | 17/03/2026 | Auto-Escalation, 52/52 email mapped, phân loại 3 tầng |
-| **v5.0** | **17/03/2026** | **Tái cấu trúc: 4 tab, triết lý Advisor, Content Bible tâm lý học** |
+| v5.0 | 17/03/2026 | Tái cấu trúc: 4 tab, triết lý Advisor, Content Bible tâm lý học |
+| v5.1 | 05/04/2026 | Mobile-first UI, live Supabase KPI data, AI Scheduler |
+| **v5.2** | **07/04/2026** | **Supabase Auth, CORS restrict, fix build, audit toàn diện** |
 
 ---
 
@@ -329,7 +339,8 @@ Khi cần can thiệp, ngôn ngữ luôn mang tính **hỗ trợ**: "Chúng tôi
 ### Dashboard truy cập ở đâu?
 
 - **Local**: `npm run dev` → http://localhost:3000
-- **Production**: Deploy lên Vercel (đã cấu hình `vercel.json`)
+- **Production**: https://ceodirectives.vercel.app
+- **Auth**: Cần đăng nhập (Supabase Auth — email/password). Tạo user tại Supabase Console → Authentication → Users.
 
 ---
 

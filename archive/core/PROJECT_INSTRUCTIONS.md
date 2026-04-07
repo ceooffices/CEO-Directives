@@ -1,8 +1,11 @@
+> **DEPRECATED:** File này từ phase Notion (01/2026). Source of truth hiện tại là `CLAUDE.md` ở root.
+
 # PROJECT INSTRUCTIONS - CEO Directive Processing
 
-**Version:** 1.3  
-**Updated:** 14/01/2026  
+**Version:** 1.3
+**Updated:** 14/01/2026
 **Dùng cho:** Claude Project Settings → Custom Instructions
+**Status:** DEPRECATED
 
 ---
 

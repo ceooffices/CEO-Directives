@@ -1,4 +1,4 @@
-import type { DirectiveOrigins } from "@/lib/notion";
+import type { DirectiveOrigins } from "@/lib/supabase-types";
 
 export default function DirectiveOrigin({
   origins,

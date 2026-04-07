@@ -170,7 +170,7 @@ function kbdMain() {
 function kbdAfterStatus() {
   return kbd([
     [{ text: '📌 Xem cần quan tâm', callback_data: 'cmd_quahan' }, { text: '🧠 AI phân tích', callback_data: 'cmd_phantich' }],
-    [{ text: '🚀 Chạy WF1 (email duyệt)', callback_data: 'cmd_chay_wf1' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
+    [{ text: '► Chạy WF1 (email duyệt)', callback_data: 'cmd_chay_wf1' }, { text: '📋 Báo cáo tuần', callback_data: 'cmd_baocaotuan' }],
     [{ text: '📊 Mở Dashboard', url: DASHBOARD_URL }],
   ]);
 }
@@ -247,7 +247,7 @@ function formatOverdue(data) {
     msg += `*${i + 1}. ${escMd(item.title || 'Không tên')}*\n`;
     msg += `   👤 Đầu mối: ${escMd(item.dauMoi || 'N/A')}\n`;
     msg += `   📅 Hạn: ${item.deadline || 'N/A'}\n`;
-    msg += `   🔴 Quá *${item.daysOverdue}* ngày\n`;
+    msg += `   ⏳ Cần quan tâm *${item.daysOverdue}* ngày\n`;
     if (item.url) msg += `   🔗 [Xem chi tiết](${item.url})\n`;
     msg += '\n';
   });
@@ -279,7 +279,7 @@ function formatRunResult(wfName, data) {
   }
 
   if (wfName === 'all') {
-    let msg = `🚀 *ĐÃ CHẠY TẤT CẢ WORKFLOWS*\n━━━━━━━━━━━━━━━━━━━━\n\n`;
+    let msg = `✅ *ĐÃ CHẠY TẤT CẢ WORKFLOWS*\n━━━━━━━━━━━━━━━━━━━━\n\n`;
     const results = data.results || {};
     for (const [name, result] of Object.entries(results)) {
       const icon = result.error ? '✖' : '☑';

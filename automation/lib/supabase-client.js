@@ -121,6 +121,8 @@ async function queryOverdueDirectives() {
     .not('tinh_trang', 'eq', 'hoan_thanh')
     .not('t4_thoi_han', 'is', null)
     .lt('t4_thoi_han', threeDaysAgo)
+    // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
+    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
     .order('t4_thoi_han', { ascending: true });
 
   if (error) throw new Error(`queryOverdueDirectives: ${error.message}`);
@@ -140,6 +142,8 @@ async function queryActiveDirectives() {
       meeting_source, bod_hosting_email, confirmed_at, lls_step
     `)
     .not('tinh_trang', 'eq', 'hoan_thanh')
+    // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
+    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
     .order('created_at', { ascending: false });
 
   if (error) throw new Error(`queryActiveDirectives: ${error.message}`);
@@ -452,13 +456,15 @@ async function updateDirectiveStep(directiveId, stepNumber, stepName, action, ac
 
 // ===== HM50 QUERIES (cho BSC nếu cần) =====
 
-async function queryAllHM50() {
+async function queryAllDirectives() {
   const { data, error } = await db
-    .from('hm50')
+    .from('directives')
     .select('*')
-    .order('hm_number', { ascending: true });
+    // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
+    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
+    .order('created_at', { ascending: false });
 
-  if (error) throw new Error(`queryAllHM50: ${error.message}`);
+  if (error) throw new Error(`queryAllDirectives: ${error.message}`);
   return data || [];
 }
 

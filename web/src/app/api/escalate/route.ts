@@ -5,9 +5,16 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServiceClient, LLS_STEP_NAMES } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    const { allowed } = rateLimit(ip, { limit: 5, windowMs: 60_000 });
+    if (!allowed) {
+      return NextResponse.json({ error: "Quá nhiều request, vui lòng thử lại sau." }, { status: 429 });
+    }
+
     const body = await req.json();
     const { directive_id } = body as { directive_id: string };
 

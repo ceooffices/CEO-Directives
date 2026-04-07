@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { LELONGSONPipeline } from "@/lib/notion";
+import type { LELONGSONPipeline } from "@/lib/supabase-types";
 import DirectiveTable from "./directive-table";
 
 const STAGE_HINTS: Record<string, { active: string; done: string; pending: string }> = {

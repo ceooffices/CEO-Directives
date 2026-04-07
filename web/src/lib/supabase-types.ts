@@ -113,3 +113,63 @@ export interface Database {
     };
   };
 }
+
+// ===== Display types cho dashboard components =====
+// Shapes khớp 1:1 với output của supabase.ts functions
+
+export interface Directive {
+  id: string;
+  title: string;
+  status: string;
+  dau_moi: string;
+  nhiem_vu: string;
+  deadline: string | null;
+  hm50_ref: string;
+  section: string | null;
+  nguon: string;
+  url: string;
+  created_at: string;
+  lelongson_stage?: string;
+  buoc_quy_trinh?: number;
+}
+
+export interface BSCPerspective {
+  key: string;
+  label: string;
+  hm_count: number;
+  directive_count: number;
+  completed: number;
+  completion_pct: number;
+  sections: string[];
+  hm_items: {
+    tt: number;
+    title: string;
+    status: string;
+    dau_moi: string;
+    directive_count: number;
+    progress_pct: number;
+  }[];
+}
+
+export interface LELONGSONPipeline {
+  stages: {
+    key: string;
+    label: string;
+    color: string;
+    count: number;
+    directives: Directive[];
+  }[];
+  total: number;
+}
+
+export interface DirectiveOrigins {
+  total: number;
+  from_hm50: number;
+  escalation: number;
+  new_initiative: number;
+  top_escalated: {
+    hm_tt: number;
+    title: string;
+    count: number;
+  }[];
+}

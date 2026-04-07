@@ -1,4 +1,4 @@
-import type { Directive } from "@/lib/notion";
+import type { Directive } from "@/lib/supabase-types";
 import Link from "next/link";
 
 function getUrgency(d: Directive): "green" | "yellow" | "red" | "black" | "done" {

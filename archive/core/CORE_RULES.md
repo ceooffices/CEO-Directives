@@ -6,7 +6,7 @@
 **Version:** 1.5  
 **Updated:** 14/01/2026  
 **By:** ClaudeK + Anh Kha  
-**Status:** APPROVED - SOURCE OF TRUTH
+**Status:** DEPRECATED — xem `bod_meeting/docs/CORE_RULES.md`
 
 ---
 

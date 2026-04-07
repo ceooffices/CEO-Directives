@@ -9,19 +9,29 @@ import { getServiceClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
+// Origins cho phép — mặc định chỉ production + localhost dev
+const ALLOWED_ORIGINS = (process.env.CORS_ALLOWED_ORIGINS || "https://ceodirectives.vercel.app,http://localhost:3000,http://localhost:3101")
+  .split(",")
+  .map((o) => o.trim());
+
+function getCorsOrigin(request: Request): string {
+  const origin = request.headers.get("origin") || "";
+  return ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+}
+
 // CORS preflight
-export async function OPTIONS() {
+export async function OPTIONS(request: Request) {
   return new NextResponse(null, {
     status: 204,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": getCorsOrigin(request),
       "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
   });
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const db = getServiceClient();
     const now = new Date();
@@ -173,7 +183,7 @@ export async function GET() {
       },
       {
         headers: {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": getCorsOrigin(request),
           "Cache-Control": "public, max-age=60",
         },
       }

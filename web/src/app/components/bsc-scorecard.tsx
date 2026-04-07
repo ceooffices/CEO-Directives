@@ -1,4 +1,4 @@
-import type { BSCPerspective } from "@/lib/notion";
+import type { BSCPerspective } from "@/lib/supabase-types";
 
 const PERSPECTIVE_STYLE: Record<string, { bg: string; text: string; dot: string; bar: string }> = {
   financial: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500", bar: "bg-green-500" },
