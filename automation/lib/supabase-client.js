@@ -122,7 +122,7 @@ async function queryOverdueDirectives() {
     .not('t4_thoi_han', 'is', null)
     .lt('t4_thoi_han', threeDaysAgo)
     // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
-    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
+    .or('meeting_source.ilike.%2026-03-30%,meeting_source.ilike.%2026-04-07%')
     .order('t4_thoi_han', { ascending: true });
 
   if (error) throw new Error(`queryOverdueDirectives: ${error.message}`);
@@ -143,7 +143,7 @@ async function queryActiveDirectives() {
     `)
     .not('tinh_trang', 'eq', 'hoan_thanh')
     // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
-    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
+    .or('meeting_source.ilike.%2026-03-30%,meeting_source.ilike.%2026-04-07%')
     .order('created_at', { ascending: false });
 
   if (error) throw new Error(`queryActiveDirectives: ${error.message}`);
@@ -461,7 +461,7 @@ async function queryAllDirectives() {
     .from('directives')
     .select('*')
     // LỌC DRY-RUN TRƯỚC: Chỉ lấy 30/03 và 06/04
-    .or('meeting_source.ilike.%30/03/2026%,meeting_source.ilike.%06/04/2026%')
+    .or('meeting_source.ilike.%2026-03-30%,meeting_source.ilike.%2026-04-07%')
     .order('created_at', { ascending: false });
 
   if (error) throw new Error(`queryAllDirectives: ${error.message}`);
@@ -504,8 +504,6 @@ module.exports = {
   // Staff
   getStaffEmail,
   getStaffEmails,
-  // HM50
-  queryAllHM50,
   // Directive Versions (Step 3 + Step 5-6)
   saveDirectiveVersion,
   getDirectiveVersions,
