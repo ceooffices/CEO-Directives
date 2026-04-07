@@ -24,7 +24,8 @@ export default async function AssistantDashboardPage() {
     .limit(10);
 
   // Chỉ đạo đã gửi nhưng chưa phản hồi > 48h (lls_step = 4, updated > 48h ago)
-  const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  const now = new Date();
+  const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
   const { data: silentDirectives } = await supabase
     .from('directives')
     .select('id, directive_code, t1_dau_moi, t2_nhiem_vu, updated_at, lls_step')
@@ -74,7 +75,7 @@ export default async function AssistantDashboardPage() {
         name: d.t1_dau_moi,
         title: d.t2_nhiem_vu,
         updatedAt: d.updated_at,
-        silentHours: Math.round((Date.now() - new Date(d.updated_at).getTime()) / (1000 * 60 * 60)),
+        silentHours: Math.round((now.getTime() - new Date(d.updated_at).getTime()) / (1000 * 60 * 60)),
       }))}
       completedRecent={(completedRecent || []).map(d => ({
         code: d.directive_code,
