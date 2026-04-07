@@ -39,32 +39,9 @@ module.exports = {
       log_type: 'json',
     },
 
-    // ===== 2a. NemoClaw Telegram Bot (POLLING) =====
-    // Dùng chung token NemoClaw (8282...) — bot duy nhất tiếp nhận tin nhắn
-    {
-      name: 'ceo-nemo-tg',
-      script: '/Users/esuhai/nemoclaw/nemoclaw-telegram-ceo.js',
-      cwd: AUTO_DIR,
-      instances: 1,
-      exec_mode: 'fork',
-      autorestart: true,
-      max_restarts: 10,
-      min_uptime: '10s',
-      restart_delay: 5000,
-      watch: false,
-      max_memory_restart: '200M',
-      env: {
-        NODE_ENV: 'production',
-      },
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-      error_file: path.join(AUTO_DIR, 'logs/ceo-nemo-tg-error.log'),
-      out_file: path.join(AUTO_DIR, 'logs/ceo-nemo-tg-out.log'),
-      merge_logs: true,
-      log_type: 'json',
-    },
-
-    // ===== 2b. CEO-Dir Telegram Webhook Handler =====
-    // Nhận updates từ Bridge qua POST /telegram-hook — xử lý lệnh phức tạp
+    // ===== 2. Telegram Webhook Handler =====
+    // NemoClaw quản lý polling bot riêng (nemoclaw-telegram-ceo.js)
+    // CEO-Directives chỉ nhận updates qua POST /telegram-hook từ Bridge
     {
       name: 'ceo-bot',
       script: path.join(AUTO_DIR, 'telegram-bot.js'),
