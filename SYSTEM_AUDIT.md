@@ -1,5 +1,5 @@
 # SYSTEM AUDIT
-*Cập nhật: 18/03/2026 — Gravity*
+*Cập nhật: 07/04/2026 — Gravity*
 
 ## TRẠNG THÁI HỆ THỐNG
 
@@ -7,67 +7,52 @@
 
 | Layer | Component | Trạng thái |
 | --- | --- | --- |
-| **Frontend** | Next.js 16 (`web/`) | 🟢 12 routes, build pass |
+| **Frontend** | Next.js 16 (`web/`) | 🟢 Light Theme iOS Mobile-First (Viewport optimized) |
 | **BOD Meeting** | GAS Dashboard (`bod_meeting/`) | 🟢 ACTIVE — Thu đăng ký & quản lý BOD |
-| **Database** | Supabase (PostgreSQL) | 🟢 52 directives, 366 staff, 50 hm50 |
-| **Cron** | Edge Function `auto-escalation` | 🟢 ACTIVE — 8h sáng hàng ngày |
-| **API** | 5 endpoints (status, confirm, approve, escalate, remind) | 🟢 All working |
-| **Email** | SMTP + tracking pixel | 🟡 Template có, chưa gửi email thật |
-| **Signal** | REST API briefing | 🟡 Script sẵn sàng, chưa kết nối Signal server |
-| **AI** | Chưa tích hợp | 🔴 Cần AI Router (Gemini/OpenAI) |
+| **Database** | Supabase (PostgreSQL) | 🟢 LIVE (Kết nối domain `fgiszdvchpknmyfscxnp`) |
+| **Cron / Automations** | Node Scripts / Workflow | 🟢 7-step Pipeline, Escalation Rules, NKHĐS Reports |
+| **API** | App Router API & Endpoints | 🟢 Tích hợp `getServiceClient` bypass RLS cho Dashboard |
+| **Email** | SMTP + Tracking pixel | 🟢 URL Tracking chuẩn: `ceodirectives.vercel.app` |
+| **Environment** | Quản lý biến môi trường | 🟢 Đồng bộ Supabase/Vercel secrets qua `.env.local` |
 
-### Dữ liệu Supabase (17/03/2026)
+### Dữ liệu Live Supabase (Báo cáo mới nhất 07/04/2026)
 
 | Metric | Giá trị | Ghi chú |
-|--------|---------|---------
-| `directives` | 52 rows | 25 BOD 16/03 + 15 BOD 09/03 + 12 BOD 02/03 |
-| `staff` | 366 rows | Nhân sự Esuhai, có email + department |
-| `hm50` | 50 rows | BSC classified, directive_count đã seed |
-| `engagement_events` | 0 rows | Cron sáng mai sẽ tạo events đầu tiên |
-| `t1_email` | **52/52 (100%)** | ✅ Mapped hoàn tất |
-| `phan_loai_giao` | 39 cá nhân, 8 nhóm, 5 tổng thể | ✅ Phân loại 3 tầng |
-| `t4_thoi_han` | 18/52 có deadline | ⚠️ 34 chưa có deadline |
-| `confirmed_at` | 0/52 | ❌ Chưa ai xác nhận 5T |
-| `approved_at` | 0/52 | ❌ Chưa ai duyệt |
+|--------|---------|---------|
+| `employee_commitments`| 256 rows | Đủ thông tin Name, Role, Commit Number, Target |
+| **KPI Nhập học (Thực tế)**| **25.112** | Gom cả từ khóa "nhập học", "tuyển sinh", "khai giảng", "cả hai" |
+| **KPI Matching (Thực tế)**| **25.383** | Gom cả từ khóa "matching", "xuất cảnh", "cả hai" |
+| *BOD 07/04/2026 Seed*| 127 Matching | Nguồn Báo cáo OneTeam BOD 07/04 (Đã tích hợp ghi đè khi Db có số) |
 
-### Active Components (18/03/2026)
+### Active Components (07/04/2026)
 
-- `bod_meeting/` → 🟢 GAS Dashboard **ĐANG HOẠT ĐỘNG** (thu đăng ký, form, email BOD)
-- `web/` → 🟢 Next.js CEO Strategic Cockpit (tracking chỉ đạo, LELONGSON)
-- `automation/` → 🟢 Node.js scripts (transcript parser, workflows, AI)
+- `web/` → 🟢 **Dashboard CEO Mobile-First**: 
+  Thân thiện với iOS Pro Max. Loại bỏ hoàn toàn Dark mode cũ, thay bằng Light Theme sang trọng, phong cách thẻ trắng (card) bo góc, CTA to, rõ ràng, giúp CEO thao tác chỉ bằng một tay.
+- `automation/` → 🟢 **NemoClaw Workflows**:
+  Đã hoàn thiện các luồng WF7 (Pre-flight checks), WF8 (NKHĐS automation báo cáo gửi email stakeholder).
+- `supabase.ts` → 🟢 **Database Interface**:
+  Toàn bộ các Data Fetching functions trên NextJS App Router đã dùng `getServiceClient()` để fetch data server-side không lo lỗi schema rỗng từ public RLS.
 
-### Đã archive
+### Đã archive (Theo thời gian)
 
 - `archive/apps-script/` → GAS form creator (1 lần, đã tạo xong)
-- `archive/automation_n8n/` → n8n workflows cũ (chuyển sang Node.js)
-- `archive/ceo_cockpit/` → Dashboard prototype (thay bởi web/)
-- `archive/core/` → Docs cũ v1.x
-
-### Environment
-
-- `web/.env.local` — Supabase credentials cho Next.js
-- `automation/.env` — Toàn bộ credentials (Supabase, SMTP, Signal, AI)
+- `archive/automation_n8n/` → n8n workflows (Chuyển sang Node.js chạy ổn định hơn)
+- `archive/...` → Các form processor thừa của WF2/WF5 bị xoá bớt, gộp chung luồng xử lý.
 
 ---
 
-## SPRINT HIỆN TẠI: Sprint 4-5 — Hoàn thành ✅
+## LỊCH SỬ NÂNG CẤP & SPRINT HIỆN TẠI: Sprint Redesign UI & Live DB
 
-### Đã hoàn thành (17/03/2026)
+### Cột mốc hoàn thành (07/04/2026)
 
-- [x] Seed email 52/52 chỉ đạo (100%)
-- [x] Edge Function auto-escalation deployed + ACTIVE
-- [x] Cron job `0 1 * * *` (8h sáng VN) — đã tạo qua pg_cron
-- [x] API /api/status nâng cấp (health_score, events, hm50_hot, CORS)
-- [x] Dedup check — tìm 14 cặp trùng lặp giữa 3 BOD
-- [x] Signal briefing script sẵn sàng
-- [x] Phân loại chỉ đạo 3 tầng (cá nhân/nhóm/tổng thể)
-- [x] CC list cho chỉ đạo tổng thể (7 BOD members)
-- [x] Routing rules: MS → Dũng, Thầy Nam → Huỳnh Phước
+- [x] **Mobile-first UI/UX Overhaul**: Chuyển toàn bộ giao diện sang Light Theme. Tạo không gian SafeArea insets dưới chân trang (pb-safe) chống đè vạch Home Bar của iPhone 15/17 Pro Max.
+- [x] **Upscaling Typography**: Tăng min 3-4 sizes cho toàn bộ font text trên giao diện từ Tab Navigation, Stat Cards, KPI Cards, đến Pipeline 7 Bước và Bảng Chỉ Đạo để dễ đọc.
+- [x] **Data Analytics Fix (KPIs)**: Fix lỗi count dữ liệu thiếu khi nhân viên để Target: `"Khai giảng"` hoặc `"Cả hai / 両方"`.
+- [x] **Vercel Integration URL**: Dọn dẹp thống nhất 100% URL Hyperlink, Dashboard URL và Email Tracking pixels về `ceodirectives.vercel.app`.
+- [x] **Production DB Switch**: Ngắt kết nối Supabase Local/Mock (`wegkeiqpxubresjhpccu`) và chỉ điểm thẳng vào Live Production (`fgiszdvchpknmyfscxnp`). Tất cả dashboard queries server-side đã chạy trơn tru.
 
-### Việc tiếp theo
+### Việc tiếp theo trên Radar
 
-- [ ] Kích hoạt gửi email thật (xác nhận 5T + nhắc nhở)
-- [ ] Bổ sung deadline cho 34/52 chỉ đạo
-- [ ] Tích hợp AI Router (Gemini + OpenAI fallback)
-- [ ] Dashboard hiển thị phan_loai_giao
-- [ ] Deploy production lên Vercel
+- [ ] Giám sát Vercel Deployments sau khi Push Github (kiểm tra Environment Variables).
+- [ ] Tiếp tục đưa Timeline Dữ liệu BOD mới (nếu có cuộc họp tuần tới) vào cơ sở dữ liệu Supabase.
+- [ ] Cải thiện tốc độ phản hồi Telegram Bot / Signal Bot (Phase Integration NemoClaw).
