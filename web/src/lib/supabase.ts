@@ -746,31 +746,44 @@ export async function getStepHistory(directiveId: string) {
 // ===== KPI THỰC TẾ — Nhập học & Matching =====
 /**
  * Tổng hợp kết quả thực tế từ employee_commitments
- * - nhapHoc: SUM commit_number WHERE target ILIKE '%nhập học%' OR '%tuyển sinh%'
- * - matching: SUM commit_number WHERE target ILIKE '%matching%' OR '%xuất cảnh%'
+ * - nhapHoc: SUM commit_number WHERE target ILIKE '%nhập học%' OR '%tuyển sinh%' OR '%khai giảng%' OR '%cả hai%'
+ * - matching: SUM commit_number WHERE target ILIKE '%matching%' OR '%xuất cảnh%' OR '%cả hai%'
  */
 export async function getKPIActual(): Promise<{ nhapHoc: number; matching: number }> {
-  const { data, error } = await db
-    .from("employee_commitments")
-    .select("commit_number, target");
+  try {
+    const serviceClient = getServiceClient();
+    const { data, error } = await serviceClient
+      .from("employee_commitments")
+      .select("commit_number, target");
 
-  if (error || !data) {
-    // Bảng chưa có hoặc lỗi — trả về 0, không crash
+    if (error || !data) {
+      console.error("Lỗi khi query employee_commitments:", error);
+      return { nhapHoc: 0, matching: 0 };
+    }
+
+    let nhapHoc = 0;
+    let matching = 0;
+
+    for (const row of data) {
+      const t = (row.target || "").toLowerCase();
+      const v = Number(row.commit_number) || 0;
+      
+      const isNhapHoc = t.includes("nhập học") || t.includes("nhan hoc") || t.includes("tuyển sinh") || t.includes("tuyen sinh") || t.includes("khai giảng") || t.includes("khai giang");
+      const isMatching = t.includes("matching") || t.includes("xuất cảnh") || t.includes("xuat canh");
+      const isBoth = t.includes("cả hai") || t.includes("ca hai");
+
+      if (isBoth) {
+        nhapHoc += v;
+        matching += v;
+      } else {
+        if (isNhapHoc) nhapHoc += v;
+        if (isMatching) matching += v;
+      }
+    }
+
+    return { nhapHoc, matching };
+  } catch (err) {
+    console.error("Ngoại lệ khi getKPIActual:", err);
     return { nhapHoc: 0, matching: 0 };
   }
-
-  let nhapHoc = 0;
-  let matching = 0;
-
-  for (const row of data) {
-    const t = (row.target || "").toLowerCase();
-    const v = Number(row.commit_number) || 0;
-    if (t.includes("nhập học") || t.includes("nhan hoc") || t.includes("tuyển sinh") || t.includes("tuyen sinh")) {
-      nhapHoc += v;
-    } else if (t.includes("matching") || t.includes("xuất cảnh") || t.includes("xuat canh")) {
-      matching += v;
-    }
-  }
-
-  return { nhapHoc, matching };
 }
