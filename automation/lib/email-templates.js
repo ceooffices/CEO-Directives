@@ -22,8 +22,8 @@ const BRAND_RED = '#dc2626';
 const BRAND_PURPLE = '#7c3aed';
 
 // Tracking pixel — URL base cho Next.js dashboard
-// Dev: http://localhost:3000 · Prod: https://ceo.tikme.vn
-const TRACKING_BASE_URL = process.env.TRACKING_BASE_URL || 'http://localhost:3000';
+// Dev: http://localhost:3000 · Prod: https://ceodirectives.vercel.app
+const TRACKING_BASE_URL = process.env.TRACKING_BASE_URL || 'https://ceodirectives.vercel.app';
 
 /**
  * Build tracking pixel IMG tag cho email

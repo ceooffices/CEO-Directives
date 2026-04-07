@@ -3,7 +3,7 @@
  * Pattern tham khảo: Track_URL /docs/[id]/route.ts
  *
  * Mỗi email chỉ đạo sẽ chèn tracking pixel:
- *   <img src="https://ceo.tikme.vn/track/[token]" width="1" height="1">
+ *   <img src="https://ceodirectives.vercel.app/track/[token]" width="1" height="1">
  *
  * Token format: base64url(directiveId:recipientEmail:timestamp)
  *
