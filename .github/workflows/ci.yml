@@ -21,7 +21,7 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
       - run: npm ci
-      - run: npx next lint
+      - run: npm run lint
       - run: npx next build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -40,4 +40,4 @@ jobs:
           cache: npm
           cache-dependency-path: automation/package-lock.json
       - run: npm ci
-      - run: node tests/unit/run-all.js
+      - run: node ../tests/unit/run-all.js
