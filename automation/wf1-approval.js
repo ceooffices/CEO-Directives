@@ -36,11 +36,12 @@ async function extractAndProcess(rows) {
     const tinhTrang = row.tinh_trang;
     const daDuyet = row.approved_by;
 
-    // Người chỉ đạo — resolve email từ staff table
-    const emailNguoiChiDao = row.t1_email || await getStaffEmail(row.t1_dau_moi);
-    const tenNguoiChiDao = row.t1_dau_moi;
+    // ===== NGƯỜI CHỈ ĐẠO = BOD Hosting hoặc CEO =====
+    // Người chỉ đạo KHÔNG phải đầu mối! Luôn là BOD Hosting đương nhiệm
+    const emailNguoiChiDao = row.bod_hosting_email || BOD_HOSTING_EMAIL;
+    const tenNguoiChiDao = 'Ban Giám Đốc';
 
-    // Đầu mối — resolve email từ t1_email hoặc staff table, fallback BOD_HOSTING_EMAIL
+    // ===== ĐẦU MỐI = t1_dau_moi (người thực hiện) =====
     const resolvedEmailDauMoi = row.t1_email || await getStaffEmail(row.t1_dau_moi);
     const emailDauMoi = resolvedEmailDauMoi || BOD_HOSTING_EMAIL;
     const tenDauMoi = row.t1_dau_moi;
@@ -53,15 +54,7 @@ async function extractAndProcess(rows) {
     let step, sendTo, emailSubject, ccTo;
 
     if (!daDuyet) {
-      // STEP 1: Gửi cho người chỉ đạo duyệt
-      if (!emailNguoiChiDao) {
-        results.push({
-          warning: true, id, tieuDe,
-          error: 'MISSING_NGUOI_CHI_DAO',
-          message: `[${tieuDe}] Thiếu Email người chỉ đạo`,
-        });
-        continue;
-      }
+      // STEP 1: Gửi cho BOD Hosting (người chỉ đạo) duyệt
       step = 'STEP1';
       sendTo = emailNguoiChiDao;
       emailSubject = `[Cần Duyệt] ${tieuDe || 'Chỉ đạo mới'}`;
@@ -81,9 +74,7 @@ async function extractAndProcess(rows) {
       sendTo = emailDauMoi;
       emailSubject = `[Cần Làm Rõ] ${tieuDe || 'Chỉ đạo'} - Hạn: ${t4ThoiHan || 'Chưa xác định'}`;
       const ccSet = new Set(ALWAYS_CC);
-      if (emailNguoiChiDao) ccSet.add(emailNguoiChiDao);
-      // CC BOD Hosting nếu đầu mối là người khác
-      if (emailDauMoi !== BOD_HOSTING_EMAIL) ccSet.add(BOD_HOSTING_EMAIL);
+      ccSet.add(emailNguoiChiDao); // CC người chỉ đạo (BOD Hosting)
       ccSet.delete(sendTo);
       ccTo = Array.from(ccSet).join(', ');
     }
