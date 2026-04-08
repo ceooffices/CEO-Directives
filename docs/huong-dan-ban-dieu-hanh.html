@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hướng Dẫn Hệ Thống Quản Trị Chỉ Đạo — Ban Điều Hành ESUHAI GROUP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f0f4f8;
+    color: #1e293b;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .cover {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #2563eb 100%);
+    color: white;
+    padding: 80px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.3) 0%, transparent 50%);
+  }
+  .cover h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .cover .subtitle {
+    font-size: 18px;
+    opacity: 0.85;
+    font-weight: 400;
+    position: relative;
+  }
+  .cover .meta {
+    margin-top: 24px;
+    font-size: 13px;
+    opacity: 0.6;
+    position: relative;
+  }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    padding: 8px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    position: relative;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .toc {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 40px;
+    margin: -40px auto 40px;
+    max-width: 900px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 1;
+  }
+  .toc h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #0f172a;
+  }
+  .toc ol {
+    padding-left: 20px;
+  }
+  .toc li {
+    padding: 6px 0;
+    font-size: 15px;
+  }
+  .toc a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .toc a:hover { text-decoration: underline; }
+
+  section {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  section h2 .num {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 36px;
+    font-size: 16px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e40af;
+    margin: 24px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid #2563eb;
+  }
+  section p { margin-bottom: 12px; }
+
+  .highlight {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .highlight.green {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+  .highlight.amber {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+  .highlight.red {
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
+
+  .step-flow {
+    display: flex;
+    gap: 0;
+    margin: 24px 0;
+    flex-wrap: wrap;
+  }
+  .step-card {
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+  .step-card:first-child { border-radius: 12px 0 0 12px; }
+  .step-card:last-child { border-radius: 0 12px 12px 0; }
+  .step-card .step-num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 28px;
+    margin-bottom: 8px;
+  }
+  .step-card .step-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .step-card .step-who {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .step-card.active {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+
+  .screenshot {
+    margin: 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .screenshot img {
+    width: 100%;
+    display: block;
+  }
+  .screenshot .caption {
+    background: #f1f5f9;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th {
+    background: #0f172a;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #eff6ff; }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .role-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .role-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+  .role-card .email {
+    font-size: 13px;
+    color: #2563eb;
+    margin-bottom: 8px;
+  }
+  .role-card p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .infra-diagram {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 32px;
+    color: #e2e8f0;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 16px 0;
+    white-space: pre;
+  }
+
+  .email-preview {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+  .email-preview .email-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .email-preview .label { color: #94a3b8; font-weight: 500; }
+  .email-preview .value { color: #0f172a; font-weight: 600; }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+    font-size: 13px;
+  }
+
+  @media (max-width: 600px) {
+    .cover { padding: 40px 20px; }
+    .cover h1 { font-size: 24px; }
+    section { padding: 24px 20px; }
+    .role-grid { grid-template-columns: 1fr; }
+    .step-flow { flex-direction: column; }
+    .step-card { border-radius: 0 !important; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .cover { break-after: page; }
+    section { break-inside: avoid; box-shadow: none; border: 1px solid #e2e8f0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+  <h1>🏗️ Hệ Thống Quản Trị Chỉ Đạo CEO</h1>
+  <div class="subtitle">Hướng Dẫn Sử Dụng Cho Ban Điều Hành — ESUHAI GROUP</div>
+  <div class="badge">📋 Phiên bản 1.0 — Tháng 4/2026</div>
+  <div class="meta">
+    Tài liệu nội bộ · Soạn bởi Phòng Hệ Thống · Cập nhật: 08/04/2026
+  </div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="container">
+<div class="toc">
+  <h2>📑 Mục Lục</h2>
+  <ol>
+    <li><a href="#overview">Tổng Quan Hệ Thống</a></li>
+    <li><a href="#roles">Vai Trò & Trách Nhiệm</a></li>
+    <li><a href="#flow">Quy Trình 7 Bước — Từ Chỉ Đạo Đến Hoàn Thành</a></li>
+    <li><a href="#email">Các Loại Email Tự Động</a></li>
+    <li><a href="#dashboard">Bảng Điều Hành (Dashboard)</a></li>
+    <li><a href="#confirm">Trang Xác Nhận 5T — Giao Diện Đầu Mối</a></li>
+    <li><a href="#infra">Hạ Tầng Kỹ Thuật</a></li>
+    <li><a href="#faq">Câu Hỏi Thường Gặp</a></li>
+  </ol>
+</div>
+
+<!-- ==================== 1. OVERVIEW ==================== -->
+<section id="overview">
+  <h2><span class="num">1</span> Tổng Quan Hệ Thống</h2>
+  <p>Hệ thống <strong>Quản Trị Chỉ Đạo CEO</strong> được xây dựng để số hóa và tự động hóa toàn bộ quy trình quản lý chỉ đạo từ cuộc họp BQT (Ban Quản Trị) đến khi hoàn thành.</p>
+
+  <div class="highlight">
+    <strong>🎯 Mục tiêu:</strong> Đảm bảo <em>mọi chỉ đạo</em> từ cuộc họp BQT đều được:
+    <ul style="margin-top:8px; padding-left:18px;">
+      <li><strong>Ghi nhận</strong> — Nhập liệu chuẩn hóa theo mã chỉ đạo</li>
+      <li><strong>Phân công</strong> — Xác định rõ 5T: Ai, Làm gì, Chỉ tiêu, Hạn, Ai liên quan</li>
+      <li><strong>Theo dõi</strong> — Dashboard realtime + email nhắc nhở tự động</li>
+      <li><strong>Leo thang</strong> — Quá hạn → cảnh báo → báo động → BĐH can thiệp</li>
+      <li><strong>Hoàn thành</strong> — Báo cáo kết quả, đóng chỉ đạo, ghi nhận thành tích</li>
+    </ul>
+  </div>
+
+  <h3>Phạm Vi Triển Khai (Tháng 4/2026)</h3>
+  <table>
+    <tr><th>Hạng mục</th><th>Chi tiết</th></tr>
+    <tr><td>Tổng chỉ đạo</td><td><strong>88 chỉ đạo</strong> từ 5 cuộc họp BOD (02/03 → 07/04/2026)</td></tr>
+    <tr><td>Đầu mối đang quản lý</td><td>15+ đầu mối trên toàn hệ thống</td></tr>
+    <tr><td>50 Hạng mục chiến lược</td><td>Mapping chỉ đạo vào 50HM mục tiêu 2026</td></tr>
+    <tr><td>Dashboard</td><td><a href="https://ceodirectives.vercel.app" target="_blank">ceodirectives.vercel.app</a></td></tr>
+  </table>
+</section>
+
+<!-- ==================== 2. ROLES ==================== -->
+<section id="roles">
+  <h2><span class="num">2</span> Vai Trò & Trách Nhiệm</h2>
+
+  <div class="role-grid">
+    <div class="role-card">
+      <h4>🏛️ Ban Giám Đốc (Người Chỉ Đạo)</h4>
+      <div class="email">BOD Hosting: trucly@esuhai.com</div>
+      <p>Duyệt chỉ đạo mới (STEP1), theo dõi tiến độ tổng thể qua Dashboard, nhận CC tất cả email hoạt động.</p>
+    </div>
+    <div class="role-card">
+      <h4>👤 Đầu Mối (Người Thực Hiện)</h4>
+      <div class="email">VD: viethm@esuhai.com, dungdt@esuhai.com...</div>
+      <p>Nhận chỉ đạo qua email, xác nhận 5T trên Dashboard, thực hiện và báo cáo tiến độ.</p>
+    </div>
+    <div class="role-card">
+      <h4>📊 Quản Trị Hệ Thống</h4>
+      <div class="email">hoangkha@esuhai.com</div>
+      <p>Giám sát toàn bộ quy trình, can thiệp khi có báo động, quản lý cấu hình hệ thống.</p>
+    </div>
+    <div class="role-card">
+      <h4>🤖 NemoClaw Bot (@Nemo_S2_bot)</h4>
+      <div class="email">Telegram Bot tự động</div>
+      <p>Tiếp nhận lệnh truy vấn qua Telegram, trả kết quả realtime từ Database.</p>
+    </div>
+  </div>
+
+  <div class="highlight green">
+    <strong>📬 Quy tắc CC Email:</strong> Tất cả email tự động đều CC cho toàn bộ Ban Điều Hành:
+    <ul style="margin-top:6px; padding-left:18px;">
+      <li><strong>hoangkha@esuhai.com</strong> — Anh Kha (Quản trị hệ thống)</li>
+      <li><strong>vynnl@esuhai.com</strong> — Chị Vy</li>
+      <li><strong>trucly@esuhai.com</strong> — Chị Trúc Ly (BOD Hosting tháng 4/2026)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 3. FLOW ==================== -->
+<section id="flow">
+  <h2><span class="num">3</span> Quy Trình 7 Bước</h2>
+  <p>Mỗi chỉ đạo đi qua 7 bước tuần tự. Hệ thống tự động chuyển bước và gửi thông báo tại mỗi giai đoạn.</p>
+
+  <div class="step-flow">
+    <div class="step-card active">
+      <div class="step-num">1</div>
+      <div class="step-name">Ghi nhận</div>
+      <div class="step-who">Hệ thống</div>
+    </div>
+    <div class="step-card active">
+      <div class="step-num">2</div>
+      <div class="step-name">Phê duyệt</div>
+      <div class="step-who">Ban Giám Đốc</div>
+    </div>
+    <div class="step-card active">
+      <div class="step-num">3</div>
+      <div class="step-name">Giao việc</div>
+      <div class="step-who">Hệ thống → Đầu mối</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <div class="step-name">Xác nhận 5T</div>
+      <div class="step-who">Đầu mối</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <div class="step-name">Thực hiện</div>
+      <div class="step-who">Đầu mối</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">6</div>
+      <div class="step-name">Đồng hành</div>
+      <div class="step-who">Hệ thống + BĐH</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">7</div>
+      <div class="step-name">Hoàn thành</div>
+      <div class="step-who">Đầu mối → BĐH</div>
+    </div>
+  </div>
+
+  <h3>Chi Tiết Từng Bước</h3>
+
+  <table>
+    <tr><th>Bước</th><th>Sự kiện</th><th>Ai làm</th><th>Hệ thống làm gì</th></tr>
+    <tr>
+      <td><strong>1. Ghi nhận</strong></td>
+      <td>Chỉ đạo từ họp BOD được nhập vào Supabase</td>
+      <td>Admin / Import tool</td>
+      <td>Tạo record, gán mã CD-YYYY-MMDD-XX</td>
+    </tr>
+    <tr>
+      <td><strong>2. Phê duyệt (WF1-STEP1)</strong></td>
+      <td>Email "[Cần Duyệt]" gửi cho BOD Hosting</td>
+      <td>Ban Giám Đốc</td>
+      <td>Gửi email → Chờ duyệt trên Dashboard</td>
+    </tr>
+    <tr>
+      <td><strong>3. Giao việc (WF1-STEP2)</strong></td>
+      <td>Sau khi duyệt → Email "[Cần Làm Rõ]" gửi đầu mối</td>
+      <td>Hệ thống tự động</td>
+      <td>Gửi email kèm nút Xác nhận 5T</td>
+    </tr>
+    <tr>
+      <td><strong>4. Xác nhận 5T</strong></td>
+      <td>Đầu mối bấm nút → xác nhận thông tin 5T</td>
+      <td>Đầu mối</td>
+      <td>Cập nhật status → da_xac_nhan, ghi lịch sử</td>
+    </tr>
+    <tr>
+      <td><strong>5. Thực hiện</strong></td>
+      <td>Đầu mối triển khai công việc</td>
+      <td>Đầu mối</td>
+      <td>Theo dõi deadline, gửi nhắc nhở</td>
+    </tr>
+    <tr>
+      <td><strong>6. Đồng hành</strong></td>
+      <td>Hệ thống tự động nhắc nhở nếu sắp hoặc quá hạn</td>
+      <td>Hệ thống + BĐH</td>
+      <td>WF3 (nhắc nhở) → WF4 (leo thang) → Báo động</td>
+    </tr>
+    <tr>
+      <td><strong>7. Hoàn thành</strong></td>
+      <td>Đầu mối báo cáo kết quả → BĐH nghiệm thu</td>
+      <td>Đầu mối → BĐH</td>
+      <td>Đóng chỉ đạo → status: hoan_thanh</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ==================== 4. EMAIL ==================== -->
+<section id="email">
+  <h2><span class="num">4</span> Các Loại Email Tự Động</h2>
+
+  <h3>4.1 STEP1 — Xin Duyệt (WF1)</h3>
+  <div class="email-preview">
+    <div class="email-header">
+      <span class="label">Đến:</span> <span class="value">trucly@esuhai.com</span> (BOD Hosting)<br>
+      <span class="label">CC:</span> <span class="value">hoangkha@esuhai.com, vynnl@esuhai.com</span><br>
+      <span class="label">Tiêu đề:</span> <span class="value">[Cần Duyệt] DR-20260407-001</span>
+    </div>
+    <p>Nội dung: Trình bày chỉ đạo mới với phân tích sơ bộ 5T. Có nút <strong>"XEM VÀ DUYỆT"</strong> dẫn đến trang Approve trên Dashboard.</p>
+    <p><em>→ Sau khi duyệt, hệ thống tự động chuyển sang STEP2.</em></p>
+  </div>
+
+  <h3>4.2 STEP2 — Giao Nhiệm Vụ (WF1)</h3>
+  <div class="email-preview">
+    <div class="email-header">
+      <span class="label">Đến:</span> <span class="value">viethm@esuhai.com</span> (Đầu mối)<br>
+      <span class="label">CC:</span> <span class="value">hoangkha@esuhai.com, vynnl@esuhai.com, trucly@esuhai.com</span><br>
+      <span class="label">Tiêu đề:</span> <span class="value">[Cần Làm Rõ] CD-2026-0330-01 - Hạn: 2026-04-15</span>
+    </div>
+    <p>Nội dung: Thông báo <strong>Ban Giám Đốc đã PHÊ DUYỆT</strong> chỉ đạo. Yêu cầu đầu mối xác nhận 5T.</p>
+    <p>Có nút <strong>"XÁC NHẬN THÔNG TIN 5T"</strong> dẫn đến trang Confirm trên Dashboard.</p>
+  </div>
+
+  <h3>4.3 Nhắc Nhở & Leo Thang (WF3, WF4)</h3>
+  <div class="highlight amber">
+    <strong>⚠️ Hệ thống tự động leo thang khi chỉ đạo quá hạn:</strong>
+    <ul style="margin-top:6px; padding-left:18px;">
+      <li><strong>Sắp hạn (3 ngày)</strong> — Email nhắc nhẹ cho đầu mối</li>
+      <li><strong>Quá hạn 1-7 ngày</strong> — Email cảnh báo vàng cho đầu mối + CC BĐH</li>
+      <li><strong>Quá hạn > 7 ngày</strong> — Email báo động đỏ cho BĐH</li>
+      <li><strong>Quá hạn > 14 ngày</strong> — Cần hỗ trợ đặc biệt từ BĐH</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 5. DASHBOARD ==================== -->
+<section id="dashboard">
+  <h2><span class="num">5</span> Bảng Điều Hành (Dashboard)</h2>
+  <p>Truy cập: <a href="https://ceodirectives.vercel.app" target="_blank"><strong>ceodirectives.vercel.app</strong></a></p>
+  <p>Đăng nhập: Email + Mật khẩu (liên hệ Quản trị cấp tài khoản)</p>
+
+  <h3>5.1 Tổng Quan — KPI Cards</h3>
+  <div class="screenshot">
+    <img src="images/guide_kpi.png" alt="Dashboard KPI" loading="lazy">
+    <div class="caption">📊 KPI tổng quan: Tổng chỉ đạo (88), Chờ duyệt (0), Đã xác nhận 5T (2), Đang thực hiện (2), Hoàn thành (1), Đang đồng hành (39). Kèm tiến độ Nhập học + Matching 2026 và Sức khỏe hệ thống.</div>
+  </div>
+
+  <h3>5.2 Tab "Cần Quan Tâm" — Chỉ Đạo Rủi Ro</h3>
+  <div class="screenshot">
+    <img src="images/guide_tabs.png" alt="Tab Cần Quan Tâm" loading="lazy">
+    <div class="caption">🔔 41 chỉ đạo cần quan tâm, phân loại: 📁 Hỗ trợ đặc biệt (13) · 💛 Tín hiệu rủi ro (25) · ⚡ Khẩn (3). Mỗi item hiển thị mã chỉ đạo, tên đầu mối, số ngày quá hạn, nút Hỗ trợ/Báo cáo.</div>
+  </div>
+
+  <h3>5.3 Bảng Đầu Mối Chịu Trách Nhiệm</h3>
+  <div class="screenshot">
+    <img src="images/guide_events.png" alt="Đầu mối chịu trách nhiệm" loading="lazy">
+    <div class="caption">📋 Bảng phân bổ chỉ đạo theo từng đầu mối: Tổng, Hoàn thành, Rủi ro, Tỷ lệ. Giúp BĐH nắm bắt ai đang chịu tải lớn nhất.</div>
+  </div>
+
+  <h3>5.4 Các Tab Khác</h3>
+  <table>
+    <tr><th>Tab</th><th>Nội dung</th></tr>
+    <tr><td><strong>Tổng quan</strong></td><td>KPI, Sức khỏe, Tín hiệu, BSC, Đầu mối</td></tr>
+    <tr><td><strong>Cần quan tâm</strong></td><td>Chỉ đạo quá hạn + rủi ro, sắp xếp theo mức nghiêm trọng</td></tr>
+    <tr><td><strong>50 Hạng mục</strong></td><td>Mapping chỉ đạo vào 50HM chiến lược 2026</td></tr>
+    <tr><td><strong>Hành trình</strong></td><td>Timeline lịch sử mỗi chỉ đạo qua các bước</td></tr>
+    <tr><td><strong>API</strong></td><td>Endpoint truy vấn realtime (cho kỹ thuật)</td></tr>
+  </table>
+</section>
+
+<!-- ==================== 6. CONFIRM ==================== -->
+<section id="confirm">
+  <h2><span class="num">6</span> Trang Xác Nhận 5T — Giao Diện Đầu Mối</h2>
+  <p>Khi đầu mối nhận email STEP2 và bấm nút <strong>"XÁC NHẬN THÔNG TIN 5T"</strong>, họ sẽ thấy giao diện sau:</p>
+
+  <div class="screenshot">
+    <img src="images/guide_confirm.png" alt="Trang xác nhận 5T" loading="lazy">
+    <div class="caption">📝 Giao diện xác nhận 5T: Hiển thị T1 (Đầu mối), T2 (Nhiệm vụ), T3 (Chỉ tiêu), T4 (Thời hạn), T5 (Thành viên). Đầu mối có thể bổ sung kế hoạch chi tiết, sau đó bấm "✅ Xác nhận" hoặc "Cần làm rõ".</div>
+  </div>
+
+  <div class="highlight green">
+    <strong>✅ Sau khi đầu mối bấm "Xác nhận":</strong>
+    <ul style="margin-top:6px; padding-left:18px;">
+      <li>Supabase cập nhật: <code>tinh_trang = da_xac_nhan</code>, <code>confirmed_at = now()</code></li>
+      <li>Lịch sử bước được ghi vào <code>lls_step_history</code></li>
+      <li>Dashboard tự động phản ánh số liệu mới</li>
+      <li>BĐH nhìn thấy ngay trên tab "Tổng quan"</li>
+    </ul>
+  </div>
+
+  <div class="highlight amber">
+    <strong>💡 Nếu đầu mối bấm "Cần làm rõ":</strong>
+    <p style="margin:6px 0 0;">Chỉ đạo quay lại trạng thái chờ → BĐH nhận thông báo để hỗ trợ giải đáp.</p>
+  </div>
+</section>
+
+<!-- ==================== 7. INFRA ==================== -->
+<section id="infra">
+  <h2><span class="num">7</span> Hạ Tầng Kỹ Thuật</h2>
+  <p>Hệ thống chạy 24/7 trên Mac Mini nội bộ, quản lý bởi PM2 process manager.</p>
+
+  <div class="infra-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    ESUHAI MAC MINI SERVER                     │
+│                                                               │
+│  ┌──────────────┐    ┌──────────────────┐    ┌────────────┐  │
+│  │ NemoClaw Bot │───→│  CEO Bridge      │───→│  CEO Bot   │  │
+│  │ (Telegram    │    │  Port: 3101      │    │  Port:3102 │  │
+│  │  Polling)    │    │  API Gateway     │    │  Webhook   │  │
+│  └──────────────┘    └────────┬─────────┘    └────────────┘  │
+│                               │                               │
+│  ┌──────────────┐    ┌───────┴──────────┐    ┌────────────┐  │
+│  │ Scheduler    │───→│  Supabase Cloud  │←───│ Dashboard  │  │
+│  │ (Cron Jobs)  │    │  (Database)      │    │ Vercel.app │  │
+│  │ WF1→WF7     │    └──────────────────┘    └────────────┘  │
+│  └──────────────┘             │                               │
+│                      ┌───────┴──────────┐                    │
+│                      │  N8N Webhook     │                    │
+│                      │  (Email Relay)   │                    │
+│                      │  SMTP → Nhân viên│                    │
+│                      └──────────────────┘                    │
+└─────────────────────────────────────────────────────────────┘
+  </div>
+
+  <table>
+    <tr><th>Thành phần</th><th>Công nghệ</th><th>Chức năng</th></tr>
+    <tr><td>Database</td><td>Supabase (PostgreSQL)</td><td>Lưu trữ 88 chỉ đạo, nhân sự, lịch sử</td></tr>
+    <tr><td>Dashboard</td><td>Next.js on Vercel</td><td>Giao diện web realtime</td></tr>
+    <tr><td>Automation</td><td>Node.js + PM2</td><td>7 workflow tự động (WF1-WF7)</td></tr>
+    <tr><td>Email</td><td>N8N Webhook Relay</td><td>Gửi email qua SMTP esuhai.com</td></tr>
+    <tr><td>Telegram</td><td>NemoClaw Bot</td><td>Truy vấn nhanh qua chat</td></tr>
+    <tr><td>Hosting</td><td>Mac Mini nội bộ</td><td>Chạy 24/7, SSH remote</td></tr>
+  </table>
+</section>
+
+<!-- ==================== 8. FAQ ==================== -->
+<section id="faq">
+  <h2><span class="num">8</span> Câu Hỏi Thường Gặp</h2>
+
+  <h3>Nếu đầu mối không xác nhận 5T thì sao?</h3>
+  <p>Hệ thống sẽ tự động nhắc nhở sau 3 ngày. Nếu sau 7 ngày vẫn chưa xác nhận, sẽ leo thang lên BĐH.</p>
+
+  <h3>Ai duyệt chỉ đạo (STEP1)?</h3>
+  <p>BOD Hosting đương nhiệm (hiện tại: <strong>chị Trúc Ly</strong>). Email duyệt gửi trực tiếp đến BOD Hosting, CC toàn bộ BĐH.</p>
+
+  <h3>Có thể thay đổi thông tin 5T sau khi xác nhận không?</h3>
+  <p>Có. Đầu mối có thể bấm "Cần làm rõ" trên trang chi tiết chỉ đạo để yêu cầu điều chỉnh.</p>
+
+  <h3>Dashboard cập nhật dữ liệu mới khi nào?</h3>
+  <p><strong>Realtime.</strong> Mỗi lần tải lại trang, dữ liệu được query trực tiếp từ Supabase.</p>
+
+  <h3>Dữ liệu bảo mật thế nào?</h3>
+  <p>Dashboard yêu cầu đăng nhập. Backend sử dụng Service Role Key (không lộ cho client). Email gửi qua SMTP nội bộ esuhai.com.</p>
+
+  <h3>Liên hệ hỗ trợ kỹ thuật?</h3>
+  <div class="highlight">
+    <strong>📧 Email:</strong> hoangkha@esuhai.com<br>
+    <strong>💬 Telegram:</strong> Chat với @Nemo_S2_bot → gõ <code>/status</code> hoặc <code>/help</code>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>© 2026 ESUHAI GROUP — Hệ thống Quản Trị Chỉ Đạo CEO</p>
+  <p>Tài liệu nội bộ · Không phổ biến ngoài tổ chức</p>
+</footer>
+
+</body>
+</html>
