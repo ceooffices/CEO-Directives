@@ -24,7 +24,7 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
 // ===== CONFIG =====
 
 const BOD_HOSTING_EMAIL = process.env.BOD_HOSTING_EMAIL || 'letuan@esuhai.com';
-const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com')
+const ALWAYS_CC = (process.env.ALWAYS_CC || 'hoangkha@esuhai.com,vynnl@esuhai.com,trucly@esuhai.com')
   .split(',').map(e => e.trim()).filter(Boolean);
 const CEO_EMAIL = process.env.CEO_EMAIL || 'hoangkha@esuhai.com';
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'https://ceodirectives.vercel.app';

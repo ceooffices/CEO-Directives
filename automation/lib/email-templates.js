@@ -409,9 +409,9 @@ function buildStep2Email(data) {
       '<li style="margin:4px 0;"><strong>Hỗ trợ kịp thời:</strong> Ban Cố Vấn nắm tiến độ để hỗ trợ khi cần</li></ul>'
     ) +
     '<div style="padding:0 16px;background:#fff;">' +
-    eBtn('▸ XÁC NHẬN THÔNG TIN 5T', formUrl, BRAND_GREEN) +
+    eBtn('▸ XÁC NHẬN THÔNG TIN 5T', (data.url || '#').replace('/directive/', '/confirm/'), BRAND_GREEN) +
     '<p style="margin:4px 0 0;text-align:center;font-size:11px;color:#94a3b8;">' +
-    '(Mở Google Form — thông tin đã điền sẵn, chỉ cần kiểm tra và gửi)</p>' +
+    '(Mở trang xác nhận — kiểm tra thông tin 5T và bấm Xác nhận)</p>' +
     '</div>' +
     eText(
       '<div style="background:#dbeafe;border-radius:8px;padding:12px 16px;margin:16px 0;border:1px solid #93c5fd;">' +
