@@ -681,7 +681,7 @@ function buildScheduleEmail(reportDate, scheduleItems) {
   // Calculate total duration
   var totalMin = 0;
   for (var i = 0; i < items.length; i++) {
-    totalMin += (parseInt(items[i].tlTB) || 10) + (parseInt(items[i].tlCD) || 10);
+    totalMin += (parseInt(items[i].tlTB) || 0) + (parseInt(items[i].tlCD) || 0);
   }
   var endH = Math.floor((8 * 60 + 30 + totalMin) / 60);
   var endM = (8 * 60 + 30 + totalMin) % 60;
@@ -696,8 +696,8 @@ function buildScheduleEmail(reportDate, scheduleItems) {
     var it = items[i];
     var color = colors[i % colors.length];
     var initial = (it.presenter || '?').charAt(0).toUpperCase();
-    var tbMin = parseInt(it.tlTB) || 10;
-    var cdMin = parseInt(it.tlCD) || 10;
+    var tbMin = parseInt(it.tlTB) || 0;
+    var cdMin = parseInt(it.tlCD) || 0;
     var dept = it.dept ? ' <span style="color:#94a3b8;font-size:12px;">(' + it.dept + ')</span>' : '';
 
     cards +=

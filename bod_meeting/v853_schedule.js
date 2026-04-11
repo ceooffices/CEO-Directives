@@ -78,9 +78,9 @@ function generateSchedule() {
       if (!tenLQ && row[cols.emailLienQuan])
         tenLQ = lookupNamesFromEmailList(row[cols.emailLienQuan], emailToName);
       let tlTB = parseThoiLuong(row[cols.thoiLuong]);
-      if (tlTB === 0) tlTB = 10;
+      if (!row[cols.thoiLuong] && row[cols.thoiLuong] !== 0) tlTB = 10;
       let tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]);
-      if (tlCD === 0) tlCD = getDefaultChiDaoTime(boPhan);
+      if (!row[cols.thoiLuongChiDao] && row[cols.thoiLuongChiDao] !== 0) tlCD = getDefaultChiDaoTime(boPhan);
       items.push({
         thuTu: parseInt(row[cols.thuTu]) || 999,
         hoTen: toTitleCase(row[cols.hoTen] || ""),
@@ -308,8 +308,10 @@ function sendScheduleEmail() {
     const content = scheduleSheet.getRange(i, 3).getValue();
     if (content && content.toString().trim()) {
       const presenter = (scheduleSheet.getRange(i, 4).getValue() || "").toString();
-      const tlTB = parseInt(scheduleSheet.getRange(i, 5).getValue()) || 10;
-      const tlCD = parseInt(scheduleSheet.getRange(i, 6).getValue()) || 10;
+      const rawTB = scheduleSheet.getRange(i, 5).getValue();
+      const tlTB = (rawTB !== "" && rawTB !== null) ? (parseInt(rawTB) || 0) : 10;
+      const rawCD = scheduleSheet.getRange(i, 6).getValue();
+      const tlCD = (rawCD !== "" && rawCD !== null) ? (parseInt(rawCD) || 0) : 10;
       const contentStr = content.toString();
       const deptMatch = contentStr.match(/^\[([^\]]+)\]/);
       const dept = deptMatch ? deptMatch[1] : "";

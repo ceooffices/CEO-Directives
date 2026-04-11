@@ -173,7 +173,7 @@ function getDashboardData(searchDate) {
       daGuiEmail: row[cols.daGuiEmail] || "",
       thuTu: parseInt(row[cols.thuTu]) || 0,
       ghiChu: row[cols.ghiChu] || "",
-      tlCD: parseInt(row[cols.thoiLuongChiDao]) || 10,
+      tlCD: (!row[cols.thoiLuongChiDao] && row[cols.thoiLuongChiDao] !== 0) ? 10 : (parseInt(row[cols.thoiLuongChiDao]) || 0),
       email: row[cols.email] || "",
       emailLienQuan: row[cols.emailLienQuan] || "",
       emailSent: !!(row[cols.daGuiEmail]),
@@ -888,9 +888,9 @@ function getSchedulePreview(searchDate) {
     if (!matchNgayHop(row[cols.ngayHop], searchDate)) continue;
     if ((row[cols.status] || "").toString().trim() !== "Duyệt") continue;
     var tlTB = parseThoiLuong(row[cols.thoiLuong]);
-    if (tlTB === 0) tlTB = 10;
+    if (!row[cols.thoiLuong] && row[cols.thoiLuong] !== 0) tlTB = 10;
     var tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]);
-    if (tlCD === 0) tlCD = getDefaultChiDaoTime(row[cols.boPhan]);
+    if (!row[cols.thoiLuongChiDao] && row[cols.thoiLuongChiDao] !== 0) tlCD = getDefaultChiDaoTime(row[cols.boPhan]);
     var tenLQ = row[cols.tenLienQuan] || "";
     if (!tenLQ && row[cols.emailLienQuan])
       tenLQ = lookupNamesFromEmailList(row[cols.emailLienQuan], emailToName);
@@ -980,8 +980,10 @@ function sendScheduleFromDashboard() {
       if (row[cols.status] !== "Duyệt") continue;
 
       var thuTu = parseInt(row[cols.thuTu]) || 999;
-      var tlTB = parseThoiLuong(row[cols.thoiLuong]) || 10;
-      var tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]) || 10;
+      var tlTB = parseThoiLuong(row[cols.thoiLuong]);
+      if (!row[cols.thoiLuong] && row[cols.thoiLuong] !== 0) tlTB = 10;
+      var tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]);
+      if (!row[cols.thoiLuongChiDao] && row[cols.thoiLuongChiDao] !== 0) tlCD = 10;
 
       items.push({
         stt: thuTu,
@@ -1050,6 +1052,149 @@ function sendScheduleFromDashboard() {
     Logger.log("sendScheduleFromDashboard error: " + e.message);
     return { success: false, msg: "Lỗi: " + e.message };
   }
+}
+
+// ===== API: GỬI LỊCH TRÌNH CHO BTC =====
+function sendScheduleToBtc() {
+  try {
+    loadConfigFromSheet();
+    var scheduleData = _buildScheduleEmailData();
+    if (!scheduleData.success) return scheduleData;
+
+    var btcEmails = getBTCEmails();
+    if (!btcEmails || !btcEmails.all || btcEmails.all.length === 0)
+      return { success: false, msg: "Không tìm thấy email BTC" };
+
+    var toList = btcEmails.all.join(",");
+    var subject = "[BOD Meeting][BTC] Lịch trình cuộc họp — " + scheduleData.displayDate + " / 議事スケジュール";
+
+    var sent = sendEmail({
+      to: toList,
+      subject: subject,
+      body: scheduleData.plainBody,
+      htmlBody: scheduleData.htmlBody
+    });
+
+    if (sent) {
+      logEmailSend('schedule_btc', btcEmails.all.length, 'BTC only — ' + scheduleData.displayDate);
+      return { success: true, msg: "Đã gửi lịch trình cho BTC (" + btcEmails.all.length + " người)" };
+    }
+    return { success: false, msg: "Gửi email thất bại" };
+  } catch (e) {
+    Logger.log("sendScheduleToBtc error: " + e.message);
+    return { success: false, msg: "Lỗi: " + e.message };
+  }
+}
+
+// ===== API: GỬI LỊCH TRÌNH CHO 1 EMAIL CỤ THỂ =====
+function sendScheduleToEmail(targetEmail) {
+  try {
+    if (!targetEmail || !isValidEmail(targetEmail))
+      return { success: false, msg: "Email không hợp lệ: " + targetEmail };
+
+    loadConfigFromSheet();
+    var scheduleData = _buildScheduleEmailData();
+    if (!scheduleData.success) return scheduleData;
+
+    var subject = "[BOD Meeting] Lịch trình cuộc họp — " + scheduleData.displayDate + " / 議事スケジュール";
+
+    var sent = sendEmail({
+      to: targetEmail,
+      subject: subject,
+      body: scheduleData.plainBody,
+      htmlBody: scheduleData.htmlBody
+    });
+
+    if (sent) {
+      logEmailSend('schedule_individual', 1, targetEmail + ' — ' + scheduleData.displayDate);
+      return { success: true, msg: "Đã gửi lịch trình cho " + targetEmail };
+    }
+    return { success: false, msg: "Gửi email thất bại" };
+  } catch (e) {
+    Logger.log("sendScheduleToEmail error: " + e.message);
+    return { success: false, msg: "Lỗi: " + e.message };
+  }
+}
+
+// ===== HELPER: Tạo nội dung email lịch trình (dùng chung cho 3 kịch bản) =====
+function _buildScheduleEmailData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  if (!sheet) return { success: false, msg: "Không tìm thấy sheet đăng ký" };
+
+  var cols = CONFIG.COLUMN_MAP;
+  var data = sheet.getDataRange().getValues();
+
+  // Tìm ngày họp gần nhất
+  var targetDate = null;
+  for (var i = data.length - 1; i >= 1; i--) {
+    var d = data[i][cols.ngayHop];
+    if (d) { targetDate = d; break; }
+  }
+  if (!targetDate) return { success: false, msg: "Không tìm thấy đăng ký nào" };
+
+  var searchKey = '';
+  if (targetDate instanceof Date) {
+    searchKey = (targetDate.getDate() < 10 ? '0' : '') + targetDate.getDate() + '/' +
+                ((targetDate.getMonth()+1) < 10 ? '0' : '') + (targetDate.getMonth()+1);
+  } else {
+    searchKey = targetDate.toString().trim();
+  }
+  var displayDate = formatNgayHop(targetDate);
+
+  // Build schedule items từ approved registrations
+  var items = [];
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (!matchNgayHop(row[cols.ngayHop], searchKey)) continue;
+    if (row[cols.status] !== "Duyệt") continue;
+
+    var thuTu = parseInt(row[cols.thuTu]) || 999;
+    var tlTB = parseThoiLuong(row[cols.thoiLuong]);
+    if (!row[cols.thoiLuong] && row[cols.thoiLuong] !== 0) tlTB = 10;
+    var tlCD = parseThoiLuong(row[cols.thoiLuongChiDao]);
+    if (!row[cols.thoiLuongChiDao] && row[cols.thoiLuongChiDao] !== 0) tlCD = 10;
+
+    items.push({
+      stt: thuTu,
+      content: (row[cols.noiDung] || "").toString(),
+      presenter: (row[cols.hoTen] || "").toString(),
+      dept: (row[cols.boPhan] || "").toString(),
+      tlTB: tlTB,
+      tlCD: tlCD,
+      time: ""
+    });
+  }
+
+  if (items.length === 0)
+    return { success: false, msg: "Không có nội dung nào được duyệt" };
+
+  items.sort(function(a, b) { return a.stt - b.stt; });
+
+  var t = 8 * 60 + 30;
+  for (var i = 0; i < items.length; i++) {
+    items[i].stt = i + 1;
+    items[i].time = (Math.floor(t / 60) < 10 ? '0' : '') + Math.floor(t / 60) + ':' +
+                    (t % 60 < 10 ? '0' : '') + (t % 60);
+    t += items[i].tlTB + items[i].tlCD;
+  }
+
+  var htmlBody = buildScheduleEmail(displayDate, items);
+  var plainBody = "LỊCH TRÌNH CUỘC HỌP BOD — " + displayDate + "\n\n";
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    plainBody += it.stt + ". " + it.time + " — " + it.content + " (" + it.presenter + ")\n";
+  }
+  plainBody += "\n---\nBTC Meeting BOD — ESUHAI GROUP";
+
+  return {
+    success: true,
+    displayDate: displayDate,
+    items: items,
+    htmlBody: htmlBody,
+    plainBody: plainBody,
+    searchKey: searchKey
+  };
 }
 
 // ===== API: CẬP NHẬT EMAIL ĐẠI DIỆN BỘ PHẬN =====
