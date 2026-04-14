@@ -75,6 +75,37 @@ async function extractAndProcess(rows) {
       emailSubject = `[Cần Làm Rõ] ${tieuDe || 'Chỉ đạo'} - Hạn: ${t4ThoiHan || 'Chưa xác định'}`;
       const ccSet = new Set(ALWAYS_CC);
       ccSet.add(emailNguoiChiDao); // CC người chỉ đạo (BOD Hosting)
+      
+      // ===== Tự động CC Trưởng phòng =====
+      const MANAGER_MAP = {
+        'masuda': 'satomura@esuhai.com',
+        'masuda@esuhai.com': 'satomura@esuhai.com',
+        'thanh hiếu': 'dungdt@esuhai.com',
+        'thiện tín': 'dungdt@esuhai.com',
+        'anh thư': 'lanh@esuhai.com', 
+        'việt': 'vinh@esuhai.com',
+        'huy.phamdang@esutech.vn': 'dungdt@esuhai.com',
+        'huy': 'dungdt@esuhai.com'
+      };
+      
+      let managerEmail = null;
+      const loweredName = tenDauMoi.toLowerCase();
+      const loweredEmail = sendTo.toLowerCase();
+      if (MANAGER_MAP[loweredEmail]) {
+        managerEmail = MANAGER_MAP[loweredEmail];
+      } else {
+        for (const [k, v] of Object.entries(MANAGER_MAP)) {
+          if (loweredName.includes(k)) {
+            managerEmail = v;
+            break;
+          }
+        }
+      }
+      
+      if (managerEmail) {
+        ccSet.add(managerEmail);
+      }
+
       ccSet.delete(sendTo);
       ccTo = Array.from(ccSet).join(', ');
     }
