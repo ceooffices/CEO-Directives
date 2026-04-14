@@ -79,6 +79,28 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Diff logic
+    const differences: string[] = [];
+    if (updates) {
+      if (updates.t1_dau_moi && updates.t1_dau_moi !== directive.t1_dau_moi) {
+        differences.push(`- Đầu mối: [${directive.t1_dau_moi || '(trống)'}] → [${updates.t1_dau_moi}]`);
+      }
+      if (updates.t2_nhiem_vu && updates.t2_nhiem_vu !== directive.t2_nhiem_vu) {
+        differences.push(`- Nhiệm vụ: [${directive.t2_nhiem_vu || '(trống)'}] → [${updates.t2_nhiem_vu}]`);
+      }
+      if (updates.t3_chi_tieu !== undefined && updates.t3_chi_tieu !== directive.t3_chi_tieu) {
+        differences.push(`- Chỉ tiêu: [${directive.t3_chi_tieu || '(trống)'}] → [${updates.t3_chi_tieu}]`);
+      }
+      if (updates.t4_thoi_han !== undefined && updates.t4_thoi_han !== directive.t4_thoi_han) {
+        differences.push(`- Thời hạn: [${directive.t4_thoi_han || '(trống)'}] → [${updates.t4_thoi_han}]`);
+      }
+    }
+
+    let historyDetail = plan_text ? `Nội dung: ${plan_text}` : "";
+    if (differences.length > 0) {
+      historyDetail += (historyDetail ? "\n\n" : "") + "Thay đổi 5T:\n" + differences.join("\n");
+    }
+
     // Ghi step_history
     const stepNum = action === "confirm" ? 5 : directive.lls_step;
     await db.from("lls_step_history").insert({
@@ -87,7 +109,7 @@ export async function POST(req: NextRequest) {
       step_name: LLS_STEP_NAMES[stepNum] || `Step ${stepNum}`,
       action,
       actor: body.actor || directive.t1_dau_moi,
-      detail: plan_text || null,
+      detail: historyDetail || null,
     });
 
     return NextResponse.json({
