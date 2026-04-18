@@ -627,15 +627,14 @@ function buildApprovalResultEmail(
     body +=
       '<div style="margin-top:20px;font-size:13px;line-height:1.7;color:#334155;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       '<p style="margin:0 0 10px;font-weight:700;color:#0f172a;">BƯỚC TIẾP THEO — để phần trình bày đạt hiệu quả cao nhất:</p>' +
-      '<p style="margin:0 0 8px;">&#9312; Chuẩn bị slide hoặc tài liệu trình bày</p>' +
-      '<p style="margin:0 0 4px;">&#9313; <strong>GỬI TÀI LIỆU TRƯỚC CHO BTC</strong> (quan trọng)</p>' +
+      '<p style="margin:0 0 8px;">&#9312; Chuẩn bị slide hoặc tài liệu trình bày (.pptx/.pdf)</p>' +
+      '<p style="margin:0 0 4px;">&#9313; <strong>CHIA SẺ LINK FILE BÁO CÁO CHO BTC</strong> (quan trọng)</p>' +
       '<div style="margin:0 0 12px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:13px;line-height:1.7;">' +
       "Cuộc họp BOD có hệ thống <strong>A.I phiên dịch trực tuyến Việt–Nhật</strong> hoạt động xuyên suốt. " +
       "Để hệ thống hoạt động chính xác nhất, BTC đề nghị:<br>" +
-      "✦ Gửi file slide (.pptx/.pdf) hoặc tài liệu trình bày <strong>trước Thứ Hai</strong> qua:<br>" +
-      '&nbsp;&nbsp;&nbsp;→ <a href="mailto:minhhieu@esuhai.com" style="color:#2563eb;">minhhieu@esuhai.com</a> và ' +
-      '<a href="mailto:dungntt@esuhai.com" style="color:#2563eb;">dungntt@esuhai.com</a><br>' +
-      "✦ Việc gửi trước giúp A.I phiên dịch nhận diện thuật ngữ chuyên ngành, tên riêng — phiên dịch chính xác hơn cho người Nhật tham dự." +
+      "✦ Upload file báo cáo lên <strong>OneDrive/SharePoint</strong> của bộ phận<br>" +
+      "✦ Copy link chia sẻ (quyền xem) và dán vào trường <strong>\"Link file báo cáo\"</strong> trong Form đăng ký<br>" +
+      "✦ Hoàn thành <strong>trước Thứ Hai</strong> để A.I có đủ thời gian học thuật ngữ chuyên ngành, tên riêng — phiên dịch chính xác hơn cho người Nhật tham dự." +
       "</div>" +
       '<p style="margin:0 0 8px;">&#9314; Lịch trình chính thức sẽ được gửi trước 20:00 Chủ Nhật</p>' +
       '<p style="margin:0 0 12px;">&#9315; Trình bày trong thời lượng đã đăng ký để đảm bảo tiến độ</p>' +
@@ -648,11 +647,11 @@ function buildApprovalResultEmail(
       s.color +
       ';font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
       '<p style="margin:0 0 6px;font-weight:700;">次のステップ：</p>' +
-      "① 発表資料のご準備をお願いいたします<br>" +
-      "② 【重要】発表資料の事前送付のお願い<br>" +
+      "① 発表資料のご準備をお願いいたします（.pptx/.pdf）<br>" +
+      "② 【重要】発表資料リンクの共有<br>" +
       "&nbsp;&nbsp;BOD会議ではAI通訳システム（ベトナム語⇔日本語）が稼働しています。<br>" +
-      "&nbsp;&nbsp;スライド等の資料がある方は、月曜日の会議前までに下記へお送りください：<br>" +
-      "&nbsp;&nbsp;→ minhhieu@esuhai.com / dungntt@esuhai.com<br>" +
+      "&nbsp;&nbsp;OneDrive/SharePointに資料をアップロード → 共有リンクを登録フォームの<br>" +
+      "&nbsp;&nbsp;「発表資料リンク」欄に貼り付けてください（月曜日まで）。<br>" +
       "③ 公式スケジュールは日曜日20:00までに配信いたします<br>" +
       "④ 登録された時間内での発表をお願いいたします" +
       "</div>";

@@ -177,6 +177,7 @@ function getDashboardData(searchDate) {
       email: row[cols.email] || "",
       emailLienQuan: row[cols.emailLienQuan] || "",
       emailSent: !!(row[cols.daGuiEmail]),
+      linkBaoCao: (row[cols.linkBaoCao] || "").toString().trim(),
     });
   }
   return result;

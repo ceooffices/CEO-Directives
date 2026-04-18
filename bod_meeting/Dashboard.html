@@ -3054,13 +3054,14 @@
                   <th>Nội dung báo cáo</th>
                   <th class="th-center">T.Lượng (phút)</th>
                   <th class="th-center">CĐ dự kiến (phút)</th>
+                  <th class="th-center">File báo cáo</th>
                   <th class="th-center">Phê duyệt</th>
                   <th class="ghichu-cell">Ghi chú BOD</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
                 <tr>
-                  <td colspan="8">
+                  <td colspan="9">
                     <div class="loading-state">
                       <div class="spinner"></div>
                       <p>Đang tải dữ liệu...</p>
@@ -4424,7 +4425,7 @@
 
         // Show loading
         document.getElementById("tableBody").innerHTML =
-          '<tr><td colspan="8"><div class="loading-state">' +
+          '<tr><td colspan="9"><div class="loading-state">' +
           '<div class="spinner"></div>' +
           "<p>Đang tải dữ liệu...</p></div></td></tr>";
 
@@ -4450,7 +4451,7 @@
           })
           .withFailureHandler(function (err) {
             document.getElementById("tableBody").innerHTML =
-              '<tr><td colspan="8"><div class="empty-state">' +
+              '<tr><td colspan="9"><div class="empty-state">' +
               '<div class="empty-icon">--</div>' +
               "<p>Lỗi tải dữ liệu: " +
               (err.message || "Không xác định") +
@@ -4626,7 +4627,7 @@
 
         if (!items || items.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="8"><div class="empty-state">' +
+            '<tr><td colspan="9"><div class="empty-state">' +
             '<div class="empty-icon">--</div>' +
             "<p>Không có đăng ký nào" +
             (activeFilter !== "all"
@@ -4721,6 +4722,19 @@
               escapeHtml(item.ghiChu || "") +
               "</textarea>";
 
+            // File báo cáo — hiển thị link clickable (nếu có) hoặc placeholder
+            var fileHtml;
+            if (item.linkBaoCao) {
+              var safeLink = escapeHtml(item.linkBaoCao);
+              fileHtml =
+                '<a href="' + safeLink + '" target="_blank" rel="noopener" ' +
+                'title="Mở file báo cáo" style="color:#2563eb;text-decoration:none;font-weight:700">' +
+                '☑ Có link</a>';
+            } else {
+              fileHtml =
+                '<span title="Chưa dán link vào form" style="color:#94a3b8;font-size:12px">◻ Chưa có</span>';
+            }
+
             return (
               '<tr class="row-highlight">' +
               '<td class="th-stt">' +
@@ -4740,6 +4754,9 @@
               "</td>" +
               '<td class="th-center">' +
               cdHtml +
+              "</td>" +
+              '<td class="th-center">' +
+              fileHtml +
               "</td>" +
               '<td class="th-center">' +
               selectHtml +
@@ -5741,22 +5758,21 @@
           '<div style="font-size:14px;line-height:1.75;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif">' +
           '<p style="margin:0 0 10px">BTC Meeting BOD xin thông báo kết quả phê duyệt đăng ký báo cáo cho cuộc họp ngày <strong>' + date + '</strong>.</p>' +
           '<p style="margin:0 0 10px;font-weight:700;color:#0f172a">BƯỚC TIẾP THEO (nếu được duyệt):</p>' +
-          '<p style="margin:0 0 8px">&#9312; Chuẩn bị slide hoặc tài liệu trình bày</p>' +
-          '<p style="margin:0 0 4px">&#9313; <strong>GỬI TÀI LIỆU TRƯỚC CHO BTC</strong> (quan trọng)</p>' +
+          '<p style="margin:0 0 8px">&#9312; Chuẩn bị slide hoặc tài liệu trình bày (.pptx/.pdf)</p>' +
+          '<p style="margin:0 0 4px">&#9313; <strong>CHIA SẺ LINK FILE BÁO CÁO CHO BTC</strong> (quan trọng)</p>' +
           '<div style="margin:0 0 12px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:13px;line-height:1.7">' +
           'Cuộc họp BOD có hệ thống <strong>A.I phiên dịch trực tuyến Việt–Nhật</strong> hoạt động xuyên suốt. ' +
           'Để hệ thống hoạt động chính xác nhất, BTC đề nghị:<br>' +
-          '✦ Gửi file slide (.pptx/.pdf) hoặc tài liệu trình bày <strong>trước Thứ Hai</strong> qua:<br>' +
-          '&nbsp;&nbsp;&nbsp;→ <a href="mailto:minhhieu@esuhai.com" style="color:#2563eb">minhhieu@esuhai.com</a> và ' +
-          '<a href="mailto:dungntt@esuhai.com" style="color:#2563eb">dungntt@esuhai.com</a><br>' +
-          '✦ Việc gửi trước giúp A.I nhận diện thuật ngữ chuyên ngành — phiên dịch chính xác hơn cho người Nhật tham dự.</div>' +
+          '✦ Upload file báo cáo lên <strong>OneDrive/SharePoint</strong> của bộ phận<br>' +
+          '✦ Copy link chia sẻ (quyền xem) và dán vào trường <strong>"Link file báo cáo"</strong> trong Form đăng ký<br>' +
+          '✦ Hoàn thành <strong>trước Thứ Hai</strong> để A.I có đủ thời gian học thuật ngữ chuyên ngành — phiên dịch chính xác hơn cho người Nhật tham dự.</div>' +
           '<p style="margin:0 0 8px">&#9314; Lịch trình chính thức sẽ được gửi trước 20:00 Chủ Nhật</p>' +
           '<p style="margin:0 0 12px">&#9315; Trình bày trong thời lượng đã đăng ký để đảm bảo tiến độ</p>' +
           '<p style="margin:0 0 10px;color:#64748b;font-style:italic">Nếu cần điều chỉnh nội dung hoặc thời lượng, vui lòng liên hệ BTC trước Thứ Bảy.</p></div>' +
           '<div style="font-size:12px;line-height:1.65;color:#64748b;margin-bottom:20px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #2563eb;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif">' +
           '<strong>次のステップ：</strong><br>' +
-          '① 発表資料のご準備をお願いいたします<br>' +
-          '② 【重要】発表資料の事前送付のお願い — AI通訳の精度向上のため、スライド等を月曜日の会議前までに minhhieu@esuhai.com / dungntt@esuhai.com へお送りください<br>' +
+          '① 発表資料のご準備をお願いいたします（.pptx/.pdf）<br>' +
+          '② 【重要】発表資料リンクの共有 — OneDrive/SharePointに資料をアップロード → 共有リンクを登録フォームの「発表資料リンク」欄に月曜日までに貼り付けてください<br>' +
           '③ 公式スケジュールは日曜日20:00までに配信いたします<br>' +
           '④ 登録された時間内での発表をお願いいたします</div>' +
           '<div style="background:#eff6ff;border-radius:10px;padding:14px 18px">' +

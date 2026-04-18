@@ -700,23 +700,23 @@ CHI TIẾT ĐĂNG KÝ:
 
 BƯỚC TIẾP THEO — để phần trình bày đạt hiệu quả cao nhất:
 
-  ① Chuẩn bị slide hoặc tài liệu trình bày
+  ① Chuẩn bị slide hoặc tài liệu trình bày (.pptx/.pdf)
 
-  ② GỬI TÀI LIỆU TRƯỚC CHO BTC (quan trọng)
+  ② CHIA SẺ LINK FILE BÁO CÁO CHO BTC (quan trọng)
      Cuộc họp BOD có hệ thống A.I phiên dịch trực tuyến Việt–Nhật
      hoạt động xuyên suốt buổi làm việc. Để hệ thống phiên dịch
      hoạt động chính xác và hiệu quả nhất, BTC đề nghị:
 
-     ✦ Nếu Anh/Chị có slide trình chiếu: vui lòng gửi file về
-       BTC trước Thứ Hai (trước khi buổi họp bắt đầu) qua:
-       → minhhieu@esuhai.com và dungntt@esuhai.com
+     ✦ Upload file báo cáo (.pptx/.pdf) lên OneDrive/SharePoint
+       của bộ phận Anh/Chị
 
-     ✦ Nội dung cần gửi: file slide (.pptx/.pdf) hoặc tài liệu
-       trình bày, bao gồm cả ghi chú thuyết trình (nếu có)
+     ✦ Copy link chia sẻ (quyền xem) và dán vào trường
+       "Link file báo cáo" trong Form đăng ký — hoàn thành
+       trước Thứ Hai (trước khi buổi họp bắt đầu)
 
-     ✦ Việc gửi trước giúp: A.I phiên dịch nhận diện thuật ngữ
-       chuyên ngành, tên riêng, và nội dung đặc thù của bộ phận
-       — từ đó phiên dịch chính xác hơn cho người Nhật tham dự
+     ✦ Việc chia sẻ trước giúp: A.I phiên dịch nhận diện thuật
+       ngữ chuyên ngành, tên riêng, và nội dung đặc thù của bộ
+       phận — từ đó phiên dịch chính xác hơn cho người Nhật tham dự
 
   ③ Lịch trình chính thức sẽ được gửi trước 20:00 Chủ Nhật —
      Anh/Chị sẽ biết chính xác thứ tự và khung giờ của mình
@@ -752,19 +752,22 @@ Ban Tổ Chức Meeting BOD
 
 次のステップ：
 
-  ① 発表資料のご準備をお願いいたします
+  ① 発表資料のご準備をお願いいたします（.pptx/.pdf）
 
-  ② 【重要】発表資料の事前送付のお願い
+  ② 【重要】発表資料リンクの共有のお願い
      BOD会議では、AI通訳システムがベトナム語⇔日本語の
      リアルタイム通訳を行っております。
-     通訳の精度を高めるため、スライド等の発表資料がある方は、
-     月曜日の会議開始前までに下記へお送りください：
-     → minhhieu@esuhai.com および dungntt@esuhai.com
+     通訳の精度を高めるため、下記の手順で資料リンクを
+     共有してください：
 
-     送付内容：スライド（.pptx/.pdf）または発表資料
-     （プレゼンノートがあれば併せてお送りください）
+     ✦ 発表資料（.pptx/.pdf）を部署のOneDrive/SharePointに
+       アップロード
 
-     事前にお送りいただくことで、AI通訳が専門用語や
+     ✦ 共有リンク（閲覧権限）を取得し、登録フォームの
+       「発表資料リンク」欄に貼り付けてください
+       （月曜日の会議開始前まで）
+
+     事前にリンクを共有いただくことで、AI通訳が専門用語や
      固有名詞をより正確に認識・翻訳できるようになります。
 
   ③ 公式スケジュールは日曜日20:00までに配信いたします

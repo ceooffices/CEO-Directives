@@ -18,12 +18,12 @@
  * - v852_email_router.js → Email router, templates, log
  * - v853_schedule.js  → Schedule generation, refresh dashboard
  *
- * CẤU TRÚC CỘT FORM ĐĂNG KÝ (A-Q):
+ * CẤU TRÚC CỘT FORM ĐĂNG KÝ (A-R):
  * A: Timestamp | B: Nội dung | C: Thời lượng | D: Cần QĐ?
  * E: QĐ gì? | F: Tham gia | G: Email liên quan | H: Ngày họp
  * I: Họ Tên | J: Email | K: Bộ phận | L: Trạng thái
  * M: Thứ tự | N: Ghi chú | O: TL chỉ đạo | P: Tên liên quan
- * Q: Đã gửi email
+ * Q: Đã gửi email | R: Link file báo cáo (OneDrive/SharePoint)
  * ========================================================================
  */
 
@@ -41,8 +41,74 @@ function onOpen() {
     .addItem("👥 Cập nhật Tên liên quan", "updateAllRelatedNames")
     .addItem("🔍 Kiểm tra Email", "checkInvalidEmails")
     .addSeparator()
+    .addItem("🔗 Kiểm tra cột Link báo cáo", "verifyLinkBaoCaoColumn")
     .addItem("🧪 Test toàn bộ CTA", "testBODDashboard")
     .addToUi();
+}
+
+/**
+ * Xác minh vị trí cột "Link báo cáo" trên sheet Form Đăng ký.
+ * Idempotent — chỉ đọc, không ghi đè. Báo cáo kết quả qua UI alert.
+ *
+ * Mục đích: Sau khi thêm question "Link file báo cáo" vào Google Form,
+ * Google sẽ append 1 cột mới vào Sheet. Function này kiểm tra cột đó
+ * xuất hiện đúng ở vị trí COLUMN_MAP.linkBaoCao (mặc định = 17, cột R).
+ * Nếu lệch, hướng dẫn cách sửa.
+ */
+function verifyLinkBaoCaoColumn() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.SHEET_RESPONSES);
+  if (!sheet) {
+    ui.alert('❌ Không tìm thấy sheet "' + CONFIG.SHEET_RESPONSES + '"');
+    return;
+  }
+
+  const expectedIdx = CONFIG.COLUMN_MAP.linkBaoCao;
+  const expectedCol = String.fromCharCode(65 + expectedIdx); // 17 → 'R'
+  const lastCol = sheet.getLastColumn();
+  const header = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+  // Tìm header có chứa "link" + "báo cáo"
+  let foundIdx = -1;
+  for (let i = 0; i < header.length; i++) {
+    const h = (header[i] || '').toString().toLowerCase();
+    if (h.indexOf('link') >= 0 && (h.indexOf('báo cáo') >= 0 || h.indexOf('bao cao') >= 0)) {
+      foundIdx = i;
+      break;
+    }
+  }
+
+  let msg = '📋 KIỂM TRA CỘT LINK BÁO CÁO\n\n';
+  msg += 'Tổng số cột hiện có: ' + lastCol + '\n';
+  msg += 'Vị trí mong đợi: cột ' + expectedCol + ' (index ' + expectedIdx + ')\n\n';
+
+  if (foundIdx < 0) {
+    msg += '◻ CHƯA TÌM THẤY cột "Link báo cáo".\n\n';
+    msg += 'Hành động cần làm:\n';
+    msg += '1. Mở Google Form đăng ký (link trong Settings → sys_formUrl)\n';
+    msg += '2. Thêm câu hỏi mới:\n';
+    msg += '   - Loại: Câu trả lời ngắn (Short answer)\n';
+    msg += '   - Tiêu đề: "Link file báo cáo (OneDrive/SharePoint)"\n';
+    msg += '   - Mô tả: Dán link chia sẻ file .pptx/.pdf đã upload lên OneDrive phòng ban\n';
+    msg += '   - Bắt buộc: TẮT\n';
+    msg += '   - Validation: URL (tùy chọn)\n';
+    msg += '3. Chạy lại menu này để xác minh\n';
+  } else if (foundIdx === expectedIdx) {
+    msg += '☑ ĐÚNG VỊ TRÍ — cột "' + header[foundIdx] + '" ở cột ' + expectedCol + ' (index ' + foundIdx + ')\n\n';
+    msg += 'Hệ thống sẵn sàng sử dụng. Không cần làm gì thêm.';
+  } else {
+    const actualCol = String.fromCharCode(65 + foundIdx);
+    msg += '⚠ LỆCH VỊ TRÍ:\n';
+    msg += '  - Tìm thấy cột "' + header[foundIdx] + '" ở cột ' + actualCol + ' (index ' + foundIdx + ')\n';
+    msg += '  - COLUMN_MAP mong đợi index ' + expectedIdx + '\n\n';
+    msg += 'Hành động cần làm:\n';
+    msg += '1. Mở file v850_config.js\n';
+    msg += '2. Sửa COLUMN_MAP.linkBaoCao = ' + foundIdx + '\n';
+    msg += '3. clasp push\n';
+  }
+
+  ui.alert(msg);
 }
 
 function goToDashboard() {

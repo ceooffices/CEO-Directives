@@ -46,6 +46,7 @@ const CONFIG = {
     thoiLuongChiDao: 14,
     tenLienQuan: 15,
     daGuiEmail: 16,
+    linkBaoCao: 17,
   },
   DEFAULT_CHI_DAO_TIME: { MSA: 20, DEFAULT: 10 },
   SECRETARY_NAME: "BTC Meeting BOD",
