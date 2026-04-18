@@ -18,12 +18,16 @@
  * - v852_email_router.js → Email router, templates, log
  * - v853_schedule.js  → Schedule generation, refresh dashboard
  *
- * CẤU TRÚC CỘT FORM ĐĂNG KÝ (A-R):
+ * CẤU TRÚC CỘT FORM ĐĂNG KÝ (A-R) — cập nhật 2026-04-18:
  * A: Timestamp | B: Nội dung | C: Thời lượng | D: Cần QĐ?
  * E: QĐ gì? | F: Tham gia | G: Email liên quan | H: Ngày họp
- * I: Họ Tên | J: Email | K: Bộ phận | L: Trạng thái
- * M: Thứ tự | N: Ghi chú | O: TL chỉ đạo | P: Tên liên quan
- * Q: Đã gửi email | R: Link file báo cáo
+ * I: Họ Tên | J: Email | K: Bộ phận | L: Link file báo cáo
+ * M: Trạng thái | N: Thứ tự | O: Ghi chú BOD | P: TL chỉ đạo
+ * Q: Tên liên quan | R: Đã gửi email
+ *
+ * Lưu ý: Cột L "Link file báo cáo" được Google Form chèn vào sau khi
+ * thêm question mới, đẩy các cột admin (Trạng thái...Đã gửi email)
+ * sang phải 1 vị trí. Code dùng CONFIG.COLUMN_MAP nên tự thích ứng.
  * ========================================================================
  */
 

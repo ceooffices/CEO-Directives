@@ -32,7 +32,7 @@ Thay đổi quy trình thu nhận slide báo cáo:
 
 1. Mở sheet `Form Đăng ký` (response sheet của Google Form)
 2. Kiểm tra cột cuối cùng có header **"Link file báo cáo"** (hoặc tương đương tiếng Nhật)
-3. Vị trí mong đợi: **cột R** (cột thứ 18, index 17)
+3. Vị trí mong đợi: **cột L** (cột thứ 12, index 11). Google Form chèn cột mới ngay sau cột Form cuối (Bộ phận), đẩy các cột admin sang phải.
 4. Chạy menu `🔧 BOD Tools` → `🔗 Kiểm tra cột Link báo cáo` để script tự xác minh
 
 Script sẽ báo 1 trong 3 kết quả:
