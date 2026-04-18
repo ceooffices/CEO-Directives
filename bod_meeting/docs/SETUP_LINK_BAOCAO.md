@@ -21,7 +21,7 @@ Thay đổi quy trình thu nhận slide báo cáo:
    | Trường | Giá trị |
    |---|---|
    | Loại câu hỏi | **Câu trả lời ngắn** (Short answer) |
-   | Tiêu đề | `Link file báo cáo (OneDrive/SharePoint)` |
+   | Tiêu đề | `Link file báo cáo` |
    | Mô tả (Description) | Upload file `.pptx/.pdf` lên OneDrive của bộ phận → Copy link chia sẻ (quyền xem) → Dán vào đây. Để trống nếu chưa có link — sẽ bổ sung sau. |
    | Bắt buộc (Required) | **TẮT** (optional) |
    | Response validation | **URL** (tùy chọn — khuyến nghị bật để chặn text không phải link) |
@@ -31,7 +31,7 @@ Thay đổi quy trình thu nhận slide báo cáo:
 ### Bước 2 — Xác minh cột mới trên Sheet
 
 1. Mở sheet `Form Đăng ký` (response sheet của Google Form)
-2. Kiểm tra cột cuối cùng có header **"Link file báo cáo (OneDrive/SharePoint)"** (hoặc tương đương tiếng Nhật)
+2. Kiểm tra cột cuối cùng có header **"Link file báo cáo"** (hoặc tương đương tiếng Nhật)
 3. Vị trí mong đợi: **cột R** (cột thứ 18, index 17)
 4. Chạy menu `🔧 BOD Tools` → `🔗 Kiểm tra cột Link báo cáo` để script tự xác minh
 

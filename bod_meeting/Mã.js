@@ -23,7 +23,7 @@
  * E: QĐ gì? | F: Tham gia | G: Email liên quan | H: Ngày họp
  * I: Họ Tên | J: Email | K: Bộ phận | L: Trạng thái
  * M: Thứ tự | N: Ghi chú | O: TL chỉ đạo | P: Tên liên quan
- * Q: Đã gửi email | R: Link file báo cáo (OneDrive/SharePoint)
+ * Q: Đã gửi email | R: Link file báo cáo
  * ========================================================================
  */
 
@@ -89,7 +89,7 @@ function verifyLinkBaoCaoColumn() {
     msg += '1. Mở Google Form đăng ký (link trong Settings → sys_formUrl)\n';
     msg += '2. Thêm câu hỏi mới:\n';
     msg += '   - Loại: Câu trả lời ngắn (Short answer)\n';
-    msg += '   - Tiêu đề: "Link file báo cáo (OneDrive/SharePoint)"\n';
+    msg += '   - Tiêu đề: "Link file báo cáo"\n';
     msg += '   - Mô tả: Dán link chia sẻ file .pptx/.pdf đã upload lên OneDrive phòng ban\n';
     msg += '   - Bắt buộc: TẮT\n';
     msg += '   - Validation: URL (tùy chọn)\n';
