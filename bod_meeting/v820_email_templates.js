@@ -404,7 +404,17 @@ function buildReminderEmail(
     " 様</p>" +
     '<div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:14px;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
     bodyVN +
-    "</div>";
+    "</div>" +
+    // Hướng dẫn link file báo cáo — hiển thị ở TẤT CẢ lần nhắc
+    '<div style="margin:0 0 14px;padding:12px 16px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb;font-size:13px;line-height:1.7;font-family:Segoe UI,Roboto,Hiragino Sans,Noto Sans JP,Arial,sans-serif;">' +
+    '<p style="margin:0 0 6px;font-weight:700;color:#1e40af;">📎 VỀ FILE BÁO CÁO / 発表資料について</p>' +
+    '<p style="margin:0 0 6px;">Khi đăng ký, vui lòng chuẩn bị file trình bày (.pptx/.pdf) và dán link chia sẻ vào trường <strong>"Link file báo cáo"</strong> trong Form.</p>' +
+    '<ul style="margin:0 0 4px;padding-left:20px;">' +
+    '<li>BTC <strong>không lưu trữ</strong> file — Anh/Chị tự quản lý tài liệu trên OneDrive/SharePoint của bộ phận.</li>' +
+    '<li>Vui lòng cấp <strong>quyền truy cập đầy đủ</strong> (quyền xem) cho <strong>ceo.offices@esuhai.com</strong>.</li>' +
+    '<li>Hoàn thành trước <strong>Thứ Hai</strong> để A.I phiên dịch có đủ thời gian chuẩn bị thuật ngữ chuyên ngành.</li></ul>' +
+    '<p style="margin:0;font-size:12px;color:#64748b;font-style:italic;">BTCは発表資料を保管しません。各部門のOneDrive/SharePointで管理し、<strong>ceo.offices@esuhai.com</strong> に閲覧権限を付与してください。</p>' +
+    '</div>';
 
   // Bảng thống kê đăng ký theo tháng (Content Bible 11.3)
   // Điều kiện: missedWeeks >= 1 (bất kể lần nhắc nào)
@@ -633,8 +643,10 @@ function buildApprovalResultEmail(
       "Cuộc họp BOD có hệ thống <strong>A.I phiên dịch trực tuyến Việt–Nhật</strong> hoạt động xuyên suốt. " +
       "Để hệ thống hoạt động chính xác nhất, BTC đề nghị:<br>" +
       "✦ Upload file báo cáo lên <strong>OneDrive/SharePoint</strong> của bộ phận<br>" +
-      "✦ Copy link chia sẻ (quyền xem) và dán vào trường <strong>\"Link file báo cáo\"</strong> trong Form đăng ký<br>" +
-      "✦ Hoàn thành <strong>trước Thứ Hai</strong> để A.I có đủ thời gian học thuật ngữ chuyên ngành, tên riêng — phiên dịch chính xác hơn cho người Nhật tham dự." +
+      "✦ Copy link chia sẻ và dán vào trường <strong>\"Link file báo cáo\"</strong> trong Form đăng ký<br>" +
+      "✦ Cấp <strong>quyền truy cập đầy đủ</strong> (quyền xem) cho <strong>ceo.offices@esuhai.com</strong><br>" +
+      "✦ Hoàn thành <strong>trước Thứ Hai</strong> để A.I có đủ thời gian học thuật ngữ chuyên ngành — phiên dịch chính xác hơn cho người Nhật tham dự.<br>" +
+      '<span style="color:#64748b;font-style:italic;">Lưu ý: BTC <strong>không lưu trữ</strong> file báo cáo. Anh/Chị tự quản lý tài liệu và đường dẫn chia sẻ.</span>' +
       "</div>" +
       '<p style="margin:0 0 8px;">&#9314; Lịch trình chính thức sẽ được gửi trước 20:00 Chủ Nhật</p>' +
       '<p style="margin:0 0 12px;">&#9315; Trình bày trong thời lượng đã đăng ký để đảm bảo tiến độ</p>' +
@@ -649,9 +661,10 @@ function buildApprovalResultEmail(
       '<p style="margin:0 0 6px;font-weight:700;">次のステップ：</p>' +
       "① 発表資料のご準備をお願いいたします（.pptx/.pdf）<br>" +
       "② 【重要】発表資料リンクの共有<br>" +
-      "&nbsp;&nbsp;BOD会議ではAI通訳システム（ベトナム語⇔日本語）が稼働しています。<br>" +
       "&nbsp;&nbsp;OneDrive/SharePointに資料をアップロード → 共有リンクを登録フォームの<br>" +
       "&nbsp;&nbsp;「発表資料リンク」欄に貼り付けてください（月曜日まで）。<br>" +
+      "&nbsp;&nbsp;<strong>ceo.offices@esuhai.com</strong> に閲覧権限を付与してください。<br>" +
+      "&nbsp;&nbsp;※ BTCは資料を保管しません。各部門で管理をお願いします。<br>" +
       "③ 公式スケジュールは日曜日20:00までに配信いたします<br>" +
       "④ 登録された時間内での発表をお願いいたします" +
       "</div>";

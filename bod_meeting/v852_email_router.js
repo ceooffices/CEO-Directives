@@ -126,7 +126,7 @@ function buildEmailApproved(data) {
       ",\n\n────────────────────────────────────\nNội dung: " + data.noiDung +
       "\nNgày họp: " + data.ngayHop +
       "\nBộ phận: " + data.boPhan +
-      "\n────────────────────────────────────\n\nKẾT QUẢ: ✅ ĐÃ ĐƯỢC DUYỆT / 承認済み\n\nVui lòng chuẩn bị nội dung trình bày.\nLịch trình chính thức sẽ được gửi trước ngày họp.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
+      "\n────────────────────────────────────\n\nKẾT QUẢ: ✅ ĐÃ ĐƯỢC DUYỆT / 承認済み\n\nBƯỚC TIẾP THEO:\n1. Chuẩn bị slide/tài liệu trình bày (.pptx/.pdf)\n2. Upload lên OneDrive/SharePoint của bộ phận\n3. Dán link chia sẻ vào trường \"Link file báo cáo\" trong Form đăng ký\n4. Cấp quyền truy cập đầy đủ (quyền xem) cho ceo.offices@esuhai.com\n5. Hoàn thành trước Thứ Hai\n\n⚠ Lưu ý: BTC KHÔNG lưu trữ file báo cáo. Anh/Chị tự quản lý tài liệu và đường dẫn chia sẻ.\n\nLịch trình chính thức sẽ được gửi trước ngày họp.\n\nTrân trọng,\nBan Tổ Chức Meeting BOD\nESUHAI GROUP",
   };
 }
 
